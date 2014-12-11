@@ -13,6 +13,8 @@
 		F76214CB1A38B555001BD37D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F76214CA1A38B555001BD37D /* Images.xcassets */; };
 		F76214CE1A38B555001BD37D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F76214CC1A38B555001BD37D /* LaunchScreen.xib */; };
 		F76214DA1A38B555001BD37D /* AskTheWorldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76214D91A38B555001BD37D /* AskTheWorldTests.swift */; };
+		F76214E41A38C13F001BD37D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76214E31A38C13F001BD37D /* LoginViewController.swift */; };
+		F76214E61A38C349001BD37D /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76214E51A38C349001BD37D /* RegisterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +38,8 @@
 		F76214D31A38B555001BD37D /* AskTheWorldTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AskTheWorldTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F76214D81A38B555001BD37D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F76214D91A38B555001BD37D /* AskTheWorldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskTheWorldTests.swift; sourceTree = "<group>"; };
+		F76214E31A38C13F001BD37D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		F76214E51A38C349001BD37D /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +87,8 @@
 				F76214CA1A38B555001BD37D /* Images.xcassets */,
 				F76214CC1A38B555001BD37D /* LaunchScreen.xib */,
 				F76214C11A38B554001BD37D /* Supporting Files */,
+				F76214E31A38C13F001BD37D /* LoginViewController.swift */,
+				F76214E51A38C349001BD37D /* RegisterViewController.swift */,
 			);
 			path = AskTheWorld;
 			sourceTree = "<group>";
@@ -212,8 +218,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F76214E41A38C13F001BD37D /* LoginViewController.swift in Sources */,
 				F76214C61A38B554001BD37D /* ViewController.swift in Sources */,
 				F76214C41A38B554001BD37D /* AppDelegate.swift in Sources */,
+				F76214E61A38C349001BD37D /* RegisterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

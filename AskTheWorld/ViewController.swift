@@ -10,6 +10,12 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var UserNameLabel: UILabel!
+    
+    @IBAction func LogoutButton(sender: UIButton) {
+       self.performSegueWithIdentifier("GoTo_LoginScreen", sender: self)
+    } 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -20,6 +26,9 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    override func viewDidAppear(animated: Bool) {
+        self.performSegueWithIdentifier("GoTo_LoginScreen", sender: self)
+    }
 
 }
 
