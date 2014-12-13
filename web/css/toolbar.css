@@ -1,0 +1,69 @@
+
+#TopLevelToolbar {
+  padding: 10px 50px;
+
+}
+
+#TopLevelToolbar-Left, #TopLevelToolbar-Right {
+  width: 50%;
+}
+
+#TopLevelToolbar-Left {
+  float: left;
+  align: left;
+}
+
+#TopLevelToolbar-Right {
+  float: right;
+  text-align: right;
+}
+
+.topleveltoolbar-button {
+  margin-right: 50px;
+}
+
+
+
+.panel-input {
+  width: 100%;
+}
+
+.panel-button {
+}
+
+#LoginPanel {
+  width: 20%;
+  float: right;
+  padding: 20px;
+  text-align: left;
+  display: none;
+}
+
+#LoginPanel-Left {
+  width: 50%;
+  float: left;
+  text-align: left;
+  margin-top: 40px;
+}
+
+#LoginPanel-Right {
+  width: 50%;
+  float: right;
+  text-align: right;
+  margin-top: 30px;
+}
+
+#RegisterUserPanel {
+  width: 30%;
+  float: right;
+  padding: 20px;
+  text-align: left;
+  display: none;
+}
+
+#RegisterUserPanel-Right {
+  width: 50%;
+  float: right;
+  text-align: right;
+  margin-top: 30px;
+}

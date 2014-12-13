@@ -1,0 +1,72 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Ask The World!</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+  <link rel="stylesheet" href="css/toolbar.css">
+  <script src="js/application.js"></script>
+  <script src="js/backend.js"></script>
+
+  <style>
+  </style>
+
+  <script>
+    $(document).ready(function() {
+      Application.start();
+    }); 
+  </script>
+
+</head>
+<body>
+  <div id="TopLevelToolbar" class="ui-widget-header ui-corner-all">
+
+    <div id="TopLevelToolbar-Left">
+      <button id="TopLevelToolbar-Button1" class="topleveltoolbar-button">Button1</button>
+      <button id="TopLevelToolbar-Button2" class="topleveltoolbar-button">Button2</button>
+      <button id="TopLevelToolbar-Button3" class="topleveltoolbar-button">Button3</button>
+    </div>
+
+    <div id="TopLevelToolbar-Right">
+      <button id="TopLevelToolbar-Login" class="topleveltoolbar-button">Login</button>
+    </div>
+
+    <div id="LoginPanel" class="ui-widget-content ui-corner-all">
+      <label>Email</label>
+      <input type="text" id="LoginPanel-Email" value="" class="text panel-input ui-widget-content ui-corner-all">
+      <p>
+      <label>Password</label>
+      <input type="password" id="LoginPanel-Password" value="xxxxxxx" class="text panel-input ui-widget-content ui-corner-all">
+
+      <div id="LoginPanel-Left">
+        <a href="#" id="LoginPanel-Register">Register</a>
+      </div>
+      <div id="LoginPanel-Right">
+        <button id="LoginPanel-Login" class="panel-button">Sign In</button>
+      </div>
+    </div>
+
+    <div id="RegisterUserPanel" class="ui-widget-content ui-corner-all">
+      <label>Email</label>
+      <input type="text" id="RegisterUserPanel-Email" value="" class="text panel-input ui-widget-content ui-corner-all">
+      <p>
+      <label>Gender</label>
+      <input type="text" id="RegisterUserPanel-Gender" value="" class="text panel-input ui-widget-content ui-corner-all">
+      <p>
+      <label>Password</label>
+      <input type="password" id="RegisterUserPanel-Password" value="xxxxxxx" class="text panel-input ui-widget-content ui-corner-all">
+      <p>
+      <label for="password">Retype Password</label>
+      <input type="password" id="RegisterUserPanel-RetypePassword" value="xxxxxxx" class="text panel-input ui-widget-content ui-corner-all">
+
+      <div id="RegisterUserPanel-Right">
+        <button id="RegisterUserPanel-Create" class="panel-button">Register</button>
+      <div>
+    </div>
+
+  </div>
+
+</body>
+</html>
