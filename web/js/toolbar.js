@@ -1,13 +1,14 @@
 var Toolbar = {};
 
 Toolbar.initialize = function() {
-  $("body").html(this.getToolbarHtml());
+  $("#RootContainer").html(this.getToolbarHtml());
 
-  $(".topleveltoolbar-button").button();
+//  $(".topleveltoolbar-button").button();
   $(".panel-button").button();
 
   $("#TopLevelToolbar-Login").click(function(event) { 
     $("#RegisterUserPanel").slideUp("fast", function() {
+      $("#LoginPanel-Status").val("");
       $("#LoginPanel").slideToggle("slow");
     });
   });
@@ -26,6 +27,7 @@ Toolbar.initialize = function() {
 
   $("#LoginPanel-Register").click(function(event) { 
     $("#LoginPanel").slideUp("fast", function() {
+      $("#RegisterUserPanel-Status").val("");
       $("#RegisterUserPanel").slideDown("slow");
     });
   });
@@ -70,14 +72,22 @@ Toolbar.signIn = function() {
   var email = $("#LoginPanel-Email").val();
   var password = $("#LoginPanel-Password").val();
 
-  if (Backend.verifyUserIdentity(email, password)) {
-    $("#TopLevelToolbar-UserName").text("Welcome, " + email);
-    $("#LoginPanel").slideUp("fast");
-    $("#TopLevelToolbar-Login").hide();
-    $("#TopLevelToolbar-Profile").show();
-  } else {
-    //highlight incorect password
-  }
+  var callback = {
+    success: function() {
+      $("#TopLevelToolbar-UserName").text("Welcome, " + email);
+      $("#LoginPanel").slideUp("fast");
+      $("#TopLevelToolbar-Login").hide();
+      $("#TopLevelToolbar-Profile").show();
+    },
+    failure: function() {
+      $("#LoginPanel-Password").addClass("input-error");
+    },
+    error: function() {
+      $("#LoginPanel-Status").text("Server communication error");
+    }
+  };
+
+  Backend.verifyUserIdentity(email, password, callback);
 }
 
 Toolbar.register = function() {
@@ -87,11 +97,19 @@ Toolbar.register = function() {
   var gender = $("#RegisterUserPanel-Gender").val();
   var age = $("#RegisterUserPanel-AgeCategory").val();
 
-  if (Backend.registerUser({"email": email, "password": password, "gender": gender, "age": age, "name": name})) {
-    $("#RegisterUserPanel").slideUp("fast");
-  } else {
-    //indicate what is incorrect
-  }
+  var callback = {
+    success: function() {
+      $("#RegisterUserPanel").slideUp("fast");
+    },
+    conflict: function() {
+      $("#RegisterUserPanel-Status").text("User with such name already exists");
+    },
+    error: function() {
+      $("#RegisterUserPanel-Status").text("Server communication error");
+    }
+  };
+
+  Backend.registerUser({"email": email, "password": password, "gender": gender, "age": age, "name": name}, callback);
 }
 
 Toolbar.updateProfile = function() {
@@ -110,11 +128,11 @@ Toolbar.updateProfile = function() {
 
 
 Toolbar.getToolbarHtml = function() {
-  return "<div id='TopLevelToolbar'>"
+  return "<div id='TopLevelToolbar' class='ui-widget-header ui-corner-all'>"
          + "<div id='TopLevelToolbar-Left'>"
-         +   this.getToolbarButtonHtml("Button1")
-         +   this.getToolbarButtonHtml("Button2")
-         +   this.getToolbarButtonHtml("Button3")
+         +   this.getToolbarButtonHtml("Home")
+         +   this.getToolbarButtonHtml("Huy", true, "Huy Znaet Chto")
+         +   this.getToolbarButtonHtml("ContactUs", true, "Contact Us")
          + "</div> \
            <div id='TopLevelToolbar-Right'>"
          +   this.getLoggedUserHtml()
@@ -128,8 +146,13 @@ Toolbar.getToolbarHtml = function() {
 }
 
 Toolbar.getToolbarButtonHtml = function(buttonName, visible, displayText) {
+/*
   return "<button id='TopLevelToolbar-" + buttonName + "' class='topleveltoolbar-button' "
          + "style='display:" + (visible != null && visible == false ? "none" : "inline") + ";'>" + (displayText ? displayText : buttonName) + "</button>";
+*/
+  return "<a href='#' id='TopLevelToolbar-" + buttonName + "' class='topleveltoolbar-button' "
+         + "style='display:" + (visible != null && visible == false ? "none" : "inline") + ";'>" + (displayText ? displayText : buttonName) + "</a>";
+
 };
 
 Toolbar.getLoggedUserHtml = function() {
@@ -145,13 +168,15 @@ Toolbar.getLoginPanelHtml = function() {
          +   this.getPanelLabbeledInputHtml("LoginPanel", "Email")
          +   "<p>"
          +   this.getPanelLabbeledInputHtml("LoginPanel", "Password")
-         +   "<div class='panel-left'> \
-                <a href='#' id='LoginPanel-Register'>Register</a> \
-              </div> \
-              <div class='panel-right'>"
-              +   this.getPanelButtonHtml("LoginPanel", "SignIn", "Sign In")
-              + "</div> \
-             </div>";
+         +   "<p> \
+             <label id='LoginPanel-Status' class='input-error panel-input'></label> \
+             <div class='panel-left'> \
+               <a href='#' id='LoginPanel-Register'>Register</a> \
+             </div> \
+             <div class='panel-right'>"
+             +   this.getPanelButtonHtml("LoginPanel", "SignIn", "Sign In")
+           + "</div> \
+          </div>";
 }
 
 Toolbar.getPanelLabbeledInputHtml = function(panelName, labelName) {
@@ -190,7 +215,10 @@ Toolbar.getRegisterUserPanelHtml = function() {
          +   "<p>"
          +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "RetypePassword")
          +   "<p>"
-         +   "<div class='panel-right'>"
+         +   "<div class='panel-left'> \
+               <label id='RegisterUserPanel-Status' class='input-error'></label> \
+              </div> \
+              <div class='panel-right'>"
          +     this.getPanelButtonHtml("RegisterUserPanel", "Register")
          +   "</div> \
            </div>";

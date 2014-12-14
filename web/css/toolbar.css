@@ -1,6 +1,10 @@
 
 #TopLevelToolbar {
-  padding: 10px 50px;
+  height: 40px;
+  margin-right: 50px;
+  margin-left: 50px;
+  padding-right: 50px;
+  padding-left: 50px;
 }
 
 #TopLevelToolbar-Left, #TopLevelToolbar-Right {
@@ -18,7 +22,9 @@
 }
 
 .topleveltoolbar-button {
-  margin-left: 50px;
+  margin-left: 30px;
+  margin-right: 30px;
+  font-size: 30px;
 }
 
 
@@ -42,6 +48,10 @@
   float: left;
   text-align: left;
   margin-top: 30px;
+}
+
+#LoginPanel, #RegisterUserPanel, #ModifyUserProfilePanel {
+  margin-top: 20px;
 }
 
 #LoginPanel {
@@ -71,4 +81,8 @@
   padding: 20px;
   text-align: left;
   display: none;
+}
+
+.input-error {
+  color: red;
 }
