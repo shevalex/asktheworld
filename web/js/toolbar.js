@@ -1,12 +1,21 @@
 var Toolbar = {};
 
 Toolbar.initialize = function() {
-  $("#RootContainer").html(this.getToolbarHtml());
-
-//  $(".topleveltoolbar-button").button();
+  $("#TopLevelToolbar").html(this.getToolbarHtml());
   $(".panel-button").button();
 
-  $("#TopLevelToolbar-Login").click(function(event) { 
+  this.setupLoginAndRegistrationListeners();
+  this.setupToolbarButtonListeners();
+}
+
+Toolbar.setupToolbarButtonListeners = function() {
+  $("#TopLevelToolbar-Home").click(function(event) {
+    HomePanel.show();    
+  });
+}
+
+Toolbar.setupLoginAndRegistrationListeners = function() {
+  $("#TopLevelToolbar-Login").click(function(event) {
     $("#RegisterUserPanel").slideUp("fast", function() {
       $("#LoginPanel-Status").val("");
       $("#LoginPanel").slideToggle("slow");
@@ -65,7 +74,6 @@ Toolbar.initialize = function() {
   $("body").mouseup(hideListener.bind(this, "#RegisterUserPanel"));
   $("body").mouseup(hideListener.bind(this, "#ModifyUserProfilePanel"));
 }
-
 
 
 Toolbar.signIn = function() {
@@ -128,8 +136,7 @@ Toolbar.updateProfile = function() {
 
 
 Toolbar.getToolbarHtml = function() {
-  return "<div id='TopLevelToolbar' class='ui-widget-header ui-corner-all'>"
-         + "<div id='TopLevelToolbar-Left'>"
+  return   "<div id='TopLevelToolbar-Left'>"
          +   this.getToolbarButtonHtml("Home")
          +   this.getToolbarButtonHtml("Huy", true, "Huy Znaet Chto")
          +   this.getToolbarButtonHtml("ContactUs", true, "Contact Us")
@@ -141,8 +148,7 @@ Toolbar.getToolbarHtml = function() {
          + "</div>"
          +  this.getLoginPanelHtml()
          +  this.getRegisterUserPanelHtml()
-         +  this.getModifyUserProfilePanelHtml()
-         + "</div>";
+         +  this.getModifyUserProfilePanelHtml();
 }
 
 Toolbar.getToolbarButtonHtml = function(buttonName, visible, displayText) {
@@ -150,8 +156,8 @@ Toolbar.getToolbarButtonHtml = function(buttonName, visible, displayText) {
   return "<button id='TopLevelToolbar-" + buttonName + "' class='topleveltoolbar-button' "
          + "style='display:" + (visible != null && visible == false ? "none" : "inline") + ";'>" + (displayText ? displayText : buttonName) + "</button>";
 */
-  return "<a href='#' id='TopLevelToolbar-" + buttonName + "' class='topleveltoolbar-button' "
-         + "style='display:" + (visible != null && visible == false ? "none" : "inline") + ";'>" + (displayText ? displayText : buttonName) + "</a>";
+  return "<label id='TopLevelToolbar-" + buttonName + "' class='topleveltoolbar-button' "
+         + "style='display:" + (visible != null && visible == false ? "none" : "inline") + ";'>" + (displayText ? displayText : buttonName) + "</label>";
 
 };
 

@@ -25,8 +25,13 @@
   margin-left: 30px;
   margin-right: 30px;
   font-size: 30px;
+  color: rgb(0, 0, 120);
 }
 
+.topleveltoolbar-button:hover {
+  color: rgb(26, 26, 255);
+  text-decoration: underline;
+}
 
 
 .panel-input {
