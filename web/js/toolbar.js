@@ -18,7 +18,7 @@ Toolbar.setupToolbarButtonListeners = function() {
 Toolbar.setupLoginAndRegistrationListeners = function() {
   $("#TopLevelToolbar-Login").click(function(event) {
     $("#RegisterUserPanel").slideUp("fast", function() {
-      $("#LoginPanel-Status").val("");
+      $("#LoginPanel-Status").text("");
       $("#LoginPanel").slideToggle("slow");
     });
   });
@@ -37,7 +37,7 @@ Toolbar.setupLoginAndRegistrationListeners = function() {
 
   $("#LoginPanel-Register").click(function(event) { 
     $("#LoginPanel").slideUp("fast", function() {
-      $("#RegisterUserPanel-Status").val("");
+      $("#RegisterUserPanel-Status").text("");
       $("#RegisterUserPanel").slideDown("slow");
     });
   });
@@ -149,7 +149,7 @@ Toolbar.getToolbarHtml = function() {
          + "</div>"
          +  this.getLoginPanelHtml()
          +  this.getRegisterUserPanelHtml()
-         +  this.getModifyUserProfilePanelHtml();
+         +  this.getModifyUserProfilePanelHtml(); 
 }
 
 Toolbar.getToolbarButtonHtml = function(buttonName, visible, displayText) {
@@ -170,6 +170,25 @@ Toolbar.getPanelButtonHtml = function(panelName, buttonName, displayText) {
   return "<button id='" + panelName + "-" + buttonName + "' class='panel-button'>" + (displayText ? displayText : buttonName) + "</button>";
 }
 
+Toolbar.getPanelLabbeledInputHtml = function(panelName, labelName, displayName) {
+  return "<label>" + (displayName ? displayName : labelName) + "</label> \
+          <input type='text' id='" + panelName + "-" + labelName + "' class='text panel-input ui-widget-content ui-corner-all'>";
+}
+
+Toolbar.getPanelLabbeledDropListHtml = function(panelName, labelName, options, displayName) {
+  var result = "<label>" + (displayName ? displayName : labelName) + "</label> \
+                <select id='" + panelName + "-" + labelName + "' class='panel-input ui-corner-all'>";
+
+  for (var index in options) {
+    result += "<option>" + options[index] + "</option>";
+  }
+
+  result += "</select>";
+
+  return result;
+}
+
+
 Toolbar.getLoginPanelHtml = function() {
   return "<div id='LoginPanel' class='ui-widget-content ui-corner-all'>"
          +   this.getPanelLabbeledInputHtml("LoginPanel", "Email")
@@ -186,41 +205,23 @@ Toolbar.getLoginPanelHtml = function() {
           </div>";
 }
 
-Toolbar.getPanelLabbeledInputHtml = function(panelName, labelName) {
-  return "<label>" + labelName + "</label> \
-          <input type='text' id='" + panelName + "-" + labelName + "' class='text panel-input ui-widget-content ui-corner-all'>";
-}
-
-Toolbar.getPanelLabbeledDropListHtml = function(panelName, labelName, options) {
-  var result = "<label>" + labelName + "</label> \
-                <select id='" + panelName + "-" + labelName + "' class='panel-input ui-corner-all'>";
-
-  for (var index in options) {
-    result += "<option>" + options[index] + "</option>";
-  }
-
-  result += "</select>";
-
-  return result;
-}
-
 Toolbar.getRegisterUserPanelHtml = function() {
   return "<div id='RegisterUserPanel' class='ui-widget-content ui-corner-all'>"
-         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Email")
+         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Email", "Email (Login)")
          +   "<p>"
-         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Name")
-         +   "<p>"
-         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Gender")
+         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Name", "Nick Name")
          +   "<p>"
          +   this.getPanelLabbeledDropListHtml("RegisterUserPanel", "Gender", ["Male", "Female"])
          +   "<p>"
-         +   this.getPanelLabbeledDropListHtml("RegisterUserPanel", "AgeCategory", ["Teenager", "Young", "Adult", "Senior"])
+         +   this.getPanelLabbeledDropListHtml("RegisterUserPanel", "AgeCategory", ["Teenager", "Young", "Adult", "Senior"], "Age Category")
+         +   "<p>"
+         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Languages")
          +   "<p> \
              <br> \
              <p>"
          +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Password")
          +   "<p>"
-         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "RetypePassword")
+         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "RetypePassword", "Retype Password")
          +   "<p>"
          +   "<div class='panel-left'> \
                <label id='RegisterUserPanel-Status' class='input-error'></label> \
@@ -235,17 +236,17 @@ Toolbar.getModifyUserProfilePanelHtml = function() {
   return "<div id='ModifyUserProfilePanel' class='ui-widget-content ui-corner-all'>"
          +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "Name")
          +   "<p>"
-         +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "Gender")
-         +   "<p>"
          +   this.getPanelLabbeledDropListHtml("ModifyUserProfilePanel", "Gender", ["Male", "Female"])
          +   "<p>"
-         +   this.getPanelLabbeledDropListHtml("ModifyUserProfilePanel", "AgeCategory", ["Teenager", "Young", "Adult", "Senior"])
+         +   this.getPanelLabbeledDropListHtml("ModifyUserProfilePanel", "AgeCategory", ["Teenager", "Young", "Adult", "Senior"], "Age Category")
+         +   "<p>"
+         +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "Languages")
          +   "<p> \
              <br> \
              <p>"
          +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "Password")
          +   "<p>"
-         +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "RetypePassword")
+         +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "RetypePassword", "Retype Password")
          +   "<p>"
          +   "<div class='panel-right'>"
          +     this.getPanelButtonHtml("ModifyUserProfilePanel", "Update")
