@@ -7,6 +7,7 @@
 
   <link rel="stylesheet" href="css/toolbar.css">
   <script src="js/application.js"></script>
+  <script src="js/toolbar.js"></script>
   <script src="js/backend.js"></script>
 
   <style>
@@ -20,101 +21,5 @@
 
 </head>
 <body>
-  <div id="TopLevelToolbar">
-
-    <div id="TopLevelToolbar-Left">
-      <button id="TopLevelToolbar-Button1" class="topleveltoolbar-button">Button1</button>
-      <button id="TopLevelToolbar-Button2" class="topleveltoolbar-button">Button2</button>
-      <button id="TopLevelToolbar-Button3" class="topleveltoolbar-button">Button3</button>
-    </div>
-
-    <div id="TopLevelToolbar-Right">
-      <label id="TopLevelToolbar-UserName">Not Signed</label>
-      <button id="TopLevelToolbar-Login" class="topleveltoolbar-button">Login</button>
-      <button id="TopLevelToolbar-Profile" class="topleveltoolbar-button" style="display:none;">Profile</button>
-    </div>
-
-    <div id="LoginPanel" class="ui-widget-content ui-corner-all">
-      <label>Email</label>
-      <input type="text" id="LoginPanel-Email" value="" class="text panel-input ui-widget-content ui-corner-all">
-      <p>
-      <label>Password</label>
-      <input type="password" id="LoginPanel-Password" value="" class="text panel-input ui-widget-content ui-corner-all">
-
-      <div class="panel-left">
-        <a href="#" id="LoginPanel-Register">Register</a>
-      </div>
-      <div class="panel-right">
-        <button id="LoginPanel-Login" class="panel-button">Sign In</button>
-      </div>
-    </div>
-
-    <div id="RegisterUserPanel" class="ui-widget-content ui-corner-all">
-      <label>Email</label>
-      <input type="text" id="RegisterUserPanel-Email" value="" class="text panel-input ui-widget-content ui-corner-all">
-      <p>
-      <label>Name</label>
-      <input type="text" id="RegisterUserPanel-Name" value="" class="text panel-input ui-widget-content ui-corner-all">
-      <p>
-      <label>Gender</label>
-      <select id="RegisterUserPanel-Gender" class="panel-input ui-corner-all">
-        <option>Male</option>
-        <option>Female</option>
-      </select>
-      <p>
-      <label>Age Category</label>
-      <select id="RegisterUserPanel-AgeCategory" class="panel-input ui-corner-all">
-        <option>Teenager</option>
-        <option>Young</option>
-        <option>Adult</option>
-        <option>Senior</option>
-      </select>
-      <p>
-      <br>
-      <p>
-      <label>Password</label>
-      <input type="password" id="RegisterUserPanel-Password" value="" class="text panel-input ui-widget-content ui-corner-all">
-      <p>
-      <label for="password">Retype Password</label>
-      <input type="password" id="RegisterUserPanel-RetypePassword" value="" class="text panel-input ui-widget-content ui-corner-all">
-
-      <div class="panel-right">
-        <button id="RegisterUserPanel-Create" class="panel-button">Register</button>
-      </div>
-    </div>
-
-    <div id="ModifyUserProfilePanel" class="ui-widget-content ui-corner-all">
-      <label>Name</label>
-      <input type="text" id="ModifyUserProfilePanel-Name" value="" class="text panel-input ui-widget-content ui-corner-all">
-      <p>
-      <label>Gender</label>
-      <select id="ModifyUserProfilePanel-Gender" class="panel-input ui-corner-all">
-        <option>Male</option>
-        <option>Female</option>
-      </select>
-      <p>
-      <label>Age Category</label>
-      <select id="ModifyUserProfilePanel-AgeCategory" class="panel-input ui-corner-all">
-        <option>Teenager</option>
-        <option>Young</option>
-        <option>Adult</option>
-        <option>Senior</option>
-      </select>
-      <p>
-      <br>
-      <p>
-      <label>Password</label>
-      <input type="password" id="ModifyUserProfilePanel-Password" value="" class="text panel-input ui-widget-content ui-corner-all">
-      <p>
-      <label for="password">Retype Password</label>
-      <input type="password" id="ModifyUserProfilePanel-RetypePassword" value="" class="text panel-input ui-widget-content ui-corner-all">
-
-      <div class="panel-right">
-        <button id="ModifyUserProfilePanel-Update" class="panel-button">Update</button>
-      </div>
-    </div>
-
-  </div>
-
 </body>
 </html>

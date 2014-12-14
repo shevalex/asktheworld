@@ -59,9 +59,9 @@ Toolbar.initialize = function() {
     }
   };
 
-  $(document).mouseup(hideListener.bind(this, "#LoginPanel"));
-  $(document).mouseup(hideListener.bind(this, "#RegisterUserPanel"));
-  $(document).mouseup(hideListener.bind(this, "#ModifyUserProfilePanel"));
+  $("body").mouseup(hideListener.bind(this, "#LoginPanel"));
+  $("body").mouseup(hideListener.bind(this, "#RegisterUserPanel"));
+  $("body").mouseup(hideListener.bind(this, "#ModifyUserProfilePanel"));
 }
 
 
