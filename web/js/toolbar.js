@@ -1,6 +1,7 @@
 var Toolbar = {};
 
 Toolbar.initialize = function() {
+  $("#TopLevelToolbar").addClass("ui-widget-header").addClass("ui-corner-all");
   $("#TopLevelToolbar").html(this.getToolbarHtml());
   $(".panel-button").button();
 
