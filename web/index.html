@@ -1,0 +1,33 @@
+<head>
+  <meta charset="utf-8">
+  <title>Ask The World!</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/toolbar.css">
+  <script src="js/application.js"></script>
+  <script src="js/toolbar.js"></script>
+  <script src="js/homepanel.js"></script>
+  <script src="js/backend.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      Application.start();
+    }); 
+  </script>
+
+</head>
+<body>
+  <div id="Title">
+    <label id="Title-Label">- Ask The World! -</label>
+  </div>
+  <div id="RootContainer">
+    <br>
+    <div id="TopLevelToolbar"></div>
+    <br>
+    <div id="ContentArea"></div>
+  </div>
+</body>
+</html>
