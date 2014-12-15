@@ -120,18 +120,6 @@
                                     <rect key="frame" x="128" y="33" width="64" height="21"/>
                                 </variation>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ima-cC-r7Y">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <state key="normal" title="Login">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="137" y="347" width="38" height="30"/>
-                                </variation>
-                                <connections>
-                                    <action selector="LoginButton_Reg:" destination="lv3-vN-nl0" eventType="touchUpInside" id="KWu-Bf-3UT"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vQ2-iL-k4k">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <color key="backgroundColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -146,6 +134,54 @@
                                     <action selector="RegisterButton_Reg:" destination="lv3-vN-nl0" eventType="touchUpInside" id="40N-Ps-NYR"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QHO-mn-qhC">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="DeleteUserTest">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="16" y="392" width="104" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="TryDeleteUser:" destination="lv3-vN-nl0" eventType="touchUpInside" id="A0q-g2-ZI4"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gJn-Sj-O15">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="UpdateUserTest">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="16" y="430" width="111" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="UpdateUserTest:" destination="lv3-vN-nl0" eventType="touchUpInside" id="h2s-yj-tYm"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Txz-nc-jaR">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="GetUsersTest">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="152" y="392" width="93" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="GetUsersTest:" destination="lv3-vN-nl0" eventType="touchUpInside" id="YIu-bE-bHn"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ima-cC-r7Y">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="Login">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="141" y="331" width="38" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="LoginButton_Reg:" destination="lv3-vN-nl0" eventType="touchUpInside" id="KWu-Bf-3UT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <variation key="default">
@@ -154,8 +190,11 @@
                                 <exclude reference="W8w-1i-39f"/>
                                 <exclude reference="vN7-Lm-HYo"/>
                                 <exclude reference="qBy-sx-xEc"/>
-                                <exclude reference="ima-cC-r7Y"/>
                                 <exclude reference="vQ2-iL-k4k"/>
+                                <exclude reference="QHO-mn-qhC"/>
+                                <exclude reference="gJn-Sj-O15"/>
+                                <exclude reference="Txz-nc-jaR"/>
+                                <exclude reference="ima-cC-r7Y"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -164,8 +203,11 @@
                                 <include reference="W8w-1i-39f"/>
                                 <include reference="vN7-Lm-HYo"/>
                                 <include reference="qBy-sx-xEc"/>
-                                <include reference="ima-cC-r7Y"/>
                                 <include reference="vQ2-iL-k4k"/>
+                                <include reference="QHO-mn-qhC"/>
+                                <include reference="gJn-Sj-O15"/>
+                                <include reference="Txz-nc-jaR"/>
+                                <include reference="ima-cC-r7Y"/>
                             </mask>
                         </variation>
                     </view>
