@@ -53,7 +53,7 @@ public class DB {
 		if( existUser != null) {
 			if(verifyString(user.getPassword())) existUser.setPassword(user.getPassword());
 			if(verifyString(user.getGender())) existUser.setGender(user.getGender());
-			if(verifyYear(user.getByear())) existUser.setByear(user.getByear());
+			if(verifyYear(user.getBirth_year())) existUser.setBirth_year(user.getBirth_year());
 			if(verifyLangs(user.getLanguages())) existUser.setLanguages(user.getLanguages());
 		}
 		return existUser;
