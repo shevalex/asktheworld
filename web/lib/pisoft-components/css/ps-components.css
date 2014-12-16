@@ -1,0 +1,91 @@
+
+.pisoft-rounded-border {
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 5px;
+}
+
+.pisoft-button {
+  text-align: center;
+  display: inline-block;
+  padding: 5px 20px 5px 20px;
+  min-width: 100px;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+
+  color: rgb(0, 0, 120);
+}
+
+.pisoft-button:hover {
+  text-decoration: underline;
+
+  color: rgb(26, 26, 255);
+}
+
+.pisoft-button:active {
+  text-decoration: underline;
+
+  color: rgb(26, 26, 255);
+}
+
+
+.pisoft-solidbutton {
+  background: rgb(180, 180, 180);
+}
+
+.pisoft-solidbutton:hover {
+  background: rgb(200, 200, 200);
+}
+
+.pisoft-solidbutton:active {
+  background: rgb(220, 220, 220);
+}
+
+
+
+
+.pisoft-linkbutton {
+  border-color: transparent;
+  background: transparent;
+}
+
+.pisoft-linkbutton:hover {
+  border-color: black;
+  background: rgb(200, 200, 200);
+}
+
+.pisoft-linkbutton:active {
+  border-color: black;
+  background: rgb(220, 220, 220);
+}
+
+
+.pisoft-label {
+  text-align: center;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+
+  color: rgb(0, 0, 120);
+}
+
+
+
+
+.pisoft-toolbar {
+  text-align: center;
+  display: block;
+  padding: 5px 20px 5px 20px;
+  font-size: 30px;
+
+  background: rgb(230, 230, 230);
+}
+
