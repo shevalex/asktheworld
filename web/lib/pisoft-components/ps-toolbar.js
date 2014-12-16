@@ -1,16 +1,13 @@
 
 PisoftToolbar = ClassUtils.defineClass(PisoftComponent, function PisoftToolbar(uniqueId, margin) {
-  PisoftComponent.call(this, uniqueId);
+  PisoftComponent.call(this, uniqueId, "pisoft-toolbar pisoft-rounded-border");
   this.leftComponents = [];
   this.rightComponents = [];
   this.componentMargin = margin != null ? margin : 0;
 });
 
-PisoftToolbar.prototype.CSS_CLASS = "pisoft-toolbar pisoft-rounded-border";
-
-
-PisoftToolbar.prototype.getHtml = function() {
-  var result = "<div id='" + this.uniqueId + "' class='" + PisoftToolbar.prototype.CSS_CLASS + "'>"
+PisoftToolbar.prototype.getInnerHtml = function() {
+  var result = "";
 
   for (var index in this.leftComponents) {
     result += this._getComponentHtmlWithMargins(this.leftComponents[index]);
@@ -23,8 +20,6 @@ PisoftToolbar.prototype.getHtml = function() {
     }
     result += "</div>"
   }
-
-  result += "</div>";
 
   return result;
 }

@@ -18,7 +18,6 @@
   -ms-user-select: none;
   -o-user-select: none;
 
-  background: rgb(180, 180, 180);
   color: rgb(0, 0, 120);
 }
 
@@ -26,13 +25,42 @@
   text-decoration: underline;
 
   color: rgb(26, 26, 255);
-  background: rgb(200, 200, 200);
 }
 
 .pisoft-button:active {
   text-decoration: underline;
 
   color: rgb(26, 26, 255);
+}
+
+
+.pisoft-solidbutton {
+  background: rgb(180, 180, 180);
+}
+
+.pisoft-solidbutton:hover {
+  background: rgb(200, 200, 200);
+}
+
+.pisoft-solidbutton:active {
+  background: rgb(220, 220, 220);
+}
+
+
+
+
+.pisoft-linkbutton {
+  border-color: transparent;
+  background: transparent;
+}
+
+.pisoft-linkbutton:hover {
+  border-color: black;
+  background: rgb(200, 200, 200);
+}
+
+.pisoft-linkbutton:active {
+  border-color: black;
   background: rgb(220, 220, 220);
 }
 
