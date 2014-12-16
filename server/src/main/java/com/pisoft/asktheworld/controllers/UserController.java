@@ -3,7 +3,9 @@ package com.pisoft.asktheworld.controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
+import org.jboss.logging.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -72,10 +75,17 @@ public class UserController {
 		return new ResponseEntity<Void>( user != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 
-
-	@RequestMapping(method=RequestMethod.GET, value="users")
-	public ResponseEntity<int[]> getUsers() {
-		return new ResponseEntity<int[]>(db.getIDs(), HttpStatus.OK);
+	@RequestMapping(method=RequestMethod.GET, value="user")
+	public ResponseEntity<String> getUsers(@RequestParam(value="login", required = false) String login) {
+		if(login != null) {
+			User user = db.findUser(login);
+			if (user == null) {
+				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			} else {
+				return new ResponseEntity<String>("{\"userId\":"+user.getId()+"}", HttpStatus.OK);
+			}
+		}
+		return new ResponseEntity<String>("{\"users\":"+Arrays.toString(db.getIDs())+"}", HttpStatus.OK);
 	}
 
 	
