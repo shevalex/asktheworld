@@ -65,7 +65,7 @@ public class UserController {
 		return new ResponseEntity<User>(user, user != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value="user/{userID}")
+	@RequestMapping(method=RequestMethod.PUT, value="user/{userID}")
 	public ResponseEntity<Void> updateUser(@PathVariable("userID") int id, @RequestBody User user) {
 		user.setId(id);
 		user = db.updateUser(user);

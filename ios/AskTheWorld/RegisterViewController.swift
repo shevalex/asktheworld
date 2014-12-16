@@ -37,13 +37,134 @@ class RegisterViewController: UIViewController {
             alertView.addButtonWithTitle("OK")
             alertView.show()
         } else {
-            //connect to server somehow
+            //var login_str:NSString = "\"login\""
+            //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"birth_year\":1980,\"languages\":[ENG]}"
+            
+            var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"byear\":1980}"
+            
+            println("PostData:" + post);
+            
+            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user")!
+            
+            var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
+            
+            var postLength:NSString = String( postData.length )
+            
+            var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
+            request.HTTPMethod = "POST"
+            request.HTTPBody = postData
+            request.setValue(postLength, forHTTPHeaderField: "Content-Length")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            var reponseError: NSError?
+            var response: NSURLResponse?
+            
+            var urlData: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error:&reponseError)
+
+            
+            if ( urlData != nil ) {
+                let res = response as NSHTTPURLResponse!;
+                
+                //NSLog("Response code: %ld", res.statusCode);
+                NSLog("Response code: %ld", res.statusCode);
+                println(res.allHeaderFields)
+                
+                if (res.statusCode == 201) {
+                    println("Register success!");
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                }
+                else if (res.statusCode == 409) {
+                    var alertView:UIAlertView = UIAlertView()
+                    alertView.title = "Register Failed!"
+                    alertView.message = "Such user already exist"
+                    alertView.delegate = self
+                    alertView.addButtonWithTitle("OK")
+                    alertView.show()
+                }
+                else {
+                    var alertView:UIAlertView = UIAlertView()
+                    alertView.title = "Register Failed!"
+                    alertView.message = "Connection Failed"
+                    alertView.delegate = self
+                    alertView.addButtonWithTitle("OK")
+                    alertView.show()
+                }
+            }
+            
         }
     }
 
     @IBAction func LoginButton_Reg(sender: UIButton) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
+    
+    @IBAction func TryDeleteUser(sender: UIButton) {
+        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user/2")!
+        
+        var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var reponseError: NSError?
+        var response: NSURLResponse?
+        
+        var urlData: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error:&reponseError)
+        if ( urlData != nil ) {
+            let res = response as NSHTTPURLResponse!;
+            
+            NSLog("Response code: %ld", res.statusCode);
+        }
+        
+    }
+    
+    @IBAction func UpdateUserTest(sender: UIButton) {
+        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user/8")!
+        
+        var post:NSString = "{\"password\":\"AnyPass\",\"gender\":\"female\",\"byear\":1985}"
+        
+        println("PostData:" + post);
+        
+        var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
+        
+        var postLength:NSString = String( postData.length )
+        
+        var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "POST"
+        request.HTTPBody = postData
+        request.setValue(postLength, forHTTPHeaderField: "Content-Length")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var reponseError: NSError?
+        var response: NSURLResponse?
+        
+        var urlData: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error:&reponseError)
+        if ( urlData != nil ) {
+            let res = response as NSHTTPURLResponse!
+            
+            NSLog("Response code: %ld", res.statusCode)
+            println(res.allHeaderFields)
+        }
+        
+    }
+    
+    
+    @IBAction func GetUsersTest(sender: UIButton) {
+        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user")!
+        
+        var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
+        request.HTTPMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var reponseError: NSError?
+        var response: NSURLResponse?
+        
+        var urlData: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error:&reponseError)
+        if ( urlData != nil ) {
+            let res = response as NSHTTPURLResponse!
+            
+            NSLog("Response code: %ld", res.statusCode)
+            println(res.allHeaderFields)
+        }
+
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
