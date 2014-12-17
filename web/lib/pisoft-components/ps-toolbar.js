@@ -3,7 +3,7 @@ PisoftToolbar = ClassUtils.defineClass(PisoftComponent, function PisoftToolbar(u
   PisoftComponent.call(this, uniqueId, "pisoft-toolbar pisoft-rounded-border");
   this.leftComponents = [];
   this.rightComponents = [];
-  this.componentMargin = margin != null ? margin : 0;
+  this.componentMargin = margin != null ? margin : "0px";
 });
 
 PisoftToolbar.prototype.getInnerHtml = function() {
@@ -24,25 +24,33 @@ PisoftToolbar.prototype.getInnerHtml = function() {
   return result;
 }
 
-PisoftToolbar.prototype.addComponent = function(pisoftComponent) {
-  if (pisoftComponent != null) {
+PisoftToolbar.prototype.addPisoftComponent = function(pisoftComponent) {
+  if (pisoftComponent instanceof PisoftComponent) {
+    this.addChildPisoftComponent(pisoftComponent);
     this.leftComponents.push(pisoftComponent);
+    this.update();
+  } else {
+    throw "Passed in component is not a Pisoft Component";
   }
-  this.update();
 }
 
-PisoftToolbar.prototype.addSideComponent = function(pisoftComponent) {
-  if (pisoftComponent != null) {
+PisoftToolbar.prototype.addSidePisoftComponent = function(pisoftComponent) {
+  if (pisoftComponent instanceof PisoftComponent) {
+    this.addChildPisoftComponent(pisoftComponent);
     this.rightComponents.push(pisoftComponent);
+    this.update();
+  } else {
+    throw "Passed in component is not a Pisoft Component";
   }
-  this.update();
 }
 
-PisoftToolbar.prototype.setComponentMargin = function(margin) {
+PisoftToolbar.prototype.setItemMargin = function(margin) {
   this.componentMargin = margin;
   this.update();
 }
 
+
+// Private implementation
 
 PisoftToolbar.prototype._getComponentHtmlWithMargins = function(pisoftComponent) {
   if (this.componentMargin != null) {

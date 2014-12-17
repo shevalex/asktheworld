@@ -28,11 +28,13 @@
 }
 
 
+
 .pisoft-button {
   text-align: center;
   display: inline-block;
   padding: 5px 20px 5px 20px;
   min-width: 100px;
+  cursor: default;
 
   user-select: none;
   -webkit-user-select: none;
@@ -69,8 +71,6 @@
 }
 
 
-
-
 .pisoft-linkbutton {
   background: transparent;
 }
@@ -82,6 +82,7 @@
 .pisoft-linkbutton:active {
   background: rgb(220, 220, 220);
 }
+
 
 
 .pisoft-label {
@@ -97,6 +98,12 @@
 }
 
 
+pisoft-inputpassword {
+}
+
+pisoft-inputfield {
+}
+
 
 
 .pisoft-toolbar {
@@ -104,7 +111,23 @@
   display: block;
   padding: 5px 20px 5px 20px;
   font-size: 30px;
+  cursor: default;
 
   background: rgb(230, 230, 230);
+}
+
+
+
+.pisoft-inputpanel {
+  padding: 20px;
+  display: inline-block;
+}
+
+.pisoft-inputpanel-inputcomponent {
+  display: block;
+  width: 100%
+}
+
+.pisoft-inputpanel-label { 
 }
 
