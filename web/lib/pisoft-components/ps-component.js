@@ -128,8 +128,9 @@ PisoftComponent.prototype.setWidth = function(widthSpecifier) {
 PisoftComponent.prototype.setClickListener = function(clickListener) {
   this.clickListener = clickListener;
 
-  if (this.parentElement != null) {
-    this.getHtmlElement().onclick = this.clickListener;
+  var element = this.getHtmlElement();
+  if (element != null) {
+    element.onclick = this.clickListener;
   }
 }
 
