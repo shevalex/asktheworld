@@ -8,31 +8,33 @@ PisoftInputPanel = ClassUtils.defineClass(PisoftComponent, function PisoftInputP
   this.buttonPaneMargin = "20px";
 });
 
-PisoftInputPanel.prototype.getInnerHtml = function() {
-  var result = "";
-
+PisoftInputPanel.prototype.buildComponentStructure = function() {
   for (var index in this.inputComponents) {
-    result += this._getLabelledComponentHtml(this.inputComponents[index]);
+    this.getHtmlElement().appendChild(this._getLabelledComponent(this.inputComponents[index]));
   }
 
   if (this.leftButton != null) {
-    result += "<div style='float: left; text-align: left; margin-top: " + this.buttonPaneMargin + ";'>"
-    result += this.leftButton.getHtml();
-    result += "</div>"
+    var leftPanel = document.createElement("div");
+    leftPanel.style.float = "left";
+    leftPanel.style.textAlign = "left";
+    leftPanel.style.marginTop = this.buttonPaneMargin;
+    leftPanel.appendChild(this.leftButton.getHtmlElement());
+    this.getHtmlElement().appendChild(leftPanel);
   }
 
   if (this.rightButton != null) {
-    result += "<div style='float: right; text-align: right; margin-top: " + this.buttonPaneMargin + ";'>"
-    result += this.rightButton.getHtml();
-    result += "</div>"
+    var rightPanel = document.createElement("div");
+    rightPanel.style.float = "right";
+    rightPanel.style.textAlign = "right";
+    rightPanel.style.marginTop = this.buttonPaneMargin;
+    rightPanel.appendChild(this.rightButton.getHtmlElement());
+    this.getHtmlElement().appendChild(rightPanel);
   }
-
-  return result;
 }
+
 
 PisoftInputPanel.prototype.addPisoftInputComponent = function(pisoftComponent, label) {
   if (pisoftComponent instanceof PisoftInputComponent) {
-    this.addChildPisoftComponent(pisoftComponent);
     this.inputComponents.push({ component: pisoftComponent, label: label });
     pisoftComponent.addCssClass("pisoft-inputpanel-inputcomponent");
     this.update();
@@ -44,7 +46,6 @@ PisoftInputPanel.prototype.addPisoftInputComponent = function(pisoftComponent, l
 
 PisoftInputPanel.prototype.addLeftPisoftButton = function(pisoftButton) {
   if (pisoftButton instanceof PisoftComponent) {
-    this.addChildPisoftComponent(pisoftButton);
     this.leftButton = pisoftButton;
     this.update();
   } else {
@@ -54,7 +55,6 @@ PisoftInputPanel.prototype.addLeftPisoftButton = function(pisoftButton) {
 
 PisoftInputPanel.prototype.addRightPisoftButton = function(pisoftButton) {
   if (pisoftButton instanceof PisoftComponent) {
-    this.addChildPisoftComponent(pisoftButton);
     this.rightButton = pisoftButton;
     this.update();
   } else {
@@ -70,12 +70,18 @@ PisoftInputPanel.prototype.setItemMargin = function(margin) {
 
 // Private implementation
 
-PisoftInputPanel.prototype._getLabelledComponentHtml = function(labelledComponent) {
-  var result = "<div style='display: block; margin-bottom: " + this.componentMargin + ";'>"
-  result += "<div class='pisoft-inputpanel-label'>" + labelledComponent.label + "</div>";
-  result += labelledComponent.component.getHtml();
-  result += "</div>"
+PisoftInputPanel.prototype._getLabelledComponent = function(labelledComponent) {
+  var compound = document.createElement("div");
+  compound.style.display = "block";
+  compound.style.marginBottom = this.componentMargin;
 
-  return result;
+  var label = document.createElement("div");
+  label.setAttribute("class", "pisoft-inputpanel-label");
+  label.innerHTML = labelledComponent.label;
+  compound.appendChild(label);
+
+  compound.appendChild(labelledComponent.component.getHtmlElement());
+
+  return compound;
 }
 

@@ -23,7 +23,8 @@ PisoftLinkButton = ClassUtils.defineClass(PisoftComponent, function PisoftLinkBu
 // Input components
 
 PisoftInputComponent = ClassUtils.defineClass(PisoftComponent, function PisoftInputComponent(uniqueId, type, cssClasses) {
-  PisoftComponent.call(this, uniqueId, "pisoft-inputcomponent " + cssClasses, "", "input type=" + type);
+  PisoftComponent.call(this, uniqueId, "pisoft-inputcomponent " + cssClasses, "", "input");
+  this.getHtmlElement().setAttribute("type", type);
 });
 
 PisoftInputField = ClassUtils.defineClass(PisoftInputComponent, function PisoftInputField(uniqueId) {

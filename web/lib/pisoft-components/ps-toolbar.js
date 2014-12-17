@@ -6,27 +6,28 @@ PisoftToolbar = ClassUtils.defineClass(PisoftComponent, function PisoftToolbar(u
   this.componentMargin = margin != null ? margin : "0px";
 });
 
-PisoftToolbar.prototype.getInnerHtml = function() {
-  var result = "";
 
+PisoftToolbar.prototype.buildComponentStructure = function() {
   for (var index in this.leftComponents) {
-    result += this._getComponentHtmlWithMargins(this.leftComponents[index]);
+    this.getHtmlElement().appendChild(this._getComponentHtmlWithMargins(this.leftComponents[index]));
   }
 
   if (this.rightComponents.length > 0) {
-    result += "<div style='float: right; text-align: right;'>"
-    for (var index in this.rightComponents) {
-      result += this._getComponentHtmlWithMargins(this.rightComponents[index]);
-    }
-    result += "</div>"
-  }
+    var rightPanel = document.createElement("div");
+    rightPanel.style.float = "right";
+    rightPanel.style.textAlign = "right";
 
-  return result;
+    for (var index in this.rightComponents) {
+      rightPanel.appendChild(this._getComponentHtmlWithMargins(this.rightComponents[index]));
+    }
+
+    this.getHtmlElement().appendChild(rightPanel);
+  }
 }
+
 
 PisoftToolbar.prototype.addPisoftComponent = function(pisoftComponent) {
   if (pisoftComponent instanceof PisoftComponent) {
-    this.addChildPisoftComponent(pisoftComponent);
     this.leftComponents.push(pisoftComponent);
     this.update();
   } else {
@@ -36,7 +37,6 @@ PisoftToolbar.prototype.addPisoftComponent = function(pisoftComponent) {
 
 PisoftToolbar.prototype.addSidePisoftComponent = function(pisoftComponent) {
   if (pisoftComponent instanceof PisoftComponent) {
-    this.addChildPisoftComponent(pisoftComponent);
     this.rightComponents.push(pisoftComponent);
     this.update();
   } else {
@@ -54,11 +54,14 @@ PisoftToolbar.prototype.setItemMargin = function(margin) {
 
 PisoftToolbar.prototype._getComponentHtmlWithMargins = function(pisoftComponent) {
   if (this.componentMargin != null) {
-    var result = "<div style='display: inline-block; margin-left: " + this.componentMargin + "; margin-right: " + this.componentMargin + "'>"
-    result += pisoftComponent.getHtml();
-    result += "</div>"
-    return result;
+    var compound = document.createElement("div");
+    compound.style.display = "inline-block";
+    compound.style.marginLeft = this.componentMargin;
+    compound.style.marginRight = this.componentMargin;
+    compound.appendChild(pisoftComponent.getHtmlElement());
+
+    return compound;
   } else {
-    return pisoftComponent.getHtml();
+    return pisoftComponent.getHtmlElement();
   }
 }
