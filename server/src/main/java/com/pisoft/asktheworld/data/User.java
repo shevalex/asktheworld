@@ -11,7 +11,7 @@ public class User implements Serializable {
 	private int id;
 	private String login;
 	private String password;
-	private int byear;
+	private int birth_year;
 	private String languages[];
 	private String gender;
 
@@ -39,11 +39,11 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public int getByear() {
-		return byear;
+	public int getBirth_year() {
+		return birth_year;
 	}
-	public void setByear(int byear) {
-		this.byear = byear;
+	public void setBirth_year(int byear) {
+		this.birth_year = byear;
 	}
 	public String[] getLanguages() {
 		return languages;
@@ -57,7 +57,7 @@ public class User implements Serializable {
 		User user  = new User();
 		user.setLogin(getLogin());
 		user.setGender(getGender());
-		user.setByear(getByear());
+		user.setBirth_year(getBirth_year());
 		user.setLanguages(getLanguages());
 		return user;
 	}
