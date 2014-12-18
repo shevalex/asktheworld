@@ -11,7 +11,6 @@ PisoftLabel = ClassUtils.defineClass(PisoftComponent, function PisoftButton(uniq
 
 PisoftButton = ClassUtils.defineClass(PisoftComponent, function PisoftButton(uniqueId, displayName) {
   PisoftComponent.call(this, uniqueId, "pisoft-solidbutton pisoft-button pisoft-rounded-border", displayName);
-  this.getHtmlElement().setAttribute("disabled", "true");
 });
 
 PisoftLinkButton = ClassUtils.defineClass(PisoftComponent, function PisoftLinkButton(uniqueId, displayName) {

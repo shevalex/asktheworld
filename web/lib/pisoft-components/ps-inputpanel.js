@@ -15,7 +15,7 @@ PisoftInputPanel.prototype.buildComponentStructure = function() {
 
   if (this.leftButton != null) {
     var leftPanel = document.createElement("div");
-    leftPanel.style.float = "left";
+    leftPanel.style.cssFloat = "left";
     leftPanel.style.textAlign = "left";
     leftPanel.style.marginTop = this.buttonPaneMargin;
     leftPanel.appendChild(this.leftButton.getHtmlElement());
@@ -24,7 +24,7 @@ PisoftInputPanel.prototype.buildComponentStructure = function() {
 
   if (this.rightButton != null) {
     var rightPanel = document.createElement("div");
-    rightPanel.style.float = "right";
+    rightPanel.style.cssFloat = "right";
     rightPanel.style.textAlign = "right";
     rightPanel.style.marginTop = this.buttonPaneMargin;
     rightPanel.appendChild(this.rightButton.getHtmlElement());

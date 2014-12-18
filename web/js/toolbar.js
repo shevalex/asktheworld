@@ -39,12 +39,11 @@ Toolbar.initialize = function() {
   }.bind(this));
 
 
-  $("body").mouseup(function() {
-    var isEventTarget = function(container, event) {
+  $("body").mouseup(function(event) {
+    var isTargettedToContainer = function(container, event) {
       return container.is(event.target) || container.has(event.target).length > 0;
     }
-
-    if (isEventTarget($("#TopLevelToolbar-LoginButton"), event)) {
+    if (isTargettedToContainer($("#TopLevelToolbar-LoginButton"), event)) {
       return;
     }
 

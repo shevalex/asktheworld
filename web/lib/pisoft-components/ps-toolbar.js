@@ -14,7 +14,7 @@ PisoftToolbar.prototype.buildComponentStructure = function() {
 
   if (this.rightComponents.length > 0) {
     var rightPanel = document.createElement("div");
-    rightPanel.style.float = "right";
+    rightPanel.style.cssFloat = "right";
     rightPanel.style.textAlign = "right";
     rightPanel.style.display = "inline-block";
 
