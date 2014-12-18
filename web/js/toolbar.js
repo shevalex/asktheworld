@@ -1,13 +1,161 @@
-var Toolbar = {};
+var Toolbar = {
+  loginPanel: null,
+  registerPanel: null,
+  updateProfilePanel: null,
+  toolbarLoginButton: null,
+  toolbarLoggedUserLabel: null
+};
 
 Toolbar.initialize = function() {
-  $("#TopLevelToolbar").addClass("ui-widget-header").addClass("ui-corner-all");
-  $("#TopLevelToolbar").html(this.getToolbarHtml());
-  $(".panel-button").button();
+  var psToolbar = new PisoftToolbar("TopLevelToolbar", "10px");
 
-  this.setupLoginAndRegistrationListeners();
-  this.setupToolbarButtonListeners();
+  var requestsButton = new PisoftButton("TopLevelToolbar-RequestsButton", "My Requests");
+  psToolbar.addPisoftComponent(requestsButton);
+
+  var inquiriesButton = new PisoftButton("TopLevelToolbar-InquiriesButton", "World's Inquiries");
+  psToolbar.addPisoftComponent(inquiriesButton);
+
+  var contactUsButton = new PisoftButton("TopLevelToolbar-ContactUsButton", "Contact Us");
+  psToolbar.addPisoftComponent(contactUsButton);
+
+  this.toolbarLoggedUserLabel = new PisoftLabel("TopLevelToolbar-LoggedUserLabel", "Not Signed");
+  psToolbar.addSidePisoftComponent(this.toolbarLoggedUserLabel);
+
+  this.toolbarLoginButton = new PisoftButton("TopLevelToolbar-LoginButton", "Login");
+  psToolbar.addSidePisoftComponent(this.toolbarLoginButton);
+
+
+  this.loginPanel = this.createLoginPanel();
+  this.registerPanel = this.createRegisterPanel();
+  this.updateProfilePanel = this.createUpdateProfilePanel();
+
+  psToolbar.attachToContainer("ToolbarArea");
+
+
+  // Listeners
+
+  this.toolbarLoginButton.setClickListener(function() {
+    this.showPanel(this.loginPanel);
+  }.bind(this));
+
+
+  $("body").mouseup(function() {
+    var isEventTarget = function(container, event) {
+      return container.is(event.target) || container.has(event.target).length > 0;
+    }
+
+    if (isEventTarget($("#TopLevelToolbar-LoginButton"), event)) {
+      return;
+    }
+
+    this.hidePanels();
+  }.bind(this));
 }
+
+Toolbar.createLoginPanel = function() {
+  var loginPanel = new PisoftInputPanel("LoginPanel");
+  loginPanel.addPisoftInputComponent(new PisoftInputField("LoginPanel-Login"), "Login");
+  loginPanel.addPisoftInputComponent(new PisoftInputPassword("LoginPanel-Password"), "Password");
+  var registerButton = new PisoftLinkButton("LoginPanel-RegisterButton", "Register");
+  loginPanel.addLeftPisoftButton(registerButton);
+  var performLoginButton = new PisoftButton("LoginPanel-LoginButton", "Sign In");
+  loginPanel.addRightPisoftButton(performLoginButton);
+
+  registerButton.setClickListener(function() {
+    this.showPanel(this.registerPanel);
+  }.bind(this));
+
+  performLoginButton.setClickListener(function() {
+    this.hidePanels();
+    this.toolbarLoginButton.setText("Profile");
+    this.toolbarLoggedUserLabel.setText("Welcome, user");
+
+    this.toolbarLoginButton.setClickListener(function() {
+      this.showPanel(this.updateProfilePanel);
+    }.bind(this));
+  }.bind(this));
+
+  return loginPanel;
+}
+
+Toolbar.createRegisterPanel = function() {
+  var registerPanel = new PisoftInputPanel("RegisterPanel");
+  registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-Login"), "Email (will be used to login)");
+  registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-Name"), "Nick Name");
+  registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-Gender"), "Gender");
+  registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-AgeCategory"), "Age Category");
+  registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-Languages"), "Languages");
+  registerPanel.addPisoftInputComponent(new PisoftInputPassword("RegisterPanel-Password"), "Password");
+  registerPanel.addPisoftInputComponent(new PisoftInputPassword("RegisterPanel-RetypePassword"), "Retype Password");
+  var performRegistrationButton = new PisoftButton("RegisterPanel-RegisterButton", "Register");
+  registerPanel.addRightPisoftButton(performRegistrationButton);
+
+  performRegistrationButton.setClickListener(function() {
+    this.hidePanels();
+  }.bind(this));
+
+  return registerPanel;
+}
+
+Toolbar.createUpdateProfilePanel = function() {
+  var updateProfilePanel = new PisoftInputPanel("UpdateProfilePanel");
+  updateProfilePanel.addPisoftInputComponent(new PisoftInputField("UpdateProfilePanel-Name"), "Nick Name");
+  updateProfilePanel.addPisoftInputComponent(new PisoftInputField("UpdateProfilePanel-Gender"), "Gender");
+  updateProfilePanel.addPisoftInputComponent(new PisoftInputField("UpdateProfilePanel-AgeCategory"), "Age Category");
+  updateProfilePanel.addPisoftInputComponent(new PisoftInputField("UpdateProfilePanel-Languages"), "Languages");
+  updateProfilePanel.addPisoftInputComponent(new PisoftInputPassword("UpdateProfilePanel-Password"), "Password");
+  updateProfilePanel.addPisoftInputComponent(new PisoftInputPassword("UpdateProfilePanel-RetypePassword"), "Retype Password");
+  var performUpdateButton = new PisoftButton("UpdateProfilePanel-UpdateButton", "Update");
+  updateProfilePanel.addRightPisoftButton(performUpdateButton);
+
+  performUpdateButton.setClickListener(function() {
+    this.hidePanels();
+  }.bind(this));
+
+  return updateProfilePanel;
+}
+
+
+Toolbar.showPanel = function(pisoftPanel, callback) {
+  var panelToRemove = null;
+  if (this.loginPanel.isAttached()) {
+    panelToRemove = this.loginPanel;
+  } else if (this.registerPanel.isAttached()) {
+    panelToRemove = this.registerPanel;
+  } else if (this.updateProfilePanel.isAttached()) {
+    panelToRemove = this.updateProfilePanel;
+  }
+
+  if (panelToRemove == pisoftPanel) {
+    if (callback != null) {
+      callback();
+    }
+    return;
+  }
+
+  var showPanel = function() {
+    if (pisoftPanel != null) {
+      pisoftPanel.attachToContainer("ToolbarArea");
+      $("#" + pisoftPanel.getId()).slideDown("slow", callback);
+    }
+  }
+
+  if (panelToRemove != null) {
+    $("#" + panelToRemove.getId()).slideUp("fast", function() {
+      panelToRemove.detachFromContainer();
+      showPanel();
+    });
+  } else {
+    showPanel();
+  }
+}
+
+Toolbar.hidePanels = function() {
+  this.showPanel(null);
+}
+
+
+/*
 
 Toolbar.setupToolbarButtonListeners = function() {
   $("#TopLevelToolbar-Home").click(function(event) {
@@ -54,26 +202,6 @@ Toolbar.setupLoginAndRegistrationListeners = function() {
     Toolbar.updateProfile();
   });
 
-  var hideListener = function(panelName, event) {
-    var isEventTarget = function(container, event) {
-      return container.is(event.target) || container.has(event.target).length > 0;
-    }
-
-    if (isEventTarget($("#TopLevelToolbar-Login"), event) || isEventTarget($("#TopLevelToolbar-Profile"), event)) {
-      return;
-    }
-
-    var container = $(panelName);
-    if (container.is(":visible")) {
-      if (!isEventTarget(container, event)) {
-        container.slideUp("fast");
-      }
-    }
-  };
-
-  $("body").mouseup(hideListener.bind(this, "#LoginPanel"));
-  $("body").mouseup(hideListener.bind(this, "#RegisterUserPanel"));
-  $("body").mouseup(hideListener.bind(this, "#ModifyUserProfilePanel"));
 }
 
 
@@ -153,10 +281,6 @@ Toolbar.getToolbarHtml = function() {
 }
 
 Toolbar.getToolbarButtonHtml = function(buttonName, visible, displayText) {
-/*
-  return "<button id='TopLevelToolbar-" + buttonName + "' class='topleveltoolbar-button' "
-         + "style='display:" + (visible != null && visible == false ? "none" : "inline") + ";'>" + (displayText ? displayText : buttonName) + "</button>";
-*/
   return "<label id='TopLevelToolbar-" + buttonName + "' class='topleveltoolbar-button' "
          + "style='display:" + (visible != null && visible == false ? "none" : "inline") + ";'>" + (displayText ? displayText : buttonName) + "</label>";
 
@@ -253,4 +377,4 @@ Toolbar.getModifyUserProfilePanelHtml = function() {
          +   "</div> \
            </div>";
 }
-
+*/

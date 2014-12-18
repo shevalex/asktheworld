@@ -1,7 +1,7 @@
 
 PisoftInputPanel = ClassUtils.defineClass(PisoftComponent, function PisoftInputPanel(uniqueId, margin) {
   PisoftComponent.call(this, uniqueId, "pisoft-inputpanel pisoft-rounded-border");
-  this.inputComponents = [];
+  this.panelComponents = [];
   this.rightButton = null;
   this.leftButton = null;
   this.componentMargin = margin != null ? margin : "5px";
@@ -9,8 +9,8 @@ PisoftInputPanel = ClassUtils.defineClass(PisoftComponent, function PisoftInputP
 });
 
 PisoftInputPanel.prototype.buildComponentStructure = function() {
-  for (var index in this.inputComponents) {
-    this.getHtmlElement().appendChild(this._getLabelledComponent(this.inputComponents[index]));
+  for (var index in this.panelComponents) {
+    this.getHtmlElement().appendChild(this._getLabelledComponent(this.panelComponents[index]));
   }
 
   if (this.leftButton != null) {
@@ -35,8 +35,18 @@ PisoftInputPanel.prototype.buildComponentStructure = function() {
 
 PisoftInputPanel.prototype.addPisoftInputComponent = function(pisoftComponent, label) {
   if (pisoftComponent instanceof PisoftInputComponent) {
-    this.inputComponents.push({ component: pisoftComponent, label: label });
+    this.panelComponents.push({ component: pisoftComponent, label: label });
     pisoftComponent.addCssClass("pisoft-inputpanel-inputcomponent");
+    this.update();
+  } else {
+    throw "Passed in component is not a Pisoft Input Component";
+  }
+}
+
+PisoftInputPanel.prototype.addPisoftComponent = function(pisoftLabel) {
+  if (pisoftComponent instanceof PisoftComponent) {
+    this.panelComponents.push({ component: pisoftComponent });
+    pisoftComponent.addCssClass("pisoft-inputpanel-component");
     this.update();
   } else {
     throw "Passed in component is not a Pisoft Input Component";
@@ -70,17 +80,19 @@ PisoftInputPanel.prototype.setItemMargin = function(margin) {
 
 // Private implementation
 
-PisoftInputPanel.prototype._getLabelledComponent = function(labelledComponent) {
+PisoftInputPanel.prototype._getLabelledComponent = function(formComponent) {
   var compound = document.createElement("div");
   compound.style.display = "block";
   compound.style.marginBottom = this.componentMargin;
 
-  var label = document.createElement("div");
-  label.setAttribute("class", "pisoft-inputpanel-label");
-  label.innerHTML = labelledComponent.label;
-  compound.appendChild(label);
+  if (formComponent.label != null) {
+    var label = document.createElement("div");
+    label.setAttribute("class", "pisoft-inputpanel-label");
+    label.innerHTML = formComponent.label;
+    compound.appendChild(label);
+  }
 
-  compound.appendChild(labelledComponent.component.getHtmlElement());
+  compound.appendChild(formComponent.component.getHtmlElement());
 
   return compound;
 }

@@ -11,6 +11,7 @@ PisoftLabel = ClassUtils.defineClass(PisoftComponent, function PisoftButton(uniq
 
 PisoftButton = ClassUtils.defineClass(PisoftComponent, function PisoftButton(uniqueId, displayName) {
   PisoftComponent.call(this, uniqueId, "pisoft-solidbutton pisoft-button pisoft-rounded-border", displayName);
+  this.getHtmlElement().setAttribute("disabled", "true");
 });
 
 PisoftLinkButton = ClassUtils.defineClass(PisoftComponent, function PisoftLinkButton(uniqueId, displayName) {
@@ -22,15 +23,20 @@ PisoftLinkButton = ClassUtils.defineClass(PisoftComponent, function PisoftLinkBu
 
 // Input components
 
-PisoftInputComponent = ClassUtils.defineClass(PisoftComponent, function PisoftInputComponent(uniqueId, type, cssClasses) {
-  PisoftComponent.call(this, uniqueId, "pisoft-inputcomponent " + cssClasses, "", "input");
+PisoftInputComponent = ClassUtils.defineClass(PisoftComponent, function PisoftInputComponent(uniqueId, type) {
+  PisoftComponent.call(this, uniqueId, "pisoft-inputcomponent pisoft-rounded-border", "", "input");
   this.getHtmlElement().setAttribute("type", type);
 });
+PisoftInputComponent.prototype.getValue = function() {
+  return this.getHtmlElement().value;
+}
 
 PisoftInputField = ClassUtils.defineClass(PisoftInputComponent, function PisoftInputField(uniqueId) {
-  PisoftInputComponent.call(this, uniqueId, "text", "pisoft-inputfield");
+  PisoftInputComponent.call(this, uniqueId, "text");
+  this.addCssClass("pisoft-inputfield");
 });
 
 PisoftInputPassword = ClassUtils.defineClass(PisoftInputComponent, function PisoftInputPassword(uniqueId) {
-  PisoftInputComponent.call(this, uniqueId, "password", "pisoft-inputpassword");
+  PisoftInputComponent.call(this, uniqueId, "password");
+  this.addCssClass("pisoft-inputpassword");
 });

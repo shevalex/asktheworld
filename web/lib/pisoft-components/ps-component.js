@@ -14,6 +14,8 @@ PisoftComponent = ClassUtils.defineClass(Object, function PisoftComponent(unique
   if (uniqueId != null) {
     this.element.setAttribute("id", uniqueId);
   }
+
+  this.setVisible(true);
 });
 
 PisoftComponent.prototype.getHtmlElement = function() {
@@ -28,9 +30,11 @@ PisoftComponent.prototype.getId = function() {
 PisoftComponent.prototype.attachToContainer = function(containerId) {
   var container = document.getElementById(containerId);
   if (container != null) {
-    this.detachFromContainer();
-    container.appendChild(this.element);
-    this._onAttachToParent();
+    if (container != this.getHtmlElement().parentNode) {
+      this.detachFromContainer();
+      container.appendChild(this.element);
+      this._onAttachToParent();
+    }
   } else {
     console.error(ClassUtils.formatMessage("Parent with id=" + containerId + " is not found"));
   }
@@ -47,6 +51,10 @@ PisoftComponent.prototype.update = function() {
   if (this.element.parentNode != null) {
     this._rebuildComponentStructure();
   }
+}
+
+PisoftComponent.prototype.isAttached = function() {
+  return this.element.parentNode != null;
 }
 
 
@@ -78,6 +86,10 @@ PisoftComponent.prototype.setText = function(text) {
 
 PisoftComponent.prototype.setWidth = function(widthSpecifier) {
   this.setExtraStyles({"width": widthSpecifier});
+}
+
+PisoftComponent.prototype.setVisible = function(isVisible) {
+  this.element.style.visibility = isVisible == null || isVisible == false ? "hidden" : "inherit";
 }
 
 PisoftComponent.prototype.setClickListener = function(clickListener) {
