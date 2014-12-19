@@ -22,8 +22,8 @@ PisoftLinkButton = ClassUtils.defineClass(PisoftComponent, function PisoftLinkBu
 
 // Input components
 
-PisoftInputComponent = ClassUtils.defineClass(PisoftComponent, function PisoftInputComponent(uniqueId, type) {
-  PisoftComponent.call(this, uniqueId, "pisoft-inputcomponent pisoft-rounded-border", "", "input");
+PisoftInputComponent = ClassUtils.defineClass(PisoftComponent, function PisoftInputComponent(uniqueId, type, tagType) {
+  PisoftComponent.call(this, uniqueId, "pisoft-inputcomponent pisoft-rounded-border", "", tagType ? tagType : "input");
   this.getHtmlElement().setAttribute("type", type);
 });
 PisoftInputComponent.prototype.getValue = function() {
@@ -39,3 +39,25 @@ PisoftInputPassword = ClassUtils.defineClass(PisoftInputComponent, function Piso
   PisoftInputComponent.call(this, uniqueId, "password");
   this.addCssClass("pisoft-inputpassword");
 });
+
+
+// Drop Lists
+
+PisoftDropList = ClassUtils.defineClass(PisoftInputComponent, function PisoftDropList(uniqueId, options) {
+  PisoftInputComponent.call(this, uniqueId, "", "select");
+  this.addCssClass("pisoft-droplist");
+  this.setOptions(options);
+});
+PisoftDropList.prototype.setOptions = function(options) {
+  this.options = options;
+  this.update();
+}
+PisoftDropList.prototype.buildComponentStructure = function() {
+  for (var index in this.options) {
+    var optionElement = document.createElement("option");
+    optionElement.innerHTML = this.options[index];
+    this.getHtmlElement().appendChild(optionElement);
+  }
+}
+
+

@@ -43,7 +43,10 @@ Toolbar.initialize = function() {
     var isTargettedToContainer = function(container, event) {
       return container.is(event.target) || container.has(event.target).length > 0;
     }
-    if (isTargettedToContainer($("#TopLevelToolbar-LoginButton"), event)) {
+    if (isTargettedToContainer($("#TopLevelToolbar-LoginButton"), event)
+        || isTargettedToContainer($("#LoginPanel"), event)
+        || isTargettedToContainer($("#RegisterPanel"), event)
+        || isTargettedToContainer($("#UpdateProfilePanel"), event)) {
       return;
     }
 
@@ -55,6 +58,7 @@ Toolbar.createLoginPanel = function() {
   var loginPanel = new PisoftInputPanel("LoginPanel");
   loginPanel.addPisoftInputComponent(new PisoftInputField("LoginPanel-Login"), "Login");
   loginPanel.addPisoftInputComponent(new PisoftInputPassword("LoginPanel-Password"), "Password");
+  loginPanel.addPisoftComponent(new PisoftLabel("LoginPanel-StatusLabel"));
   var registerButton = new PisoftLinkButton("LoginPanel-RegisterButton", "Register");
   loginPanel.addLeftPisoftButton(registerButton);
   var performLoginButton = new PisoftButton("LoginPanel-LoginButton", "Sign In");
@@ -64,15 +68,7 @@ Toolbar.createLoginPanel = function() {
     this.showPanel(this.registerPanel);
   }.bind(this));
 
-  performLoginButton.setClickListener(function() {
-    this.hidePanels();
-    this.toolbarLoginButton.setText("Profile");
-    this.toolbarLoggedUserLabel.setText("Welcome, user");
-
-    this.toolbarLoginButton.setClickListener(function() {
-      this.showPanel(this.updateProfilePanel);
-    }.bind(this));
-  }.bind(this));
+  performLoginButton.setClickListener(this.signInUser.bind(this));
 
   return loginPanel;
 }
@@ -81,17 +77,16 @@ Toolbar.createRegisterPanel = function() {
   var registerPanel = new PisoftInputPanel("RegisterPanel");
   registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-Login"), "Email (will be used to login)");
   registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-Name"), "Nick Name");
-  registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-Gender"), "Gender");
-  registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-AgeCategory"), "Age Category");
+  registerPanel.addPisoftInputComponent(new PisoftDropList("RegisterPanel-Gender", ["Male", "Female"]), "Gender");
+  registerPanel.addPisoftInputComponent(new PisoftDropList("RegisterPanel-AgeCategory", ["Child", "Teenager", "Young", "Adult", "Senior"]), "Age Category");
   registerPanel.addPisoftInputComponent(new PisoftInputField("RegisterPanel-Languages"), "Languages");
   registerPanel.addPisoftInputComponent(new PisoftInputPassword("RegisterPanel-Password"), "Password");
   registerPanel.addPisoftInputComponent(new PisoftInputPassword("RegisterPanel-RetypePassword"), "Retype Password");
   var performRegistrationButton = new PisoftButton("RegisterPanel-RegisterButton", "Register");
+  registerPanel.addPisoftComponent(new PisoftLabel("RegisterPanel-StatusLabel"));
   registerPanel.addRightPisoftButton(performRegistrationButton);
 
-  performRegistrationButton.setClickListener(function() {
-    this.hidePanels();
-  }.bind(this));
+  performRegistrationButton.setClickListener(this.registerUser.bind(this));
 
   return registerPanel;
 }
@@ -99,17 +94,17 @@ Toolbar.createRegisterPanel = function() {
 Toolbar.createUpdateProfilePanel = function() {
   var updateProfilePanel = new PisoftInputPanel("UpdateProfilePanel");
   updateProfilePanel.addPisoftInputComponent(new PisoftInputField("UpdateProfilePanel-Name"), "Nick Name");
-  updateProfilePanel.addPisoftInputComponent(new PisoftInputField("UpdateProfilePanel-Gender"), "Gender");
-  updateProfilePanel.addPisoftInputComponent(new PisoftInputField("UpdateProfilePanel-AgeCategory"), "Age Category");
+  updateProfilePanel.addPisoftInputComponent(new PisoftDropList("UpdateProfilePanel-Gender", ["Male", "Female"]), "Gender");
+  updateProfilePanel.addPisoftInputComponent(new PisoftDropList("UpdateProfilePanel-AgeCategory", ["Child", "Teenager", "Young", "Adult", "Senior"]), "Age Category");
   updateProfilePanel.addPisoftInputComponent(new PisoftInputField("UpdateProfilePanel-Languages"), "Languages");
   updateProfilePanel.addPisoftInputComponent(new PisoftInputPassword("UpdateProfilePanel-Password"), "Password");
   updateProfilePanel.addPisoftInputComponent(new PisoftInputPassword("UpdateProfilePanel-RetypePassword"), "Retype Password");
+  updateProfilePanel.addPisoftComponent(new PisoftLabel("UpdateProfilePanel-StatusLabel"));
+
   var performUpdateButton = new PisoftButton("UpdateProfilePanel-UpdateButton", "Update");
   updateProfilePanel.addRightPisoftButton(performUpdateButton);
 
-  performUpdateButton.setClickListener(function() {
-    this.hidePanels();
-  }.bind(this));
+  performUpdateButton.setClickListener(this.updateUser.bind(this));
 
   return updateProfilePanel;
 }
@@ -154,226 +149,75 @@ Toolbar.hidePanels = function() {
 }
 
 
-/*
 
-Toolbar.setupToolbarButtonListeners = function() {
-  $("#TopLevelToolbar-Home").click(function(event) {
-    HomePanel.show();    
-  });
-}
-
-Toolbar.setupLoginAndRegistrationListeners = function() {
-  $("#TopLevelToolbar-Login").click(function(event) {
-    $("#RegisterUserPanel").slideUp("fast", function() {
-      $("#LoginPanel-Status").text("");
-      $("#LoginPanel").slideToggle("slow");
-    });
-  });
-
-  $("#TopLevelToolbar-Profile").click(function(event) { 
-    if (!($("#ModifyUserProfilePanel").is(":visible"))) {
-      var userProfile = Backend.getUserProfile();
-      $("#ModifyUserProfilePanel-Password").val(userProfile.password);
-      $("#ModifyUserProfilePanel-RetypePassword").val(userProfile.password);
-      $("#ModifyUserProfilePanel-Name").val(userProfile.name);
-      $("#ModifyUserProfilePanel-Gender").val(userProfile.gender);
-      $("#ModifyUserProfilePanel-AgeCategory").val(userProfile.age);
-    }
-    $("#ModifyUserProfilePanel").slideToggle("slow");
-  });
-
-  $("#LoginPanel-Register").click(function(event) { 
-    $("#LoginPanel").slideUp("fast", function() {
-      $("#RegisterUserPanel-Status").text("");
-      $("#RegisterUserPanel").slideDown("slow");
-    });
-  });
-
-  $("#LoginPanel-SignIn").click(function(event) { 
-    Toolbar.signIn();
-  });
-
-  $("#RegisterUserPanel-Register").click(function(event) { 
-    Toolbar.register();
-  });
-
-  $("#ModifyUserProfilePanel-Update").click(function(event) { 
-    Toolbar.updateProfile();
-  });
-
-}
-
-
-Toolbar.signIn = function() {
-  var email = $("#LoginPanel-Email").val();
+Toolbar.signInUser = function() {
+  var login = $("#LoginPanel-Login").val();
   var password = $("#LoginPanel-Password").val();
 
   var callback = {
     success: function() {
-      $("#TopLevelToolbar-UserName").text("Welcome, " + email);
-      $("#LoginPanel").slideUp("fast");
-      $("#TopLevelToolbar-Login").hide();
-      $("#TopLevelToolbar-Profile").show();
-    },
+      this.hidePanels();
+      this.toolbarLoginButton.setText("Profile");
+      this.toolbarLoggedUserLabel.setText("Welcome, " + Backend.getUserProfile().name);
+      $("#LoginPanel-StatusLabel").text("");
+
+      this.toolbarLoginButton.setClickListener(function() {
+        this.showPanel(this.updateProfilePanel);
+      }.bind(this));
+    }.bind(this),
     failure: function() {
-      $("#LoginPanel-Password").addClass("input-error");
-    },
+      $("#LoginPanel-StatusLabel").text("Invalid user name / password");
+    }.bind(this),
     error: function() {
-      $("#LoginPanel-Status").text("Server communication error");
-    }
+      $("#LoginPanel-StatusLabel").text("Server communication error");
+    }.bind(this)
   };
 
-  Backend.verifyUserIdentity(email, password, callback);
+  Backend.logIn(login, password, callback);
 }
 
-Toolbar.register = function() {
-  var email = $("#RegisterUserPanel-Email").val();
-  var password = $("#RegisterUserPanel-Password").val();
-  var name = $("#RegisterUserPanel-Name").val();
-  var gender = $("#RegisterUserPanel-Gender").val();
-  var age = $("#RegisterUserPanel-AgeCategory").val();
+Toolbar.registerUser = function() {
+  var login = $("#RegisterPanel-Login").val();
+  var password = $("#RegisterPanel-Password").val();
+  var name = $("#RegisterPanel-Name").val();
+  var gender = $("#RegisterPanel-Gender").val();
+  var age = $("#RegisterPanel-AgeCategory").val();
 
   var callback = {
     success: function() {
-      $("#RegisterUserPanel").slideUp("fast");
+      $("#RegisterPanel-StatusLabel").text("Account created! Login now");
+      setTimeout(Toolbar.hidePanels.bind(Toolbar), 1000);
     },
     conflict: function() {
-      $("#RegisterUserPanel-Status").text("User with such name already exists");
+      $("#RegisterPanel-StatusLabel").text("User with such name already exists");
     },
     error: function() {
-      $("#RegisterUserPanel-Status").text("Server communication error");
+      $("#RegisterPanel-StatusLabel").text("Account cannot be created");
     }
   };
 
-  Backend.registerUser({"email": email, "password": password, "gender": gender, "age": age, "name": name}, callback);
+  Backend.registerUser({"login": login, "password": password, "gender": gender, "age": age, "name": name}, callback);
 }
 
-Toolbar.updateProfile = function() {
-  var password = $("#RegisterUserPanel-Password").val();
-  var name = $("#RegisterUserPanel-Name").val();
-  var gender = $("#RegisterUserPanel-Gender").val();
-  var age = $("#RegisterUserPanel-AgeCategory").val();
+Toolbar.updateUser = function() {
+  var password = $("#UpdateProfilePanel-Password").val();
+  var name = $("#UpdateProfilePanel-Name").val();
+  var gender = $("#UpdateProfilePanel-Gender").val();
+  var age = $("#UpdateProfilePanel-AgeCategory").val();
 
-  if (Backend.updateUser({"password": password, "gender": gender, "age": age, "name": name})) {
-    $("#ModifyUserProfilePanel").slideUp("fast");
-  } else {
-    //indicate what is incorrect
-  }
+  var callback = {
+    success: function() {
+      $("#UpdateProfilePanel-StatusLabel").text("Successfully updated");
+      setTimeout(Toolbar.hidePanels.bind(Toolbar), 1000);
+    },
+    failure: function() {
+      $("#UpdateProfilePanel-StatusLabel").text("Incorrect user settings");
+    },
+    error: function() {
+      $("#UpdateProfilePanel-StatusLabel").text("Account cannot be updated");
+    }
+  };
+
+  Backend.updateUser({"password": password, "gender": gender, "age": age, "name": name}, callback);
 }
 
-
-
-Toolbar.getToolbarHtml = function() {
-  return   "<div id='TopLevelToolbar-Left'>"
-         +   this.getToolbarButtonHtml("Home")
-         +   this.getToolbarButtonHtml("Huy", true, "Huy Znaet Chto")
-         +   this.getToolbarButtonHtml("ContactUs", true, "Contact Us")
-         + "</div> \
-           <div id='TopLevelToolbar-Right'>"
-         +   this.getLoggedUserHtml()
-         +   this.getToolbarButtonHtml("Login")
-         +   this.getToolbarButtonHtml("Profile", false)
-         + "</div>"
-         +  this.getLoginPanelHtml()
-         +  this.getRegisterUserPanelHtml()
-         +  this.getModifyUserProfilePanelHtml(); 
-}
-
-Toolbar.getToolbarButtonHtml = function(buttonName, visible, displayText) {
-  return "<label id='TopLevelToolbar-" + buttonName + "' class='topleveltoolbar-button' "
-         + "style='display:" + (visible != null && visible == false ? "none" : "inline") + ";'>" + (displayText ? displayText : buttonName) + "</label>";
-
-};
-
-Toolbar.getLoggedUserHtml = function() {
-  return "<label id='TopLevelToolbar-UserName'>Not Signed</label>";
-};
-
-Toolbar.getPanelButtonHtml = function(panelName, buttonName, displayText) {
-  return "<button id='" + panelName + "-" + buttonName + "' class='panel-button'>" + (displayText ? displayText : buttonName) + "</button>";
-}
-
-Toolbar.getPanelLabbeledInputHtml = function(panelName, labelName, displayName) {
-  return "<label>" + (displayName ? displayName : labelName) + "</label> \
-          <input type='text' id='" + panelName + "-" + labelName + "' class='text panel-input ui-widget-content ui-corner-all'>";
-}
-
-Toolbar.getPanelLabbeledDropListHtml = function(panelName, labelName, options, displayName) {
-  var result = "<label>" + (displayName ? displayName : labelName) + "</label> \
-                <select id='" + panelName + "-" + labelName + "' class='panel-input ui-corner-all'>";
-
-  for (var index in options) {
-    result += "<option>" + options[index] + "</option>";
-  }
-
-  result += "</select>";
-
-  return result;
-}
-
-
-Toolbar.getLoginPanelHtml = function() {
-  return "<div id='LoginPanel' class='ui-widget-content ui-corner-all'>"
-         +   this.getPanelLabbeledInputHtml("LoginPanel", "Email")
-         +   "<p>"
-         +   this.getPanelLabbeledInputHtml("LoginPanel", "Password")
-         +   "<p> \
-             <label id='LoginPanel-Status' class='input-error panel-input'></label> \
-             <div class='panel-left'> \
-               <a href='#' id='LoginPanel-Register'>Register</a> \
-             </div> \
-             <div class='panel-right'>"
-             +   this.getPanelButtonHtml("LoginPanel", "SignIn", "Sign In")
-           + "</div> \
-          </div>";
-}
-
-Toolbar.getRegisterUserPanelHtml = function() {
-  return "<div id='RegisterUserPanel' class='ui-widget-content ui-corner-all'>"
-         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Email", "Email (Login)")
-         +   "<p>"
-         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Name", "Nick Name")
-         +   "<p>"
-         +   this.getPanelLabbeledDropListHtml("RegisterUserPanel", "Gender", ["Male", "Female"])
-         +   "<p>"
-         +   this.getPanelLabbeledDropListHtml("RegisterUserPanel", "AgeCategory", ["Teenager", "Young", "Adult", "Senior"], "Age Category")
-         +   "<p>"
-         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Languages")
-         +   "<p> \
-             <br> \
-             <p>"
-         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "Password")
-         +   "<p>"
-         +   this.getPanelLabbeledInputHtml("RegisterUserPanel", "RetypePassword", "Retype Password")
-         +   "<p>"
-         +   "<div class='panel-left'> \
-               <label id='RegisterUserPanel-Status' class='input-error'></label> \
-              </div> \
-              <div class='panel-right'>"
-         +     this.getPanelButtonHtml("RegisterUserPanel", "Register")
-         +   "</div> \
-           </div>";
-}
-
-Toolbar.getModifyUserProfilePanelHtml = function() {
-  return "<div id='ModifyUserProfilePanel' class='ui-widget-content ui-corner-all'>"
-         +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "Name")
-         +   "<p>"
-         +   this.getPanelLabbeledDropListHtml("ModifyUserProfilePanel", "Gender", ["Male", "Female"])
-         +   "<p>"
-         +   this.getPanelLabbeledDropListHtml("ModifyUserProfilePanel", "AgeCategory", ["Teenager", "Young", "Adult", "Senior"], "Age Category")
-         +   "<p>"
-         +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "Languages")
-         +   "<p> \
-             <br> \
-             <p>"
-         +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "Password")
-         +   "<p>"
-         +   this.getPanelLabbeledInputHtml("ModifyUserProfilePanel", "RetypePassword", "Retype Password")
-         +   "<p>"
-         +   "<div class='panel-right'>"
-         +     this.getPanelButtonHtml("ModifyUserProfilePanel", "Update")
-         +   "</div> \
-           </div>";
-}
-*/

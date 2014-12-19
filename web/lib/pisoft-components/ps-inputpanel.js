@@ -18,7 +18,7 @@ PisoftInputPanel.prototype.buildComponentStructure = function() {
     leftPanel.style.cssFloat = "left";
     leftPanel.style.textAlign = "left";
     leftPanel.style.marginTop = this.buttonPaneMargin;
-    leftPanel.appendChild(this.leftButton.getHtmlElement());
+    this.leftButton.attachToContainer(leftPanel);
     this.getHtmlElement().appendChild(leftPanel);
   }
 
@@ -27,7 +27,7 @@ PisoftInputPanel.prototype.buildComponentStructure = function() {
     rightPanel.style.cssFloat = "right";
     rightPanel.style.textAlign = "right";
     rightPanel.style.marginTop = this.buttonPaneMargin;
-    rightPanel.appendChild(this.rightButton.getHtmlElement());
+    this.rightButton.attachToContainer(rightPanel);
     this.getHtmlElement().appendChild(rightPanel);
   }
 }
@@ -43,7 +43,7 @@ PisoftInputPanel.prototype.addPisoftInputComponent = function(pisoftComponent, l
   }
 }
 
-PisoftInputPanel.prototype.addPisoftComponent = function(pisoftLabel) {
+PisoftInputPanel.prototype.addPisoftComponent = function(pisoftComponent) {
   if (pisoftComponent instanceof PisoftComponent) {
     this.panelComponents.push({ component: pisoftComponent });
     pisoftComponent.addCssClass("pisoft-inputpanel-component");
@@ -52,7 +52,6 @@ PisoftInputPanel.prototype.addPisoftComponent = function(pisoftLabel) {
     throw "Passed in component is not a Pisoft Input Component";
   }
 }
-
 
 PisoftInputPanel.prototype.addLeftPisoftButton = function(pisoftButton) {
   if (pisoftButton instanceof PisoftComponent) {
@@ -92,7 +91,7 @@ PisoftInputPanel.prototype._getLabelledComponent = function(formComponent) {
     compound.appendChild(label);
   }
 
-  compound.appendChild(formComponent.component.getHtmlElement());
+  formComponent.component.attachToContainer(compound);
 
   return compound;
 }

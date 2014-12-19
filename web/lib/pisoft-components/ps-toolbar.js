@@ -59,7 +59,7 @@ PisoftToolbar.prototype._getComponentHtmlWithMargins = function(pisoftComponent)
     compound.style.display = "inline-block";
     compound.style.marginLeft = this.componentMargin;
     compound.style.marginRight = this.componentMargin;
-    compound.appendChild(pisoftComponent.getHtmlElement());
+    pisoftComponent.attachToContainer(compound);
 
     return compound;
   } else {

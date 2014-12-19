@@ -1,4 +1,3 @@
-
 PisoftComponent = ClassUtils.defineClass(Object, function PisoftComponent(uniqueId, cssClasses, text, tagType) {
   if (uniqueId == null) {
     console.warn("A pisoft object is created without a unique id provided");
@@ -8,6 +7,8 @@ PisoftComponent = ClassUtils.defineClass(Object, function PisoftComponent(unique
   }
 
   this.element = document.createElement(tagType ? tagType : "div");
+
+  this.text = null;
   this.setText(text);
 
   this.setCssClasses(cssClasses);
@@ -27,8 +28,10 @@ PisoftComponent.prototype.getId = function() {
 }
 
 
-PisoftComponent.prototype.attachToContainer = function(containerId) {
-  var container = document.getElementById(containerId);
+PisoftComponent.prototype.attachToContainer = function(container) {
+  if (typeof(container) === "string") {
+    container = document.getElementById(container);
+  }
   if (container != null) {
     if (container != this.getHtmlElement().parentNode) {
       this.detachFromContainer();
@@ -36,7 +39,7 @@ PisoftComponent.prototype.attachToContainer = function(containerId) {
       this._onAttachToParent();
     }
   } else {
-    console.error(ClassUtils.formatMessage("Parent with id=" + containerId + " is not found"));
+    console.error(ClassUtils.formatMessage("Parent container " + container + " is not found"));
   }
 }
 
@@ -81,7 +84,8 @@ PisoftComponent.prototype.setExtraStyles = function(extraStyles) {
 }
 
 PisoftComponent.prototype.setText = function(text) {
-  this.element.innerHTML = text;
+  this.text = text != null ? text : "";
+  this.update();
 }
 
 PisoftComponent.prototype.setWidth = function(widthSpecifier) {
@@ -98,7 +102,7 @@ PisoftComponent.prototype.setClickListener = function(clickListener) {
 
 
 PisoftComponent.prototype.buildComponentStructure = function() {
-  // the default implementation does nothing.
+  this.element.innerHTML = this.text;
 }
 
 

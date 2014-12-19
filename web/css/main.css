@@ -54,3 +54,10 @@ body {
   width: 300px;
   text-align: right;
 }
+
+
+#LoginPanel-StatusLabel, #RegisterPanel-StatusLabel, #UpdateProfilePanel-StatusLabel {
+  color: red;
+  height: 20px;
+  margin-top: 20px;
+}
