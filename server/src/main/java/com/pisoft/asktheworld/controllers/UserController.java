@@ -9,6 +9,7 @@ import org.jboss.logging.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class UserController {
 	public ResponseEntity<String> createUser(@RequestBody User user) {
 		//check name, pass, year
 		if(!db.verifyString(user.getLogin()) || !db.verifyString(user.getPassword())) {
-			//error vrong arguments
+			//error wrong arguments
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		//check if user exist (by name)
@@ -53,12 +54,14 @@ public class UserController {
 		}
 	}
 	
+	@Secured({"ROLE_ADMIN","ROLE_REAL_USER"})
 	@RequestMapping(method = RequestMethod.DELETE, value="user/{userID}")
 	public ResponseEntity<Void> deleteUser(@PathVariable("userID") int id) {
 		User user = db.deleteUser(id);
 		return new ResponseEntity<Void>( user != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 	
+	@Secured({"ROLE_ADMIN","ROLE_REAL_USER"})
 	@RequestMapping(method=RequestMethod.GET, value="/user/{userID}")
 	public ResponseEntity<User> getUser(@PathVariable("userID") int id) {
 		User user  = db.getUser(id);
@@ -67,14 +70,16 @@ public class UserController {
 		}
 		return new ResponseEntity<User>(user, user != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
-
+	
 	@RequestMapping(method=RequestMethod.PUT, value="user/{userID}")
+	@Secured({"ROLE_ADMIN","ROLE_REAL_USER"})
 	public ResponseEntity<Void> updateUser(@PathVariable("userID") int id, @RequestBody User user) {
 		user.setId(id);
 		user = db.updateUser(user);
 		return new ResponseEntity<Void>( user != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 
+	@Secured({"ROLE_ADMIN", "ROLE_USER"})
 	@RequestMapping(method=RequestMethod.GET, value="user")
 	public ResponseEntity<String> getUsers(@RequestParam(value="login", required = false) String login) {
 		if(login != null) {
