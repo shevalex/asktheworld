@@ -1,15 +1,16 @@
 
-PisoftTabbedPane = ClassUtils.defineClass(PisoftComponent, function PisoftTabbedPane(uniqueId) {
+PisoftTabbedPane = ClassUtils.defineClass(PisoftComponent, function PisoftTabbedPane(uniqueId, tabPadding) {
   PisoftComponent.call(this, uniqueId, "pisoft-tabbedpane");
     
   this.pagePanelElement = document.createElement("div");
-
+  this.tabPadding = tabPadding;
   this.tabs = [];
 });
 
 
 PisoftTabbedPane.prototype.buildComponentStructure = function() {
   var tabPanelElement = document.createElement("div");
+  tabPanelElement.setAttribute("class",  "pisoft-non-selectable");
   tabPanelElement.style.display = "block";
   tabPanelElement.style.cssFloat = "left";
     
@@ -18,6 +19,10 @@ PisoftTabbedPane.prototype.buildComponentStructure = function() {
     
   for (var index in this.tabs) {
     tabPanelElement.appendChild(this.tabs[index].tabElement);
+    if (this.tabPadding != null) {
+      this.tabs[index].tabElement.style.paddingTop = this.tabPadding;
+      this.tabs[index].tabElement.style.paddingBottom = this.tabPadding;
+    }
   }
 
   this.getHtmlElement().appendChild(tabPanelElement);

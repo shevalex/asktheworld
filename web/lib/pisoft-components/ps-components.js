@@ -10,11 +10,11 @@ PisoftLabel = ClassUtils.defineClass(PisoftComponent, function PisoftButton(uniq
 // Button
 
 PisoftButton = ClassUtils.defineClass(PisoftComponent, function PisoftButton(uniqueId, displayName) {
-  PisoftComponent.call(this, uniqueId, "pisoft-solidbutton pisoft-button pisoft-rounded-border", displayName);
+  PisoftComponent.call(this, uniqueId, "pisoft-solidbutton pisoft-button pisoft-rounded-border pisoft-non-selectable", displayName);
 });
 
 PisoftLinkButton = ClassUtils.defineClass(PisoftComponent, function PisoftLinkButton(uniqueId, displayName) {
-  PisoftComponent.call(this, uniqueId, "pisoft-linkbutton pisoft-button pisoft-rounded-border-active", displayName);
+  PisoftComponent.call(this, uniqueId, "pisoft-linkbutton pisoft-button pisoft-rounded-border-active pisoft-non-selectable", displayName);
 });
 
 

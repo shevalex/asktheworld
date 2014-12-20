@@ -1,3 +1,11 @@
+.pisoft-non-selectable {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+}
+
 
 .pisoft-rounded-border {
   border: solid;
@@ -36,12 +44,6 @@
   min-width: 100px;
   white-space: nowrap;
   cursor: default;
-
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
 
   color: rgb(0, 0, 120);
 }
@@ -89,12 +91,6 @@
 .pisoft-label {
   text-align: center;
 
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-
   color: rgb(0, 0, 120);
 }
 
@@ -131,9 +127,9 @@ pisoft-droplist {
 .pisoft-tabbedpane-tab {
   text-align: left;
   display: block;
-  padding: 5px 5px 5px 5px;
+  padding: 10px 20px 10px 20px;
+  margin: 0px 5px 5px 10px;
   font-size: 30px;
-  min-height: 50px;
   min-width: 100px;
   cursor: default;
 
@@ -154,6 +150,8 @@ pisoft-droplist {
 }
 
 .pisoft-tabbedpane-tab-selected {
+  margin-left: 0px;
+  padding-left: 30px;
   background: rgb(230, 230, 230);
 }
 
