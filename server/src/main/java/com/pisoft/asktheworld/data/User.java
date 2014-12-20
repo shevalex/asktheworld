@@ -2,13 +2,15 @@ package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class User implements Serializable {
 	private static int lastID = 0;
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 927995499391295373L;
-	private int id;
+	@JsonIgnore	private int id;
 	private String login;
 	private String password;
 	private int birth_year;
@@ -55,11 +57,13 @@ public class User implements Serializable {
 	
 	public User createCopy() {
 		User user  = new User();
+		user.setId(getId());
 		user.setLogin(getLogin());
 		user.setGender(getGender());
 		user.setBirth_year(getBirth_year());
 		user.setLanguages(getLanguages());
 		return user;
 	}
-
+	
+	
 }
