@@ -40,7 +40,7 @@ class RegisterViewController: UIViewController {
             //var login_str:NSString = "\"login\""
             //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"birth_year\":1980,\"languages\":[ENG]}"
             
-            var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"byear\":1980}"
+            var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"birth_year\":1980}"
             
             println("PostData:" + post);
             
@@ -65,8 +65,7 @@ class RegisterViewController: UIViewController {
             if ( urlData != nil ) {
                 let res = response as NSHTTPURLResponse!;
                 
-                //NSLog("Response code: %ld", res.statusCode);
-                NSLog("Response code: %ld", res.statusCode);
+                println("Response code: \(res.statusCode)")
                 println(res.allHeaderFields)
                 
                 if (res.statusCode == 201) {
@@ -111,24 +110,24 @@ class RegisterViewController: UIViewController {
         if ( urlData != nil ) {
             let res = response as NSHTTPURLResponse!;
             
-            NSLog("Response code: %ld", res.statusCode);
+            println("Response code: \(res.statusCode)")
         }
         
     }
     
     @IBAction func UpdateUserTest(sender: UIButton) {
-        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user/8")!
+        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user/1")!
         
-        var post:NSString = "{\"password\":\"AnyPass\",\"gender\":\"female\",\"byear\":1985}"
+        var post:NSString = "{\"password\":\"AnyPass\",\"gender\":\"male\",\"byear\":1986}"
         
-        println("PostData:" + post);
+        println("PostData: \(post)")
         
         var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
         
         var postLength:NSString = String( postData.length )
         
         var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "POST"
+        request.HTTPMethod = "PUT"
         request.HTTPBody = postData
         request.setValue(postLength, forHTTPHeaderField: "Content-Length")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -139,7 +138,7 @@ class RegisterViewController: UIViewController {
         if ( urlData != nil ) {
             let res = response as NSHTTPURLResponse!
             
-            NSLog("Response code: %ld", res.statusCode)
+            println("Response code: \(res.statusCode)")
             println(res.allHeaderFields)
         }
         
@@ -159,7 +158,7 @@ class RegisterViewController: UIViewController {
         if ( urlData != nil ) {
             let res = response as NSHTTPURLResponse!
             
-            NSLog("Response code: %ld", res.statusCode)
+            println("Response code: \(res.statusCode)")
             println(res.allHeaderFields)
         }
 

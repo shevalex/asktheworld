@@ -6,11 +6,35 @@
   border-radius: 5px;
 }
 
+.pisoft-rounded-border-active {
+  border: solid;
+  border-color: transparent;
+  border-width: 1px;
+  border-radius: 5px;
+}
+
+.pisoft-rounded-border-active:hover {
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 5px;
+}
+
+.pisoft-rounded-border-active:active {
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 5px;
+}
+
+
+
 .pisoft-button {
   text-align: center;
   display: inline-block;
   padding: 5px 20px 5px 20px;
   min-width: 100px;
+  cursor: default;
 
   user-select: none;
   -webkit-user-select: none;
@@ -47,22 +71,18 @@
 }
 
 
-
-
 .pisoft-linkbutton {
-  border-color: transparent;
   background: transparent;
 }
 
 .pisoft-linkbutton:hover {
-  border-color: black;
   background: rgb(200, 200, 200);
 }
 
 .pisoft-linkbutton:active {
-  border-color: black;
   background: rgb(220, 220, 220);
 }
+
 
 
 .pisoft-label {
@@ -78,6 +98,17 @@
 }
 
 
+pisoft-inputcomponent {
+}
+
+pisoft-inputpassword {
+}
+
+pisoft-inputfield {
+}
+
+pisoft-droplist {
+}
 
 
 .pisoft-toolbar {
@@ -85,7 +116,26 @@
   display: block;
   padding: 5px 20px 5px 20px;
   font-size: 30px;
+  cursor: default;
 
   background: rgb(230, 230, 230);
+}
+
+
+
+.pisoft-inputpanel {
+  padding: 20px;
+  display: inline-block;
+}
+
+.pisoft-inputpanel-inputcomponent {
+  display: block;
+  width: 100%
+}
+
+.pisoft-inputpanel-component {
+}
+
+.pisoft-inputpanel-label { 
 }
 

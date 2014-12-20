@@ -92,7 +92,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="51" y="116" width="229" height="30"/>
+                                    <rect key="frame" x="51" y="71" width="229" height="30"/>
                                 </variation>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="W8w-1i-39f">
@@ -100,7 +100,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="51" y="166" width="229" height="30"/>
+                                    <rect key="frame" x="51" y="119" width="229" height="30"/>
                                 </variation>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Confirm Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vN7-Lm-HYo">
@@ -108,7 +108,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="51" y="214" width="229" height="30"/>
+                                    <rect key="frame" x="51" y="169" width="229" height="30"/>
                                 </variation>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Register" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qBy-sx-xEc">
@@ -120,27 +120,13 @@
                                     <rect key="frame" x="128" y="33" width="64" height="21"/>
                                 </variation>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vQ2-iL-k4k">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <color key="backgroundColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Register">
-                                    <color key="titleColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="111" y="269" width="98" height="30"/>
-                                </variation>
-                                <connections>
-                                    <action selector="RegisterButton_Reg:" destination="lv3-vN-nl0" eventType="touchUpInside" id="40N-Ps-NYR"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QHO-mn-qhC">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <state key="normal" title="DeleteUserTest">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="16" y="392" width="104" height="30"/>
+                                    <rect key="frame" x="9" y="508" width="104" height="30"/>
                                 </variation>
                                 <connections>
                                     <action selector="TryDeleteUser:" destination="lv3-vN-nl0" eventType="touchUpInside" id="A0q-g2-ZI4"/>
@@ -152,22 +138,10 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="16" y="430" width="111" height="30"/>
+                                    <rect key="frame" x="9" y="530" width="111" height="30"/>
                                 </variation>
                                 <connections>
                                     <action selector="UpdateUserTest:" destination="lv3-vN-nl0" eventType="touchUpInside" id="h2s-yj-tYm"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Txz-nc-jaR">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <state key="normal" title="GetUsersTest">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="152" y="392" width="93" height="30"/>
-                                </variation>
-                                <connections>
-                                    <action selector="GetUsersTest:" destination="lv3-vN-nl0" eventType="touchUpInside" id="YIu-bE-bHn"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ima-cC-r7Y">
@@ -176,10 +150,36 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="141" y="331" width="38" height="30"/>
+                                    <rect key="frame" x="141" y="484" width="38" height="30"/>
                                 </variation>
                                 <connections>
                                     <action selector="LoginButton_Reg:" destination="lv3-vN-nl0" eventType="touchUpInside" id="KWu-Bf-3UT"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Txz-nc-jaR">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="GetUsersTest">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="128" y="530" width="93" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="GetUsersTest:" destination="lv3-vN-nl0" eventType="touchUpInside" id="YIu-bE-bHn"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vQ2-iL-k4k">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <color key="backgroundColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Register">
+                                    <color key="titleColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="105" y="331" width="98" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="RegisterButton_Reg:" destination="lv3-vN-nl0" eventType="touchUpInside" id="40N-Ps-NYR"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -190,11 +190,11 @@
                                 <exclude reference="W8w-1i-39f"/>
                                 <exclude reference="vN7-Lm-HYo"/>
                                 <exclude reference="qBy-sx-xEc"/>
-                                <exclude reference="vQ2-iL-k4k"/>
                                 <exclude reference="QHO-mn-qhC"/>
                                 <exclude reference="gJn-Sj-O15"/>
-                                <exclude reference="Txz-nc-jaR"/>
                                 <exclude reference="ima-cC-r7Y"/>
+                                <exclude reference="Txz-nc-jaR"/>
+                                <exclude reference="vQ2-iL-k4k"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -203,11 +203,11 @@
                                 <include reference="W8w-1i-39f"/>
                                 <include reference="vN7-Lm-HYo"/>
                                 <include reference="qBy-sx-xEc"/>
-                                <include reference="vQ2-iL-k4k"/>
                                 <include reference="QHO-mn-qhC"/>
                                 <include reference="gJn-Sj-O15"/>
-                                <include reference="Txz-nc-jaR"/>
                                 <include reference="ima-cC-r7Y"/>
+                                <include reference="Txz-nc-jaR"/>
+                                <include reference="vQ2-iL-k4k"/>
                             </mask>
                         </variation>
                     </view>

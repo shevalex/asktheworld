@@ -1,95 +1,124 @@
-
-PisoftComponent = ClassUtils.defineClass(Object, function PisoftComponent(uniqueId, cssClasses, text) {
+PisoftComponent = ClassUtils.defineClass(Object, function PisoftComponent(uniqueId, cssClasses, text, tagType) {
   if (uniqueId == null) {
-    throw "Unique id must be set";
+    console.warn("A pisoft object is created without a unique id provided");
   }
   if (cssClasses == null) {
     throw "CSS class(s) must be set";
   }
 
-  this.uniqueId = uniqueId;
-  this.displayText = text ? text : "";
-  this.cssClasses = cssClasses;
-  this.parent = null;
+  this.element = document.createElement(tagType ? tagType : "div");
+
+  this.text = null;
+  this.setText(text);
+
+  this.setCssClasses(cssClasses);
+  if (uniqueId != null) {
+    this.element.setAttribute("id", uniqueId);
+  }
+
+  this.setVisible(true);
 });
 
-PisoftComponent.prototype.getHtml = function() {
-  return "<div id='" + this.uniqueId + "' class='" + this.cssClasses + "'>" + this.getInnerHtml() + "</div>";
-}
-
-PisoftComponent.prototype.getInnerHtml = function() {
-  return this.displayText;
-}
-
 PisoftComponent.prototype.getHtmlElement = function() {
-  return document.getElementById(this.uniqueId);
+  return this.element;
 }
 
 PisoftComponent.prototype.getId = function() {
-  return this.uniqueId;
-}
-
-PisoftComponent.prototype.getHtmlElement = function() {
-  return document.getElementById(this.uniqueId);
+  return this.element.getAttribute("id");
 }
 
 
-PisoftComponent.prototype.addToContainer = function(containerId) {
-  var container = document.getElementById(containerId);
+PisoftComponent.prototype.attachToContainer = function(container) {
+  if (typeof(container) === "string") {
+    container = document.getElementById(container);
+  }
   if (container != null) {
-    this.addToParent(container);
-  } else {
-    console.error(ClassUtils.formatMessage("Parent with id=" + containerId + " is not found"));
-  }
-}
-
-PisoftComponent.prototype.addToParent = function(parent) {
-  if (parent != null) {
-    if (this.parent != null) {
-      this.removeFromParent();
+    if (container != this.getHtmlElement().parentNode) {
+      this.detachFromContainer();
+      container.appendChild(this.element);
+      this._onAttachToParent();
     }
-
-    this.parent = parent;
-    this.parent.insertAdjacentHTML("beforeend", this.getHtml());
   } else {
-    console.error(ClassUtils.formatMessage("Parent container is not provided"));
+    console.error(ClassUtils.formatMessage("Parent container " + container + " is not found"));
   }
 }
 
-PisoftComponent.prototype.removeFromParent = function() {
-  if (this.parent != null) {
-    this.parent.removeChild(this.getHtmlElement());
-    this.parent = null;
-  } else {
-    console.error(ClassUtils.formatMessage("Not attached to the parent"));
+PisoftComponent.prototype.detachFromContainer = function() {
+  var parent = this.element.parentNode;
+  if (parent != null) {
+    parent.removeChild(this.element);
   }
 }
 
 PisoftComponent.prototype.update = function() {
-  if (this.parent != null) {
-    this.addToParent(this.parent);
+  if (this.element.parentNode != null) {
+    this._rebuildComponentStructure();
   }
 }
 
+PisoftComponent.prototype.isAttached = function() {
+  return this.element.parentNode != null;
+}
 
 
 PisoftComponent.prototype.setCssClasses = function(cssClasses) {
-  this.cssClasses = cssClasses;
-  this.update();
+  this.element.setAttribute("class", cssClasses);
 }
 
 PisoftComponent.prototype.addCssClass = function(cssClass) {
-  this.cssClasses += cssClass;
-  this.update();
+  this.element.setAttribute("class", this.element.getAttribute("class") + " " + cssClass);
 }
 
 PisoftComponent.prototype.removeCssClass = function(cssClass) {
-  this.cssClasses = this.cssClasses.replace(cssClass, "");
-  this.update();
+  var cssClasses = this.element.getAttribute("class");
+  cssClasses = this.cssClasses.replace(cssClass, "");
+  this.element.setAttribute("class", cssClasses);
 }
 
+PisoftComponent.prototype.setExtraStyles = function(extraStyles) {
+  var styles = this.element.getAttribute("style") || "";
+  for (var style in extraStyles) {
+    styles += " " + style + ": " + extraStyles[style] + ";"
+  }
+  this.element.setAttribute("style", styles);
+}
 
 PisoftComponent.prototype.setText = function(text) {
-  this.displayText = text;
+  this.text = text != null ? text : "";
   this.update();
 }
+
+PisoftComponent.prototype.setWidth = function(widthSpecifier) {
+  this.setExtraStyles({"width": widthSpecifier});
+}
+
+PisoftComponent.prototype.setVisible = function(isVisible) {
+  this.element.style.visibility = isVisible == null || isVisible == false ? "hidden" : "inherit";
+}
+
+PisoftComponent.prototype.setClickListener = function(clickListener) {
+  this.element.onclick = clickListener;
+}
+
+
+PisoftComponent.prototype.buildComponentStructure = function() {
+  this.element.innerHTML = this.text;
+}
+
+
+
+// Private implementation
+
+PisoftComponent.prototype._onAttachToParent = function() {
+  this._rebuildComponentStructure();
+}
+
+PisoftComponent.prototype._rebuildComponentStructure = function() {
+  while (this.element.firstChild) {
+    this.element.removeChild(this.element.firstChild);
+  }
+
+  this.buildComponentStructure();
+}
+
+

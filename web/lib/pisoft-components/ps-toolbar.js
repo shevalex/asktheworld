@@ -3,54 +3,66 @@ PisoftToolbar = ClassUtils.defineClass(PisoftComponent, function PisoftToolbar(u
   PisoftComponent.call(this, uniqueId, "pisoft-toolbar pisoft-rounded-border");
   this.leftComponents = [];
   this.rightComponents = [];
-  this.componentMargin = margin != null ? margin : 0;
+  this.componentMargin = margin != null ? margin : "0px";
 });
 
-PisoftToolbar.prototype.getInnerHtml = function() {
-  var result = "";
 
+PisoftToolbar.prototype.buildComponentStructure = function() {
   for (var index in this.leftComponents) {
-    result += this._getComponentHtmlWithMargins(this.leftComponents[index]);
+    this.getHtmlElement().appendChild(this._getComponentHtmlWithMargins(this.leftComponents[index]));
   }
 
   if (this.rightComponents.length > 0) {
-    result += "<div style='float: right; text-align: right;'>"
+    var rightPanel = document.createElement("div");
+    rightPanel.style.cssFloat = "right";
+    rightPanel.style.textAlign = "right";
+    rightPanel.style.display = "inline-block";
+
     for (var index in this.rightComponents) {
-      result += this._getComponentHtmlWithMargins(this.rightComponents[index]);
+      rightPanel.appendChild(this._getComponentHtmlWithMargins(this.rightComponents[index]));
     }
-    result += "</div>"
-  }
 
-  return result;
+    this.getHtmlElement().appendChild(rightPanel);
+  }
 }
 
-PisoftToolbar.prototype.addComponent = function(pisoftComponent) {
-  if (pisoftComponent != null) {
+
+PisoftToolbar.prototype.addPisoftComponent = function(pisoftComponent) {
+  if (pisoftComponent instanceof PisoftComponent) {
     this.leftComponents.push(pisoftComponent);
+    this.update();
+  } else {
+    throw "Passed in component is not a Pisoft Component";
   }
-  this.update();
 }
 
-PisoftToolbar.prototype.addSideComponent = function(pisoftComponent) {
-  if (pisoftComponent != null) {
+PisoftToolbar.prototype.addSidePisoftComponent = function(pisoftComponent) {
+  if (pisoftComponent instanceof PisoftComponent) {
     this.rightComponents.push(pisoftComponent);
+    this.update();
+  } else {
+    throw "Passed in component is not a Pisoft Component";
   }
-  this.update();
 }
 
-PisoftToolbar.prototype.setComponentMargin = function(margin) {
+PisoftToolbar.prototype.setItemMargin = function(margin) {
   this.componentMargin = margin;
   this.update();
 }
 
 
+// Private implementation
+
 PisoftToolbar.prototype._getComponentHtmlWithMargins = function(pisoftComponent) {
   if (this.componentMargin != null) {
-    var result = "<div style='display: inline-block; margin-left: " + this.componentMargin + "; margin-right: " + this.componentMargin + "'>"
-    result += pisoftComponent.getHtml();
-    result += "</div>"
-    return result;
+    var compound = document.createElement("div");
+    compound.style.display = "inline-block";
+    compound.style.marginLeft = this.componentMargin;
+    compound.style.marginRight = this.componentMargin;
+    pisoftComponent.attachToContainer(compound);
+
+    return compound;
   } else {
-    return pisoftComponent.getHtml();
+    return pisoftComponent.getHtmlElement();
   }
 }
