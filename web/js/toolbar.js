@@ -10,6 +10,7 @@ Toolbar.initialize = function() {
   var psToolbar = new PisoftToolbar("TopLevelToolbar", "10px");
 
   var requestsButton = new PisoftButton("TopLevelToolbar-RequestsButton", "My Requests");
+  requestsButton.setClickListener(ContentArea.showRequestsPage.bind(ContentArea));
   psToolbar.addPisoftComponent(requestsButton);
 
   var inquiriesButton = new PisoftButton("TopLevelToolbar-InquiriesButton", "World's Inquiries");
