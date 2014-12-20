@@ -16,6 +16,7 @@ public class User implements Serializable {
 	private int birth_year;
 	private String languages[];
 	private String gender;
+	private String name;
 
 	public String getGender() {
 		return gender;
@@ -53,7 +54,12 @@ public class User implements Serializable {
 	public void setLanguages(String[] languages) {
 		this.languages = languages;
 	}
-	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public User createCopy() {
 		User user  = new User();
@@ -62,8 +68,7 @@ public class User implements Serializable {
 		user.setGender(getGender());
 		user.setBirth_year(getBirth_year());
 		user.setLanguages(getLanguages());
+		user.setName(getName());
 		return user;
 	}
-	
-	
 }
