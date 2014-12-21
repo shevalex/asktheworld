@@ -37,15 +37,12 @@ PisoftTabbedPane.prototype.buildComponentStructure = function() {
 PisoftTabbedPane.prototype.addTab = function(tabName, pisoftComponent) {
   var pageElement = document.createElement("div");
   pageElement.setAttribute("class", "pisoft-tabbedpane-page");
-  if (pisoftComponent != null) {
-    pisoftComponent.attachToContainer(pageElement);
-  }
 
   var tabElement = document.createElement("div");
   tabElement.innerHTML = tabName;
   tabElement.onclick = this.selectTab.bind(this, parseInt(this.tabs.length));
     
-  this.tabs.push({ name: tabName, tabElement: tabElement, pageElement: pageElement });
+  this.tabs.push({ name: tabName, tabElement: tabElement, pageElement: pageElement, pageContent: pisoftComponent });
   this.update();
     
   return pageElement;
@@ -87,6 +84,7 @@ PisoftTabbedPane.prototype.selectTab = function(tabName) {
       this.pagePanelElement.removeChild(this.pagePanelElement.firstChild);
     }
     this.pagePanelElement.appendChild(this.tabs[selectedIndex].pageElement);
+    this.tabs[selectedIndex].pageContent.attachToContainer(this.tabs[selectedIndex].pageElement);
   } else {
     console.error("Incorrect tab name or index: " + + tabName);   
   }
