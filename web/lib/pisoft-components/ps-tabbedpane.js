@@ -1,10 +1,12 @@
 
 PisoftTabbedPane = ClassUtils.defineClass(PisoftComponent, function PisoftTabbedPane(uniqueId, tabPadding) {
-  PisoftComponent.call(this, uniqueId, "pisoft-tabbedpane");
+  PisoftComponent.call(this, uniqueId, "pisoft-tabbedpane pisoft-rounded-border");
     
   this.pagePanelElement = document.createElement("div");
   this.tabPadding = tabPadding;
   this.tabs = [];
+  
+  this.selectedIndex = -1;
 });
 
 
@@ -13,9 +15,11 @@ PisoftTabbedPane.prototype.buildComponentStructure = function() {
   tabPanelElement.setAttribute("class",  "pisoft-non-selectable");
   tabPanelElement.style.display = "block";
   tabPanelElement.style.cssFloat = "left";
+  tabPanelElement.style.width = "200px";
     
   this.pagePanelElement.style.display = "block";
   this.pagePanelElement.style.cssFloat = "right";
+  this.pagePanelElement.style.width = "calc(100% - 200px)";
     
   for (var index in this.tabs) {
     tabPanelElement.appendChild(this.tabs[index].tabElement);
@@ -59,32 +63,35 @@ PisoftTabbedPane.prototype.getTab = function(tabName) {
 }
 
 PisoftTabbedPane.prototype.selectTab = function(tabName) {
-  var selectedIndex = -1;
-    
+  if (this.selectedIndex != -1) {
+    this.tabs[this.selectedIndex].pageContent.detachFromContainer();
+    if (this.pagePanelElement.firstChild != null) {
+      this.pagePanelElement.removeChild(this.pagePanelElement.firstChild);
+    }
+  }
+  
+  this.selectedIndex = -1;
   if (typeof tabName === "string") {
     for (var index in this.tabs) {
       if (this.tabs[index].name === tabName) {
-        selectedIndex = index;
+        this.selectedIndex = index;
       }
     }
   } else if (typeof tabName === "number") {
-    selectedIndex = tabName;
+    this.selectedIndex = tabName;
   }
 
-  if (selectedIndex >= 0 && selectedIndex < this.tabs.length) {
+  if (this.selectedIndex >= 0 && this.selectedIndex < this.tabs.length) {
     for (var index in this.tabs) {
-      if (index == selectedIndex) {
+      if (index == this.selectedIndex) {
         this.tabs[index].tabElement.setAttribute("class", "pisoft-tabbedpane-tab  pisoft-rounded-border pisoft-tabbedpane-tab-selected");
       } else {
         this.tabs[index].tabElement.setAttribute("class", "pisoft-tabbedpane-tab pisoft-rounded-border");
       }
     }
 
-    if (this.pagePanelElement.firstChild != null) {
-      this.pagePanelElement.removeChild(this.pagePanelElement.firstChild);
-    }
-    this.pagePanelElement.appendChild(this.tabs[selectedIndex].pageElement);
-    this.tabs[selectedIndex].pageContent.attachToContainer(this.tabs[selectedIndex].pageElement);
+    this.pagePanelElement.appendChild(this.tabs[this.selectedIndex].pageElement);
+    this.tabs[this.selectedIndex].pageContent.attachToContainer(this.tabs[this.selectedIndex].pageElement);
   } else {
     console.error("Incorrect tab name or index: " + + tabName);   
   }

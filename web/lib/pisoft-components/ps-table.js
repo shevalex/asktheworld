@@ -1,6 +1,7 @@
 
 PisoftTable = ClassUtils.defineClass(PisoftComponent, function PisoftPlainList(uniqueId, dataModel) {
-  PisoftComponent.call(this, uniqueId, "pisoft-table display", "", "table");
+  PisoftComponent.call(this, uniqueId, "pisoft-table pisoft-rounded-border");
+  this.getHtmlElement().setAttribute("width", "100%");
   
   //this.setMargin(margin);
   this.dataModel = dataModel;
@@ -25,7 +26,14 @@ PisoftTable.DataModel.prototype.getColumns = function() {
 
 
 PisoftTable.prototype.buildComponentStructure = function() {
-  $("#" + this.getId()).dataTable({
+  var tableElement = document.createElement("table");
+  tableElement.setAttribute("class", "display");
+  var tableElementId = this.getId() + "-Table";
+  tableElement.setAttribute("id", tableElementId);
+  
+  this.getHtmlElement().appendChild(tableElement);
+  
+  $("#" + tableElementId).dataTable({
     data: this.dataModel.getData(),
     columns: this.dataModel.getColumns()
   });

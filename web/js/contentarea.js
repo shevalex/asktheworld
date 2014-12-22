@@ -17,7 +17,7 @@ ContentArea.showRequestsPage = function() {
 
 
 ContentArea.createRequestArea = function() {
-  var requestArea = new PisoftTabbedPane("ContentTabbedPane", "10px");
+  var requestArea = new PisoftTabbedPane("RequestManagementPane", "10px");
     
   var dataModel = new PisoftTable.DataModel(function() {
     return [ "A", "B", "C" ];
