@@ -18,7 +18,7 @@ PisoftTable.DataModel.prototype.getColumns = function() {
   var result = [];
   var columnNames = this.columnProvider();
   for (var index in columnNames) {
-    result.push({ title: columnNames[index] });
+    result.push({ title: columnNames[index].title, width: columnNames[index].width });
   }
   
   return result;

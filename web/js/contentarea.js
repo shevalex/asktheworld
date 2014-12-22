@@ -20,7 +20,7 @@ ContentArea.createRequestArea = function() {
   var requestArea = new PisoftTabbedPane("RequestManagementPane", "10px");
     
   var dataModel = new PisoftTable.DataModel(function() {
-    return [ "A", "B", "C" ];
+    return [ {title: "A", width: "20%"}, {title: "B", width: "20%"}, {title: "C", width: "60%"} ];
   }, function() {
     return [ ["A1", "B1", "C1" ], ["A2", "B2", "C2" ] ];
   });
