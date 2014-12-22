@@ -1,3 +1,11 @@
+.pisoft-non-selectable {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+}
+
 
 .pisoft-rounded-border {
   border: solid;
@@ -34,13 +42,8 @@
   display: inline-block;
   padding: 5px 20px 5px 20px;
   min-width: 100px;
+  white-space: nowrap;
   cursor: default;
-
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
 
   color: rgb(0, 0, 120);
 }
@@ -88,15 +91,12 @@
 .pisoft-label {
   text-align: center;
 
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-
   color: rgb(0, 0, 120);
 }
 
+
+pisoft-inputcomponent {
+}
 
 pisoft-inputpassword {
 }
@@ -104,6 +104,8 @@ pisoft-inputpassword {
 pisoft-inputfield {
 }
 
+pisoft-droplist {
+}
 
 
 .pisoft-toolbar {
@@ -117,6 +119,60 @@ pisoft-inputfield {
 }
 
 
+.pisoft-tabbedpane {
+  display: inline-block;
+  padding: 10px;
+}
+
+.pisoft-tabbedpane-tab {
+  text-align: left;
+  display: block;
+  padding: 10px 20px 10px 20px;
+  margin: 0px 5px 5px 10px;
+  font-size: 30px;
+  min-width: 100px;
+  cursor: default;
+
+  color: rgb(0, 0, 120);
+  background: rgb(180, 180, 180);
+}
+
+.pisoft-tabbedpane-tab:hover {
+  text-decoration: underline;
+  color: rgb(26, 26, 255);
+  background: rgb(200, 200, 200);
+}
+
+.pisoft-tabbedpane-tab:active {
+  text-decoration: underline;
+  color: rgb(26, 26, 255);
+  background: rgb(220, 220, 220);
+}
+
+.pisoft-tabbedpane-tab-selected {
+  margin-left: 0px;
+  padding-left: 30px;
+  background: rgb(230, 230, 230);
+}
+
+.pisoft-tabbedpane-tab-selected:hover {
+  text-decoration: none;
+  color: rgb(0, 0, 120);
+  background: rgb(230, 230, 230);
+}
+
+.pisoft-tabbedpane-tab-selected:active {
+  text-decoration: none;
+  color: rgb(0, 0, 120);
+  background: rgb(230, 230, 230);
+}
+
+.pisoft-tabbedpane-page {
+  width: 100%;
+  display: block;
+  cursor: default;
+}
+
 
 .pisoft-inputpanel {
   padding: 20px;
@@ -128,6 +184,13 @@ pisoft-inputfield {
   width: 100%
 }
 
+.pisoft-inputpanel-component {
+}
+
 .pisoft-inputpanel-label { 
 }
 
+
+.pisoft-table {
+  padding: 10px;
+}

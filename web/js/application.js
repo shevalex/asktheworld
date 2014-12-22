@@ -8,5 +8,6 @@ Application.start = function() {
 
 Application.createWebSite = function() {
   Toolbar.initialize();
+  ContentArea.initialize();
 }
 
