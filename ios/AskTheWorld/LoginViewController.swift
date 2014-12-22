@@ -27,7 +27,42 @@ class LoginViewController: UIViewController {
             alertView.addButtonWithTitle("OK")
             alertView.show()
         } else {
-            //connect to server somehow
+            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user?login=\(username)")!
+            
+            var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
+            request.HTTPMethod = "GET"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            var reponseError: NSError?
+            var response: NSURLResponse?
+            
+            var urlData: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error:&reponseError)
+            if ( urlData != nil ) {
+                let res = response as NSHTTPURLResponse!
+                
+                println("Response code: \(res.statusCode)")
+                println(res.allHeaderFields)
+                
+                if (res.statusCode == 200)
+                {
+                    var prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                    prefs.setObject(username, forKey: "USERNAME")
+                    prefs.setInteger(1, forKey: "ISLOGGEDIN")
+                    prefs.synchronize()
+                    
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                }
+                else {
+                    var alertView:UIAlertView = UIAlertView()
+                    alertView.title = "Login Failed!"
+                    alertView.message = "No such user!"
+                    alertView.delegate = self
+                    alertView.addButtonWithTitle("OK")
+                    alertView.show()
+                }
+            }
+
+
         }
     }
     

@@ -16,11 +16,14 @@ class RegisterViewController: UIViewController {
     
     @IBOutlet weak var ConfirmPassword_Reg: UITextField!
     
+    @IBOutlet weak var Year_Of_Birth_Reg: UITextField!
+    
     @IBAction func RegisterButton_Reg(sender: UIButton) {
         
         var username:NSString = UserNameField_Reg.text
         var password:NSString = PasswordField_Reg.text
         var confirm_password:NSString = ConfirmPassword_Reg.text
+        var year_of_birth:NSString = Year_Of_Birth_Reg.text
         
         if ( username.isEqualToString("") || password.isEqualToString("") ){
             var alertView:UIAlertView = UIAlertView()
@@ -36,15 +39,24 @@ class RegisterViewController: UIViewController {
             alertView.delegate = self
             alertView.addButtonWithTitle("OK")
             alertView.show()
+        } else if (year_of_birth.isEqualToString("")) {
+            var alertView:UIAlertView = UIAlertView()
+            alertView.title = "Register Failed!"
+            alertView.message = "Please put the correct year of birth"
+            alertView.delegate = self
+            alertView.addButtonWithTitle("OK")
+            alertView.show()
         } else {
-            //var login_str:NSString = "\"login\""
             //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"birth_year\":1980,\"languages\":[ENG]}"
             
-            var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"birth_year\":1980}"
+            //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"name\":\"nickname\",\"gender\":\"male\",\"birth_year\":\(year_of_birth),\"languages\":[ENG]}"
+            
+            var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"birth_year\":\(year_of_birth)}"
+            
             
             println("PostData:" + post);
             
-            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user")!
+            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user")!
             
             var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
             
@@ -61,7 +73,6 @@ class RegisterViewController: UIViewController {
             
             var urlData: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error:&reponseError)
 
-            
             if ( urlData != nil ) {
                 let res = response as NSHTTPURLResponse!;
                 
@@ -98,7 +109,7 @@ class RegisterViewController: UIViewController {
     }
     
     @IBAction func TryDeleteUser(sender: UIButton) {
-        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user/2")!
+        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user/2")!
         
         var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "DELETE"
@@ -116,20 +127,20 @@ class RegisterViewController: UIViewController {
     }
     
     @IBAction func UpdateUserTest(sender: UIButton) {
-        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user/1")!
+        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user/1")!
         
-        var post:NSString = "{\"password\":\"AnyPass\",\"gender\":\"male\",\"byear\":1986}"
+        var put:NSString = "{\"password\":\"AnyPass\",\"gender\":\"male\",\"byear\":1986}"
         
-        println("PostData: \(post)")
+        println("putData: \(put)")
         
-        var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
+        var putData:NSData = put.dataUsingEncoding(NSASCIIStringEncoding)!
         
-        var postLength:NSString = String( postData.length )
+        var putLength:NSString = String( putData.length )
         
         var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "PUT"
-        request.HTTPBody = postData
-        request.setValue(postLength, forHTTPHeaderField: "Content-Length")
+        request.HTTPBody = putData
+        request.setValue(putLength, forHTTPHeaderField: "Content-Length")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         var reponseError: NSError?
         var response: NSURLResponse?
@@ -146,7 +157,7 @@ class RegisterViewController: UIViewController {
     
     
     @IBAction func GetUsersTest(sender: UIButton) {
-        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld/user")!
+        var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user")!
         
         var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "GET"
