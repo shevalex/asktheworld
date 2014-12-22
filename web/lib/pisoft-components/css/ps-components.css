@@ -169,11 +169,8 @@ pisoft-droplist {
 
 .pisoft-tabbedpane-page {
   width: 100%;
-  text-align: center;
   display: block;
   cursor: default;
-
-  Xbackground: rgb(230, 230, 230);
 }
 
 
