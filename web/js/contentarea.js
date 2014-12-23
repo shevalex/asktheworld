@@ -24,7 +24,13 @@ ContentArea.createRequestArea = function() {
   }, function() {
     return [ ["A1", "B1", "C1" ], ["A2", "B2", "C2" ] ];
   });
-  requestArea.addTab("Active", new PisoftTable("RequestTable", dataModel));
+  
+  var requestTable = new PisoftTable("RequestTable", dataModel);
+  requestTable.setSelectionListener(function(index) {
+    console.debug("Request table row " + index + " selected");
+  });
+  
+  requestArea.addTab("Active", requestTable);
   requestArea.addTab("Archived", new PisoftButton("TestBtn2", "Some Other Long Text"));
   
   return requestArea;

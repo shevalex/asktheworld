@@ -5,6 +5,7 @@ PisoftTable = ClassUtils.defineClass(PisoftComponent, function PisoftPlainList(u
   
   //this.setMargin(margin);
   this.dataModel = dataModel;
+  this.selectionListener = null;
 });
 
 PisoftTable.DataModel = ClassUtils.defineClass(Object, function DataModel(columnProvider, dataProvider) {
@@ -33,9 +34,19 @@ PisoftTable.prototype.buildComponentStructure = function() {
   
   this.getHtmlElement().appendChild(tableElement);
   
-  $("#" + tableElementId).dataTable({
+  var dataTableObject = $("#" + tableElementId).DataTable({
     data: this.dataModel.getData(),
     columns: this.dataModel.getColumns()
+  });
+  
+  var pisoftTable = this;
+  dataTableObject.on("click", "tr", function() {
+    dataTableObject.$("tr.selected").removeClass("selected");
+    $(this).addClass("selected");
+
+    if (pisoftTable.selectionListener != null) {
+      pisoftTable.selectionListener(dataTableObject.row(this).index());
+    }
   });
 }
 
@@ -43,3 +54,6 @@ PisoftTable.prototype.setMargin = function() {
   //this.getHtmlElement().setAttribute();
 }
 
+PisoftTable.prototype.setSelectionListener = function(listener) {
+  this.selectionListener = listener;
+}
