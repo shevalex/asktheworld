@@ -1,6 +1,6 @@
 
-PisoftTable = ClassUtils.defineClass(PisoftComponent, function PisoftPlainList(uniqueId, dataModel) {
-  PisoftComponent.call(this, uniqueId, "pisoft-table pisoft-rounded-border");
+PisoftTable = ClassUtils.defineClass(PisoftContainer, function PisoftPlainList(uniqueId, dataModel) {
+  PisoftContainer.call(this, uniqueId, "pisoft-table");
   this.getHtmlElement().setAttribute("width", "100%");
   
   //this.setMargin(margin);

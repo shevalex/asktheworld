@@ -1,6 +1,6 @@
 
-PisoftInputPanel = ClassUtils.defineClass(PisoftComponent, function PisoftInputPanel(uniqueId, margin) {
-  PisoftComponent.call(this, uniqueId, "pisoft-inputpanel pisoft-rounded-border");
+PisoftInputPanel = ClassUtils.defineClass(PisoftContainer, function PisoftInputPanel(uniqueId, margin) {
+  PisoftContainer.call(this, uniqueId, "pisoft-inputpanel");
   this.panelComponents = [];
   this.rightButton = null;
   this.leftButton = null;

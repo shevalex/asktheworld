@@ -22,7 +22,6 @@ body {
 
 #RootContainer {
   width: 100%;
-  height: calc(100% - 70px);
 }
 
 #ToolbarArea {
@@ -63,6 +62,24 @@ body {
   margin-top: 20px;
 }
 
-#RequestManagementPane {
+#RequestManagementPage {
   width: calc(100% - 20px);
+}
+
+#RequestManagementContainer {
+  padding: 10px;
+  width: calc(100% - 20px);
+}
+
+#RequestEdditingPane {
+  margin-top: 20px;
+  width: 100%;
+  display: : block;
+}
+
+#RequestEdditingPane-TextArea {
+  width: 100%;
+  font-size: 20px;
+  resize: none;
+  
 }
