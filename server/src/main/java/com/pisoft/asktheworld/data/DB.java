@@ -9,6 +9,7 @@ public class DB {
 	public boolean verifyString(String str) {return str != null && str.length() > 3;}
 	public boolean verifyYear(int year) { return year > 1900 && year < 2100;}
 	public boolean verifyLangs(String langs[]) { return langs != null && langs.length > 0;}
+	public boolean verifyAge(String str) {return true;}
 	static DB db = new DB();
 	int lastId = 0;
 	Map<String, Integer> names = new HashMap<String, Integer>();
@@ -53,7 +54,7 @@ public class DB {
 		if( existUser != null) {
 			if(verifyString(user.getPassword())) existUser.setPassword(user.getPassword());
 			if(verifyString(user.getGender())) existUser.setGender(user.getGender());
-			if(verifyYear(user.getBirth_year())) existUser.setBirth_year(user.getBirth_year());
+			if(verifyAge(user.getAge_category())) existUser.setAge_category(user.getAge_category());
 			if(verifyLangs(user.getLanguages())) existUser.setLanguages(user.getLanguages());
 		}
 		return existUser;

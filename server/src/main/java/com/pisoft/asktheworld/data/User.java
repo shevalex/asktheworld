@@ -5,7 +5,6 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class User implements Serializable {
-	private static int lastID = 0;
 	/**
 	 * 
 	 */
@@ -13,10 +12,10 @@ public class User implements Serializable {
 	@JsonIgnore	private int id;
 	private String login;
 	private String password;
-	private int birth_year;
 	private String languages[];
 	private String gender;
 	private String name;
+	private String age_category;
 
 	public String getGender() {
 		return gender;
@@ -42,12 +41,6 @@ public class User implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public int getBirth_year() {
-		return birth_year;
-	}
-	public void setBirth_year(int byear) {
-		this.birth_year = byear;
-	}
 	public String[] getLanguages() {
 		return languages;
 	}
@@ -66,9 +59,15 @@ public class User implements Serializable {
 		user.setId(getId());
 		user.setLogin(getLogin());
 		user.setGender(getGender());
-		user.setBirth_year(getBirth_year());
+		user.setAge_category(getAge_category());
 		user.setLanguages(getLanguages());
 		user.setName(getName());
 		return user;
+	}
+	public String getAge_category() {
+		return age_category;
+	}
+	public void setAge_category(String age_category) {
+		this.age_category = age_category;
 	}
 }
