@@ -1,0 +1,39 @@
+#LoginPage {
+  text-align: center;
+  min-width: 800px;
+}
+
+#LoginPage-Panel {
+  display: inline-block;
+  margin-top: 50px;
+  font-size: 20px;
+}
+
+#LoginPage-Login, #LoginPage-Password {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+#LoginPage-SignInButton {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+#LoginPage-ForgotPasswordLink {
+  margin-top: 15px;
+  font-size: 15px;
+}
+
+#LoginPage-SignUpLink {
+  margin-top: 25px;
+  font-size: 30px;
+}
+
+#LoginPage-Description {
+  position: absolute;
+  top: 150px;
+  left: 50px;
+  width: 200px;
+}
+
