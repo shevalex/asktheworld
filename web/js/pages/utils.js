@@ -97,6 +97,23 @@ UIUtils.createLineBreak = function() {
   return document.createElement("br");
 }
 
+UIUtils.createList = function(listId, items) {
+  var listElement = document.createElement("ul");
+  linkElement.setAttribute("id", listId);
+  
+  for (var index in items) {
+    var itemElement = listElement.appendChild(document.createElement("li"));
+    itemElement.setAttribute("id", listId + "-Item" + index);
+    itemElement.innerHTML = items[index];
+  }
+  
+  return listElement;
+}
+
+UIUtils.createSeparator = function() {
+  return document.createElement("hr");
+}
+
 
 UIUtils.animateBackgroundColor = function(elementId, color, speed, observer) {
   var jQueryObject = $("#" + elementId);

@@ -29,7 +29,7 @@ Application.showRegisterPage = function(observer) {
 
 Application.showMenuPage = function(observer) {
   if (this.menuPage == null) {
-    this.menuPage = new RegisterPage();
+    this.menuPage = new MenuPage();
   }
   
   Application._showPage(this.menuPage, observer);
