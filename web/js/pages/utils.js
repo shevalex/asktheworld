@@ -20,29 +20,25 @@ ClassUtils.defineClass = function(superClass, childConstructor) {
 
 UIUtils = {};
 
-UIUtils.createLabeledInputField = function(inputFieldId, labelText, margin) {
-  var compoundElement = document.createElement("div");
-  compoundElement.style.display = "inline-block";
-  compoundElement.style.textAlign = "left";
+UIUtils.createLabeledTextInput = function(inputFieldId, labelText, margin) {
+  return UIUtils._createLabeledCombo(inputFieldId, labelText, UIUtils.createTextInput(inputFieldId), margin);
+}
 
+UIUtils.createLabeledPasswordInput = function(inputFieldId, labelText, margin) {
+  return UIUtils._createLabeledCombo(inputFieldId, labelText, UIUtils.createPasswordInput(inputFieldId), margin);
+}
+
+UIUtils.createLabeledDropList = function(dropListId, labelText, options, margin) {
+  return UIUtils._createLabeledCombo(dropListId, labelText, UIUtils.createDropList(dropListId, options), margin);
+}
+
+UIUtils.createLabel = function(labelId, labelText) {
   var labelElement = document.createElement("div");
-  labelElement.setAttribute("id", inputFieldId + "-Label");
+  labelElement.setAttribute("id", labelId);
   labelElement.innerHTML = labelText;
   labelElement.style.display = "inline-block";
-  compoundElement.appendChild(labelElement);
   
-  compoundElement.appendChild(UIUtils.createLineBreak());
-
-  var inputFieldElement = document.createElement("input");
-  inputFieldElement.setAttribute("type", "text");
-  inputFieldElement.setAttribute("id", inputFieldId);
-  inputFieldElement.style.display = "inline-block";
-  if (margin != null) {
-    inputFieldElement.style.marginTop = margin;
-  }
-  compoundElement.appendChild(inputFieldElement);
-
-  return compoundElement;
+  return labelElement;
 }
 
 UIUtils.createButton = function(buttonId, text) {
@@ -62,6 +58,27 @@ UIUtils.createBlock = function(blockId) {
   return blockElement;
 }
 
+UIUtils.createTextInput = function(inputFieldId) {
+  return UIUtils._createInputField(inputFieldId, "text");
+}
+
+UIUtils.createPasswordInput = function(inputFieldId) {
+  return UIUtils._createInputField(inputFieldId, "password");
+}
+
+UIUtils.createDropList = function(listId, items) {
+  var listElement = document.createElement("select");
+  listElement.setAttribute("id", listId);
+  listElement.style.width = "100%";
+  
+  for (var index in items) {
+    var optionElement = document.createElement("option");
+    optionElement.innerHTML = items[index];
+    listElement.appendChild(optionElement);
+  }
+  
+  return listElement;
+}
 
 UIUtils.createLink = function(linkId, text) {
   var linkElement = document.createElement("a");
@@ -69,7 +86,6 @@ UIUtils.createLink = function(linkId, text) {
   linkElement.setAttribute("href", "#");
   linkElement.style.display = "block";
   linkElement.innerHTML = text;
-  linkElement.style.display = "block";
   
   return linkElement;
 }
@@ -77,3 +93,31 @@ UIUtils.createLink = function(linkId, text) {
 UIUtils.createLineBreak = function() {
   return document.createElement("br");
 }
+
+
+
+UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, margin) {
+  var compoundElement = document.createElement("div");
+  compoundElement.style.display = "block";
+  compoundElement.style.textAlign = "left";
+
+  compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "-Label", labelText));
+  compoundElement.appendChild(UIUtils.createLineBreak());
+
+  compoundElement.appendChild(inputElement);
+  if (margin != null) {
+    inputElement.style.marginTop = margin;
+  }
+
+  return compoundElement;
+}
+
+UIUtils._createInputField = function(inputFieldId, inputType) {
+  var inputFieldElement = document.createElement("input");
+  inputFieldElement.setAttribute("type", inputType != null ? inputType : "text");
+  inputFieldElement.setAttribute("id", inputFieldId);
+  inputFieldElement.style.display = "inline-block";
+  
+  return inputFieldElement;
+}
+

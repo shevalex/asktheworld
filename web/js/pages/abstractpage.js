@@ -6,6 +6,8 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
   
   this.pageElement = document.createElement("div");
   this.pageElement.setAttribute("id", pageId);
+  
+  this.isDefined = false;
 });
 
 AbstractPage.prototype.show = function(container) {
@@ -17,7 +19,11 @@ AbstractPage.prototype.show = function(container) {
 AbstractPage.prototype.showAnimated = function(container, completionObserver) {
   this.pageElement.style.display = "none";
   container.appendChild(this.pageElement);
-  this.definePageContent(this.pageElement);
+  
+  if (!this.isDefined) {
+    this.definePageContent(this.pageElement);
+    this.isDefined = true;
+  }
   $("#" + this.pageId).slideDown("slow", completionObserver);
 }
 
@@ -27,11 +33,11 @@ AbstractPage.prototype.hide = function() {
   }
 }
 
-AbstractPage.prototype.hideAnimated = function(container, completionObserver) {
+AbstractPage.prototype.hideAnimated = function(completionObserver) {
   $("#" + this.pageId).slideUp("fast", function() {
     this.pageElement.parentElement.removeChild(this.pageElement);
     completionObserver();
-  });
+  }.bind(this));
 }
 
 

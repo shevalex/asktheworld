@@ -1,0 +1,22 @@
+#RegisterPage {
+  text-align: center;
+  min-width: 400px;
+}
+
+#RegisterPage-Panel {
+  display: inline-block;
+  margin-top: 50px;
+  font-size: 20px;
+}
+
+#RegisterPage-Email, #RegisterPage-Name, #RegisterPage-Gender, #RegisterPage-AgeCategory, #RegisterPage-Languages, #RegisterPage-Password, #RegisterPage-RetypePassword {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+#RegisterPage-RegisterButton {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 20px;
+}
+

@@ -32,7 +32,7 @@ input {
 
 #Footer {
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 0px;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -48,6 +48,9 @@ input {
 }
 
 #RootContainer {
-  width: 100%;
+  width: calc(100% - 10px);
+  padding: 5px;
+  max-height: calc(100% - 120px);
+  overflow: scroll;
 }
 
