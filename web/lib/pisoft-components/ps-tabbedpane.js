@@ -1,6 +1,6 @@
 
-PisoftTabbedPane = ClassUtils.defineClass(PisoftComponent, function PisoftTabbedPane(uniqueId, tabPadding) {
-  PisoftComponent.call(this, uniqueId, "pisoft-tabbedpane pisoft-rounded-border");
+PisoftTabbedPane = ClassUtils.defineClass(PisoftContainer, function PisoftTabbedPane(uniqueId, tabPadding) {
+  PisoftContainer.call(this, uniqueId, "pisoft-tabbedpane");
     
   this.pagePanelElement = document.createElement("div");
   this.tabPadding = tabPadding;
@@ -91,7 +91,11 @@ PisoftTabbedPane.prototype.selectTab = function(tabName) {
     }
 
     this.pagePanelElement.appendChild(this.tabs[this.selectedIndex].pageElement);
-    this.tabs[this.selectedIndex].pageContent.attachToContainer(this.tabs[this.selectedIndex].pageElement);
+    if (this.tabs[this.selectedIndex].pageContent instanceof PisoftComponent) {
+      this.tabs[this.selectedIndex].pageContent.attachToContainer(this.tabs[this.selectedIndex].pageElement);
+    } else {
+      this.tabs[this.selectedIndex].pageElement.appendChild(this.tabs[this.selectedIndex].pageContent);
+    }
   } else {
     console.error("Incorrect tab name or index: " + + tabName);   
   }

@@ -1,6 +1,6 @@
 
-PisoftToolbar = ClassUtils.defineClass(PisoftComponent, function PisoftToolbar(uniqueId, margin) {
-  PisoftComponent.call(this, uniqueId, "pisoft-toolbar pisoft-rounded-border pisoft-non-selectable");
+PisoftToolbar = ClassUtils.defineClass(PisoftContainer, function PisoftToolbar(uniqueId, margin) {
+  PisoftContainer.call(this, uniqueId, "pisoft-toolbar pisoft-non-selectable");
   this.leftComponents = [];
   this.rightComponents = [];
   this.componentMargin = margin != null ? margin : "0px";

@@ -1,0 +1,62 @@
+#MenuPage {
+}
+
+#MenuPage-MenuPanel {
+  width: 20%;
+  margin-left: 0px;
+  margin-top: 50px;
+  display: inline-block;
+
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-top-color: black;
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  border-bottom-color: black;
+  border-left-style: solid;
+  border-left-width: 3px;
+  border-left-color: black;
+}
+
+#MenuPage-ContentPanel {
+  position: absolute;
+  width: calc(80% - 30px);
+  margin-left: 10px;
+  margin-top: 50px;
+  display: inline-block;
+  
+  height: 10px;
+}
+
+.menupage-menuitem {
+  display: block;
+  padding: 10px 20px 10px 20px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: black;
+  background: rgb(185, 122, 87);
+  color: white;
+  
+  font-size: 20px;
+}
+
+.menupage-menuitem:hover {
+  background: gray;
+}
+
+.menupage-menuitem-selected {
+  background: transparent;
+  color: black;
+}
+
+.menupage-menuitem-selected:hover {
+  background: transparent;
+}
+
+.menupage-menuseparator {
+  display: block;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: black;
+  background: rgb(100, 100, 200);
+}

@@ -32,6 +32,9 @@ PisoftComponent.prototype.attachToContainer = function(container) {
   if (typeof(container) === "string") {
     container = document.getElementById(container);
   }
+  if (container instanceof PisoftComponent) {
+    container = container.getHtmlElement();
+  }
   if (container != null) {
     if (container != this.getHtmlElement().parentNode) {
       this.detachFromContainer();

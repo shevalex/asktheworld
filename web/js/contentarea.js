@@ -17,17 +17,41 @@ ContentArea.showRequestsPage = function() {
 
 
 ContentArea.createRequestArea = function() {
-  var requestArea = new PisoftTabbedPane("RequestManagementPane", "10px");
+  var requestArea = new PisoftTabbedPane("RequestManagementPage", "10px");
     
   var dataModel = new PisoftTable.DataModel(function() {
-    return [ "A", "B", "C" ];
+    return [ {title: "A", width: "20%"}, {title: "B", width: "20%"}, {title: "C", width: "60%"} ];
   }, function() {
     return [ ["A1", "B1", "C1" ], ["A2", "B2", "C2" ] ];
   });
-  requestArea.addTab("Active", new PisoftTable("RequestTable", dataModel));
+  
+  
+  var requestManagementContainer = new PisoftContainer("RequestManagementContainer");
+  
+  var requestTable = new PisoftTable("RequestTable", dataModel);
+  requestTable.setSelectionListener(function(index) {
+    //console.debug("Request table row " + index + " selected");
+    var edditingPane = this.createRequestEdittingPane();
+  });
+  requestManagementContainer.addChild(requestTable);
+
+  var edditingPane = this.createRequestEdittingPane();
+  requestManagementContainer.addChild(edditingPane);
+  
+  requestArea.addTab("Active", requestManagementContainer);
   requestArea.addTab("Archived", new PisoftButton("TestBtn2", "Some Other Long Text"));
   
   return requestArea;
 }
 
-
+ContentArea.createRequestEdittingPane = function() {
+  var panel = document.createElement("div");
+  panel.setAttribute("id", "RequestEdditingPane");
+  
+  var textArea = document.createElement("textarea");
+  textArea.setAttribute("id", "RequestEdditingPane-TextArea");
+  textArea.setAttribute("rows", "5");
+  panel.appendChild(textArea);
+  
+  return panel;
+}

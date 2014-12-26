@@ -5,9 +5,19 @@ body {
   height: 100%;
 }
 
+button {
+  border-radius: 5px;
+}
+
+input {
+  border-radius: 5px;
+}
+
+
 #Title {
   width: 100%;
-  height: 70px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   white-space: nowrap;
   text-align: center;
   background: rgb(254, 251, 233);
@@ -20,49 +30,27 @@ body {
   color: rgb(185, 122, 87);
 }
 
-#RootContainer {
+#Footer {
   width: 100%;
-  height: calc(100% - 70px);
+  position: fixed;
+  bottom: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  white-space: nowrap;
+  text-align: center;
+  background: rgb(100, 100, 170);
 }
 
-#ToolbarArea {
-  padding: 20px;
-  width: calc(100% - 40px);
+#Footer-Label {
+  font-size: 15px;
+  font-weight: bold;
+  color: rgb(255, 255, 255);
 }
 
-#ContentArea {
-  padding: 20px;
-  width: calc(100% - 40px);
+#RootContainer {
+  width: calc(100% - 10px);
+  padding: 5px;
+  max-height: calc(100% - 120px);
+  overflow: scroll;
 }
 
-
-
-#LoginPanel, #RegisterPanel, #UpdateProfilePanel {
-  display: none;
-  float: right;
-  margin-top: 20px;
-}
-
-#LoginPanel {
-  width: 30%;
-}
-
-#RegisterPanel, #UpdateProfilePanel {
-  width: 40%;
-}
-
-#TopLevelToolbar-LoggedUserLabel {
-  width: 300px;
-  text-align: right;
-}
-
-
-#LoginPanel-StatusLabel, #RegisterPanel-StatusLabel, #UpdateProfilePanel-StatusLabel {
-  color: red;
-  height: 20px;
-  margin-top: 20px;
-}
-
-#RequestManagementPane {
-  width: calc(100% - 20px);
-}
