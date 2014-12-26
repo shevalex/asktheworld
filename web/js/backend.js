@@ -1,7 +1,7 @@
 
 var Backend = {};
 
-Backend.SERVER_BASE_URL = "http://env-7303452.whelastic.net/asktheworld/";
+Backend.SERVER_BASE_URL = "http://env-7303452.whelastic.net/asktheworld2/";
 
 Backend.UserProfile = {"login": null, "password": null, "gender": null, "languages": [], "age": null, "name": null, "userId": null};
 

@@ -7,8 +7,10 @@ LoginPage.prototype.definePageContent = function(root) {
     
   root.appendChild(UIUtils.createBlock("LoginPage-StatusPanel"));
   
-  root.appendChild(UIUtils.createBlock("LoginPage-Description"));
-  $("#LoginPage-Description").html("Here is where we will place our logo as well as the text which will describe what this project is");
+  root.appendChild(UIUtils.createBlock("LoginPage-Description-Left"));
+  root.appendChild(UIUtils.createBlock("LoginPage-Description-Right"));
+  $("#LoginPage-Description-Left").html("Here is where we will place our logo as well as the text which will describe what this project is");
+  $("#LoginPage-Description-Right").html("Here is where we will add some extra bullshit");
   
   $("#LoginPage-SignInButton").click(function() {
     $("#LoginPage-StatusPanel").text("");

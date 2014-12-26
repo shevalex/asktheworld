@@ -7,8 +7,10 @@ RegisterPage.prototype.definePageContent = function(root) {
   
   root.appendChild(UIUtils.createBlock("RegisterPage-StatusPanel"));
   
-  root.appendChild(UIUtils.createBlock("RegisterPage-Description"));
-  $("#RegisterPage-Description").html("By registering you will get an instant access to the secret technology that we provide");
+  root.appendChild(UIUtils.createBlock("RegisterPage-Description-Left"));
+  root.appendChild(UIUtils.createBlock("RegisterPage-Description-Right"));
+  $("#RegisterPage-Description-Left").html("By registering you will get an instant access to the secret technology that we provide");
+  $("#RegisterPage-Description-Right").html("Please complete all the fields");
 
   
   $("#RegisterPage-RegisterButton").click(function() {

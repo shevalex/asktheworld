@@ -21,23 +21,35 @@
   font-size: 20px;
 }
 
-#RegisterPage-Description {
-  position: absolute;
+#RegisterPage-Description-Left {
   vertical-align: top;
-  left: 0;
+  float: left;
   margin-top: 100px;
   margin-left: 100px;
   display: inline-block;
   width: 20%;
+  
+  font-size: 25px;
+}
+
+#RegisterPage-Description-Right {
+  vertical-align: top;
+  float: right;
+  margin-top: 100px;
+  margin-right: 100px;
+  display: inline-block;
+  width: 20%;
+  
+  font-size: 25px;
 }
 
 #RegisterPage-StatusPanel {
   position: absolute;
-  margin-top: 150px;
-  margin-left: 100px;
-  margin-right: 100px;
+  left: 70%;
+  top: 50%;
   display: inline-block;
   width: 20%;
+
   font-size: 20px;
   color: rgb(255, 100, 100);
 }
