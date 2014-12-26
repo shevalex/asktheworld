@@ -79,5 +79,5 @@ MenuPage.prototype._selectMenuItem = function(itemId) {
 }
 
 MenuPage.prototype._getPageForItem = function(itemId) {
-  return new LoginPage();
+  return new LoginPage();;
 }

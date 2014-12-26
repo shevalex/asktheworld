@@ -50,7 +50,6 @@ input {
 #RootContainer {
   width: calc(100% - 10px);
   padding: 5px;
-  max-height: calc(100% - 120px);
-  overflow: scroll;
+  margin-bottom: 30px;
 }
 

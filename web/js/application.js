@@ -9,6 +9,7 @@ Application.start = function() {
   this.rootContainer = document.getElementById("RootContainer");
   
   this.showLoginPage();
+  //this.showMenuPage();
 }
 
 Application.showLoginPage = function(observer) {
