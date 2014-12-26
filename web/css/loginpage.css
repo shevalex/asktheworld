@@ -1,9 +1,10 @@
 #LoginPage {
   text-align: center;
-  min-width: 800px;
+  min-width: 900px;
 }
 
 #LoginPage-Panel {
+  width: 20%;
   display: inline-block;
   margin-top: 50px;
   font-size: 20px;
@@ -32,8 +33,22 @@
 
 #LoginPage-Description {
   position: absolute;
-  top: 150px;
-  left: 50px;
-  width: 200px;
+  vertical-align: top;
+  left: 0;
+  margin-top: 100px;
+  margin-left: 100px;
+  display: inline-block;
+  width: 20%;
+}
+
+#LoginPage-StatusPanel {
+  position: absolute;
+  margin-top: 150px;
+  margin-left: 100px;
+  margin-right: 100px;
+  display: inline-block;
+  width: 20%;
+  font-size: 20px;
+  color: rgb(255, 100, 100);
 }
 

@@ -36,7 +36,9 @@ AbstractPage.prototype.hide = function() {
 AbstractPage.prototype.hideAnimated = function(completionObserver) {
   $("#" + this.pageId).slideUp("fast", function() {
     this.pageElement.parentElement.removeChild(this.pageElement);
-    completionObserver();
+    if (completionObserver != null) {
+      completionObserver();
+    }
   }.bind(this));
 }
 

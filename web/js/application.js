@@ -16,7 +16,7 @@ Application.showLoginPage = function(observer) {
     this.loginPage = new LoginPage();
   }
   
-  Application.showPage(this.loginPage);
+  Application._showPage(this.loginPage, observer);
 }
 
 Application.showRegisterPage = function(observer) {
@@ -24,10 +24,21 @@ Application.showRegisterPage = function(observer) {
     this.registerPage = new RegisterPage();
   }
   
-  Application.showPage(this.registerPage);
+  Application._showPage(this.registerPage, observer);
 }
 
-Application.showPage = function(page, observer) {
+Application.showMenuPage = function(observer) {
+  if (this.menuPage == null) {
+    this.menuPage = new RegisterPage();
+  }
+  
+  Application._showPage(this.menuPage, observer);
+}
+
+
+
+
+Application._showPage = function(page, observer) {
   if (this.currentPage != null) {
     this.currentPage.hideAnimated(function() {
       this.currentPage = page;

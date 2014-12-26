@@ -20,6 +20,9 @@ ClassUtils.defineClass = function(superClass, childConstructor) {
 
 UIUtils = {};
 
+UIUtils.INVALID_INPUT_BACKGROUND = "rgb(255, 100, 100)";
+
+
 UIUtils.createLabeledTextInput = function(inputFieldId, labelText, margin) {
   return UIUtils._createLabeledCombo(inputFieldId, labelText, UIUtils.createTextInput(inputFieldId), margin);
 }
@@ -36,7 +39,7 @@ UIUtils.createLabel = function(labelId, labelText) {
   var labelElement = document.createElement("div");
   labelElement.setAttribute("id", labelId);
   labelElement.innerHTML = labelText;
-  labelElement.style.display = "inline-block";
+  labelElement.style.display = "block";
   
   return labelElement;
 }
@@ -95,6 +98,26 @@ UIUtils.createLineBreak = function() {
 }
 
 
+UIUtils.animateBackgroundColor = function(elementId, color, speed, observer) {
+  var jQueryObject = $("#" + elementId);
+  var initialColor = jQueryObject.css("backgroundColor");
+  
+  var speed = speed || "slow";
+  jQueryObject.animate({backgroundColor: color}, speed, function() {
+    jQueryObject.animate({backgroundColor: initialColor}, speed, function() {
+      if (observer != null) {
+        observer();
+      }
+    });
+  });
+}
+
+UIUtils.indicateInvalidInput = function(elementId, observer) {
+  UIUtils.animateBackgroundColor(elementId, UIUtils.INVALID_INPUT_BACKGROUND, "slow", observer);
+}
+
+
+
 
 UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, margin) {
   var compoundElement = document.createElement("div");
@@ -102,7 +125,6 @@ UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, ma
   compoundElement.style.textAlign = "left";
 
   compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "-Label", labelText));
-  compoundElement.appendChild(UIUtils.createLineBreak());
 
   compoundElement.appendChild(inputElement);
   if (margin != null) {
@@ -116,7 +138,8 @@ UIUtils._createInputField = function(inputFieldId, inputType) {
   var inputFieldElement = document.createElement("input");
   inputFieldElement.setAttribute("type", inputType != null ? inputType : "text");
   inputFieldElement.setAttribute("id", inputFieldId);
-  inputFieldElement.style.display = "inline-block";
+  inputFieldElement.style.display = "block";
+  inputFieldElement.style.width = "100%";
   
   return inputFieldElement;
 }

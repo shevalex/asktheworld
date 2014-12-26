@@ -4,6 +4,7 @@
 }
 
 #RegisterPage-Panel {
+  width: 30%;
   display: inline-block;
   margin-top: 50px;
   font-size: 20px;
@@ -19,4 +20,27 @@
   margin-top: 10px;
   font-size: 20px;
 }
+
+#RegisterPage-Description {
+  position: absolute;
+  vertical-align: top;
+  left: 0;
+  margin-top: 100px;
+  margin-left: 100px;
+  display: inline-block;
+  width: 20%;
+}
+
+#RegisterPage-StatusPanel {
+  position: absolute;
+  margin-top: 150px;
+  margin-left: 100px;
+  margin-right: 100px;
+  display: inline-block;
+  width: 20%;
+  font-size: 20px;
+  color: rgb(255, 100, 100);
+}
+
+
 
