@@ -8,22 +8,26 @@
 
 import UIKit
 
-class RegisterViewController: UIViewController {
+class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFieldDelegate {
 
+    
     @IBOutlet weak var UserNameField_Reg: UITextField!
     
     @IBOutlet weak var PasswordField_Reg: UITextField!
     
     @IBOutlet weak var ConfirmPassword_Reg: UITextField!
     
-    @IBOutlet weak var Year_Of_Birth_Reg: UITextField!
+    @IBOutlet weak var AgeCategory: UITextField!
+    
+    @IBOutlet weak var Gender_Reg: UITextField!
     
     @IBAction func RegisterButton_Reg(sender: UIButton) {
         
         var username:NSString = UserNameField_Reg.text
         var password:NSString = PasswordField_Reg.text
         var confirm_password:NSString = ConfirmPassword_Reg.text
-        var year_of_birth:NSString = Year_Of_Birth_Reg.text
+        var gender:NSString = Gender_Reg.text
+        var age_category:NSString = AgeCategory.text
         
         if ( username.isEqualToString("") || password.isEqualToString("") ){
             var alertView:UIAlertView = UIAlertView()
@@ -39,7 +43,7 @@ class RegisterViewController: UIViewController {
             alertView.delegate = self
             alertView.addButtonWithTitle("OK")
             alertView.show()
-        } else if (year_of_birth.isEqualToString("")) {
+        } else if (age_category.isEqualToString("")) {
             var alertView:UIAlertView = UIAlertView()
             alertView.title = "Register Failed!"
             alertView.message = "Please put the correct year of birth"
@@ -47,11 +51,12 @@ class RegisterViewController: UIViewController {
             alertView.addButtonWithTitle("OK")
             alertView.show()
         } else {
-            //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"birth_year\":1980,\"languages\":[ENG]}"
             
             //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"name\":\"nickname\",\"gender\":\"male\",\"birth_year\":\(year_of_birth),\"languages\":[ENG]}"
             
-            var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"male\",\"birth_year\":\(year_of_birth)}"
+            // var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"\(gender)\",\"age_category\":\"\(age_category)\"}"
+            
+            var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"\(gender)\"}"
             
             
             println("PostData:" + post);
@@ -107,6 +112,9 @@ class RegisterViewController: UIViewController {
     @IBAction func LoginButton_Reg(sender: UIButton) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
+    
+/*  Next 3 function commented out - they are only for test purposes at the moment. UIButtons from storyboard also removed.
+    Should be added back - if need to test these actions.
     
     @IBAction func TryDeleteUser(sender: UIButton) {
         var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user/2")!
@@ -174,18 +182,85 @@ class RegisterViewController: UIViewController {
         }
 
     }
+    */
+    
+    let gender_array = ["Male", "Female", "Other"]
+    let age_category = ["Child", "Teenager", "Young", "Adult", "Senior"]
+    
+    @IBOutlet var getGender: UIPickerView!
+    @IBOutlet var getAgeCategory: UIPickerView!
+    @IBOutlet weak var Gender_toolBar: UIToolbar!
+    @IBOutlet weak var AgeCategory_toolBar: UIToolbar!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        getGender = UIPickerView()
+        getAgeCategory = UIPickerView()
+        
+        getGender.delegate = self
+        getAgeCategory.delegate = self
+        
+        self.Gender_Reg.inputView = self.getGender;
+        self.AgeCategory.inputView = self.getAgeCategory;
+        
+        var gender_toolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.bounds.size.width, 44))
+        var gender_item = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneGenderAction")
+        gender_toolbar.setItems([gender_item], animated: true)
+        self.Gender_Reg.inputAccessoryView = gender_toolbar
+        self.Gender_toolBar = gender_toolbar
+        
+        var ageCategory_toolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.bounds.size.width, 44))
+        var ageCategory_item = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneAgeCategoryAction")
+        ageCategory_toolbar.setItems([ageCategory_item], animated: true)
+        self.AgeCategory.inputAccessoryView = ageCategory_toolbar
+        self.AgeCategory_toolBar = ageCategory_toolbar
 
         // Do any additional setup after loading the view.
     }
-
+    
+    func doneGenderAction() {
+        self.Gender_Reg.resignFirstResponder()
+    }
+    
+    func doneAgeCategoryAction() {
+        self.AgeCategory.resignFirstResponder()
+    }
+    
+    func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int{
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int{
+        if pickerView == getGender {
+            return gender_array.count
+        } else if pickerView == getAgeCategory {
+            return age_category.count
+        }
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView!, titleForRow row: Int, forComponent component: Int) -> String! {
+        if pickerView == getGender {
+            return gender_array[row]
+        } else if pickerView == getAgeCategory {
+            return age_category[row]
+        }
+        return ""
+    }
+    
+    func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
+    {
+        if pickerView == getGender {
+            Gender_Reg.text = gender_array[row]
+        } else if pickerView == getAgeCategory {
+            AgeCategory.text = age_category[row]
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 
     /*
     // MARK: - Navigation

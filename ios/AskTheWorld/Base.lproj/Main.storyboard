@@ -83,7 +83,7 @@
                         <viewControllerLayoutGuide type="top" id="gfK-KR-KRk"/>
                         <viewControllerLayoutGuide type="bottom" id="JEH-an-4Xq"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="eHZ-gx-3N6">
+                    <view key="view" contentMode="scaleToFill" id="eHZ-gx-3N6" customClass="UIScrollView">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -120,30 +120,6 @@
                                     <rect key="frame" x="128" y="33" width="64" height="21"/>
                                 </variation>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QHO-mn-qhC">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <state key="normal" title="DeleteUserTest">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="538" width="104" height="30"/>
-                                </variation>
-                                <connections>
-                                    <action selector="TryDeleteUser:" destination="lv3-vN-nl0" eventType="touchUpInside" id="A0q-g2-ZI4"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gJn-Sj-O15">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <state key="normal" title="UpdateUserTest">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="518" width="111" height="30"/>
-                                </variation>
-                                <connections>
-                                    <action selector="UpdateUserTest:" destination="lv3-vN-nl0" eventType="touchUpInside" id="h2s-yj-tYm"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vQ2-iL-k4k">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <color key="backgroundColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -152,16 +128,16 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="111" y="269" width="98" height="30"/>
+                                    <rect key="frame" x="111" y="325" width="98" height="30"/>
                                 </variation>
                                 <connections>
                                     <action selector="RegisterButton_Reg:" destination="lv3-vN-nl0" eventType="touchUpInside" id="40N-Ps-NYR"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Year of Birth" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Cmh-ex-teO">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Age Category" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Cmh-ex-teO">
                                 <rect key="frame" x="0.0" y="-30" width="97" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                <textInputTraits key="textInputTraits"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
                                     <rect key="frame" x="51" y="219" width="229" height="30"/>
                                 </variation>
@@ -172,24 +148,20 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="141" y="322" width="38" height="30"/>
+                                    <rect key="frame" x="146" y="363" width="38" height="30"/>
                                 </variation>
                                 <connections>
                                     <action selector="LoginButton_Reg:" destination="lv3-vN-nl0" eventType="touchUpInside" id="KWu-Bf-3UT"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Txz-nc-jaR">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <state key="normal" title="GetUsersTest">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Gender" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hSJ-dR-t8z">
+                                <rect key="frame" x="0.0" y="-30" width="97" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="116" y="360" width="93" height="30"/>
+                                    <rect key="frame" x="51" y="269" width="229" height="30"/>
                                 </variation>
-                                <connections>
-                                    <action selector="GetUsersTest:" destination="lv3-vN-nl0" eventType="touchUpInside" id="YIu-bE-bHn"/>
-                                </connections>
-                            </button>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <variation key="default">
@@ -198,12 +170,10 @@
                                 <exclude reference="W8w-1i-39f"/>
                                 <exclude reference="vN7-Lm-HYo"/>
                                 <exclude reference="qBy-sx-xEc"/>
-                                <exclude reference="QHO-mn-qhC"/>
-                                <exclude reference="gJn-Sj-O15"/>
                                 <exclude reference="vQ2-iL-k4k"/>
                                 <exclude reference="Cmh-ex-teO"/>
                                 <exclude reference="ima-cC-r7Y"/>
-                                <exclude reference="Txz-nc-jaR"/>
+                                <exclude reference="hSJ-dR-t8z"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -212,20 +182,19 @@
                                 <include reference="W8w-1i-39f"/>
                                 <include reference="vN7-Lm-HYo"/>
                                 <include reference="qBy-sx-xEc"/>
-                                <include reference="QHO-mn-qhC"/>
-                                <include reference="gJn-Sj-O15"/>
                                 <include reference="vQ2-iL-k4k"/>
                                 <include reference="Cmh-ex-teO"/>
                                 <include reference="ima-cC-r7Y"/>
-                                <include reference="Txz-nc-jaR"/>
+                                <include reference="hSJ-dR-t8z"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="AgeCategory" destination="Cmh-ex-teO" id="s73-Pd-StN"/>
                         <outlet property="ConfirmPassword_Reg" destination="vN7-Lm-HYo" id="aaW-52-Wei"/>
+                        <outlet property="Gender_Reg" destination="hSJ-dR-t8z" id="QaL-xR-ORH"/>
                         <outlet property="PasswordField_Reg" destination="W8w-1i-39f" id="vJE-qc-kTp"/>
                         <outlet property="UserNameField_Reg" destination="quh-Hu-Ljc" id="azp-bj-Xrc"/>
-                        <outlet property="Year_Of_Birth_Reg" destination="Cmh-ex-teO" id="iJ6-24-PJ4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cAv-4l-b9l" userLabel="First Responder" sceneMemberID="firstResponder"/>
