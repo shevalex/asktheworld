@@ -2,40 +2,42 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
   if (pageId == null) {
     throw "Page Id must be specified";
   }
-  this.pageId = pageId;
+  this._pageId = pageId;
   
-  this.pageElement = document.createElement("div");
-  this.pageElement.setAttribute("id", pageId);
+  this._pageElement = document.createElement("div");
+  this._pageElement.setAttribute("id", pageId);
   
-  this.isDefined = false;
+  this._isDefined = false;
 });
 
 AbstractPage.prototype.show = function(container) {
-  this.pageElement.style.display = "block";
-  container.appendChild(this.pageElement);
-  this.definePageContent(this.pageElement);
+  this._pageElement.style.display = "block";
+  container.appendChild(this._pageElement);
+  this.definePageContent(this._pageElement);
 }
 
 AbstractPage.prototype.showAnimated = function(container, completionObserver) {
-  this.pageElement.style.display = "none";
-  container.appendChild(this.pageElement);
+  this._pageElement.style.display = "none";
+  container.appendChild(this._pageElement);
   
-  if (!this.isDefined) {
-    this.definePageContent(this.pageElement);
-    this.isDefined = true;
+  if (!this._isDefined) {
+    this.definePageContent(this._pageElement);
+    this._isDefined = true;
+  } else {
+    this.onShow();
   }
-  $("#" + this.pageId).slideDown("slow", completionObserver);
+  $("#" + this._pageId).slideDown("slow", completionObserver);
 }
 
 AbstractPage.prototype.hide = function() {
-  if (this.pageElement.parentElement != null) {
-    this.pageElement.parentElement.removeChild(this.pageElement);
+  if (this._pageElement.parentElement != null) {
+    this._pageElement.parentElement.removeChild(this._pageElement);
   }
 }
 
 AbstractPage.prototype.hideAnimated = function(completionObserver) {
-  $("#" + this.pageId).slideUp("fast", function() {
-    this.pageElement.parentElement.removeChild(this.pageElement);
+  $("#" + this._pageId).slideUp("fast", function() {
+    this._pageElement.parentElement.removeChild(this._pageElement);
     if (completionObserver != null) {
       completionObserver();
     }
@@ -44,8 +46,11 @@ AbstractPage.prototype.hideAnimated = function(completionObserver) {
 
 
 AbstractPage.prototype.isShown = function() {
-  return this.pageElement.parentElement != null;
+  return this._pageElement.parentElement != null;
 }
 
 AbstractPage.prototype.definePageContent = function(root) {
+}
+
+AbstractPage.prototype.onShow = function() {
 }

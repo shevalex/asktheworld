@@ -1,0 +1,63 @@
+#NewRequestPage {
+  padding: 0px 50px 50px 50px;
+}
+
+#NewRequestPage-GeneralPanel {
+  display: block;
+  
+  font-size: 20px;
+}
+
+#NewRequestPage-RequestContentPanel {
+  display: block;
+  margin-top: 30px;
+}
+
+#NewRequestPage-RequestContentPanel-Label {
+  display: block;
+  text-align: left;
+  
+  font-size: 20px;
+}
+
+#NewRequestPage-RequestContentPanel-Text {
+  display: block;
+  
+  font-size: 15px;
+}
+
+
+#NewRequestPage-RequestParametersPanel {
+  display: block;
+  margin-top: 30px;
+  
+  font-size: 15px;
+}
+
+#NewRequestPage-RequestParametersPanel-Label {
+  display: block;
+  text-align: left;
+  margin-bottom: 10px;
+
+  font-size: 20px;
+}
+
+#NewRequestPage-RequestControlPanel {
+  display: block;
+  margin-top: 50px;
+  
+  text-align: center;
+}
+
+#NewRequestPage-RequestControlPanel-Label {
+  display: block;
+  text-align: left;
+  margin-bottom: 20px;
+
+  font-size: 20px;
+}
+
+#NewRequestPage-RequestControlPanel-SendButton {
+  padding: 10px 50px 10px 50px;
+  font-size: 30px;
+}

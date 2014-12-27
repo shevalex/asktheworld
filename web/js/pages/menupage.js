@@ -1,43 +1,84 @@
 MenuPage = ClassUtils.defineClass(AbstractPage, function MenuPage() {
   AbstractPage.call(this, "MenuPage");
   
-  this.contentPanel = null;
-  this.selectedMenuItemId = null;
+  this._contentPanel = null;
+  this._selectedMenuItemId = null;
+  
+  this._homePage = null;
+  this._newRequestPage = null;
 });
+
+MenuPage.prototype.HOME_ITEM_ID = "MenuPage-MenuPanel-Home";
+MenuPage.prototype.NEW_REQUEST_ITEM_ID = "MenuPage-MenuPanel-NewRequest";
+MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID = "MenuPage-MenuPanel-ActiveRequests";
+MenuPage.prototype.ALL_REQUESTS_ITEM_ID = "MenuPage-MenuPanel-AllRequests";
+MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID = "MenuPage-MenuPanel-ActiveInquiries";
+MenuPage.prototype.ALL_INQUIRIES_ITEM_ID = "MenuPage-MenuPanel-AllInquiries";
+MenuPage.prototype.USER_PROFILE_ITEM_ID = "MenuPage-MenuPanel-UserProfile";
+MenuPage.prototype.USER_PREFERENCES_ITEM_ID = "MenuPage-MenuPanel-UserPreferences";
+MenuPage.prototype.LOGOUT_ITEM_ID = "MenuPage-MenuPanel-Logout";
+
 
 MenuPage.prototype.definePageContent = function(root) {
   root.appendChild(this._createMenuPanel());
   
-  this.contentPanel = root.appendChild(UIUtils.createBlock("MenuPage-ContentPanel"));
+  this._contentPanel = root.appendChild(UIUtils.createBlock("MenuPage-ContentPanel"));
   
-  this._selectMenuItem("MenuPage-MenuPanel-Home");
+  this.selectMenuItem("MenuPage-MenuPanel-Home");
 }
+
+
+MenuPage.prototype.selectMenuItem = function(itemId) {
+  if (this._selectedMenuItemId == itemId) {
+    return;
+  }
+  
+  if (this._selectedMenuItemId != null) {
+    $("#" + this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
+    var page = this._getPageForItem(this._selectedMenuItemId);
+    page.hideAnimated();
+  }
+  
+  
+  // Special processing for log-out
+  if (itemId == MenuPage.prototype.LOGOUT_ITEM_ID) {
+    Application.showLoginPage();
+    return;
+  }
+  
+  this._selectedMenuItemId = itemId;
+  $("#" + this._selectedMenuItemId).addClass("menupage-menuitem-selected");
+  
+  var page = this._getPageForItem(itemId);
+  page.showAnimated(this._contentPanel);
+}
+
 
 
 MenuPage.prototype._createMenuPanel = function() {
   var menuPanel = UIUtils.createBlock("MenuPage-MenuPanel");
 
   var clickListener = function(itemId) {
-    this._selectMenuItem(itemId);
+    this.selectMenuItem(itemId);
   };
   
-  menuPanel.appendChild(this._createMenuItem("MenuPage-MenuPanel-Home", "Home", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.HOME_ITEM_ID, "Home", null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
 
-  menuPanel.appendChild(this._createMenuItem("MenuPage-MenuPanel-NewRequest", "Create New Request", null, clickListener));
-  menuPanel.appendChild(this._createMenuItem("MenuPage-MenuPanel-ActiveRequests", "Active Requests", null, clickListener));
-  menuPanel.appendChild(this._createMenuItem("MenuPage-MenuPanel-AllRequests", "All Requests", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.NEW_REQUEST_ITEM_ID, "Create New Request", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID, "Active Requests", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID, "All Requests", null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
   
-  menuPanel.appendChild(this._createMenuItem("MenuPage-MenuPanel-ActiveInquiries", "Active Inquiries", null, clickListener));
-  menuPanel.appendChild(this._createMenuItem("MenuPage-MenuPanel-AllInquiries", "All Inquiries", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID, "Active Inquiries", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ALL_INQUIRIES_ITEM_ID, "All Inquiries", null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
   
-  menuPanel.appendChild(this._createMenuItem("MenuPage-MenuPanel-UserProfile", "User's Profile", null, clickListener));
-  menuPanel.appendChild(this._createMenuItem("MenuPage-MenuPanel-UserPreferences", "User's Preferences", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.USER_PROFILE_ITEM_ID, "Your Profile", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID, "Your Preferences", null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
 
-  menuPanel.appendChild(this._createMenuItem("MenuPage-MenuPanel-Logout", "Log Out", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.LOGOUT_ITEM_ID, "Log Out", null, clickListener));
   
   return menuPanel;
 }
@@ -61,23 +102,21 @@ MenuPage.prototype._createMenuSeparator = function() {
 }
 
 
-MenuPage.prototype._selectMenuItem = function(itemId) {
-  if (this.selectedMenuItemId == itemId) {
-    return;
-  }
-  
-  if (this.selectedMenuItemId != null) {
-    $("#" + this.selectedMenuItemId).removeClass("menupage-menuitem-selected");
-    var page = this._getPageForItem(this.selectedMenuItemId);
-    page.hide();
-  }
-  this.selectedMenuItemId = itemId;
-  $("#" + this.selectedMenuItemId).addClass("menupage-menuitem-selected");
-  
-  var page = this._getPageForItem(itemId);
-  page.show(this.contentPanel);
-}
-
 MenuPage.prototype._getPageForItem = function(itemId) {
-  return new LoginPage();
+  if (itemId == MenuPage.prototype.HOME_ITEM_ID) {
+    if (this._homePage == null) {
+      this._homePage = new HomePage();
+    }
+    return this._homePage;
+  } else if (itemId == MenuPage.prototype.NEW_REQUEST_ITEM_ID) {
+    if (this._newRequestPage == null) {
+      this._newRequestPage = new NewRequestPage();
+    }
+    return this._newRequestPage;
+  } else {
+    if (this._newRequestPage == null) {
+      this._newRequestPage = new LoginPage();
+    }
+    return this._newRequestPage;
+  }
 }

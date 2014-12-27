@@ -47,6 +47,9 @@ UIUtils.createLabel = function(labelId, labelText) {
 UIUtils.createButton = function(buttonId, text) {
   var buttonElement = document.createElement("button");
   buttonElement.setAttribute("id", buttonId);
+  buttonElement.style.whiteSpace = "nowrap";
+  buttonElement.style.overflow = "hidden";
+
   buttonElement.innerHTML = text;
   
   return buttonElement;
@@ -61,12 +64,53 @@ UIUtils.createBlock = function(blockId) {
   return blockElement;
 }
 
+UIUtils.createSpan = function(width, margin, blockId) {
+  var blockElement = document.createElement("span");
+  if (blockId != null) {
+    blockElement.setAttribute("id", blockId);
+  }
+  if (width != null) {
+    blockElement.style.width = width;
+  }
+  if (margin != null) {
+    blockElement.style.margin = margin;
+  }
+  blockElement.style.display = "inline-block";
+  
+  return blockElement;
+}
+
 UIUtils.createTextInput = function(inputFieldId) {
   return UIUtils._createInputField(inputFieldId, "text");
 }
 
 UIUtils.createPasswordInput = function(inputFieldId) {
   return UIUtils._createInputField(inputFieldId, "password");
+}
+
+UIUtils.createTextArea = function(textAreaId, rows, defaultText) {
+  var textAreaElement = document.createElement("textarea");
+  textAreaElement.setAttribute("id", textAreaId);
+  textAreaElement.setAttribute("rows", rows);
+  
+  textAreaElement.style.width = "100%";
+  textAreaElement.style.resize = "none";
+  
+  
+  textAreaElement.defaultValue = defaultText != null ? defaultText : "";
+  
+  textAreaElement.onfocus = function() {
+    if (textAreaElement.value == textAreaElement.defaultValue) {
+      textAreaElement.value = "";
+    }
+  }
+  textAreaElement.onblur = function() {
+    if (textAreaElement.value == "") {
+      textAreaElement.value = textAreaElement.defaultValue;
+    }
+  }
+
+  return textAreaElement;
 }
 
 UIUtils.createDropList = function(listId, items) {
@@ -138,12 +182,16 @@ UIUtils.indicateInvalidInput = function(elementId, observer) {
 
 UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, margin) {
   var compoundElement = document.createElement("div");
-  compoundElement.style.display = "block";
+  compoundElement.style.display = "inline-block";
+  compoundElement.style.width = "100%";
   compoundElement.style.textAlign = "left";
+  compoundElement.style.whiteSpace = "nowrap";
+  compoundElement.style.overflow = "hidden";
 
   compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "-Label", labelText));
 
   compoundElement.appendChild(inputElement);
+  inputElement.setAttribute("font-size", "inherit");
   if (margin != null) {
     inputElement.style.marginTop = margin;
   }

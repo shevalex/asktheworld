@@ -5,11 +5,18 @@ RegisterPage = ClassUtils.defineClass(AbstractPage, function RegisterPage() {
 RegisterPage.prototype.definePageContent = function(root) {
   root.appendChild(this._createRegisterPanel());
   
+  root.appendChild(UIUtils.createBlock("RegisterPage-Description-Left"));
+  $("#RegisterPage-Description-Left").html("By registering you will get an instant access to the secret technology that we provide");
+
+  root.appendChild(UIUtils.createBlock("RegisterPage-Description-Right"));
+  $("#RegisterPage-Description-Right").html("Already have an account?<br>Click <a href='#' id='RegisterPage-Description-Right-SignInLink'>Sign In</a>.");
+  $("#RegisterPage-Description-Right-SignInLink").click(function() {
+    Application.showLoginPage();
+  })
+  
+
   root.appendChild(UIUtils.createBlock("RegisterPage-StatusPanel"));
   
-  root.appendChild(UIUtils.createBlock("RegisterPage-Description"));
-  $("#RegisterPage-Description").html("By registering you will get an instant access to the secret technology that we provide");
-
   
   $("#RegisterPage-RegisterButton").click(function() {
     $("#RegisterPage-StatusPanel").text("");
@@ -47,6 +54,9 @@ RegisterPage.prototype.definePageContent = function(root) {
         failure: function() {
           $("#RegisterPage-StatusPanel").text("Failed to create an account");
         },
+        conflict : function() {
+          $("#RegisterPage-StatusPanel").text("This login is already used");
+        },
         error: function() {
           $("#RegisterPage-StatusPanel").text("Server communication error");
         }
@@ -63,9 +73,9 @@ RegisterPage.prototype.definePageContent = function(root) {
       
       Backend.registerUser(userProfile, backendCallback);
     } else if (password == retypePassword) {
-      $("#RegisterPage-StatusPanel").text("Some of the fields are not provided. All of them are mandatory");
+      $("#RegisterPage-StatusPanel").text("Some of the fields are not provided. All of them are mandatory.");
     } else {
-      $("#RegisterPage-StatusPanel").text("Passwords do not match. Please retype");
+      $("#RegisterPage-StatusPanel").text("Passwords do not match. Please retype.");
     }
   });
 }
