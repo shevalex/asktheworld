@@ -7,6 +7,9 @@
   margin-left: 0px;
   margin-top: 50px;
   display: inline-block;
+  
+  overflow: hidden;
+  white-space: nowrap;
 
   border-top-style: solid;
   border-top-width: 3px;

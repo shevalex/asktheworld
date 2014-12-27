@@ -110,7 +110,7 @@ MenuPage.prototype._getPageForItem = function(itemId) {
     return this._homePage;
   } else if (itemId == MenuPage.prototype.NEW_REQUEST_ITEM_ID) {
     if (this._newRequestPage == null) {
-      this._newRequestPage = new LoginPage();
+      this._newRequestPage = new NewRequestPage();
     }
     return this._newRequestPage;
   } else {

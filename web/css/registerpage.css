@@ -12,8 +12,14 @@
 
 #RegisterPage-Email, #RegisterPage-Name, #RegisterPage-Gender, #RegisterPage-AgeCategory, #RegisterPage-Languages, #RegisterPage-Password, #RegisterPage-RetypePassword {
   margin-bottom: 15px;
-  font-size: 20px;
+  font-size: inherit;
 }
+
+#RegisterPage-Gender, #RegisterPage-AgeCategory {
+  border-color: #999;
+}
+
+
 
 #RegisterPage-RegisterButton {
   width: 100%;

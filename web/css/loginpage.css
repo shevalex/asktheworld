@@ -12,7 +12,7 @@
 
 #LoginPage-Login, #LoginPage-Password {
   margin-bottom: 15px;
-  font-size: 20px;
+  font-size: inherit;
 }
 
 #LoginPage-SignInButton {

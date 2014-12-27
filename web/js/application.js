@@ -1,5 +1,12 @@
 
 var Application = {
+  Configuration: {
+    AGE_CATEGORIES: ["Child", "Teenager", "Young", "Adult", "Senior"],
+    RESPONSE_WAIT_TIME: ["30 mins", "1 hours", "1/2 day", "1 day", "1 week"],
+    RESPONSE_QUANTITY: ["Just the first one", "Three", "Ten", "As many as arrive"]
+  },
+  
+  
   _rootContainer: null,
   _currentPage: null,
   
@@ -44,6 +51,7 @@ Application.getMenuPage = function() {
 }
 
 
+
 Application._showPage = function(page, observer) {
   if (this._currentPage != null) {
     this._currentPage.hideAnimated(function() {
@@ -55,5 +63,6 @@ Application._showPage = function(page, observer) {
     this._currentPage.showAnimated(this._rootContainer, observer);
   }
 }
+
 
 
