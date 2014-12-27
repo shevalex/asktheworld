@@ -16,7 +16,7 @@ Backend.logIn = function(login, password, callback) {
       Backend.UserProfile.password = password;
       Backend.UserProfile.userId = data.userId;
 
-      Backend.pullUserProfile(data.userId, callback);
+      Backend.pullUserProfile(callback);
     },
     error: function(xhr, status, error) {
       if (xhr.status == 404) {
@@ -29,7 +29,11 @@ Backend.logIn = function(login, password, callback) {
   this.communicate("user?login=" + login, "GET", null, true, communicationCallback);
 }
 
-Backend.pullUserProfile = function(userId, callback) {
+Backend.pullUserProfile = function(callback) {
+  if (Backend.UserProfile.userId == null) {
+    throw "Must login or register first";
+  }
+  
   var communicationCallback = {
     success: function(data, status, xhr) {
       Backend.UserProfile.languages = data.languages;
@@ -48,14 +52,16 @@ Backend.pullUserProfile = function(userId, callback) {
       }
     }
   }
-  this.communicate("user/" + userId, "GET", null, true, communicationCallback);
+  this.communicate("user/" + Backend.UserProfile.userId, "GET", null, true, communicationCallback);
 }
 
 Backend.registerUser = function(userProfile, callback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
-        callback.success();
+        Backend.UserProfile.userId = xhr.getResponseHeader("Location");
+        
+        Backend.pullUserProfile(callback);
       } else {
         callback.error();
       }
