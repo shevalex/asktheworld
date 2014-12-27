@@ -4,7 +4,7 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
 
 HomePage.prototype.definePageContent = function(root) {
   root.appendChild(UIUtils.createBlock("HomePage-GeneralPanel"));
-  $("#HomePage-GeneralPanel").html("Welcome " + Backend.getUserProfile().name + ".");
+  $("#HomePage-GeneralPanel").html("Welcome, " + Backend.getUserProfile().name + ".");
 
   root.appendChild(UIUtils.createBlock("HomePage-RequestPanel"));
   $("#HomePage-RequestPanel").html("You have unviewed responses for your <a href='#' id='HomePage-RequestLink'>requests</a>.");

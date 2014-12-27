@@ -19,7 +19,7 @@ Backend.logIn = function(login, password, callback) {
       Backend.pullUserProfile(callback);
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 404) {
+      if (xhr.status == 401 || xhr.status == 404) {
         callback.failure();
       } else {
         callback.error();
@@ -45,7 +45,7 @@ Backend.pullUserProfile = function(callback) {
       callback.success();
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 404) {
+      if (xhr.status == 401 || xhr.status == 404) {
         callback.failure();
       } else {
         callback.error();

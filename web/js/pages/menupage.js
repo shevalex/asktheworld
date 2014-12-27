@@ -38,6 +38,14 @@ MenuPage.prototype.selectMenuItem = function(itemId) {
     var page = this._getPageForItem(this._selectedMenuItemId);
     page.hideAnimated();
   }
+  
+  
+  // Special processing for log-out
+  if (itemId == MenuPage.prototype.LOGOUT_ITEM_ID) {
+    Application.showLoginPage();
+    return;
+  }
+  
   this._selectedMenuItemId = itemId;
   $("#" + this._selectedMenuItemId).addClass("menupage-menuitem-selected");
   

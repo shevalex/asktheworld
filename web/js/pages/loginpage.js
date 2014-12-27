@@ -5,12 +5,14 @@ LoginPage = ClassUtils.defineClass(AbstractPage, function LoginPage() {
 LoginPage.prototype.definePageContent = function(root) {
   root.appendChild(this._createLoginPanel());
     
+  root.appendChild(UIUtils.createBlock("LoginPage-Description-Left"));
+  $("#LoginPage-Description-Left").html("Here is where we will place our logo as well as the text which will describe what this project is");
+
+  root.appendChild(UIUtils.createBlock("LoginPage-Description-Right"));
+  $("#LoginPage-Description-Right").html("Here is where we will add some extra bullshit");
+  
   root.appendChild(UIUtils.createBlock("LoginPage-StatusPanel"));
   
-  root.appendChild(UIUtils.createBlock("LoginPage-Description-Left"));
-  root.appendChild(UIUtils.createBlock("LoginPage-Description-Right"));
-  $("#LoginPage-Description-Left").html("Here is where we will place our logo as well as the text which will describe what this project is");
-  $("#LoginPage-Description-Right").html("Here is where we will add some extra bullshit");
   
   $("#LoginPage-SignInButton").click(function() {
     $("#LoginPage-StatusPanel").text("");
@@ -30,7 +32,7 @@ LoginPage.prototype.definePageContent = function(root) {
           Application.showMenuPage();
         },
         failure: function() {
-          $("#LoginPage-StatusPanel").text("Failed to login");
+          $("#LoginPage-StatusPanel").text("Invalid login/password combination");
         },
         error: function() {
           $("#LoginPage-StatusPanel").text("Server communication error");
