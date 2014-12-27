@@ -1,7 +1,7 @@
 
 var Backend = {};
 
-Backend.SERVER_BASE_URL = "http://env-7303452.whelastic.net/asktheworld2/";
+Backend.SERVER_BASE_URL = "http://env-7303452.whelastic.net/asktheworld3s/";
 
 Backend.UserProfile = {"login": null, "password": null, "gender": null, "languages": [], "age": null, "name": null, "userId": null};
 
@@ -26,7 +26,7 @@ Backend.logIn = function(login, password, callback) {
       }
     }
   }
-  this.communicate("user?login=" + login, "GET", null, true, communicationCallback);
+  this._communicate("user?login=" + login, "GET", null, true, this._getAuthenticationHeader(login, password), communicationCallback);
 }
 
 Backend.pullUserProfile = function(callback) {
@@ -52,13 +52,15 @@ Backend.pullUserProfile = function(callback) {
       }
     }
   }
-  this.communicate("user/" + Backend.UserProfile.userId, "GET", null, true, communicationCallback);
+  this._communicate("user/" + Backend.UserProfile.userId, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.registerUser = function(userProfile, callback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
+        Backend.UserProfile.login = userProfile.login;
+        Backend.UserProfile.password = userProfile.password;
         Backend.UserProfile.userId = xhr.getResponseHeader("Location");
         
         Backend.pullUserProfile(callback);
@@ -74,7 +76,7 @@ Backend.registerUser = function(userProfile, callback) {
       }
     }
   }
-  this.communicate("user", "POST",
+  this._communicate("user", "POST",
     {
       login: userProfile.login,
       password: userProfile.password,
@@ -83,7 +85,7 @@ Backend.registerUser = function(userProfile, callback) {
       name: userProfile.name
 //      languages: userProfile.languages
     }, 
-    false, communicationCallback);
+    false, {}, communicationCallback);
 }
 
 Backend.updateUser = function(userProfile, callback) {
@@ -106,7 +108,7 @@ Backend.updateUser = function(userProfile, callback) {
     }
   }
 
-  this.communicate("user/" + Backend.UserProfile.userId, "PUT",
+  this._communicate("user/" + Backend.UserProfile.userId, "PUT",
     { 
       password: userProfile.password,
       gender: userProfile.gender,
@@ -114,21 +116,33 @@ Backend.updateUser = function(userProfile, callback) {
 //      name: userProfile.name,
       languages: userProfile.languages
     },
-    false, communicationCallback);
+    false, this._getAuthenticationHeader(), communicationCallback);
 
   return true;
 }
 
 
 
-Backend.communicate = function(resource, method, data, isJsonResponse, callback) {
+Backend._communicate = function(resource, method, data, isJsonResponse, headers, callback) {
   $.ajax({
     url: Backend.SERVER_BASE_URL + resource,
     type: method,
     data: data != null ? JSON.stringify(data) : "",
+    headers: headers != null ? headers : {},
     contentType: "application/json; charset=utf-8",
     dataType: isJsonResponse ? "json" : "text",
     success: callback.success,
     error: callback.error
   });
+}
+
+Backend._getAuthenticationHeader = function(login, password) {
+  var value = null;
+  if (login != null && password != null) {
+    value = login + ":" + password;
+  } else if (Backend.UserProfile.login != null && Backend.UserProfile.password != null) {
+    value = Backend.UserProfile.login + ":" + Backend.UserProfile.password;
+  }
+  
+  return value != null ? {Token: value} : {};
 }

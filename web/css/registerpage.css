@@ -44,9 +44,9 @@
 }
 
 #RegisterPage-StatusPanel {
-  position: absolute;
+  position: fixed;
   left: 70%;
-  top: 50%;
+  top: 300px;
   display: inline-block;
   width: 20%;
 

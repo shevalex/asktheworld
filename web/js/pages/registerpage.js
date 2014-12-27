@@ -49,6 +49,9 @@ RegisterPage.prototype.definePageContent = function(root) {
         failure: function() {
           $("#RegisterPage-StatusPanel").text("Failed to create an account");
         },
+        conflict : function() {
+          $("#RegisterPage-StatusPanel").text("This login is already used");
+        },
         error: function() {
           $("#RegisterPage-StatusPanel").text("Server communication error");
         }

@@ -54,14 +54,13 @@
 }
 
 #LoginPage-StatusPanel {
-  position: absolute;
+  position: fixed;
   left: 70%;
-  top: 50%;
+  top: 300px;
   display: inline-block;
   width: 20%;
 
   font-size: 20px;
   color: rgb(255, 100, 100);
-  
 }
 
