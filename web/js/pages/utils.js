@@ -38,8 +38,10 @@ UIUtils.createLabeledDropList = function(dropListId, labelText, options, margin)
 UIUtils.createLabel = function(labelId, labelText) {
   var labelElement = document.createElement("div");
   labelElement.setAttribute("id", labelId);
-  labelElement.innerHTML = labelText;
   labelElement.style.display = "block";
+  if (labelText != null) {
+    labelElement.innerHTML = labelText;
+  }
   
   return labelElement;
 }
@@ -156,6 +158,19 @@ UIUtils.createList = function(listId, items) {
 
 UIUtils.createSeparator = function() {
   return document.createElement("hr");
+}
+
+UIUtils.createImage = function(imageId, src) {
+  var imageElement = document.createElement("img");
+  
+  if (imageId != null) {
+    imageElement.setAttribute("id", imageId);
+  }
+  if (src != null) {
+    imageElement.setAttribute("src", src);
+  }
+    
+  return imageElement;
 }
 
 

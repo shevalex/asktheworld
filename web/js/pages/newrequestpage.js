@@ -19,7 +19,56 @@ NewRequestPage.prototype.definePageContent = function(root) {
   
   
   var controlPanel = root.appendChild(UIUtils.createBlock("NewRequestPage-RequestControlPanel"));
-  controlPanel.appendChild(UIUtils.createLabel("NewRequestPage-RequestControlPanel-Label", "3. And finally send it out!"));
+  controlPanel.appendChild(UIUtils.createLabel("NewRequestPage-RequestControlPanel-Label"));
   controlPanel.appendChild(UIUtils.createBlock()).appendChild(UIUtils.createButton("NewRequestPage-RequestControlPanel-SendButton", "Ask The World!"));
+  
+  $("#NewRequestPage-RequestControlPanel-SendButton").click(this._createRequest.bind(this));
 }
 
+NewRequestPage.prototype.onShow = function() {
+  $("#NewRequestPage-RequestControlPanel-Label").text("3. And finally send it out!");
+}
+
+
+NewRequestPage.prototype._createRequest = function() {
+  $("#NewRequestPage-RequestControlPanel-Label").text("3. We are sending the request...");
+  
+  var buttonSelector = $("#NewRequestPage-RequestControlPanel-SendButton");
+  
+  var callback = {
+    success: function(requestId) {
+      this._onCompletion();
+      $("#NewRequestPage-RequestControlPanel-Label").text("3. Here you go. The request is sent!");
+    },
+    failure: function() {
+      this._onCompletion();
+      $("#NewRequestPage-RequestControlPanel-Label").text("3. You are likely not logged in properly...");
+    },
+    error: function() {
+      this._onCompletion();
+      $("#NewRequestPage-RequestControlPanel-Label").text("3. Something went wrong. Try again later.");
+    },
+    
+    _onCompletion: function() {
+      buttonSelector.prop("disabled", false);
+      Application.hideSpinningWheel();
+    }
+  }
+  
+  var request = {
+    text: $("#NewRequestPage-RequestContentPanel-Text").val(),
+    pictures: [],
+    audios: []
+  }
+  
+  var requestParams = {
+    quantity: $("#NewRequestPage-RequestParametersPanel-Quantity").val(),
+    waitTime: $("#NewRequestPage-RequestParametersPanel-WaitTime").val(),
+    age: $("#NewRequestPage-RequestParametersPanel-AgeCategory").val()
+  }
+
+  buttonSelector.prop("disabled", true);
+  Application.showSpinningWheel();
+
+  Backend.createRequest(request, requestParams, callback);
+}

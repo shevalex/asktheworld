@@ -28,16 +28,30 @@ LoginPage.prototype.definePageContent = function(root) {
     
     if (login != "" && password != "") {
       var backendCallback = {
+        _buttonSelector: $(this),
+        
         success: function() {
+          this._onCompletion();
           Application.showMenuPage();
         },
         failure: function() {
+          this._onCompletion();
           $("#LoginPage-StatusPanel").text("Invalid login/password combination");
         },
         error: function() {
+          this._onCompletion();
           $("#LoginPage-StatusPanel").text("Server communication error");
+        },
+        
+        _onCompletion: function() {
+          this._buttonSelector.prop("disabled", false);
+          Application.hideSpinningWheel();
         }
       }
+      
+      $(this).prop("disabled", true);
+      Application.showSpinningWheel();
+      
       Backend.logIn(login, password, backendCallback);
     } else {
       $("#LoginPage-StatusPanel").text("Please provide login and password");

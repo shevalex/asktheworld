@@ -50,6 +50,13 @@ Application.getMenuPage = function() {
   return this._menuPage;
 }
 
+Application.showSpinningWheel = function() {
+  $("body").append("<img src='imgs/ajax-loader.gif' class='spinning-wheel'></img>");
+}
+
+Application.hideSpinningWheel = function() {
+  $(".spinning-wheel").remove();
+}
 
 
 Application._showPage = function(page, observer) {

@@ -48,17 +48,27 @@ RegisterPage.prototype.definePageContent = function(root) {
 
     if (email != "" && name != "" && languages != "" && password != "" && password == retypePassword) {
       var backendCallback = {
+        _buttonSelector: $(this),
+        
         success: function() {
           Application.showMenuPage();
         },
         failure: function() {
+          this._onCompletion();
           $("#RegisterPage-StatusPanel").text("Failed to create an account");
         },
         conflict : function() {
+          this._onCompletion();
           $("#RegisterPage-StatusPanel").text("This login is already used");
         },
         error: function() {
+          this._onCompletion();
           $("#RegisterPage-StatusPanel").text("Server communication error");
+        },
+        
+        _onCompletion: function() {
+          this._buttonSelector.prop("disabled", false);
+          Application.hideSpinningWheel();
         }
       }
       
@@ -71,6 +81,9 @@ RegisterPage.prototype.definePageContent = function(root) {
         age: $("#RegisterPage-AgeCategory").val(),
       };
       
+      $(this).prop("disabled", true);
+      Application.showSpinningWheel();
+
       Backend.registerUser(userProfile, backendCallback);
     } else if (password == retypePassword) {
       $("#RegisterPage-StatusPanel").text("Some of the fields are not provided. All of them are mandatory.");

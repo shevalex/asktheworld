@@ -121,6 +121,37 @@ Backend.updateUser = function(userProfile, callback) {
   return true;
 }
 
+Backend.createRequest = function(request, requestParams, callback) {
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 201) {
+        callback.success(xhr.getResponseHeader("Location"));
+      }
+    },
+    error: function(xhr, status, error) {
+      if (xhr.status == 400 || xhr.status == 401) {
+        callback.failure();
+      } else {
+        callback.error();
+      }
+    }
+  }
+
+  this._communicate("request", "POST",
+    { 
+      user_id: Backend.UserProfile.userId,
+      text: request.text,
+      pictures: request.pictures,
+      audios: request.audios,
+      response_quantity: requestParams.quantity,
+      response_wait_time: requestParams.waitTime,
+      response_age_group: requestParams.age
+    },
+    false, this._getAuthenticationHeader(), communicationCallback);
+
+  return true;
+}
+
 
 
 Backend._communicate = function(resource, method, data, isJsonResponse, headers, callback) {
