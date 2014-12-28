@@ -5,18 +5,6 @@ body {
   height: 100%;
 }
 
-button {
-  border-radius: 5px;
-}
-
-input {
-  border-radius: 5px;
-}
-
-select {
-  font-size: inherit;
-  border-color: #999;
-}
 
 #Title {
   width: 100%;

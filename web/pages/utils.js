@@ -130,10 +130,9 @@ UIUtils.createDropList = function(listId, items) {
 }
 
 UIUtils.createLink = function(linkId, text) {
-  var linkElement = document.createElement("a");
+  var linkElement = document.createElement("button");
   linkElement.setAttribute("id", linkId);
-  linkElement.setAttribute("href", "#");
-  linkElement.style.display = "block";
+  linkElement.setAttribute("class", "link-button");
   linkElement.innerHTML = text;
   
   return linkElement;

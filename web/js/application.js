@@ -18,8 +18,8 @@ var Application = {
 Application.start = function() {
   this._rootContainer = document.getElementById("RootContainer");
   
-  //this.showLoginPage();
-  this.showMenuPage();
+  this.showLoginPage();
+  //this.showMenuPage();
 }
 
 Application.showLoginPage = function(observer) {
