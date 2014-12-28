@@ -11,7 +11,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
   requestPanel.appendChild(UIUtils.createTextArea("NewRequestPage-RequestContentPanel-Text", 6, "Start typing here..."));
 
   var requestPanel = root.appendChild(UIUtils.createBlock("NewRequestPage-RequestParametersPanel"));
-  requestPanel.appendChild(UIUtils.createLabel("NewRequestPage-RequestParametersPanel-Label", "2. Choose who will see your question..."));
+  requestPanel.appendChild(UIUtils.createLabel("NewRequestPage-RequestParametersPanel-Label", "2. Choose who will see your question.<br>Note: You can always modify your defaut settings in <a href='#' id='NewRequestPage-PreferencesLink'>Your Preferences</a>"));
   
   requestPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORIES, "10px"));
   requestPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-WaitTime", "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
@@ -23,6 +23,10 @@ NewRequestPage.prototype.definePageContent = function(root) {
   controlPanel.appendChild(UIUtils.createBlock()).appendChild(UIUtils.createButton("NewRequestPage-RequestControlPanel-SendButton", "Ask The World!"));
   
   $("#NewRequestPage-RequestControlPanel-SendButton").click(this._createRequest.bind(this));
+  
+  $("#NewRequestPage-PreferencesLink").click(function() {
+    Application.getMenuPage().selectMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID);
+  });
 }
 
 NewRequestPage.prototype.onShow = function() {

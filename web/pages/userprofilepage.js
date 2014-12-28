@@ -4,7 +4,7 @@ UserProfilePage = ClassUtils.defineClass(AbstractPage, function UserProfilePage(
 
 UserProfilePage.prototype.definePageContent = function(root) {
   root.appendChild(UIUtils.createBlock("UserProfilePage-GeneralPanel"));
-  $("#UserProfilePage-GeneralPanel").html("Update your profile information. <b>We intentionally keep it very basic and generic to insure your privacy</b>.<br>You can only modify the information which you need to correct. Do not change anything (inlcuding password) that does not require correction.");
+  $("#UserProfilePage-GeneralPanel").html("Update your profile information. <b>We intentionally keep it very basic and generic to insure your privacy</b>.<br>You may only modify the information which you need to correct. Do not change anything (inlcuding password) that does not require correction.");
   
   root.appendChild(this._createProfilePanel());
   
