@@ -17,6 +17,11 @@ RegisterPage.prototype.definePageContent = function(root) {
 
   root.appendChild(UIUtils.createBlock("RegisterPage-StatusPanel"));
   
+
+  $("#RegisterPage-Password").on("input", function() {
+    $("#RegisterPage-RetypePassword").val("");
+  });
+  
   
   $("#RegisterPage-RegisterButton").click(function() {
     $("#RegisterPage-StatusPanel").text("");
@@ -28,7 +33,7 @@ RegisterPage.prototype.definePageContent = function(root) {
     
     var name = $("#RegisterPage-Name").val();
     if (name == "") {
-      UIUtils.indicateInvalidInput("RegisterPage-Email");
+      UIUtils.indicateInvalidInput("RegisterPage-Name");
     }
     
     var languages = $("#RegisterPage-Languages").val();

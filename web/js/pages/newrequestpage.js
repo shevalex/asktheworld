@@ -13,9 +13,9 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var requestPanel = root.appendChild(UIUtils.createBlock("NewRequestPage-RequestParametersPanel"));
   requestPanel.appendChild(UIUtils.createLabel("NewRequestPage-RequestParametersPanel-Label", "2. Choose who will see your question..."));
   
-  requestPanel.appendChild(UIUtils.createSpan("32%", "0 3% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORIES, "10px"));
-  requestPanel.appendChild(UIUtils.createSpan("32%", "0 3% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-WaitTime", "How long you want to wait for responses", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
-  requestPanel.appendChild(UIUtils.createSpan("30%")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-Quantity", "Maximum # of responses you want to get", Application.Configuration.RESPONSE_QUANTITY, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORIES, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-WaitTime", "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-Quantity", "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px"));
   
   
   var controlPanel = root.appendChild(UIUtils.createBlock("NewRequestPage-RequestControlPanel"));
