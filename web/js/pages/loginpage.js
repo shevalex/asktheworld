@@ -67,6 +67,10 @@ LoginPage.prototype.definePageContent = function(root) {
   });
 }
 
+LoginPage.prototype.onShow = function() {
+  //Eventually we may need to read the login info from local storage and initialize the fileds
+}
+
 
 LoginPage.prototype._createLoginPanel = function() {
   var contentPanel = UIUtils.createBlock("LoginPage-Panel");

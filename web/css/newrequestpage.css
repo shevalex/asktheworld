@@ -22,6 +22,7 @@
 
 #NewRequestPage-RequestContentPanel-Text {
   display: block;
+  margin-top: 10px;
   
   font-size: 15px;
 }

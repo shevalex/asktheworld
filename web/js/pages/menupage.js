@@ -42,7 +42,7 @@ MenuPage.prototype.selectMenuItem = function(itemId) {
   
   // Special processing for log-out
   if (itemId == MenuPage.prototype.LOGOUT_ITEM_ID) {
-    Application.showLoginPage();
+    Backend.logOut(Application.showLoginPage.bind(Application));
     return;
   }
   

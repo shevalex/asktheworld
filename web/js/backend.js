@@ -29,6 +29,17 @@ Backend.logIn = function(login, password, callback) {
   this._communicate("user?login=" + login, "GET", null, true, this._getAuthenticationHeader(login, password), communicationCallback);
 }
 
+Backend.logOut = function(callback) {
+  Backend.UserProfile.login = null;
+  Backend.UserProfile.password = null;
+  Backend.UserProfile.name = null;
+  Backend.UserProfile.userId = null;
+  
+  //We may need to inform the server maybe?
+  
+  callback();
+}
+
 Backend.pullUserProfile = function(callback) {
   if (Backend.UserProfile.userId == null) {
     throw "Must login or register first";

@@ -4,7 +4,7 @@ NewRequestPage = ClassUtils.defineClass(AbstractPage, function NewRequestPage() 
 
 NewRequestPage.prototype.definePageContent = function(root) {
   root.appendChild(UIUtils.createBlock("NewRequestPage-GeneralPanel"));
-  $("#NewRequestPage-GeneralPanel").html("Asking The World is just that easy. You are just three steps away.");
+  $("#NewRequestPage-GeneralPanel").html("Asking The World is just that easy. You are only three steps away.");
 
   var requestPanel = root.appendChild(UIUtils.createBlock("NewRequestPage-RequestContentPanel"));
   requestPanel.appendChild(UIUtils.createLabel("NewRequestPage-RequestContentPanel-Label", "1. Type in the text of your request first..."));
@@ -26,6 +26,8 @@ NewRequestPage.prototype.definePageContent = function(root) {
 }
 
 NewRequestPage.prototype.onShow = function() {
+  //TODO: Set the default values for the request parameters
+  
   $("#NewRequestPage-RequestControlPanel-Label").text("3. And finally send it out!");
 }
 
