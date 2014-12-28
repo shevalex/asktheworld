@@ -17,7 +17,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
     
     @IBOutlet weak var ConfirmPassword_Reg: UITextField!
     
-    @IBOutlet weak var AgeCategory: UITextField!
+    @IBOutlet weak var NickName_Reg: UITextField!
+    
+    @IBOutlet weak var AgeCategory_Reg: UITextField!
     
     @IBOutlet weak var Gender_Reg: UITextField!
     
@@ -26,8 +28,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
         var username:NSString = UserNameField_Reg.text
         var password:NSString = PasswordField_Reg.text
         var confirm_password:NSString = ConfirmPassword_Reg.text
+        var nickname:NSString = NickName_Reg.text
         var gender:NSString = Gender_Reg.text
-        var age_category:NSString = AgeCategory.text
+        var age_category:NSString = AgeCategory_Reg.text
         
         if ( username.isEqualToString("") || password.isEqualToString("") ){
             var alertView:UIAlertView = UIAlertView()
@@ -43,10 +46,24 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
             alertView.delegate = self
             alertView.addButtonWithTitle("OK")
             alertView.show()
-        } else if (age_category.isEqualToString("")) {
+        } else if (age_category.isEqualToString("Please Select")) {
             var alertView:UIAlertView = UIAlertView()
             alertView.title = "Register Failed!"
-            alertView.message = "Please put the correct year of birth"
+            alertView.message = "Please choose the Age Category"
+            alertView.delegate = self
+            alertView.addButtonWithTitle("OK")
+            alertView.show()
+        } else if (nickname.isEqualToString("")) {
+            var alertView:UIAlertView = UIAlertView()
+            alertView.title = "Register Failed!"
+            alertView.message = "NickName cannot be empty"
+            alertView.delegate = self
+            alertView.addButtonWithTitle("OK")
+            alertView.show()
+        } else if (gender.isEqualToString("Please Select")) {
+            var alertView:UIAlertView = UIAlertView()
+            alertView.title = "Register Failed!"
+            alertView.message = "Please choose Gender"
             alertView.delegate = self
             alertView.addButtonWithTitle("OK")
             alertView.show()
@@ -54,14 +71,15 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
             
             //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"name\":\"nickname\",\"gender\":\"male\",\"birth_year\":\(year_of_birth),\"languages\":[ENG]}"
             
-            // var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"\(gender)\",\"age_category\":\"\(age_category)\"}"
+             var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"name\":\"\(nickname)\",\"gender\":\"\(gender)\",\"age_category\":\"\(age_category)\"}"
             
-            var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"\(gender)\"}"
+            //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"\(gender)\"}"
             
             
             println("PostData:" + post);
             
-            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user")!
+            //var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user")!
+            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld3s/user")!
             
             var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
             
@@ -184,8 +202,8 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
     }
     */
     
-    let gender_array = ["Male", "Female", "Other"]
-    let age_category = ["Child", "Teenager", "Young", "Adult", "Senior"]
+    let gender_array = ["Please Select", "Male", "Female"]
+    let age_category = ["Please Select", "Child", "Teenager", "Young", "Adult", "Senior"]
     
     @IBOutlet var getGender: UIPickerView!
     @IBOutlet var getAgeCategory: UIPickerView!
@@ -201,7 +219,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
         getAgeCategory.delegate = self
         
         self.Gender_Reg.inputView = self.getGender;
-        self.AgeCategory.inputView = self.getAgeCategory;
+        self.AgeCategory_Reg.inputView = self.getAgeCategory;
         
         var gender_toolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.bounds.size.width, 44))
         var gender_item = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneGenderAction")
@@ -212,7 +230,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
         var ageCategory_toolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.bounds.size.width, 44))
         var ageCategory_item = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneAgeCategoryAction")
         ageCategory_toolbar.setItems([ageCategory_item], animated: true)
-        self.AgeCategory.inputAccessoryView = ageCategory_toolbar
+        self.AgeCategory_Reg.inputAccessoryView = ageCategory_toolbar
         self.AgeCategory_toolBar = ageCategory_toolbar
 
         // Do any additional setup after loading the view.
@@ -223,7 +241,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
     }
     
     func doneAgeCategoryAction() {
-        self.AgeCategory.resignFirstResponder()
+        self.AgeCategory_Reg.resignFirstResponder()
     }
     
     func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int{
@@ -253,7 +271,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
         if pickerView == getGender {
             Gender_Reg.text = gender_array[row]
         } else if pickerView == getAgeCategory {
-            AgeCategory.text = age_category[row]
+            AgeCategory_Reg.text = age_category[row]
         }
     }
     

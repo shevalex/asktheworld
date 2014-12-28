@@ -27,11 +27,13 @@ class LoginViewController: UIViewController {
             alertView.addButtonWithTitle("OK")
             alertView.show()
         } else {
-            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user?login=\(username)")!
+            //var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld3s/user?login=\(username)")!
+            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld3s/user")!
             
             var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
             request.HTTPMethod = "GET"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            //request.setValue("\"\(username)\":\"\(password)\"", forHTTPHeaderField: "Token")
             
             var reponseError: NSError?
             var response: NSURLResponse?
@@ -40,9 +42,10 @@ class LoginViewController: UIViewController {
             if ( urlData != nil ) {
                 let res = response as NSHTTPURLResponse!
                 
+                if (res != nil)
+                {
                 println("Response code: \(res.statusCode)")
                 println(res.allHeaderFields)
-                
                 if (res.statusCode == 200)
                 {
                     var prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
@@ -59,6 +62,11 @@ class LoginViewController: UIViewController {
                     alertView.delegate = self
                     alertView.addButtonWithTitle("OK")
                     alertView.show()
+                }
+                }
+                else
+                {
+                    println("res is null")
                 }
             }
 
