@@ -63,7 +63,7 @@ Backend.pullUserProfile = function(callback) {
       Backend.UserProfile.languages = data.languages;
       Backend.UserProfile.gender = data.gender;
       Backend.UserProfile.name = data.name;
-      Backend.UserProfile.age = data.birth_year;
+      Backend.UserProfile.age = data.age_category;
       Backend.UserProfile.languages = data.languages;
 
       callback.success();
@@ -105,7 +105,7 @@ Backend.registerUser = function(userProfile, callback) {
       login: userProfile.login,
       password: userProfile.password,
       gender: userProfile.gender,
-//      age: userProfile.age,
+      age_category: userProfile.age,
       name: userProfile.name,
       languages: userProfile.languages
     }, 
@@ -136,7 +136,7 @@ Backend.updateUser = function(userProfile, callback) {
     { 
       password: userProfile.password,
       gender: userProfile.gender,
-      age: userProfile.age,
+      age_category: userProfile.age,
       name: userProfile.name,
       languages: userProfile.languages
     },
