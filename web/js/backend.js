@@ -206,7 +206,8 @@ Backend.createRequest = function(request, requestParams, callback) {
       audios: request.audios,
       response_quantity: requestParams.quantity,
       response_wait_time: requestParams.waitTime,
-      response_age_group: requestParams.age
+      response_age_group: requestParams.age,
+      response_gender: requestParams.gender
     },
     false, this._getAuthenticationHeader(), communicationCallback);
 

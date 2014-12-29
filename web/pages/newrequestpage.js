@@ -13,8 +13,9 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var requestPanel = root.appendChild(UIUtils.createBlock("NewRequestPage-RequestParametersPanel"));
   requestPanel.appendChild(UIUtils.createLabel("NewRequestPage-RequestParametersPanel-Label", "2. Choose who will see your question.<br>Note: You can always modify your defaut settings in <a href='#' id='NewRequestPage-PreferencesLink'>Your Preferences</a>"));
   
-  requestPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList("UserPreferencesPage-Gender", "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
-  requestPanel.appendChild(UIUtils.createSpan("48%")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-Gender", "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  
   requestPanel.appendChild(UIUtils.createLineBreak());
   requestPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-WaitTime", "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
   requestPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-Quantity", "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px"));
@@ -31,7 +32,10 @@ NewRequestPage.prototype.definePageContent = function(root) {
 }
 
 NewRequestPage.prototype.onShow = function() {
-  //TODO: Set the default values for the request parameters
+  $("#NewRequestPage-RequestParametersPanel-Gender").val(Backend.getUserPreferences().requestTargetGender),
+  $("#NewRequestPage-RequestParametersPanel-AgeCategory").val(Backend.getUserPreferences().requestTargetAge)
+  $("#NewRequestPage-RequestParametersPanel-Quantity").val(Backend.getUserPreferences().responseQuantity),
+  $("#NewRequestPage-RequestParametersPanel-WaitTime").val(Backend.getUserPreferences().responseWaitTime),
   
   $("#NewRequestPage-RequestControlPanel-Label").text("3. And finally send it out!");
 }
@@ -69,6 +73,7 @@ NewRequestPage.prototype._createRequest = function() {
   }
   
   var requestParams = {
+    gender: $("#NewRequestPage-RequestParametersPanel-Gender").val(),
     quantity: $("#NewRequestPage-RequestParametersPanel-Quantity").val(),
     waitTime: $("#NewRequestPage-RequestParametersPanel-WaitTime").val(),
     age: $("#NewRequestPage-RequestParametersPanel-AgeCategory").val()
