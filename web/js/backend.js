@@ -106,8 +106,8 @@ Backend.registerUser = function(userProfile, callback) {
       password: userProfile.password,
       gender: userProfile.gender,
 //      age: userProfile.age,
-      name: userProfile.name
-//      languages: userProfile.languages
+      name: userProfile.name,
+      languages: userProfile.languages
     }, 
     false, {}, communicationCallback);
 }
@@ -136,8 +136,8 @@ Backend.updateUser = function(userProfile, callback) {
     { 
       password: userProfile.password,
       gender: userProfile.gender,
-//      age: userProfile.age,
-//      name: userProfile.name,
+      age: userProfile.age,
+      name: userProfile.name,
       languages: userProfile.languages
     },
     false, this._getAuthenticationHeader(), communicationCallback);
