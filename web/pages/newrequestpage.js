@@ -13,10 +13,11 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var requestPanel = root.appendChild(UIUtils.createBlock("NewRequestPage-RequestParametersPanel"));
   requestPanel.appendChild(UIUtils.createLabel("NewRequestPage-RequestParametersPanel-Label", "2. Choose who will see your question.<br>Note: You can always modify your defaut settings in <a href='#' id='NewRequestPage-PreferencesLink'>Your Preferences</a>"));
   
-  requestPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORIES, "10px"));
-  requestPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-WaitTime", "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
-  requestPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-Quantity", "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px"));
-  
+  requestPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList("UserPreferencesPage-Gender", "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("48%")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  requestPanel.appendChild(UIUtils.createLineBreak());
+  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-WaitTime", "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList("NewRequestPage-RequestParametersPanel-Quantity", "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px"));
   
   var controlPanel = root.appendChild(UIUtils.createBlock("NewRequestPage-RequestControlPanel"));
   controlPanel.appendChild(UIUtils.createLabel("NewRequestPage-RequestControlPanel-Label"));

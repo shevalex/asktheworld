@@ -7,6 +7,7 @@ MenuPage = ClassUtils.defineClass(AbstractPage, function MenuPage() {
   this._homePage = null;
   this._newRequestPage = null;
   this._userProfilePage = null;
+  this._userPreferencesPage = null;
 });
 
 MenuPage.prototype.HOME_ITEM_ID = "MenuPage-MenuPanel-Home";
@@ -119,6 +120,11 @@ MenuPage.prototype._getPageForItem = function(itemId) {
       this._userProfilePage = new UserProfilePage();
     }
     return this._userProfilePage;
+  } else if (itemId == MenuPage.prototype.USER_PREFERENCES_ITEM_ID) {
+    if (this._userPreferencesPage == null) {
+      this._userPreferencesPage = new UserPreferencesPage();
+    }
+    return this._userPreferencesPage;
   } else {
     if (this._newRequestPage == null) {
       this._newRequestPage = new LoginPage();

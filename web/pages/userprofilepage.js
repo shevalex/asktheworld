@@ -63,9 +63,9 @@ UserProfilePage.prototype._createProfilePanel = function() {
   
   contentPanel.appendChild(UIUtils.createLabeledTextInput("UserProfilePage-Name", "Your Nick Name", "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("UserProfilePage-Gender", "Your Gender", ["Male", "Female"], "10px"));
+  contentPanel.appendChild(UIUtils.createLabeledDropList("UserProfilePage-Gender", "Your Gender", Application.Configuration.GENDERS, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("UserProfilePage-AgeCategory", "Your Age Category", ["Child", "Teenager", "Young", "Adult", "Senior"], "10px"));
+  contentPanel.appendChild(UIUtils.createLabeledDropList("UserProfilePage-AgeCategory", "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
   contentPanel.appendChild(UIUtils.createLabeledTextInput("UserProfilePage-Languages", "Languages that you speak", "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
@@ -126,7 +126,7 @@ UserProfilePage.prototype._updateUserProfile = function() {
     password: $("#UserProfilePage-Password").val(),
     name: $("#UserProfilePage-Name").val(),
     gender: $("#UserProfilePage-Gender").val(),
-    languages: $("#UserProfilePage-Languages").val(),
+    languages: [$("#UserProfilePage-Languages").val()],
     age: $("#UserProfilePage-AgeCategory").val(),
   };
   

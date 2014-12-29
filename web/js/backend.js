@@ -1,12 +1,25 @@
 
 var Backend = {};
 
-Backend.SERVER_BASE_URL = "http://env-7303452.whelastic.net/asktheworld3s/";
+Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
 
-Backend.UserProfile = {"login": null, "password": null, "gender": null, "languages": [], "age": null, "name": null, "userId": null};
+Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age: null, name: null, userId: null};
+Backend.UserPreferences = {
+  responseQuantity: Application.Configuration.RESPONSE_QUANTITY[0],
+  responseWaitTime: Application.Configuration.RESPONSE_WAIT_TIME[0],
+  requestTargetAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0],
+  requestTargetGender: Application.Configuration.GENDER_PREFERENCE[0],
+  dailyInquiryLimit: Application.Configuration.INQUIRY_LIMIT_PREFERENCE[0],
+  inquiryAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0], 
+  inquiryGender: Application.Configuration.GENDER_PREFERENCE[0]
+};
 
 Backend.getUserProfile = function() {
   return this.UserProfile;
+}
+
+Backend.getUserPreferences = function() {
+  return this.UserPreferences;
 }
 
 Backend.logIn = function(login, password, callback) {
@@ -111,7 +124,7 @@ Backend.updateUser = function(userProfile, callback) {
       callback.success();
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 400) {
+      if (xhr.status == 400 || xhr.status == 401) {
         callback.failure();
       } else {
         callback.error();
@@ -126,6 +139,43 @@ Backend.updateUser = function(userProfile, callback) {
 //      age: userProfile.age,
 //      name: userProfile.name,
       languages: userProfile.languages
+    },
+    false, this._getAuthenticationHeader(), communicationCallback);
+
+  return true;
+}
+
+Backend.updateUserPreferences = function(userPreferences, callback) {
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      Backend.UserPreferences.requestTargetAge = userPreferences.requestTargetAge;
+      Backend.UserPreferences.requestTargetGender = userPreferences.requestTargetGender;
+      Backend.UserPreferences.responseQuantity = userPreferences.responseQuantity;
+      Backend.UserPreferences.responseWaitTime = userPreferences.responseWaitTime;
+      Backend.UserPreferences.dailyInquiryLimit = userPreferences.dailyInquiryLimit;
+      Backend.UserPreferences.inquiryAge = userPreferences.inquiryAge;
+      Backend.UserPreferences.inquiryGender = userPreferences.inquiryGender;
+
+      callback.success();
+    },
+    error: function(xhr, status, error) {
+      if (xhr.status == 400 || xhr.status == 401) {
+        callback.failure();
+      } else {
+        callback.error();
+      }
+    }
+  }
+
+  this._communicate("user/" + Backend.UserProfile.userId + "/settings", "PUT",
+    { 
+      default_response_quantity: userPreferences.responseQuantity,
+      default_response_wait_time: userPreferences.responseWaitTime,
+      default_response_age_group_preference: userPreferences.requestTargetAge,
+      default_gender_preference: userPreferences.requestTargetGender,
+      inquiry_quantity_per_day: userPreferences.dailyInquiryLimit,
+      inquiry_gender_preference: userPreferences.inquiryGender,
+      inquiry_age_group_preference: userPreferences.inquiryAge
     },
     false, this._getAuthenticationHeader(), communicationCallback);
 

@@ -2,8 +2,12 @@
 var Application = {
   Configuration: {
     AGE_CATEGORIES: ["Child", "Teenager", "Young", "Adult", "Senior"],
-    RESPONSE_WAIT_TIME: ["30 mins", "1 hours", "1/2 day", "1 day", "1 week"],
-    RESPONSE_QUANTITY: ["Just the first one", "Three", "Ten", "As many as arrive"]
+    RESPONSE_WAIT_TIME: ["1 week", "1 day", "half-day", "1 hours", "30 mins"],
+    RESPONSE_QUANTITY: ["As many as arrive", "Ten", "Three", "Just the first one"],
+    GENDERS: ["Male", "Female"],
+    AGE_CATEGORY_PREFERENCE: ["All", "Children", "Teenagers", "Youngs", "Adults", "Seniors"],
+    GENDER_PREFERENCE: ["Any", "Male", "Female"],
+    INQUIRY_LIMIT_PREFERENCE: ["As many as possible", "No more than ten", "No more than five", "I don't want to get any inquiries"]
   },
   
   

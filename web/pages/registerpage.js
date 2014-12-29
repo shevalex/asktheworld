@@ -56,6 +56,7 @@ RegisterPage.prototype.definePageContent = function(root) {
         _buttonSelector: $(this),
         
         success: function() {
+          this._onCompletion();
           Application.showMenuPage();
         },
         failure: function() {
@@ -82,7 +83,7 @@ RegisterPage.prototype.definePageContent = function(root) {
         password: password,
         name: name,
         gender: $("#RegisterPage-Gender").val(),
-        languages: $("#RegisterPage-Languages").val(),
+        languages: [$("#RegisterPage-Languages").val()],
         age: $("#RegisterPage-AgeCategory").val(),
       };
       
@@ -106,9 +107,9 @@ RegisterPage.prototype._createRegisterPanel = function() {
   contentPanel.appendChild(UIUtils.createLineBreak());
   contentPanel.appendChild(UIUtils.createLabeledTextInput("RegisterPage-Name", "Your Nick Name", "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-Gender", "Your Gender", ["Male", "Female"], "10px"));
+  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-Gender", "Your Gender", Application.Configuration.GENDERS, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-AgeCategory", "Your Age Category", ["Child", "Teenager", "Young", "Adult", "Senior"], "10px"));
+  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-AgeCategory", "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
   contentPanel.appendChild(UIUtils.createLabeledTextInput("RegisterPage-Languages", "Languages that you speak", "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
