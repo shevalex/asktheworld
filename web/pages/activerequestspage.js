@@ -24,13 +24,17 @@ ActiveRequestsPage.prototype.onShow = function(root) {
 
 
 ActiveRequestsPage.prototype._appendRequestsTable = function(root) {
-  var columns = [{title: "Date", data: "time", width: "60px"}, {title: "Your Request", data: "text"}];
+  var columns = [
+    {title: "Date", data: "time", type: "date", width: "100px"},
+    {title: "Responses", data: "numOfResponses", type: "num", width: "40px"},
+    {title: "Your Request", data: "text", type: "string"}
+  ];
             
   var rowDataProvider = {
     getRows: function() {
       var rowData = [];
       for (var requestId in this._activeRequests) {
-        rowData.push({rowId: requestId, time: "--", text: "--"});
+        rowData.push({rowId: requestId, time: "--", text: "--", numOfResponses: 0});
       }
       
       return rowData;
@@ -40,7 +44,10 @@ ActiveRequestsPage.prototype._appendRequestsTable = function(root) {
       if (this._activeRequests[rowId] == null) {
         this._getRequestDetails(rowId, function(request) {
           this._activeRequests[rowId] = request;
-          callback(this._activeRequests[rowId]);
+          
+          var requestDate = new Date(request.time);
+          var rowDetails = {time: requestDate.toDateString(), text: request.text, numOfResponses: request.responses.length};
+          callback(rowDetails);
         }.bind(this));
       } else {
         callback(this._activeRequests[rowId]);
