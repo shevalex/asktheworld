@@ -59,7 +59,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.realmName("AskTheWorld realm")
 				.authenticationEntryPoint(secureEntryPoint)
 				.and()
-			.addFilterBefore(af, BasicAuthenticationFilter.class);
+			.addFilterBefore(af, BasicAuthenticationFilter.class)
+			.csrf().disable(); //disable on server side
 	}
 	
 	@Override
