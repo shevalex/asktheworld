@@ -1,7 +1,7 @@
 ActiveRequestsPage = ClassUtils.defineClass(AbstractPage, function ActiveRequestsPage() {
   AbstractPage.call(this, "ActiveRequestsPage");
   
-  this._activeRequests = {};
+  this._activeRequests = null;
 });
 
 ActiveRequestsPage.prototype.definePageContent = function(root) {
@@ -10,15 +10,25 @@ ActiveRequestsPage.prototype.definePageContent = function(root) {
   $("#ActiveRequestsPage-GeneralPanel-AllRequestslink").click(function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID);
   });
+  
+  root.appendChild(UIUtils.createBlock("ActiveRequestsPage-RequestsPanel"));
 }
 
 ActiveRequestsPage.prototype.onShow = function(root) {
-  this._getRequestIds(function(requestIds) {
-    for (var index in requestIds) {
-      this._activeRequests[requestIds[index]] = null;
-    }
-    this._appendRequestsTable(root);
-  }.bind(this));
+  //TBD: define a better rule for update
+  if (this._activeRequests == null) {
+    this._getRequestIds(function(requestIds) {
+      this._activeRequests = {};
+      for (var index in requestIds) {
+        this._activeRequests[requestIds[index]] = null;
+      }
+    
+      this._dataTableObject = this._appendRequestsTable($("#ActiveRequestsPage-RequestsPanel").get(0));
+    }.bind(this));
+  } else {
+    $("#ActiveRequestsPage-RequestsPanel").empty();
+    this._dataTableObject = this._appendRequestsTable($("#ActiveRequestsPage-RequestsPanel").get(0));
+  }
 }
 
 
@@ -34,27 +44,30 @@ ActiveRequestsPage.prototype._appendRequestsTable = function(root) {
     getRows: function() {
       var rowData = [];
       for (var requestId in this._activeRequests) {
-        rowData.push({rowId: requestId, time: "--", text: "--", numOfResponses: 0});
+        rowData.push({rowId: requestId, time: "--", text: "--", numOfResponses: "--"});
       }
       
       return rowData;
     }.bind(this),
     
     getRowDetails: function(rowId, callback) {
+      function convertRequestToRowData(request) {
+        return {time: new Date(request.time).toDateString(), text: request.text, numOfResponses: request.responses.length};
+      }
+      
       if (this._activeRequests[rowId] == null) {
         this._getRequestDetails(rowId, function(request) {
           this._activeRequests[rowId] = request;
           
-          var requestDate = new Date(request.time);
-          var rowDetails = {time: requestDate.toDateString(), text: request.text, numOfResponses: request.responses.length};
-          callback(rowDetails);
+          callback(convertRequestToRowData(request));
         }.bind(this));
       } else {
-        callback(this._activeRequests[rowId]);
+        callback(convertRequestToRowData(this._activeRequests[rowId]));
       }
     }.bind(this)
   }
-  UIUtils.appendFeaturedTable("ActiveRequestsPage-RequestsTable", root, columns, rowDataProvider, this._reappendRequestPanel.bind(this, root));
+  
+  return UIUtils.appendFeaturedTable("ActiveRequestsPage-RequestsTable", root, columns, rowDataProvider, this._reappendRequestPanel.bind(this, root));
 }
 
 ActiveRequestsPage.prototype._reappendRequestPanel = function(root, rowId) {

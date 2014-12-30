@@ -249,7 +249,9 @@ Backend.updateRequest = function(request, requestParams, callback) {
 Backend.getRequestIds = function(requestType, callback) {
   //TBD
   var responseData = ["request101", "request102", "request103"];
-  callback.success(responseData);
+  setTimeout(function() {
+    callback.success(responseData);  
+  }, 3000);
 }
 
 Backend.getRequest = function(requestId, callback) {
@@ -292,7 +294,10 @@ Backend.getRequest = function(requestId, callback) {
       responses: ["response1", "response2"]
     }
   }
-  callback.success(request);
+
+  setTimeout(function() {
+    callback.success(request);
+  }, 1000);
 }
 
 Backend.deleteRequest = function(requestId, callback) {
