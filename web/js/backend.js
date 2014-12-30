@@ -246,10 +246,58 @@ Backend.updateRequest = function(request, requestParams, callback) {
   return true;
 }
 
-Backend.getActiveRequests = function(callback) {
+Backend.getRequestIds = function(requestType, callback) {
   //TBD
-  var responseData = [{"10567": {time: 1234566, text: ""}}];
+  var responseData = ["request101", "request102", "request103"];
   callback.success(responseData);
+}
+
+Backend.getRequest = function(requestId, callback) {
+  //TBD
+  var request = null;
+  if (requestId == "request101") {
+    request = {
+      time: Date.now(),
+      text: "This is the request with the id 101",
+      pictures: [],
+      audios: [],
+      response_quantity: "As many as arrive",
+      response_wait_time: "1 day",
+      response_age_group: "All",
+      response_gender: "Any",
+      responses: ["response1", "response2"]
+    }
+  } else if (requestId == "request102") {
+    request = {
+      time: Date.now(),
+      text: "This is the request with the id 102",
+      pictures: [],
+      audios: [],
+      response_quantity: "As many as arrive",
+      response_wait_time: "1 day",
+      response_age_group: "All",
+      response_gender: "Any",
+      responses: ["response1", "response2"]
+    }
+  } else if (requestId == "request103") {
+    request = {
+      time: Date.now(),
+      text: "This is the request with the id 103",
+      pictures: [],
+      audios: [],
+      response_quantity: "As many as arrive",
+      response_wait_time: "1 day",
+      response_age_group: "All",
+      response_gender: "Any",
+      responses: ["response1", "response2"]
+    }
+  }
+  callback.success(request);
+}
+
+Backend.deleteRequest = function(requestId, callback) {
+  //TBD
+  callback.success();
 }
 
 

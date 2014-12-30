@@ -173,7 +173,7 @@ UIUtils.createImage = function(imageId, src) {
 }
 
 
-UIUtils.appendFeaturedTable = function(tableId, root, columns, rowData, selectionListener) {
+UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener) {
   var tableElement = document.createElement("table");
   tableElement.setAttribute("class", "display");
   tableElement.setAttribute("id", tableId);
@@ -181,18 +181,31 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowData, selectio
   root.appendChild(tableElement);
   
   var dataTableObject = $("#" + tableId).DataTable({
-    data: rowData,
-    columns: columns
+    columns: columns,
+    data: rowDataProvider.getRows(),
+    createdRow: function(row, rowData, index) {
+      var table = this.api();
+      rowDataProvider.getRowDetails(rowData.rowId, function(rowDetailedData) {
+        rowDetailedData.rowId = rowData.rowId;
+        table.row(index).data(rowDetailedData);  //we may need to add .draw()
+      });
+    }
   });
   
   dataTableObject.on("click", "tr", function() {
+    var tableRowObjectData = dataTableObject.row(this).data();
+    if (tableRowObjectData == null) {
+      return;
+    }
     dataTableObject.$("tr.selected").removeClass("selected");
     $(this).addClass("selected");
 
     if (selectionListener != null) {
-      selectionListener(dataTableObject.row(this).index());
+      selectionListener(tableRowObjectData.rowId);
     }
   });
+  
+  return dataTableObject;
 }
 
 

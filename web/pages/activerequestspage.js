@@ -1,7 +1,7 @@
 ActiveRequestsPage = ClassUtils.defineClass(AbstractPage, function ActiveRequestsPage() {
   AbstractPage.call(this, "ActiveRequestsPage");
   
-  this._activeRequests = null;
+  this._activeRequests = {};
 });
 
 ActiveRequestsPage.prototype.definePageContent = function(root) {
@@ -13,9 +13,10 @@ ActiveRequestsPage.prototype.definePageContent = function(root) {
 }
 
 ActiveRequestsPage.prototype.onShow = function(root) {
-  this._getActiveRequests(function(data) {
-    this._activeRequests = data;
-    
+  this._getRequestIds(function(requestIds) {
+    for (var index in requestIds) {
+      this._activeRequests[requestIds[index]] = null;
+    }
     this._appendRequestsTable(root);
   }.bind(this));
 }
@@ -23,14 +24,34 @@ ActiveRequestsPage.prototype.onShow = function(root) {
 
 
 ActiveRequestsPage.prototype._appendRequestsTable = function(root) {
-  var columns = [{title: "Date", width: "60px"}, {title: "Your Request"}];
-  var rowData = [["08/29/2014", "message1"], ["feb", "message2"]];                                             
-                                                
-  UIUtils.appendFeaturedTable("ActiveRequestsPage-RequestsTable", root, columns, rowData, this._reappendRequestPanel.bind(this, root));
+  var columns = [{title: "Date", data: "time", width: "60px"}, {title: "Your Request", data: "text"}];
+            
+  var rowDataProvider = {
+    getRows: function() {
+      var rowData = [];
+      for (var requestId in this._activeRequests) {
+        rowData.push({rowId: requestId, time: "--", text: "--"});
+      }
+      
+      return rowData;
+    }.bind(this),
+    
+    getRowDetails: function(rowId, callback) {
+      if (this._activeRequests[rowId] == null) {
+        this._getRequestDetails(rowId, function(request) {
+          this._activeRequests[rowId] = request;
+          callback(this._activeRequests[rowId]);
+        }.bind(this));
+      } else {
+        callback(this._activeRequests[rowId]);
+      }
+    }.bind(this)
+  }
+  UIUtils.appendFeaturedTable("ActiveRequestsPage-RequestsTable", root, columns, rowDataProvider, this._reappendRequestPanel.bind(this, root));
 }
 
-ActiveRequestsPage.prototype._reappendRequestPanel = function(root, rowIndex) {
-  var requestInfo = this._activeRequests[rowIndex];
+ActiveRequestsPage.prototype._reappendRequestPanel = function(root, rowId) {
+  var requestInfo = this._activeRequests[rowId];
   
   $("#ActiveRequestsPage-RequestContentPanel").remove();
   
@@ -45,21 +66,22 @@ ActiveRequestsPage.prototype._reappendRequestPanel = function(root, rowIndex) {
   requestPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-Quantity", "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px"));
   
   requestPanel.appendChild(UIUtils.createTextArea("ActiveRequestsPage-RequestContentPanel-Text", 6));
+  $("#ActiveRequestsPage-RequestContentPanel-Text").val(requestInfo.text);
 
   var controlPanel = requestPanel.appendChild(UIUtils.createBlock("ActiveRequestsPage-ControlPanel"));
   controlPanel.appendChild(UIUtils.createButton("ActiveRequestsPage-ControlPanel-UpdateButton", "Update"));
   controlPanel.appendChild(UIUtils.createButton("ActiveRequestsPage-ControlPanel-DeleteButton", "Delete"));
   
-  $("#ActiveRequestsPage-ControlPanel-UpdateButton").click(this._updateRequest.bind(this, requestInfo.id));
-  $("#ActiveRequestsPage-ControlPanel-DeleteButton").click(this._deleteRequest.bind(this, requestInfo.id));
+  $("#ActiveRequestsPage-ControlPanel-UpdateButton").click(this._updateRequest.bind(this, rowId));
+  $("#ActiveRequestsPage-ControlPanel-DeleteButton").click(this._deleteRequest.bind(this, rowId));
 }
 
 
-ActiveRequestsPage.prototype._getActiveRequests = function(successCallback) {
+ActiveRequestsPage.prototype._getRequestIds = function(successCallback) {
   var callback = {
-    success: function(data) {
+    success: function(requestIds) {
       this._onCompletion();
-      successCallback(data);
+      successCallback(requestIds);
     },
     failure: function() {
       this._onCompletion();
@@ -75,7 +97,21 @@ ActiveRequestsPage.prototype._getActiveRequests = function(successCallback) {
   
   Application.showSpinningWheel();
 
-  Backend.getActiveRequests(callback);
+  Backend.getRequestIds("active", callback);
+}
+
+ActiveRequestsPage.prototype._getRequestDetails = function(requestId, successCallback) {
+  var callback = {
+    success: function(request) {
+      successCallback(request);
+    },
+    failure: function() {
+    },
+    error: function() {
+    }
+  }
+  
+  Backend.getRequest(requestId, callback);
 }
 
 
@@ -117,4 +153,30 @@ ActiveRequestsPage.prototype._updateRequest = function(requestId) {
   Application.showSpinningWheel();
 
   Backend.updateRequest(request, requestParams, callback);
+}
+
+ActiveRequestsPage.prototype._deleteRequest = function(requestId) {
+  var buttonSelector = $("#ActiveRequestsPage-ControlPanel-DeleteButton");
+  
+  var callback = {
+    success: function() {
+      this._onCompletion();
+    },
+    failure: function() {
+      this._onCompletion();
+    },
+    error: function() {
+      this._onCompletion();
+    },
+    
+    _onCompletion: function() {
+      buttonSelector.prop("disabled", false);
+      Application.hideSpinningWheel();
+    }
+  }
+  
+  buttonSelector.prop("disabled", true);
+  Application.showSpinningWheel();
+
+  Backend.deleteRequest(requestId, callback);
 }
