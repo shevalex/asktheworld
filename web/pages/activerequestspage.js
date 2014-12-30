@@ -1,0 +1,120 @@
+ActiveRequestsPage = ClassUtils.defineClass(AbstractPage, function ActiveRequestsPage() {
+  AbstractPage.call(this, "ActiveRequestsPage");
+  
+  this._activeRequests = null;
+});
+
+ActiveRequestsPage.prototype.definePageContent = function(root) {
+  root.appendChild(UIUtils.createBlock("ActiveRequestsPage-GeneralPanel"));
+  $("#ActiveRequestsPage-GeneralPanel").html("This is what you recently Asked The World about and still waiting for more responses.<br>You can always see your older requests in the <a href='#' id='ActiveRequestsPage-GeneralPanel-AllRequestslink'>All Requests</a> section.");
+  $("#ActiveRequestsPage-GeneralPanel-AllRequestslink").click(function() {
+    Application.getMenuPage().selectMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID);
+  });
+}
+
+ActiveRequestsPage.prototype.onShow = function(root) {
+  this._getActiveRequests(function(data) {
+    this._activeRequests = data;
+    
+    this._appendRequestsTable(root);
+  }.bind(this));
+}
+
+
+
+ActiveRequestsPage.prototype._appendRequestsTable = function(root) {
+  var columns = [{title: "Date", width: "60px"}, {title: "Your Request"}];
+  var rowData = [["08/29/2014", "message1"], ["feb", "message2"]];                                             
+                                                
+  UIUtils.appendFeaturedTable("ActiveRequestsPage-RequestsTable", root, columns, rowData, this._reappendRequestPanel.bind(this, root));
+}
+
+ActiveRequestsPage.prototype._reappendRequestPanel = function(root, rowIndex) {
+  var requestInfo = this._activeRequests[rowIndex];
+  
+  $("#ActiveRequestsPage-RequestContentPanel").remove();
+  
+  var requestPanel = root.appendChild(UIUtils.createBlock("ActiveRequestsPage-RequestContentPanel"));
+  requestPanel.appendChild(UIUtils.createLabel("ActiveRequestsPage-RequestContentPanel-Label", "This request was sent on <b>TBD</b> to"));
+  
+  requestPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-Gender", "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  
+  requestPanel.appendChild(UIUtils.createLineBreak());
+  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-WaitTime", "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-Quantity", "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px"));
+  
+  requestPanel.appendChild(UIUtils.createTextArea("ActiveRequestsPage-RequestContentPanel-Text", 6));
+
+  var controlPanel = requestPanel.appendChild(UIUtils.createBlock("ActiveRequestsPage-ControlPanel"));
+  controlPanel.appendChild(UIUtils.createButton("ActiveRequestsPage-ControlPanel-UpdateButton", "Update"));
+  controlPanel.appendChild(UIUtils.createButton("ActiveRequestsPage-ControlPanel-DeleteButton", "Delete"));
+  
+  $("#ActiveRequestsPage-ControlPanel-UpdateButton").click(this._updateRequest.bind(this, requestInfo.id));
+  $("#ActiveRequestsPage-ControlPanel-DeleteButton").click(this._deleteRequest.bind(this, requestInfo.id));
+}
+
+
+ActiveRequestsPage.prototype._getActiveRequests = function(successCallback) {
+  var callback = {
+    success: function(data) {
+      this._onCompletion();
+      successCallback(data);
+    },
+    failure: function() {
+      this._onCompletion();
+    },
+    error: function() {
+      this._onCompletion();
+    },
+    
+    _onCompletion: function() {
+      Application.hideSpinningWheel();
+    }
+  }
+  
+  Application.showSpinningWheel();
+
+  Backend.getActiveRequests(callback);
+}
+
+
+ActiveRequestsPage.prototype._updateRequest = function(requestId) {
+  var buttonSelector = $("#ActiveRequestsPage-ControlPanel-UpdateButton");
+  
+  var callback = {
+    success: function(requestId) {
+      this._onCompletion();
+    },
+    failure: function() {
+      this._onCompletion();
+    },
+    error: function() {
+      this._onCompletion();
+    },
+    
+    _onCompletion: function() {
+      buttonSelector.prop("disabled", false);
+      Application.hideSpinningWheel();
+    }
+  }
+  
+  var request = {
+    id: requestId,
+    text: $("#ActiveRequestsPage-RequestContentPanel-Text").val(),
+    pictures: [],
+    audios: []
+  }
+  
+  var requestParams = {
+    gender: $("#ActiveRequestsPage-RequestContentPanel-Gender").val(),
+    quantity: $("#ActiveRequestsPage-RequestContentPanel-Quantity").val(),
+    waitTime: $("#ActiveRequestsPage-RequestContentPanel-WaitTime").val(),
+    age: $("#ActiveRequestsPage-RequestContentPanel-AgeCategory").val()
+  }
+
+  buttonSelector.prop("disabled", true);
+  Application.showSpinningWheel();
+
+  Backend.updateRequest(request, requestParams, callback);
+}

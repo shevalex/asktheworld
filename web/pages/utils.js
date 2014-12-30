@@ -173,6 +173,29 @@ UIUtils.createImage = function(imageId, src) {
 }
 
 
+UIUtils.appendFeaturedTable = function(tableId, root, columns, rowData, selectionListener) {
+  var tableElement = document.createElement("table");
+  tableElement.setAttribute("class", "display");
+  tableElement.setAttribute("id", tableId);
+  
+  root.appendChild(tableElement);
+  
+  var dataTableObject = $("#" + tableId).DataTable({
+    data: rowData,
+    columns: columns
+  });
+  
+  dataTableObject.on("click", "tr", function() {
+    dataTableObject.$("tr.selected").removeClass("selected");
+    $(this).addClass("selected");
+
+    if (selectionListener != null) {
+      selectionListener(dataTableObject.row(this).index());
+    }
+  });
+}
+
+
 UIUtils.animateBackgroundColor = function(elementId, color, speed, observer) {
   var jQueryObject = $("#" + elementId);
   var initialColor = jQueryObject.css("backgroundColor");

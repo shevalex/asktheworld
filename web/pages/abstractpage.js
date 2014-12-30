@@ -24,7 +24,7 @@ AbstractPage.prototype.showAnimated = function(container, completionObserver) {
     this.definePageContent(this._pageElement);
     this._isDefined = true;
   }
-  this.onShow();
+  this.onShow(this._pageElement);
   
   $("#" + this._pageId).slideDown("slow", completionObserver);
 }
@@ -52,5 +52,5 @@ AbstractPage.prototype.isShown = function() {
 AbstractPage.prototype.definePageContent = function(root) {
 }
 
-AbstractPage.prototype.onShow = function() {
+AbstractPage.prototype.onShow = function(root) {
 }

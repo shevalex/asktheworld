@@ -214,6 +214,44 @@ Backend.createRequest = function(request, requestParams, callback) {
   return true;
 }
 
+Backend.updateRequest = function(request, requestParams, callback) {
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 201) {
+        callback.success(xhr.getResponseHeader("Location"));
+      }
+    },
+    error: function(xhr, status, error) {
+      if (xhr.status == 400 || xhr.status == 401) {
+        callback.failure();
+      } else {
+        callback.error();
+      }
+    }
+  }
+
+  this._communicate("request/" + request.id, "PUT",
+    { 
+      user_id: Backend.UserProfile.userId,
+      text: request.text,
+      pictures: request.pictures,
+      audios: request.audios,
+      response_quantity: requestParams.quantity,
+      response_wait_time: requestParams.waitTime,
+      response_age_group: requestParams.age,
+      response_gender: requestParams.gender
+    },
+    false, this._getAuthenticationHeader(), communicationCallback);
+
+  return true;
+}
+
+Backend.getActiveRequests = function(callback) {
+  //TBD
+  var responseData = [{"10567": {time: 1234566, text: ""}}];
+  callback.success(responseData);
+}
+
 
 
 Backend._communicate = function(resource, method, data, isJsonResponse, headers, callback) {

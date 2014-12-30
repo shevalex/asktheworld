@@ -6,6 +6,7 @@ MenuPage = ClassUtils.defineClass(AbstractPage, function MenuPage() {
   
   this._homePage = null;
   this._newRequestPage = null;
+  this._activeRequestsPage = null;
   this._userProfilePage = null;
   this._userPreferencesPage = null;
 });
@@ -115,6 +116,11 @@ MenuPage.prototype._getPageForItem = function(itemId) {
       this._newRequestPage = new NewRequestPage();
     }
     return this._newRequestPage;
+  } else if (itemId == MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID) {
+    if (this._activeRequestsPage == null) {
+      this._activeRequestsPage = new ActiveRequestsPage();
+    }
+    return this._activeRequestsPage;
   } else if (itemId == MenuPage.prototype.USER_PROFILE_ITEM_ID) {
     if (this._userProfilePage == null) {
       this._userProfilePage = new UserProfilePage();
