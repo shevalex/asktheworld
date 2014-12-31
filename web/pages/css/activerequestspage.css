@@ -26,6 +26,8 @@
 }
 
 #ActiveRequestsPage-ControlPanel-UpdateButton {
+  width: 20%;
+  margin-right: 30px;
   font-size: 20px;
 }
 

@@ -288,9 +288,9 @@ Backend.getRequest = function(requestId, callback) {
       pictures: [],
       audios: [],
       response_quantity: "As many as arrive",
-      response_wait_time: "1 day",
-      response_age_group: "All",
-      response_gender: "Any",
+      response_wait_time: "1 week",
+      response_age_group: "Seniors",
+      response_gender: "Male",
       responses: ["response1", "response2"]
     }
   }

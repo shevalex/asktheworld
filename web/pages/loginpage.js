@@ -20,10 +20,14 @@ LoginPage.prototype.definePageContent = function(root) {
     var login = $("#LoginPage-Login").val();
     if (login == "") {
       UIUtils.indicateInvalidInput("LoginPage-Login");
+    } else {
+      window.localStorage.login = login;
     }
     var password = $("#LoginPage-Password").val();
     if (password == "") {
       UIUtils.indicateInvalidInput("LoginPage-Password");
+    } else {
+      window.localStorage.password = password;
     }
     
     if (login != "" && password != "") {
@@ -69,6 +73,12 @@ LoginPage.prototype.definePageContent = function(root) {
 
 LoginPage.prototype.onShow = function() {
   //Eventually we may need to read the login info from local storage and initialize the fileds
+  if (window.localStorage.login != null) {
+    $("#LoginPage-Login").val(window.localStorage.login);
+  }
+  if (window.localStorage.password != null) {
+    $("#LoginPage-Password").val(window.localStorage.password);
+  }
 }
 
 

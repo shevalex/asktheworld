@@ -76,14 +76,22 @@ ActiveRequestsPage.prototype._reappendRequestPanel = function(root, rowId) {
   $("#ActiveRequestsPage-RequestContentPanel").remove();
   
   var requestPanel = root.appendChild(UIUtils.createBlock("ActiveRequestsPage-RequestContentPanel"));
-  requestPanel.appendChild(UIUtils.createLabel("ActiveRequestsPage-RequestContentPanel-Label", "This request was sent on <b>TBD</b> to"));
+  
+  var requestDate = new Date(requestInfo.time);
+  requestPanel.appendChild(UIUtils.createLabel("ActiveRequestsPage-RequestContentPanel-Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>"));
   
   requestPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-Gender", "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  $("#ActiveRequestsPage-RequestContentPanel-Gender").val(requestInfo.response_gender);
+  
   requestPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  $("#ActiveRequestsPage-RequestContentPanel-AgeCategory").val(requestInfo.response_age_group);
   
   requestPanel.appendChild(UIUtils.createLineBreak());
-  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-WaitTime", "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
-  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-Quantity", "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px"));
+  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-WaitTime", "Wait time for responses", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
+  $("#ActiveRequestsPage-RequestContentPanel-WaitTime").val(requestInfo.response_wait_time);
+  
+  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-Quantity", "Maximum # of responses", Application.Configuration.RESPONSE_QUANTITY, "10px"));
+  $("#ActiveRequestsPage-RequestContentPanel-Quantity").val(requestInfo.response_quantity);
   
   requestPanel.appendChild(UIUtils.createTextArea("ActiveRequestsPage-RequestContentPanel-Text", 6));
   $("#ActiveRequestsPage-RequestContentPanel-Text").val(requestInfo.text);
