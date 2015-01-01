@@ -1,5 +1,5 @@
 AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequestPage(pageId, requestsType) {
-  AbstractPage.call(this, "AbstractRequestPage");
+  AbstractPage.call(this, pageId);
   
   this._requestsType = requestsType;
   this._requests = null;
