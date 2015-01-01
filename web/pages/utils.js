@@ -189,7 +189,9 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
         rowDetailedData.rowId = rowData.rowId;
         table.row(index).data(rowDetailedData);  //we may need to add .draw()
       });
-    }
+    },
+    aLengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+    iDisplayLength: 5
   });
   
   dataTableObject.on("click", "tr", function() {

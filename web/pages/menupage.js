@@ -121,6 +121,11 @@ MenuPage.prototype._getPageForItem = function(itemId) {
       this._activeRequestsPage = new ActiveRequestsPage();
     }
     return this._activeRequestsPage;
+  } else if (itemId == MenuPage.prototype.ALL_REQUESTS_ITEM_ID) {
+    if (this._allRequestsPage == null) {
+      this._allRequestsPage = new AllRequestsPage();
+    }
+    return this._allRequestsPage;
   } else if (itemId == MenuPage.prototype.USER_PROFILE_ITEM_ID) {
     if (this._userProfilePage == null) {
       this._userProfilePage = new UserProfilePage();

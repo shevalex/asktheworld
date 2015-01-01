@@ -1,0 +1,40 @@
+#AllRequestsPage {
+  padding: 0px 50px 50px 50px;
+}
+
+#AllRequestsPage-GeneralPanel {
+  margin-bottom: 30px;
+  
+  font-size: 20px;
+}
+
+#AllRequestsPage-DetailsPanel {
+  margin-top: 30px;
+}
+
+
+#AllRequestsPage-DetailsPanel-Request {
+  color: black;
+  background: white;
+}
+
+#AllRequestsPage-ResponsePanel {
+  margin-left: 50px;
+  margin-top: 20px;
+  
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.message-container {
+  padding: 5px;
+  margin-bottom: 10px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+  
+  color: white;
+  background: blue;
+}

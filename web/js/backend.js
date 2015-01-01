@@ -248,52 +248,42 @@ Backend.updateRequest = function(request, requestParams, callback) {
 
 Backend.getRequestIds = function(requestType, callback) {
   //TBD
-  var responseData = ["request101", "request102", "request103"];
+  
+  var numOfRequests = Math.random() * 100;
+  var requestIds = [];
+  for (var i = 0; i < numOfRequests; i++) {
+    requestIds.push("request" + i);
+  }
+  
   setTimeout(function() {
-    callback.success(responseData);  
+    callback.success(requestIds);  
   }, 3000);
 }
 
 Backend.getRequest = function(requestId, callback) {
   //TBD
-  var request = null;
-  if (requestId == "request101") {
-    request = {
-      time: Date.now(),
-      text: "This is the request with the id 101",
-      pictures: [],
-      audios: [],
-      response_quantity: "As many as arrive",
-      response_wait_time: "1 day",
-      response_age_group: "All",
-      response_gender: "Any",
-      responses: ["response1", "response2"]
-    }
-  } else if (requestId == "request102") {
-    request = {
-      time: Date.now(),
-      text: "This is the request with the id 102",
-      pictures: [],
-      audios: [],
-      response_quantity: "As many as arrive",
-      response_wait_time: "1 day",
-      response_age_group: "All",
-      response_gender: "Any",
-      responses: ["response1", "response2"]
-    }
-  } else if (requestId == "request103") {
-    request = {
-      time: Date.now(),
-      text: "This is the request with the id 103",
-      pictures: [],
-      audios: [],
-      response_quantity: "As many as arrive",
-      response_wait_time: "1 week",
-      response_age_group: "Seniors",
-      response_gender: "Male",
-      responses: ["response1", "response2"]
-    }
+  var numOfResponses = Math.random() * 100;
+  var responseIds = [];
+  for (var i = 0; i < numOfResponses; i++) {
+    responseIds.push("response" + i);
   }
+  
+  var quantity = Math.round(Math.random() * 3);
+  var waitTime = Math.round(Math.random() * 4);
+  var age = Math.round(Math.random() * 5);
+  var gender = Math.round(Math.random() * 2);
+  
+  var request = {
+    time: Date.now(),
+    text: "This is the request with the id " + requestId,
+    pictures: [],
+    audios: [],
+    response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity],
+    response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
+    response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
+    response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
+    responses: responseIds
+  };
 
   setTimeout(function() {
     callback.success(request);
@@ -304,6 +294,28 @@ Backend.deleteRequest = function(requestId, callback) {
   //TBD
   callback.success();
 }
+
+
+Backend.getResponse = function(requestId, responseId, callback) {
+  //TBD
+  var age = Math.round(Math.random() * 4);
+  var gender = Math.round(Math.random());
+    
+  var response = {
+    time: Date.now(),
+    text: "This is the response " + responseId + " to the request " + requestId,
+    pictures: [],
+    audios: [],
+    age_category: Application.Configuration.AGE_CATEGORIES[age],
+    gender: Application.Configuration.GENDERS[gender]
+  }
+  
+  setTimeout(function() {
+    callback.success(response);
+  }, 1000);
+}
+  
+
 
 
 
