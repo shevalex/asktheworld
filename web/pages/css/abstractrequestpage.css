@@ -1,0 +1,53 @@
+
+.request-container {
+}
+
+.responses-container {
+  margin-left: 50px;
+  margin-top: 20px;
+  
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.request-text-holder {
+  padding: 5px;
+  margin-bottom: 10px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+  
+  color: black;
+  background: white;
+}
+
+.request-text-holder-activable {
+}
+
+.request-text-holder-activable:hover {
+  color: black;
+  background: gray;
+  border-color: blue;
+}
+
+.request-text-holder-activable:active {
+  color: white;
+  background: green;
+  border-color: red;
+}
+
+
+.response-text-holder {
+  padding: 5px;
+  margin-bottom: 10px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+  
+  color: white;
+  background: blue;
+}

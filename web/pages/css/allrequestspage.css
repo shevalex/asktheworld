@@ -7,45 +7,7 @@
   font-size: 20px;
 }
 
-#AllRequestsPage-DetailsPanel {
+#AllRequestsPage-RequestPanel {
   margin-top: 30px;
 }
 
-
-#AllRequestsPage-DetailsPanel-Request {
-  color: black;
-  background: white;
-}
-
-#AllRequestsPage-DetailsPanel-Request:hover {
-  color: black;
-  background: gray;
-  border-color: blue;
-}
-
-#AllRequestsPage-DetailsPanel-Request:active {
-  color: white;
-  background: green;
-  border-color: red;
-}
-
-#AllRequestsPage-ResponsePanel {
-  margin-left: 50px;
-  margin-top: 20px;
-  
-  max-height: 300px;
-  overflow-y: scroll;
-}
-
-.message-container {
-  padding: 5px;
-  margin-bottom: 10px;
-  
-  border-style: solid;
-  border-color: black;
-  border-width: 1;
-  border-radius: 5px;
-  
-  color: white;
-  background: blue;
-}

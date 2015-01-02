@@ -32,7 +32,7 @@ select {
 }
 
 .link-button:disabled {
-  text-decoration: normal;
+  text-decoration: none;
   color: gray;
 }
 
