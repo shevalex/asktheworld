@@ -17,7 +17,6 @@ select {
   border-style: none;
   cursor: pointer;
   outline: none;
-  Xfont-style: italic;
   
   color: rgb(50, 50, 150);
 }
@@ -30,6 +29,11 @@ select {
 .link-button:active {
   text-decoration: underline;
   color: red;
+}
+
+.link-button:disabled {
+  text-decoration: normal;
+  color: gray;
 }
 
 

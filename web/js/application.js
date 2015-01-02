@@ -120,7 +120,7 @@ Application.showLoginPage = function(observer) {
     this._loginPage = new LoginPage();
   }
   
-  Application._showPage(this._loginPage, observer);
+  Application._showPage(this._loginPage, null, observer);
 }
 
 Application.showRegisterPage = function(observer) {
@@ -128,7 +128,7 @@ Application.showRegisterPage = function(observer) {
     this._registerPage = new RegisterPage();
   }
   
-  Application._showPage(this._registerPage, observer);
+  Application._showPage(this._registerPage, null, observer);
 }
 
 Application.showMenuPage = function(observer) {
@@ -136,7 +136,7 @@ Application.showMenuPage = function(observer) {
     this._menuPage = new MenuPage();
   }
   
-  Application._showPage(this._menuPage, observer);
+  Application._showPage(this._menuPage, null, observer);
 }
 
 Application.getMenuPage = function() {
@@ -152,15 +152,15 @@ Application.hideSpinningWheel = function() {
 }
 
 
-Application._showPage = function(page, observer) {
+Application._showPage = function(page, paramBundle, observer) {
   if (this._currentPage != null) {
     this._currentPage.hideAnimated(function() {
       this._currentPage = page;
-      this._currentPage.showAnimated(this._rootContainer, observer);
+      this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
     }.bind(this));
   } else {
     this._currentPage = page;
-    this._currentPage.showAnimated(this._rootContainer, observer);
+    this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
   }
 }
 

@@ -1,0 +1,55 @@
+#RequestDetailsPage {
+}
+
+#RequestDetailsPage-GeneralPanel {
+  margin-bottom: 30px;
+}
+
+#RequestDetailsPage-GeneralPanel-PreviousLink {
+  width: 100%;
+  text-align: left;
+  font-size: 20px;
+}
+
+#RequestDetailsPage-GeneralPanel-NextLink {
+  width: 100%;
+  text-align: right;
+  font-size: 20px;
+}
+
+#RequestDetailsPage-GeneralPanel-GoBackLink {
+  width: 100%;
+  text-align: center;
+  font-size: 25px;
+}
+
+
+#RequestDetailsPage-RequestPanel {
+  margin-top: 30px;
+}
+
+#RequestDetailsPage-RequestPanel-Request {
+  color: black;
+  background: white;
+}
+
+#RequestDetailsPage-ResponsePanel {
+  margin-left: 50px;
+  margin-top: 20px;
+  
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.message-container {
+  padding: 5px;
+  margin-bottom: 10px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+  
+  color: white;
+  background: blue;
+}

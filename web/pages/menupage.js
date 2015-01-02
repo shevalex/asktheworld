@@ -3,10 +3,13 @@ MenuPage = ClassUtils.defineClass(AbstractPage, function MenuPage() {
   
   this._contentPanel = null;
   this._selectedMenuItemId = null;
+  this._activePage = null;
   
   this._homePage = null;
   this._newRequestPage = null;
   this._activeRequestsPage = null;
+  this._allRequestsPage = null;
+  this._requestDetailsPage = null;
   this._userProfilePage = null;
   this._userPreferencesPage = null;
 });
@@ -20,6 +23,8 @@ MenuPage.prototype.ALL_INQUIRIES_ITEM_ID = "MenuPage-MenuPanel-AllInquiries";
 MenuPage.prototype.USER_PROFILE_ITEM_ID = "MenuPage-MenuPanel-UserProfile";
 MenuPage.prototype.USER_PREFERENCES_ITEM_ID = "MenuPage-MenuPanel-UserPreferences";
 MenuPage.prototype.LOGOUT_ITEM_ID = "MenuPage-MenuPanel-Logout";
+
+MenuPage.prototype.REQUEST_DETAILS_PAGE_ID = "MenuPage-RequestDetailsPage";
 
 
 MenuPage.prototype.definePageContent = function(root) {
@@ -38,10 +43,7 @@ MenuPage.prototype.selectMenuItem = function(itemId) {
   
   if (this._selectedMenuItemId != null) {
     $("#" + this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
-    var page = this._getPageForItem(this._selectedMenuItemId);
-    page.hideAnimated();
   }
-  
   
   // Special processing for log-out
   if (itemId == MenuPage.prototype.LOGOUT_ITEM_ID) {
@@ -51,11 +53,25 @@ MenuPage.prototype.selectMenuItem = function(itemId) {
   
   this._selectedMenuItemId = itemId;
   $("#" + this._selectedMenuItemId).addClass("menupage-menuitem-selected");
-  
-  var page = this._getPageForItem(itemId);
-  page.showAnimated(this._contentPanel);
+
+  this.showPage(itemId);
 }
 
+MenuPage.prototype.showPage = function(pageId, paramBundle) {
+  if (this._activePage != null) {
+    this._activePage.hideAnimated();
+  }
+
+  this._activePage = this._getPageForItem(pageId);
+  if (this._activePage == null) {
+    this._activePage = this._getPageById(pageId);
+  }
+  if (this._activePage != null) {
+    this._activePage.showAnimated(this._contentPanel, paramBundle);
+  } else {
+    console.error("No page for id " + pageId);
+  }
+}
 
 
 MenuPage.prototype._createMenuPanel = function() {
@@ -137,9 +153,17 @@ MenuPage.prototype._getPageForItem = function(itemId) {
     }
     return this._userPreferencesPage;
   } else {
-    if (this._newRequestPage == null) {
-      this._newRequestPage = new LoginPage();
+    return null;
+  }
+}
+
+MenuPage.prototype._getPageById = function(pageId) {
+  if (pageId == MenuPage.prototype.REQUEST_DETAILS_PAGE_ID) {
+    if (this._requestDetailsPage == null) {
+      this._requestDetailsPage = new RequestDetailsPage();
     }
-    return this._newRequestPage;
+    return this._requestDetailsPage;
+  } else {
+    return null;
   }
 }

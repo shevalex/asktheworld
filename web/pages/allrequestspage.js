@@ -30,6 +30,10 @@ AllRequestsPage.prototype._appendDetails = function(requestId, request) {
   
   $("#AllRequestsPage-DetailsPanel").get(0).appendChild(UIUtils.createBlock("AllRequestsPage-DetailsPanel-Request"));
   $("#AllRequestsPage-DetailsPanel-Request").addClass("message-container").html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + request.text);
+  $("#AllRequestsPage-DetailsPanel-Request").click(function() {
+    Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID, requestId: requestId, request: request});
+  });
+  
   
   for (var index in request.responses) {
     var responseId = request.responses[index];

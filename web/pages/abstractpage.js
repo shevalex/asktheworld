@@ -13,13 +13,17 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
   this._isDefined = false;
 });
 
-AbstractPage.prototype.show = function(container) {
+AbstractPage.prototype.show = function(container, paramBundle) {
   this._pageElement.style.display = "block";
   container.appendChild(this._pageElement);
-  this.definePageContent(this._pageElement);
+  if (!this._isDefined) {
+    this.definePageContent(this._pageElement);
+    this._isDefined = true;
+  }
+  this.onShow(this._pageElement, paramBundle);
 }
 
-AbstractPage.prototype.showAnimated = function(container, completionObserver) {
+AbstractPage.prototype.showAnimated = function(container, paramBundle, completionObserver) {
   this._pageElement.style.display = "none";
   container.appendChild(this._pageElement);
   
@@ -27,7 +31,7 @@ AbstractPage.prototype.showAnimated = function(container, completionObserver) {
     this.definePageContent(this._pageElement);
     this._isDefined = true;
   }
-  this.onShow(this._pageElement);
+  this.onShow(this._pageElement, paramBundle);
   
   $("#" + this._pageId).slideDown("slow", completionObserver);
 }
