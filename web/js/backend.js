@@ -312,6 +312,7 @@ Backend.getResponse = function(requestId, responseId, callback) {
   //TBD
   var age = Math.round(Math.random() * 4);
   var gender = Math.round(Math.random());
+  var unread = Math.random() < 0.1;
     
   var response = {
     time: Date.now(),
@@ -320,7 +321,7 @@ Backend.getResponse = function(requestId, responseId, callback) {
     audios: [],
     age_category: Application.Configuration.AGE_CATEGORIES[age],
     gender: Application.Configuration.GENDERS[gender],
-    status: Backend.Response.STATUS_UNREAD
+    status: unread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ
   }
   
   setTimeout(function() {

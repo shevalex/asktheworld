@@ -26,8 +26,13 @@ AbstractRequestPage.prototype.pullRequestsAndAppendTable = function(containerId,
   }
 }
 
-AbstractRequestPage.appendRequestResponsesControl = function(root, requestIds, requestClickListener, requestEditable) {
-  AbstractRequestPage._RequestResponseControl.appendControl(root, requestIds, requestClickListener, requestEditable);
+/*
+ * settings.requestClickListener
+ * settings.requestEditable
+ * settings.maxResponses
+ */
+AbstractRequestPage.appendRequestResponsesControl = function(root, requestIds, settings) {
+  AbstractRequestPage._RequestResponseControl.appendControl(root, requestIds, settings);
 }
 
 
@@ -75,7 +80,7 @@ AbstractRequestPage.prototype._appendRequestsTable = function(tableId, root, sel
 
 AbstractRequestPage._RequestResponseControl = {};
 
-AbstractRequestPage._RequestResponseControl.appendControl = function(root, requestIds, requestClickListener, requestEditable) {
+AbstractRequestPage._RequestResponseControl.appendControl = function(root, requestIds, settings) {
   var controlPanelId = root.getAttribute("id") + "-RequestResponsesContainer";
   
   var containerElement;
@@ -87,11 +92,11 @@ AbstractRequestPage._RequestResponseControl.appendControl = function(root, reque
   }
 
   for (var index in requestIds) {
-    this._appendRequestAndResponsesPanel(containerElement, requestIds[index], requestClickListener, requestEditable);
+    this._appendRequestAndResponsesPanel(containerElement, requestIds[index], settings);
   }
 }
 
-AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = function(root, requestId, requestClickListener, requestEditable) {
+AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = function(root, requestId, settings) {
   var requestPanelId = root.getAttribute("id") + "-" + requestId;
   var requestPanel = root.appendChild(UIUtils.createBlock(requestPanelId));
   $("#" + requestPanelId).addClass("request-container");
@@ -101,7 +106,7 @@ AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = fu
     var requestHolderElement = requestPanel.appendChild(UIUtils.createBlock(requestHolderId));
     var requestHolderSelector = $("#" + requestHolderId);
     
-    if (requestEditable == true) { 
+    if (settings.requestEditable == true) { 
       requestHolderSelector.addClass("request-holder-editable");
     } else {
       requestHolderSelector.addClass("request-holder");
@@ -117,16 +122,16 @@ AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = fu
       var requestDate = new Date(request.time);
       
       requestTextSelector.addClass("request-text-holder");
-      if (requestClickListener != null) {
+      if (settings.requestClickListener != null) {
         requestTextSelector.addClass("request-text-holder-activable");
         requestTextSelector.click(function() {
-          requestClickListener(requestId, request);
+          settings.requestClickListener(requestId, request);
         });
       }
         
       requestTextSelector.html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + request.text);
         
-      if (requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE) {
+      if (settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE) {
         var controlPanelId = requestHolderId + "-ControlPanel";
         var controlPanel = requestHolderElement.appendChild(UIUtils.createBlock(controlPanelId));
         $("#" + controlPanelId).addClass("request-edit-control");
@@ -146,34 +151,56 @@ AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = fu
       
     appendRequestText();
     
-    this._appendResponses(requestPanel, requestId, request);
+    this._appendResponses(requestPanel, requestId, request, settings);
   }.bind(this));
 }
 
-AbstractRequestPage._RequestResponseControl._appendResponses = function(root, requestId, request) {
+AbstractRequestPage._RequestResponseControl._appendResponses = function(root, requestId, request, settings) {
   var responsesPanelId = root.getAttribute("id") + "-Responses";
   var responsesPanel = root.appendChild(UIUtils.createBlock(responsesPanelId));
   $("#" + responsesPanelId).addClass("responses-container");
-      
+  
+  var responseCount = 0;
   for (var responseIndex in request.responses) {
     var responseId = request.responses[responseIndex];
         
     AbstractRequestPage._getResponse(requestId, responseId, function(responseId, response) {
-      var responseHolderId = responsesPanelId + "-" + responseId;
-      responsesPanel.appendChild(UIUtils.createBlock(responseHolderId));
-
-      var responseDate = new Date(response.time);
-          
-      var responseSelector = $("#" + responseHolderId);
-      responseSelector.addClass("response-text-holder");
-      if (response.status == Backend.Response.STATUS_UNREAD) {
-        responseSelector.addClass("response-text-holder-activable");
-        responseSelector.click(function(requestId, responseId, responseSelector) {
-          AbstractRequestPage._setResponseStatus(requestId, responseId, Backend.Response.STATUS_READ);
-          responseSelector.removeClass("response-text-holder-activable");
-        }.bind(this, requestId, responseId, responseSelector));
+      if (settings.unviewedResponsesOnly == true && response.status == Backend.Response.STATUS_READ) {
+        return;
       }
-      responseSelector.html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+      
+      responseCount++;
+      if (settings.maxResponses != null && settings.maxResponses != -1 && responseCount > settings.maxResponses) {
+        return;
+      } else if (settings.maxResponses != null && settings.maxResponses == responseCount) {
+        var responseHolderId = responsesPanelId + "-andmore";
+        responsesPanel.appendChild(UIUtils.createBlock(responseHolderId));
+        var responseSelector = $("#" + responseHolderId);
+        responseSelector.addClass("response-text-holder");
+        if (settings.requestClickListener != null) {
+          responseSelector.addClass("response-text-holder-activable");
+          responseSelector.click(settings.requestClickListener.bind(this, requestId, request));
+        }
+
+        responseSelector.html("And more responses. Click to see them all");
+      } else {
+        var responseHolderId = responsesPanelId + "-" + responseId;
+        responsesPanel.appendChild(UIUtils.createBlock(responseHolderId));
+
+        var responseDate = new Date(response.time);
+          
+        var responseSelector = $("#" + responseHolderId);
+        responseSelector.addClass("response-text-holder");
+        if (response.status == Backend.Response.STATUS_UNREAD) {
+          responseSelector.addClass("response-text-holder-activable");
+          responseSelector.click(function(requestId, responseId, responseSelector) {
+            AbstractRequestPage._setResponseStatus(requestId, responseId, Backend.Response.STATUS_READ);
+            responseSelector.removeClass("response-text-holder-activable");
+          }.bind(this, requestId, responseId, responseSelector));
+        }
+      
+        responseSelector.html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+      }
     }.bind(this, responseId));
   }
 }
@@ -253,6 +280,10 @@ AbstractRequestPage._getRequest = function(requestId, successCallback) {
   }
   
   Backend.getRequest(requestId, callback);
+}
+
+AbstractRequestPage._getResponses = function(requestId, request, responseStatus, successCallback) {
+  
 }
 
 AbstractRequestPage._getResponse = function(requestId, responseId, successCallback) {

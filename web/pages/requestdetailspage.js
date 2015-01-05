@@ -22,7 +22,12 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
 
 RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._returnPageId = paramBundle.returnPageId;
-  AbstractRequestPage.appendRequestResponsesControl(root, [paramBundle.requestId], null, true);
+  AbstractRequestPage.appendRequestResponsesControl(root, [paramBundle.requestId], {
+    requestClickListener: null,
+    requestEditable: true,
+    maxResponses: -1,
+    unviewedResponsesOnly: false
+  });
 }
 
 

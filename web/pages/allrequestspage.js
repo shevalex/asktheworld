@@ -17,9 +17,14 @@ AllRequestsPage.prototype.onShow = function(root) {
   var responsesPanelElement = $("#AllRequestsPage-RequestPanel").get(0);
   
   this.pullRequestsAndAppendTable("AllRequestsPage-TablePanel", function(requestId, request) {
-    AbstractRequestPage.appendRequestResponsesControl(responsesPanelElement, [requestId], function() {
-      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID, requestId: requestId, request: request});
-    });      
+    AbstractRequestPage.appendRequestResponsesControl(responsesPanelElement, [requestId], {
+      requestClickListener: function(requestId, request) {
+        Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID, requestId: requestId, request: request});
+      },
+      requestEditable: true,
+      maxResponses: 3,
+      unviewedResponsesOnly: false
+    });
   });
 }
 

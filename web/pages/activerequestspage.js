@@ -15,9 +15,14 @@ ActiveRequestsPage.prototype.definePageContent = function(root) {
 
 ActiveRequestsPage.prototype.onShow = function(root) {
   this._getRequestIds(function(requestIds) {
-    AbstractRequestPage.appendRequestResponsesControl($("#ActiveRequestsPage-RequestsPanel").get(0), requestIds, function() {
-      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID, requestId: requestId, request: request});
-    }, true);
+    AbstractRequestPage.appendRequestResponsesControl($("#ActiveRequestsPage-RequestsPanel").get(0), requestIds, {
+      requestClickListener: function(requestId, request) {
+        Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID, requestId: requestId, request: request});
+      },
+      requestEditable: true,
+      maxResponses: -1,
+      unviewedResponsesOnly: true
+    });
   });
 }
 
