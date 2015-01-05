@@ -1,5 +1,5 @@
 
-.request-container {
+.request-and-responses-container {
   margin-bottom: 20px;
 }
 
@@ -7,7 +7,6 @@
   margin-left: 50px;
   margin-top: 20px;
   
-  max-height: 300px;
   overflow-y: scroll;
 }
 

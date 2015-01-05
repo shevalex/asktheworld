@@ -26,7 +26,8 @@ RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
     requestClickListener: null,
     requestEditable: true,
     maxResponses: -1,
-    unviewedResponsesOnly: false
+    unviewedResponsesOnly: false,
+    responseAreaMaxHeight: -1
   });
 }
 

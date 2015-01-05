@@ -99,7 +99,7 @@ AbstractRequestPage._RequestResponseControl.appendControl = function(root, reque
 AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = function(root, requestId, settings) {
   var requestPanelId = root.getAttribute("id") + "-" + requestId;
   var requestPanel = root.appendChild(UIUtils.createBlock(requestPanelId));
-  $("#" + requestPanelId).addClass("request-container");
+  $("#" + requestPanelId).addClass("request-and-responses-container");
 
   AbstractRequestPage._getRequest(requestId, function(request) {
     var requestHolderId = requestPanelId + "-RequestHolder";
@@ -159,6 +159,11 @@ AbstractRequestPage._RequestResponseControl._appendResponses = function(root, re
   var responsesPanelId = root.getAttribute("id") + "-Responses";
   var responsesPanel = root.appendChild(UIUtils.createBlock(responsesPanelId));
   $("#" + responsesPanelId).addClass("responses-container");
+  if (settings.responseAreaMaxHeight != null && settings.responseAreaMaxHeight != -1) {
+    responsesPanel.style.maxHeight = settings.responseAreaMaxHeight;
+  } else if (settings.responseAreaMaxHeight == null) {
+    responsesPanel.style.maxHeight = "300px";
+  }
   
   var responseCount = 0;
   for (var responseIndex in request.responses) {
