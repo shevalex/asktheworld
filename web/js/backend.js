@@ -3,6 +3,16 @@ var Backend = {};
 
 Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
 
+
+Backend.Request = {};
+Backend.Request.STATUS_ACTIVE = "active";
+Backend.Request.STATUS_INACTIVE = "inactive";
+
+Backend.Response = {};
+Backend.Response.STATUS_UNREAD = "unread";
+Backend.Response.STATUS_READ = "read";
+
+
 Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age: null, name: null, userId: null};
 Backend.UserPreferences = {
   responseQuantity: Application.Configuration.RESPONSE_QUANTITY[0],
@@ -239,7 +249,8 @@ Backend.updateRequest = function(request, requestParams, callback) {
       response_quantity: requestParams.quantity,
       response_wait_time: requestParams.waitTime,
       response_age_group: requestParams.age,
-      response_gender: requestParams.gender
+      response_gender: requestParams.gender,
+      status: requestParams.status
     },
     false, this._getAuthenticationHeader(), communicationCallback);
 
@@ -282,6 +293,7 @@ Backend.getRequest = function(requestId, callback) {
     response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
     response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
     response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
+    status: Backend.Request.STATUS_ACTIVE,
     responses: responseIds
   };
 
@@ -307,7 +319,8 @@ Backend.getResponse = function(requestId, responseId, callback) {
     pictures: [],
     audios: [],
     age_category: Application.Configuration.AGE_CATEGORIES[age],
-    gender: Application.Configuration.GENDERS[gender]
+    gender: Application.Configuration.GENDERS[gender],
+    status: Backend.Response.STATUS_UNREAD
   }
   
   setTimeout(function() {

@@ -196,9 +196,14 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
   
   dataTableObject.on("click", "tr", function() {
     var tableRowObjectData = dataTableObject.row(this).data();
-    if (tableRowObjectData == null) {
+    if (tableRowObjectData == null || tableRowObjectData.temporary) {
       return;
     }
+    
+    if (dataTableObject.$("tr.selected").get(0) == $(this).get(0)) {
+      return;
+    }
+    
     dataTableObject.$("tr.selected").removeClass("selected");
     $(this).addClass("selected");
 

@@ -12,6 +12,7 @@ ActiveRequestsPage.prototype.definePageContent = function(root) {
   });
   
   root.appendChild(UIUtils.createBlock("ActiveRequestsPage-RequestsPanel"));
+  root.appendChild(UIUtils.createBlock("ActiveRequestsPage-RequestContentPanel"));
 }
 
 ActiveRequestsPage.prototype.onShow = function(root) {
@@ -71,37 +72,16 @@ ActiveRequestsPage.prototype._appendRequestsTable = function(root) {
 }
 
 ActiveRequestsPage.prototype._reappendRequestPanel = function(root, rowId) {
-  var requestInfo = this._activeRequests[rowId];
+  $("#ActiveRequestsPage-RequestContentPanel").empty();
   
-  $("#ActiveRequestsPage-RequestContentPanel").remove();
+  var request = this._activeRequests[rowId];
+  if (request == null) {
+    return;
+  }
   
-  var requestPanel = root.appendChild(UIUtils.createBlock("ActiveRequestsPage-RequestContentPanel"));
-  
-  var requestDate = new Date(requestInfo.time);
-  requestPanel.appendChild(UIUtils.createLabel("ActiveRequestsPage-RequestContentPanel-Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>"));
-  
-  requestPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-Gender", "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
-  $("#ActiveRequestsPage-RequestContentPanel-Gender").val(requestInfo.response_gender);
-  
-  requestPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-AgeCategory", "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
-  $("#ActiveRequestsPage-RequestContentPanel-AgeCategory").val(requestInfo.response_age_group);
-  
-  requestPanel.appendChild(UIUtils.createLineBreak());
-  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-WaitTime", "Wait time for responses", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
-  $("#ActiveRequestsPage-RequestContentPanel-WaitTime").val(requestInfo.response_wait_time);
-  
-  requestPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList("ActiveRequestsPage-RequestContentPanel-Quantity", "Maximum # of responses", Application.Configuration.RESPONSE_QUANTITY, "10px"));
-  $("#ActiveRequestsPage-RequestContentPanel-Quantity").val(requestInfo.response_quantity);
-  
-  requestPanel.appendChild(UIUtils.createTextArea("ActiveRequestsPage-RequestContentPanel-Text", 6));
-  $("#ActiveRequestsPage-RequestContentPanel-Text").val(requestInfo.text);
-
-  var controlPanel = requestPanel.appendChild(UIUtils.createBlock("ActiveRequestsPage-ControlPanel"));
-  controlPanel.appendChild(UIUtils.createButton("ActiveRequestsPage-ControlPanel-UpdateButton", "Update"));
-  controlPanel.appendChild(UIUtils.createButton("ActiveRequestsPage-ControlPanel-DeleteButton", "Delete"));
-  
-  $("#ActiveRequestsPage-ControlPanel-UpdateButton").click(this._updateRequest.bind(this, rowId));
-  $("#ActiveRequestsPage-ControlPanel-DeleteButton").click(this._deleteRequest.bind(this, rowId));
+  AbstractRequestPage.appendRequestResponsesControl($("#ActiveRequestsPage-RequestContentPanel").get(0), [rowId], function() {
+    Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID, requestId: requestId, request: request});
+  }, true);
 }
 
 
@@ -143,68 +123,3 @@ ActiveRequestsPage.prototype._getRequestDetails = function(requestId, successCal
 }
 
 
-ActiveRequestsPage.prototype._updateRequest = function(requestId) {
-  var buttonSelector = $("#ActiveRequestsPage-ControlPanel-UpdateButton");
-  
-  var callback = {
-    success: function(requestId) {
-      this._onCompletion();
-    },
-    failure: function() {
-      this._onCompletion();
-    },
-    error: function() {
-      this._onCompletion();
-    },
-    
-    _onCompletion: function() {
-      buttonSelector.prop("disabled", false);
-      Application.hideSpinningWheel();
-    }
-  }
-  
-  var request = {
-    id: requestId,
-    text: $("#ActiveRequestsPage-RequestContentPanel-Text").val(),
-    pictures: [],
-    audios: []
-  }
-  
-  var requestParams = {
-    gender: $("#ActiveRequestsPage-RequestContentPanel-Gender").val(),
-    quantity: $("#ActiveRequestsPage-RequestContentPanel-Quantity").val(),
-    waitTime: $("#ActiveRequestsPage-RequestContentPanel-WaitTime").val(),
-    age: $("#ActiveRequestsPage-RequestContentPanel-AgeCategory").val()
-  }
-
-  buttonSelector.prop("disabled", true);
-  Application.showSpinningWheel();
-
-  Backend.updateRequest(request, requestParams, callback);
-}
-
-ActiveRequestsPage.prototype._deleteRequest = function(requestId) {
-  var buttonSelector = $("#ActiveRequestsPage-ControlPanel-DeleteButton");
-  
-  var callback = {
-    success: function() {
-      this._onCompletion();
-    },
-    failure: function() {
-      this._onCompletion();
-    },
-    error: function() {
-      this._onCompletion();
-    },
-    
-    _onCompletion: function() {
-      buttonSelector.prop("disabled", false);
-      Application.hideSpinningWheel();
-    }
-  }
-  
-  buttonSelector.prop("disabled", true);
-  Application.showSpinningWheel();
-
-  Backend.deleteRequest(requestId, callback);
-}

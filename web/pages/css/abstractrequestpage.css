@@ -10,6 +10,21 @@
   overflow-y: scroll;
 }
 
+.request-holder {
+}
+
+.request-holder-editable {
+  padding: 5px;
+  margin-bottom: 10px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+  
+  background: white;
+}
+
 .request-text-holder {
   padding: 5px;
   margin-bottom: 10px;
@@ -38,6 +53,10 @@
   border-color: red;
 }
 
+.request-edit-control {
+  text-align: right;
+}
+
 
 .response-text-holder {
   padding: 5px;
@@ -48,6 +67,23 @@
   border-width: 1;
   border-radius: 5px;
   
+  color: black;
+  background: rgb(150, 150, 100);
+}
+
+.response-text-holder-activable {
   color: white;
   background: blue;
+}
+
+.response-text-holder-activable:hover {
+  color: black;
+  background: gray;
+  border-color: blue;
+}
+
+.response-text-holder-activable:active {
+  color: white;
+  background: green;
+  border-color: red;
 }

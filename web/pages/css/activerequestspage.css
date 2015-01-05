@@ -7,29 +7,9 @@
   font-size: 20px;
 }
 
-#ActiveRequestsPage-RequestContentPanel-Label {
-  margin-top: 20px;
+#ActiveRequestsPage-RequestsPanel {
   margin-bottom: 20px;
-  font-size: 20px;
 }
 
-#ActiveRequestsPage-RequestContentPanel-Text {
-  margin-top: 20px;
-  font-size: 20px;
-}
-
-#ActiveRequestsPage-ControlPanel {
-  margin-top: 30px;
-  
-  text-align: right;
-}
-
-#ActiveRequestsPage-ControlPanel-UpdateButton {
-  width: 20%;
-  margin-right: 30px;
-  font-size: 20px;
-}
-
-#ActiveRequestsPage-ControlPanel-DeleteButton {
-  font-size: 20px;
+#ActiveRequestsPage-RequestContentPanel {
 }
