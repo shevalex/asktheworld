@@ -14,6 +14,10 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
   $("#RequestDetailsPage-GeneralPanel-GoBackLink").click(function() {
     Application.getMenuPage().showPage(this._returnPageId);
   }.bind(this));
+
+  
+  root.appendChild(UIUtils.createBlock("RequestDetailsPage-RequestsPanel"));
+  
   
   //TODO
   $("#RequestDetailsPage-GeneralPanel-PreviousLink").prop("disabled", "true");
@@ -22,7 +26,7 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
 
 RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._returnPageId = paramBundle.returnPageId;
-  AbstractRequestPage.appendRequestResponsesControl(root, [paramBundle.requestId], {
+  AbstractRequestPage.appendRequestResponsesControl($("#RequestDetailsPage-RequestsPanel").get(0), [paramBundle.requestId], {
     requestClickListener: null,
     requestEditable: true,
     maxResponses: -1,

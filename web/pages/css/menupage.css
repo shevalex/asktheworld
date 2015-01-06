@@ -25,7 +25,7 @@
 
 #MenuPage-ContentPanel {
   width: calc(80% - 80px);
-  height: calc(100% - 70px);
+  height: calc(100% - 50px);
   overflow: scroll;
   margin-left: 10px;
   margin-top: 50px;

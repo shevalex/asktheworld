@@ -14,9 +14,9 @@ select {
 
 .application-page {
   padding-right: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
   width: calc(100% - 10px);
-  height: calc(100% - 20px);
+  height: calc(100% - 10px);
   overflow: scroll;
 }
 

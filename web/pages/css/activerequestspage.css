@@ -9,8 +9,9 @@
 
 #ActiveRequestsPage-RequestsPanel {
   margin-top: 20px;
-  height: calc(100% - 50px - 20px);
-  overflow: scroll;
   padding-right: 10px;
+  height: calc(100% - 50px - 20px);
+  width: calc(100% - 10px);
+  overflow: scroll;
 }
 
