@@ -66,6 +66,7 @@ AbstractRequestPage._RequestResponseControl = {};
 
 AbstractRequestPage._RequestResponseControl.appendControl = function(root, requestIds, settings) {
   var controlPanelId = root.getAttribute("id") + "-RequestResponsesContainer";
+  $("#" + controlPanelId).addClass("request-and-responses-container");
   
   var containerElement;
   if ($("#" + controlPanelId).length == 0) {
@@ -83,7 +84,6 @@ AbstractRequestPage._RequestResponseControl.appendControl = function(root, reque
 AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = function(root, requestId, settings) {
   var requestPanelId = root.getAttribute("id") + "-" + requestId;
   var requestPanel = root.appendChild(UIUtils.createBlock(requestPanelId));
-  $("#" + requestPanelId).addClass("request-and-responses-container");
   
   //TODO: need to listen for changes and refresh
   
@@ -149,8 +149,6 @@ AbstractRequestPage._RequestResponseControl._appendResponses = function(root, re
   $("#" + responsesPanelId).addClass("responses-container");
   if (settings.responseAreaMaxHeight != null && settings.responseAreaMaxHeight != -1) {
     responsesPanel.style.maxHeight = settings.responseAreaMaxHeight;
-  } else if (settings.responseAreaMaxHeight == null) {
-    responsesPanel.style.maxHeight = "300px";
   }
 
   var responseCount = 0;

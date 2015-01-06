@@ -2,14 +2,15 @@
 }
 
 #ActiveRequestsPage-GeneralPanel {
-  margin-bottom: 30px;
+  height: 50px;
   
   font-size: 20px;
 }
 
 #ActiveRequestsPage-RequestsPanel {
-  margin-bottom: 20px;
+  margin-top: 20px;
+  height: calc(100% - 50px - 20px);
+  overflow: scroll;
+  padding-right: 10px;
 }
 
-#ActiveRequestsPage-RequestContentPanel {
-}

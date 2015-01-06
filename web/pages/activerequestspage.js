@@ -10,7 +10,6 @@ ActiveRequestsPage.prototype.definePageContent = function(root) {
   });
   
   root.appendChild(UIUtils.createBlock("ActiveRequestsPage-RequestsPanel"));
-  root.appendChild(UIUtils.createBlock("ActiveRequestsPage-RequestContentPanel"));
 }
 
 ActiveRequestsPage.prototype.onShow = function(root) {
@@ -24,6 +23,7 @@ ActiveRequestsPage.prototype.onShow = function(root) {
       },
       requestEditable: true,
       maxResponses: -1,
+      responseAreaMaxHeight: "300px",
       unviewedResponsesOnly: true
     });
   }

@@ -6,9 +6,7 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
   
   this._pageElement = document.createElement("div");
   this._pageElement.setAttribute("id", pageId);
-  this._pageElement.style.width = "calc(100% - 10px)";
-  this._pageElement.style.paddingRight = "10px";
-  this._pageElement.style.paddingBottom = "20px";
+  this._pageElement.setAttribute("class", "application-page");
   
   this._isDefined = false;
 });

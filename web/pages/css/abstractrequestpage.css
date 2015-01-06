@@ -1,12 +1,12 @@
 
 .request-and-responses-container {
-  margin-bottom: 20px;
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .responses-container {
-  margin-left: 50px;
-  margin-top: 20px;
-  
+  margin: 10px 0px 10px 50px;
+
   overflow-y: scroll;
 }
 
