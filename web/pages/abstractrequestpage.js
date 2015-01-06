@@ -1,29 +1,12 @@
 AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequestPage(pageId, requestsType) {
   AbstractPage.call(this, pageId);
-  
-  this._requestsType = requestsType;
-  this._requests = null;
 });
 
 
-AbstractRequestPage.prototype.pullRequestsAndAppendTable = function(containerId, selectionCallback) {
-  function appendTable() {
-    $("#" + containerId).empty();
-    this._appendRequestsTable(containerId + "-Table", $("#" + containerId).get(0), selectionCallback);
-  };
-  
-  if (this._requests == null) {
-    AbstractRequestPage._getRequestIds(function(requestIds) {
-      this._requests = {};
-      for (var index in requestIds) {
-        this._requests[requestIds[index]] = null;
-      }
-    
-      appendTable.call(this);
-    }.bind(this));
-  } else {
-    appendTable.call(this);
-  }
+AbstractRequestPage.appendRequestsTable = function(root, selectionCallback) {
+  var containerId = root.getAttribute("id");
+  $("#" + containerId).empty();
+  this._appendRequestsTable(containerId + "-Table", root, selectionCallback);
 }
 
 /*
@@ -37,7 +20,7 @@ AbstractRequestPage.appendRequestResponsesControl = function(root, requestIds, s
 
 
   
-AbstractRequestPage.prototype._appendRequestsTable = function(tableId, root, selectionCallback) {
+AbstractRequestPage._appendRequestsTable = function(tableId, root, selectionCallback) {
   var columns = [
     {title: "Date", data: "time", type: "date", width: "100px"},
     {title: "Responses", data: "numOfResponses", type: "num", width: "40px"},
@@ -47,32 +30,33 @@ AbstractRequestPage.prototype._appendRequestsTable = function(tableId, root, sel
   var rowDataProvider = {
     getRows: function() {
       var rowData = [];
-      for (var requestId in this._requests) {
-        rowData.push({rowId: requestId, temporary: true, time: "--", text: "--", numOfResponses: "--"});
+      var requestIds = Backend.getCachedRequestIds();
+      for (var requestId in requestIds) {
+        rowData.push({rowId: requestIds[requestId], temporary: true, time: "--", text: "--", numOfResponses: "--"});
       }
       
       return rowData;
-    }.bind(this),
+    },
     
     getRowDetails: function(rowId, callback) {
       function convertRequestToRowData(request) {
-        return {time: new Date(request.time).toDateString(), text: request.text, numOfResponses: request.responses.length};
+        return {time: new Date(request.time).toDateString(), text: request.text, numOfResponses: request.responseIds.length};
       }
-      
-      if (this._requests[rowId] == null) {
-        AbstractRequestPage._getRequest(rowId, function(request) {
-          this._requests[rowId] = request;
-          
+
+      function notifyCallback() {
+        var request = Backend.getCachedRequest(rowId);
+        if (request != null) {
           callback(convertRequestToRowData(request));
-        }.bind(this));
-      } else {
-        callback(convertRequestToRowData(this._requests[rowId]));
+        }
       }
+      notifyCallback();
+      
+      Backend.addRequestCacheChangeListener(notifyCallback);
     }.bind(this)
   }
   
   return UIUtils.appendFeaturedTable(tableId, root, columns, rowDataProvider, function(rowId) {
-    selectionCallback(rowId, this._requests[rowId]);
+    selectionCallback(rowId);
   }.bind(this));
 }
 
@@ -100,59 +84,63 @@ AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = fu
   var requestPanelId = root.getAttribute("id") + "-" + requestId;
   var requestPanel = root.appendChild(UIUtils.createBlock(requestPanelId));
   $("#" + requestPanelId).addClass("request-and-responses-container");
+  
+  //TODO: need to listen for changes and refresh
+  
+  var request = Backend.getCachedRequest(requestId);
 
-  AbstractRequestPage._getRequest(requestId, function(request) {
-    var requestHolderId = requestPanelId + "-RequestHolder";
-    var requestHolderElement = requestPanel.appendChild(UIUtils.createBlock(requestHolderId));
-    var requestHolderSelector = $("#" + requestHolderId);
+  var requestHolderId = requestPanelId + "-RequestHolder";
+  var requestHolderElement = requestPanel.appendChild(UIUtils.createBlock(requestHolderId));
+  var requestHolderSelector = $("#" + requestHolderId);
     
-    if (settings.requestEditable == true) { 
-      requestHolderSelector.addClass("request-holder-editable");
-    } else {
-      requestHolderSelector.addClass("request-holder");
+  var isEditable = settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE;
+  
+  if (isEditable) { 
+    requestHolderSelector.addClass("request-holder-editable");
+  } else {
+    requestHolderSelector.addClass("request-holder");
+  }
+      
+  var appendRequestText = function() {
+    requestHolderSelector.empty();
+      
+    var requestTextId = requestHolderId + "-RequestText";
+    var requestTextElement = requestHolderElement.appendChild(UIUtils.createBlock(requestTextId));
+    var requestTextSelector = $("#" + requestTextId);
+      
+    var requestDate = new Date(request.time);
+      
+    requestTextSelector.addClass("request-text-holder");
+    if (settings.requestClickListener != null) {
+      requestTextSelector.addClass("request-text-holder-activable");
+      requestTextSelector.click(function() {
+        settings.requestClickListener(requestId, request);
+      });
     }
-      
-    var appendRequestText = function() {
-      requestHolderSelector.empty();
-      
-      var requestTextId = requestHolderId + "-RequestText";
-      var requestTextElement = requestHolderElement.appendChild(UIUtils.createBlock(requestTextId));
-      var requestTextSelector = $("#" + requestTextId);
-      
-      var requestDate = new Date(request.time);
-      
-      requestTextSelector.addClass("request-text-holder");
-      if (settings.requestClickListener != null) {
-        requestTextSelector.addClass("request-text-holder-activable");
-        requestTextSelector.click(function() {
-          settings.requestClickListener(requestId, request);
-        });
-      }
         
-      requestTextSelector.html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + request.text);
+    requestTextSelector.html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + request.text);
         
-      if (settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE) {
-        var controlPanelId = requestHolderId + "-ControlPanel";
-        var controlPanel = requestHolderElement.appendChild(UIUtils.createBlock(controlPanelId));
-        $("#" + controlPanelId).addClass("request-edit-control");
+    if (isEditable) {
+      var controlPanelId = requestHolderId + "-ControlPanel";
+      var controlPanel = requestHolderElement.appendChild(UIUtils.createBlock(controlPanelId));
+      $("#" + controlPanelId).addClass("request-edit-control");
 
-        var requestEditButtonId = controlPanelId + "-EditButton";
-        controlPanel.appendChild(UIUtils.createButton(requestEditButtonId, "Edit"));
-        $("#" + requestEditButtonId).addClass("request-edit-control");
-        $("#" + requestEditButtonId).click(function() {
-          requestHolderSelector.empty();
+      var requestEditButtonId = controlPanelId + "-EditButton";
+      controlPanel.appendChild(UIUtils.createButton(requestEditButtonId, "Edit"));
+      $("#" + requestEditButtonId).addClass("request-edit-control");
+      $("#" + requestEditButtonId).click(function() {
+        requestHolderSelector.empty();
             
-          this._appendEditPanel(requestHolderElement, requestId, request, function() {
-            appendRequestText();
-          });
-        }.bind(this));
-      }
-    }.bind(this);
+        this._appendEditPanel(requestHolderElement, requestId, request, function() {
+          appendRequestText();
+        });
+      }.bind(this));
+    }
+  }.bind(this);
       
-    appendRequestText();
+  appendRequestText();
     
-    this._appendResponses(requestPanel, requestId, request, settings);
-  }.bind(this));
+  this._appendResponses(requestPanel, requestId, request, settings);
 }
 
 AbstractRequestPage._RequestResponseControl._appendResponses = function(root, requestId, request, settings) {
@@ -164,49 +152,48 @@ AbstractRequestPage._RequestResponseControl._appendResponses = function(root, re
   } else if (settings.responseAreaMaxHeight == null) {
     responsesPanel.style.maxHeight = "300px";
   }
-  
+
   var responseCount = 0;
-  for (var responseIndex in request.responses) {
-    var responseId = request.responses[responseIndex];
+  for (var responseIndex in request.responseIds) {
+    var responseId = request.responseIds[responseIndex];
         
-    AbstractRequestPage._getResponse(requestId, responseId, function(responseId, response) {
-      if (settings.unviewedResponsesOnly == true && response.status == Backend.Response.STATUS_READ) {
-        return;
-      }
+    var response = Backend.getCachedResponse(requestId, responseId);
+    if (settings.unviewedResponsesOnly == true && response.status == Backend.Response.STATUS_READ) {
+      continue;
+    }
       
-      responseCount++;
-      if (settings.maxResponses != null && settings.maxResponses != -1 && responseCount > settings.maxResponses) {
-        return;
-      } else if (settings.maxResponses != null && settings.maxResponses == responseCount) {
-        var responseHolderId = responsesPanelId + "-andmore";
-        responsesPanel.appendChild(UIUtils.createBlock(responseHolderId));
-        var responseSelector = $("#" + responseHolderId);
-        responseSelector.addClass("response-text-holder");
-        if (settings.requestClickListener != null) {
-          responseSelector.addClass("response-text-holder-activable");
-          responseSelector.click(settings.requestClickListener.bind(this, requestId, request));
-        }
+    responseCount++;
+    if (settings.maxResponses != null && settings.maxResponses != -1 && responseCount > settings.maxResponses) {
+      return;
+    } else if (settings.maxResponses != null && settings.maxResponses == responseCount) {
+      var responseHolderId = responsesPanelId + "-andmore";
+      responsesPanel.appendChild(UIUtils.createBlock(responseHolderId));
+      var responseSelector = $("#" + responseHolderId);
+      responseSelector.addClass("response-text-holder");
+      if (settings.requestClickListener != null) {
+        responseSelector.addClass("response-text-holder-activable");
+        responseSelector.click(settings.requestClickListener.bind(this, requestId, request));
+      }
 
-        responseSelector.html("And more responses. Click to see them all");
-      } else {
-        var responseHolderId = responsesPanelId + "-" + responseId;
-        responsesPanel.appendChild(UIUtils.createBlock(responseHolderId));
+      responseSelector.html("And more responses. Click to see them all");
+    } else {
+      var responseHolderId = responsesPanelId + "-" + responseId;
+      responsesPanel.appendChild(UIUtils.createBlock(responseHolderId));
 
-        var responseDate = new Date(response.time);
+      var responseDate = new Date(response.time);
           
-        var responseSelector = $("#" + responseHolderId);
-        responseSelector.addClass("response-text-holder");
-        if (response.status == Backend.Response.STATUS_UNREAD) {
-          responseSelector.addClass("response-text-holder-activable");
-          responseSelector.click(function(requestId, responseId, responseSelector) {
-            AbstractRequestPage._setResponseStatus(requestId, responseId, Backend.Response.STATUS_READ);
-            responseSelector.removeClass("response-text-holder-activable");
-          }.bind(this, requestId, responseId, responseSelector));
-        }
-      
-        responseSelector.html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+      var responseSelector = $("#" + responseHolderId);
+      responseSelector.addClass("response-text-holder");
+      if (response.status == Backend.Response.STATUS_UNREAD) {
+        responseSelector.addClass("response-text-holder-activable");
+        responseSelector.click(function(requestId, responseId, responseSelector) {
+          AbstractRequestPage._setResponseStatus(requestId, responseId, Backend.Response.STATUS_READ);
+          responseSelector.removeClass("response-text-holder-activable");
+        }.bind(this, requestId, responseId, responseSelector));
       }
-    }.bind(this, responseId));
+      
+      responseSelector.html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+    }
   }
 }
                                   
@@ -248,62 +235,6 @@ AbstractRequestPage._RequestResponseControl._appendEditPanel = function(root, re
 //  $("#" + controlPanelId + "-DeleteButton").click(AbstractRequestPage._deleteRequest.bind(AbstractRequestPage, rowId));
 }
 
-
-
-AbstractRequestPage._getRequestIds = function(successCallback) {
-  var callback = {
-    success: function(requestIds) {
-      this._onCompletion();
-      successCallback(requestIds);
-    },
-    failure: function() {
-      this._onCompletion();
-    },
-    error: function() {
-      this._onCompletion();
-    },
-    
-    _onCompletion: function() {
-      Application.hideSpinningWheel();
-    }
-  }
-  
-  Application.showSpinningWheel();
-
-  Backend.getRequestIds(this._requestsType, callback);
-}
-
-AbstractRequestPage._getRequest = function(requestId, successCallback) {
-  var callback = {
-    success: function(request) {
-      successCallback(request);
-    },
-    failure: function() {
-    },
-    error: function() {
-    }
-  }
-  
-  Backend.getRequest(requestId, callback);
-}
-
-AbstractRequestPage._getResponses = function(requestId, request, responseStatus, successCallback) {
-  
-}
-
-AbstractRequestPage._getResponse = function(requestId, responseId, successCallback) {
-  var callback = {
-    success: function(response) {
-      successCallback(response);
-    },
-    failure: function() {
-    },
-    error: function() {
-    }
-  }
-  
-  Backend.getResponse(requestId, responseId, callback);
-}
 
 AbstractRequestPage._setResponseStatus = function(requestId, responseId, status) {
   var callback = {

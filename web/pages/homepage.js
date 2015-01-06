@@ -11,6 +11,7 @@ HomePage.prototype.definePageContent = function(root) {
   $("#HomePage-RequestLink").click(function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
   });
+  
 
   root.appendChild(UIUtils.createBlock("HomePage-InquiryPanel"));
   $("#HomePage-InquiryPanel").html("You have (so many) <a href='#' id='HomePage-InquirtyLink'>new inquiries</a> which you haven't responded yet.");

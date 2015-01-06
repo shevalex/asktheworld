@@ -14,40 +14,27 @@ ActiveRequestsPage.prototype.definePageContent = function(root) {
 }
 
 ActiveRequestsPage.prototype.onShow = function(root) {
-  this._getRequestIds(function(requestIds) {
-    AbstractRequestPage.appendRequestResponsesControl($("#ActiveRequestsPage-RequestsPanel").get(0), requestIds, {
+  var updateListener = function() {
+    Application.hideSpinningWheel();
+    
+    var activeRequestIds = Backend.getCachedRequestIds(Backend.Request.STATUS_ACTIVE);
+    AbstractRequestPage.appendRequestResponsesControl($("#ActiveRequestsPage-RequestsPanel").get(0), activeRequestIds, {
       requestClickListener: function(requestId, request) {
-        Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID, requestId: requestId, request: request});
+        Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID, requestId: requestId});
       },
       requestEditable: true,
       maxResponses: -1,
       unviewedResponsesOnly: true
     });
-  });
-}
-
-
-ActiveRequestsPage.prototype._getRequestIds = function(successCallback) {
-  var callback = {
-    success: function(requestIds) {
-      this._onCompletion();
-      successCallback(requestIds);
-    },
-    failure: function() {
-      this._onCompletion();
-    },
-    error: function() {
-      this._onCompletion();
-    },
-    
-    _onCompletion: function() {
-      Application.hideSpinningWheel();
-    }
   }
   
-  Application.showSpinningWheel();
-
-  Backend.getRequestIds("active", callback);
+  if (!Backend.isRequestCacheInitialized()) {
+    Application.showSpinningWheel();
+  } else {
+    updateListener();
+  }
+  
+  Backend.addRequestCacheChangeListener(updateListener);
 }
 
 

@@ -14,18 +14,30 @@ AllRequestsPage.prototype.definePageContent = function(root) {
 }
 
 AllRequestsPage.prototype.onShow = function(root) {
-  var responsesPanelElement = $("#AllRequestsPage-RequestPanel").get(0);
+  var updateListener = function() {
+    Application.hideSpinningWheel();
+    
+    var requestPanelElement = $("#AllRequestsPage-RequestPanel").get(0);
   
-  this.pullRequestsAndAppendTable("AllRequestsPage-TablePanel", function(requestId, request) {
-    AbstractRequestPage.appendRequestResponsesControl(responsesPanelElement, [requestId], {
-      requestClickListener: function(requestId, request) {
-        Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID, requestId: requestId, request: request});
-      },
-      requestEditable: true,
-      maxResponses: 3,
-      unviewedResponsesOnly: false
+    AbstractRequestPage.appendRequestsTable($("#AllRequestsPage-TablePanel").get(0), function(requestId) {
+      AbstractRequestPage.appendRequestResponsesControl(requestPanelElement, [requestId], {
+        requestClickListener: function(requestId) {
+          Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID, requestId: requestId});
+        },
+        requestEditable: true,
+        maxResponses: 3,
+        unviewedResponsesOnly: false
+      });
     });
-  });
+  }
+  
+  if (!Backend.isRequestCacheInitialized()) {
+    Application.showSpinningWheel();
+  } else {
+    updateListener();
+  }
+  
+  Backend.addRequestCacheChangeListener(updateListener);
 }
 
 
