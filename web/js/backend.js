@@ -205,6 +205,7 @@ Backend.Response.STATUS_READ = "read";
 
 
 Backend.createRequest = function(request, requestParams, transactionCallback) {
+  /*
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
@@ -233,9 +234,25 @@ Backend.createRequest = function(request, requestParams, transactionCallback) {
       response_gender: requestParams.gender
     },
     false, this._getAuthenticationHeader(), communicationCallback);
+    */
 }
 
 Backend.updateRequest = function(requestId, request, requestParams, transactionCallback) {
+  var existingRequest = this._requestsCache[requestId];
+
+  existingRequest.response_quantity = requestParams.quantity;
+  existingRequest.response_wait_time = requestParams.waitTime;
+  existingRequest.response_age_group = requestParams.age;
+  existingRequest.response_gender = requestParams.gender;
+    
+  for (var key in request) {
+    existingRequest[key] = request[key];
+  }
+
+  Backend._updateRequestCache();
+  transactionCallback.success();
+
+  /*
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -265,8 +282,10 @@ Backend.updateRequest = function(requestId, request, requestParams, transactionC
       status: requestParams.status
     },
     false, this._getAuthenticationHeader(), communicationCallback);
+    */
 }
 
+//TODO: We may not need it
 Backend.deleteRequest = function(requestId, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -285,6 +304,17 @@ Backend.deleteRequest = function(requestId, transactionCallback) {
   }
 
   this._communicate("request/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
+}
+
+Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
+  var existingResponse = this._requestsCache[requestId]._responses[responseId];
+                   
+  for (var key in response) {
+    existingResponse[key] = response[key];
+  }
+                   
+  Backend._updateRequestCache();
+  transactionCallback.success();
 }
 
 

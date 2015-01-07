@@ -185,7 +185,7 @@ AbstractRequestPage._RequestResponseControl._appendResponses = function(root, re
       if (response.status == Backend.Response.STATUS_UNREAD) {
         responseSelector.addClass("response-text-holder-activable");
         responseSelector.click(function(requestId, responseId, responseSelector) {
-          AbstractRequestPage._setResponseStatus(requestId, responseId, Backend.Response.STATUS_READ);
+          AbstractRequestPage._RequestResponseControl._setResponseStatus(requestId, responseId, Backend.Response.STATUS_READ);
           responseSelector.removeClass("response-text-holder-activable");
         }.bind(this, requestId, responseId, responseSelector));
       }
@@ -226,15 +226,15 @@ AbstractRequestPage._RequestResponseControl._appendEditPanel = function(root, re
   controlPanel.style.marginTop = "20px";
   controlPanel.appendChild(UIUtils.createButton(controlPanelId + "-UpdateButton", "Update"));
   controlPanel.appendChild(UIUtils.createButton(controlPanelId + "-InactivateButton", "Inactivate"));
+  controlPanel.appendChild(UIUtils.createButton(controlPanelId + "-CancelButton", "Cancel"));
   
-  $("#" + controlPanelId + "-UpdateButton").click(completionCallback);
-  
-//  $("#" + controlPanelId + "-UpdateButton").click(AbstractRequestPage._updateRequest.bind(AbstractRequestPage, rowId));
-//  $("#" + controlPanelId + "-DeleteButton").click(AbstractRequestPage._deleteRequest.bind(AbstractRequestPage, rowId));
+  $("#" + controlPanelId + "-UpdateButton").click(AbstractRequestPage._RequestResponseControl._updateRequest.bind(this, requestId, request.status, editPanelId, controlPanelId, completionCallback));
+  $("#" + controlPanelId + "-InactivateButton").click(AbstractRequestPage._RequestResponseControl._updateRequest.bind(this, requestId, Backend.Request.STATUS_INACTIVE, editPanelId, controlPanelId, completionCallback));
+  $("#" + controlPanelId + "-CancelButton").click(completionCallback);
 }
 
 
-AbstractRequestPage._setResponseStatus = function(requestId, responseId, status) {
+AbstractRequestPage._RequestResponseControl._setResponseStatus = function(requestId, responseId, status) {
   var callback = {
     success: function() {
     },
@@ -244,14 +244,19 @@ AbstractRequestPage._setResponseStatus = function(requestId, responseId, status)
     }
   }
   
-  //Backend.setResponseStatus(requestId, responseId, status);
+  var response = Backend.getCachedResponse(requestId, responseId);
+  if (response != null) {
+    response.status = Backend.Response.STATUS_READ;
+    Backend.updateResponse(requestId, responseId, response, callback);
+  }
 }
 
 
-AbstractRequestPage.prototype._updateRequest = function(requestId) {
+AbstractRequestPage._RequestResponseControl._updateRequest = function(requestId, status, editRootPanelId, butttonPanelId, completionCallback) {
   var callback = {
     success: function(requestId) {
       this._onCompletion();
+      completionCallback();
     },
     failure: function() {
       this._onCompletion();
@@ -261,51 +266,35 @@ AbstractRequestPage.prototype._updateRequest = function(requestId) {
     },
     
     _onCompletion: function() {
+      UIUtils.setEnabled(butttonPanelId + "-UpdateButton", true);
+      UIUtils.setEnabled(butttonPanelId + "-InactivateButton", true);
+      UIUtils.setEnabled(butttonPanelId + "-CancelButton", true);
       Application.hideSpinningWheel();
     }
   }
-  /*
+  
   var request = {
-    id: requestId,
-    text: $("#ActiveRequestsPage-RequestContentPanel-Text").val(),
+    text: $("#" + editRootPanelId + "-Text").val(),
+    status: status,
     pictures: [],
     audios: []
   }
   
   var requestParams = {
-    gender: $("#ActiveRequestsPage-RequestContentPanel-Gender").val(),
-    quantity: $("#ActiveRequestsPage-RequestContentPanel-Quantity").val(),
-    waitTime: $("#ActiveRequestsPage-RequestContentPanel-WaitTime").val(),
-    age: $("#ActiveRequestsPage-RequestContentPanel-AgeCategory").val()
+    gender: $("#" + editRootPanelId + "-Gender").val(),
+    quantity: $("#" + editRootPanelId + "-Quantity").val(),
+    waitTime: $("#" + editRootPanelId + "-WaitTime").val(),
+    age: $("#" + editRootPanelId + "-AgeCategory").val()
   }
 
-  Application.showSpinningWheel();
-
-  Backend.updateRequest(request, requestParams, callback);
-  */
-}
-
-AbstractRequestPage.prototype._deleteRequest = function(requestId) {
-  var callback = {
-    success: function() {
-      this._onCompletion();
-    },
-    failure: function() {
-      this._onCompletion();
-    },
-    error: function() {
-      this._onCompletion();
-    },
-    
-    _onCompletion: function() {
-      Application.hideSpinningWheel();
-    }
-  }
   
-  /*
+  UIUtils.setEnabled(butttonPanelId + "-UpdateButton", false);
+  UIUtils.setEnabled(butttonPanelId + "-InactivateButton", false);
+  UIUtils.setEnabled(butttonPanelId + "-CancelButton", false);
+  
   Application.showSpinningWheel();
 
-  Backend.deleteRequest(requestId, callback);
-  */
+  Backend.updateRequest(requestId, request, requestParams, callback);
 }
+
 
