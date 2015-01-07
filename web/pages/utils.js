@@ -234,6 +234,10 @@ UIUtils.indicateInvalidInput = function(elementId, observer) {
   UIUtils.animateBackgroundColor(elementId, UIUtils.INVALID_INPUT_BACKGROUND, "slow", observer);
 }
 
+UIUtils.setEnabled = function(elementId, isEnabled) {
+  $("#" + elementId).prop("disabled", !isEnabled);
+}
+
 
 
 

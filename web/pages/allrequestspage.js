@@ -22,7 +22,13 @@ AllRequestsPage.prototype.onShow = function(root) {
     AbstractRequestPage.appendRequestsTable($("#AllRequestsPage-TablePanel").get(0), function(requestId) {
       AbstractRequestPage.appendRequestResponsesControl(requestPanelElement, [requestId], {
         requestClickListener: function(requestId) {
-          Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, {returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID, requestId: requestId});
+          var paramBundle = {
+            returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID,
+            requestId: requestId,
+            otherRequestIds: Backend.getCachedRequestIds()
+          }
+          
+          Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
         },
         requestEditable: true,
         maxResponses: 3,

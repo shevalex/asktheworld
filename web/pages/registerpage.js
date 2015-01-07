@@ -53,8 +53,6 @@ RegisterPage.prototype.definePageContent = function(root) {
 
     if (email != "" && name != "" && languages != "" && password != "" && password == retypePassword) {
       var backendCallback = {
-        _buttonSelector: $(this),
-        
         success: function() {
           this._onCompletion();
           Application.showMenuPage();
@@ -73,7 +71,7 @@ RegisterPage.prototype.definePageContent = function(root) {
         },
         
         _onCompletion: function() {
-          this._buttonSelector.prop("disabled", false);
+          UIUtils.setEnabled("RegisterPage-RegisterButton", true);
           Application.hideSpinningWheel();
         }
       }
@@ -87,7 +85,7 @@ RegisterPage.prototype.definePageContent = function(root) {
         age: $("#RegisterPage-AgeCategory").val(),
       };
       
-      $(this).prop("disabled", true);
+      UIUtils.setEnabled("RegisterPage-RegisterButton", false);
       Application.showSpinningWheel();
 
       Backend.registerUser(userProfile, backendCallback);

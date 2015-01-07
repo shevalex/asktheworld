@@ -77,8 +77,6 @@ UserPreferencesPage.prototype._resetParameters = function() {
 
 UserPreferencesPage.prototype._updateUserPreferences = function() {
   $("#UserPreferencesPage-StatusPanel").text("");
-  var buttonSelector = $("#UserPreferencesPage-ControlPanel-UpdateButton");
-  
   var callback = {
     success: function(requestId) {
       this._onCompletion();
@@ -94,12 +92,12 @@ UserPreferencesPage.prototype._updateUserPreferences = function() {
     },
     
     _onCompletion: function() {
-      buttonSelector.prop("disabled", false);
+      UIUtils.setEnabled("UserPreferencesPage-ControlPanel-UpdateButton", true);
       Application.hideSpinningWheel();
     }
   }
   
-  buttonSelector.prop("disabled", true);
+  UIUtils.setEnabled("UserPreferencesPage-ControlPanel-UpdateButton", false);
   Application.showSpinningWheel();
 
   var userPreferences = {

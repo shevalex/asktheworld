@@ -114,12 +114,12 @@ UserProfilePage.prototype._updateUserProfile = function() {
     },
     
     _onCompletion: function() {
-      buttonSelector.prop("disabled", false);
+      UIUtils.setEnabled("UserProfilePage-ControlPanel-UpdateButton", true);
       Application.hideSpinningWheel();
     }
   }
   
-  buttonSelector.prop("disabled", true);
+  UIUtils.setEnabled("UserProfilePage-ControlPanel-UpdateButton", false);
   Application.showSpinningWheel();
 
   var userProfile = {

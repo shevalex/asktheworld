@@ -44,8 +44,6 @@ NewRequestPage.prototype.onShow = function() {
 NewRequestPage.prototype._createRequest = function() {
   $("#NewRequestPage-RequestControlPanel-Label").text("3. We are sending the request...");
   
-  var buttonSelector = $("#NewRequestPage-RequestControlPanel-SendButton");
-  
   var callback = {
     success: function(requestId) {
       this._onCompletion();
@@ -61,7 +59,7 @@ NewRequestPage.prototype._createRequest = function() {
     },
     
     _onCompletion: function() {
-      buttonSelector.prop("disabled", false);
+      UIUtils.setEnabled("NewRequestPage-RequestControlPanel-SendButton", true);
       Application.hideSpinningWheel();
     }
   }
@@ -79,7 +77,7 @@ NewRequestPage.prototype._createRequest = function() {
     age: $("#NewRequestPage-RequestParametersPanel-AgeCategory").val()
   }
 
-  buttonSelector.prop("disabled", true);
+  UIUtils.setEnabled("NewRequestPage-RequestControlPanel-SendButton", false);
   Application.showSpinningWheel();
 
   Backend.createRequest(request, requestParams, callback);

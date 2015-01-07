@@ -32,8 +32,6 @@ LoginPage.prototype.definePageContent = function(root) {
     
     if (login != "" && password != "") {
       var backendCallback = {
-        _buttonSelector: $(this),
-        
         success: function() {
           this._onCompletion();
           Application.showMenuPage();
@@ -48,12 +46,12 @@ LoginPage.prototype.definePageContent = function(root) {
         },
         
         _onCompletion: function() {
-          this._buttonSelector.prop("disabled", false);
+          UIUtils.setEnabled("LoginPage-SignInButton", true);
           Application.hideSpinningWheel();
         }
       }
       
-      $(this).prop("disabled", true);
+      UIUtils.setEnabled("LoginPage-SignInButton", false);
       Application.showSpinningWheel();
       
       Backend.logIn(login, password, backendCallback);

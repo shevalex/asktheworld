@@ -249,8 +249,6 @@ AbstractRequestPage._setResponseStatus = function(requestId, responseId, status)
 
 
 AbstractRequestPage.prototype._updateRequest = function(requestId) {
-  //var buttonSelector = $("#" + controlId);
-  
   var callback = {
     success: function(requestId) {
       this._onCompletion();
@@ -263,7 +261,6 @@ AbstractRequestPage.prototype._updateRequest = function(requestId) {
     },
     
     _onCompletion: function() {
-      //buttonSelector.prop("disabled", false);
       Application.hideSpinningWheel();
     }
   }
@@ -282,7 +279,6 @@ AbstractRequestPage.prototype._updateRequest = function(requestId) {
     age: $("#ActiveRequestsPage-RequestContentPanel-AgeCategory").val()
   }
 
-  buttonSelector.prop("disabled", true);
   Application.showSpinningWheel();
 
   Backend.updateRequest(request, requestParams, callback);
@@ -290,8 +286,6 @@ AbstractRequestPage.prototype._updateRequest = function(requestId) {
 }
 
 AbstractRequestPage.prototype._deleteRequest = function(requestId) {
-  //var buttonSelector = $("#ActiveRequestsPage-ControlPanel-DeleteButton");
-  
   var callback = {
     success: function() {
       this._onCompletion();
@@ -304,13 +298,11 @@ AbstractRequestPage.prototype._deleteRequest = function(requestId) {
     },
     
     _onCompletion: function() {
-      //buttonSelector.prop("disabled", false);
       Application.hideSpinningWheel();
     }
   }
   
   /*
-  buttonSelector.prop("disabled", true);
   Application.showSpinningWheel();
 
   Backend.deleteRequest(requestId, callback);
