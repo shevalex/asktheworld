@@ -1,5 +1,7 @@
 ActiveRequestsPage = ClassUtils.defineClass(AbstractPage, function ActiveRequestsPage() {
   AbstractPage.call(this, "ActiveRequestsPage");
+  
+  this._requestCacheUpdateListener;
 });
 
 ActiveRequestsPage.prototype.definePageContent = function(root) {
@@ -13,7 +15,7 @@ ActiveRequestsPage.prototype.definePageContent = function(root) {
 }
 
 ActiveRequestsPage.prototype.onShow = function(root) {
-  var updateListener = function() {
+  this._requestCacheUpdateListener = function() {
     Application.hideSpinningWheel();
     
     var activeRequestIds = Backend.getCachedRequestIds(Backend.Request.STATUS_ACTIVE);
@@ -37,10 +39,14 @@ ActiveRequestsPage.prototype.onShow = function(root) {
   if (!Backend.isRequestCacheInitialized()) {
     Application.showSpinningWheel();
   } else {
-    updateListener();
+    this._requestCacheUpdateListener();
   }
   
-  Backend.addRequestCacheChangeListener(updateListener);
+  Backend.addRequestCacheChangeListener(this._requestCacheUpdateListener);
+}
+
+ActiveRequestsPage.prototype.onHide = function() {
+  Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
 }
 
 

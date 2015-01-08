@@ -1,5 +1,7 @@
 AllRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function AllRequestsPage() {
   AbstractRequestPage.call(this, "AllRequestsPage", "all");
+  
+  this._requestCacheUpdateListener;
 });
 
 AllRequestsPage.prototype.definePageContent = function(root) {
@@ -14,11 +16,10 @@ AllRequestsPage.prototype.definePageContent = function(root) {
 }
 
 AllRequestsPage.prototype.onShow = function(root) {
-  var updateListener = function() {
+  this._requestCacheUpdateListener = function() {
     Application.hideSpinningWheel();
     
     var requestPanelElement = $("#AllRequestsPage-RequestPanel").get(0);
-  
     AbstractRequestPage.appendRequestsTable($("#AllRequestsPage-TablePanel").get(0), function(requestId) {
       AbstractRequestPage.appendRequestResponsesControl(requestPanelElement, [requestId], {
         requestClickListener: function(requestId) {
@@ -40,12 +41,14 @@ AllRequestsPage.prototype.onShow = function(root) {
   if (!Backend.isRequestCacheInitialized()) {
     Application.showSpinningWheel();
   } else {
-    updateListener();
+    this._requestCacheUpdateListener();
   }
   
-  Backend.addRequestCacheChangeListener(updateListener);
+  Backend.addRequestCacheChangeListener(this._requestCacheUpdateListener);
 }
 
-
+AllRequestsPage.prototype.onHide = function() {
+  Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
+}
 
 

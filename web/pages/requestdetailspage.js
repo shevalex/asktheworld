@@ -39,8 +39,17 @@ RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._navigatableRequestIds = paramBundle.otherRequestIds;
   this._currentRequestId = paramBundle.requestId;
 
+  this._requestCacheUpdateListener = this._updatePage.bind(this);
+
   this._updatePage();
+  
+  Backend.addRequestCacheChangeListener(this._requestCacheUpdateListener);
 }
+
+RequestDetailsPage.prototype.onHide = function() {
+  Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
+}
+
 
 RequestDetailsPage.prototype._getPreviousRequestId = function() {
   if (this._navigatableRequestIds == null) {

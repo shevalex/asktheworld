@@ -329,7 +329,7 @@ Backend.addRequestCacheChangeListener = function(listener) {
 
 Backend.removeRequestCacheChangeListener = function(listener) {
   for (var index in this._requestsChangeListeners) {
-    if (this._requestsChangeListeners == listener) {
+    if (this._requestsChangeListeners[index] == listener) {
       this._requestsChangeListeners.splice(index, 1);
     }
   }

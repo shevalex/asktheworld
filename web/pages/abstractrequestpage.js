@@ -244,11 +244,8 @@ AbstractRequestPage._RequestResponseControl._setResponseStatus = function(reques
     }
   }
   
-  var response = Backend.getCachedResponse(requestId, responseId);
-  if (response != null) {
-    response.status = Backend.Response.STATUS_READ;
-    Backend.updateResponse(requestId, responseId, response, callback);
-  }
+  var response = {status: Backend.Response.STATUS_READ};
+  Backend.updateResponse(requestId, responseId, response, callback);
 }
 
 

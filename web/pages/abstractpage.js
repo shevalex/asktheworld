@@ -35,12 +35,14 @@ AbstractPage.prototype.showAnimated = function(container, paramBundle, completio
 }
 
 AbstractPage.prototype.hide = function() {
+  this.onHide();
   if (this._pageElement.parentElement != null) {
     this._pageElement.parentElement.removeChild(this._pageElement);
   }
 }
 
 AbstractPage.prototype.hideAnimated = function(completionObserver) {
+  this.onHide();
   $("#" + this._pageId).slideUp("fast", function() {
     this._pageElement.parentElement.removeChild(this._pageElement);
     if (completionObserver != null) {
@@ -58,4 +60,7 @@ AbstractPage.prototype.definePageContent = function(root) {
 }
 
 AbstractPage.prototype.onShow = function(root) {
+}
+
+AbstractPage.prototype.onHide = function() {
 }
