@@ -1,0 +1,58 @@
+#UserProfilePage {
+  text-align: center;
+}
+
+#UserProfilePage-GeneralPanel {
+  display: block;
+  text-align: left;
+  
+  font-size: 20px;
+}
+
+
+#UserProfilePage-ParametersPanel {
+  width: 40%;
+  display: inline-block;
+  margin-top: 50px;
+
+  font-size: 20px;
+}
+
+#UserProfilePage-Name, #UserProfilePage-Gender, #UserProfilePage-AgeCategory, #UserProfilePage-Languages, #UserProfilePage-Password, #UserProfilePage-RetypePassword {
+  margin-bottom: 15px;
+  font-size: inherit;
+}
+
+#UserProfilePage-Gender, #UserProfilePage-AgeCategory {
+  border-color: #999;
+}
+
+
+#UserProfilePage-ControlPanel {
+  display: block;
+  margin-top: 30px;
+}
+
+
+#UserProfilePage-ControlPanel-UpdateButton {
+  width: 100%;
+  font-size: 20px;
+}
+
+#UserProfilePage-ControlPanel-ResetButton {
+  font-size: 20px;
+}
+
+
+#UserProfilePage-StatusPanel {
+  position: fixed;
+  left: 75%;
+  top: 50%;
+  display: inline-block;
+  width: 20%;
+
+  font-size: 20px;
+  color: rgb(255, 100, 100);
+}
+
+

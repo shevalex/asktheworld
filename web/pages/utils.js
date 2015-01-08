@@ -38,8 +38,10 @@ UIUtils.createLabeledDropList = function(dropListId, labelText, options, margin)
 UIUtils.createLabel = function(labelId, labelText) {
   var labelElement = document.createElement("div");
   labelElement.setAttribute("id", labelId);
-  labelElement.innerHTML = labelText;
   labelElement.style.display = "block";
+  if (labelText != null) {
+    labelElement.innerHTML = labelText;
+  }
   
   return labelElement;
 }
@@ -128,10 +130,9 @@ UIUtils.createDropList = function(listId, items) {
 }
 
 UIUtils.createLink = function(linkId, text) {
-  var linkElement = document.createElement("a");
+  var linkElement = document.createElement("button");
   linkElement.setAttribute("id", linkId);
-  linkElement.setAttribute("href", "#");
-  linkElement.style.display = "block";
+  linkElement.setAttribute("class", "link-button");
   linkElement.innerHTML = text;
   
   return linkElement;
@@ -158,6 +159,62 @@ UIUtils.createSeparator = function() {
   return document.createElement("hr");
 }
 
+UIUtils.createImage = function(imageId, src) {
+  var imageElement = document.createElement("img");
+  
+  if (imageId != null) {
+    imageElement.setAttribute("id", imageId);
+  }
+  if (src != null) {
+    imageElement.setAttribute("src", src);
+  }
+    
+  return imageElement;
+}
+
+
+UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener) {
+  var tableElement = document.createElement("table");
+  tableElement.setAttribute("class", "display");
+  tableElement.setAttribute("id", tableId);
+  
+  root.appendChild(tableElement);
+  
+  var dataTableObject = $("#" + tableId).DataTable({
+    columns: columns,
+    data: rowDataProvider.getRows(),
+    createdRow: function(row, rowData, index) {
+      var table = this.api();
+      rowDataProvider.getRowDetails(rowData.rowId, function(rowDetailedData) {
+        rowDetailedData.rowId = rowData.rowId;
+        table.row(index).data(rowDetailedData);  //we may need to add .draw()
+      });
+    },
+    aLengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
+    iDisplayLength: 5
+  });
+  
+  dataTableObject.on("click", "tr", function() {
+    var tableRowObjectData = dataTableObject.row(this).data();
+    if (tableRowObjectData == null || tableRowObjectData.temporary) {
+      return;
+    }
+    
+    if (dataTableObject.$("tr.selected").get(0) == $(this).get(0)) {
+      return;
+    }
+    
+    dataTableObject.$("tr.selected").removeClass("selected");
+    $(this).addClass("selected");
+
+    if (selectionListener != null) {
+      selectionListener(tableRowObjectData.rowId);
+    }
+  });
+  
+  return dataTableObject;
+}
+
 
 UIUtils.animateBackgroundColor = function(elementId, color, speed, observer) {
   var jQueryObject = $("#" + elementId);
@@ -175,6 +232,10 @@ UIUtils.animateBackgroundColor = function(elementId, color, speed, observer) {
 
 UIUtils.indicateInvalidInput = function(elementId, observer) {
   UIUtils.animateBackgroundColor(elementId, UIUtils.INVALID_INPUT_BACKGROUND, "slow", observer);
+}
+
+UIUtils.setEnabled = function(elementId, isEnabled) {
+  $("#" + elementId).prop("disabled", !isEnabled);
 }
 
 

@@ -17,6 +17,11 @@ RegisterPage.prototype.definePageContent = function(root) {
 
   root.appendChild(UIUtils.createBlock("RegisterPage-StatusPanel"));
   
+
+  $("#RegisterPage-Password").on("input", function() {
+    $("#RegisterPage-RetypePassword").val("");
+  });
+  
   
   $("#RegisterPage-RegisterButton").click(function() {
     $("#RegisterPage-StatusPanel").text("");
@@ -28,7 +33,7 @@ RegisterPage.prototype.definePageContent = function(root) {
     
     var name = $("#RegisterPage-Name").val();
     if (name == "") {
-      UIUtils.indicateInvalidInput("RegisterPage-Email");
+      UIUtils.indicateInvalidInput("RegisterPage-Name");
     }
     
     var languages = $("#RegisterPage-Languages").val();
@@ -49,16 +54,25 @@ RegisterPage.prototype.definePageContent = function(root) {
     if (email != "" && name != "" && languages != "" && password != "" && password == retypePassword) {
       var backendCallback = {
         success: function() {
+          this._onCompletion();
           Application.showMenuPage();
         },
         failure: function() {
+          this._onCompletion();
           $("#RegisterPage-StatusPanel").text("Failed to create an account");
         },
         conflict : function() {
+          this._onCompletion();
           $("#RegisterPage-StatusPanel").text("This login is already used");
         },
         error: function() {
+          this._onCompletion();
           $("#RegisterPage-StatusPanel").text("Server communication error");
+        },
+        
+        _onCompletion: function() {
+          UIUtils.setEnabled("RegisterPage-RegisterButton", true);
+          Application.hideSpinningWheel();
         }
       }
       
@@ -67,10 +81,13 @@ RegisterPage.prototype.definePageContent = function(root) {
         password: password,
         name: name,
         gender: $("#RegisterPage-Gender").val(),
-        languages: $("#RegisterPage-Languages").val(),
+        languages: [$("#RegisterPage-Languages").val()],
         age: $("#RegisterPage-AgeCategory").val(),
       };
       
+      UIUtils.setEnabled("RegisterPage-RegisterButton", false);
+      Application.showSpinningWheel();
+
       Backend.registerUser(userProfile, backendCallback);
     } else if (password == retypePassword) {
       $("#RegisterPage-StatusPanel").text("Some of the fields are not provided. All of them are mandatory.");
@@ -88,9 +105,9 @@ RegisterPage.prototype._createRegisterPanel = function() {
   contentPanel.appendChild(UIUtils.createLineBreak());
   contentPanel.appendChild(UIUtils.createLabeledTextInput("RegisterPage-Name", "Your Nick Name", "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-Gender", "Your Gender", ["Male", "Female"], "10px"));
+  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-Gender", "Your Gender", Application.Configuration.GENDERS, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-AgeCategory", "Your Age Category", ["Child", "Teenager", "Young", "Adult", "Senior"], "10px"));
+  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-AgeCategory", "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
   contentPanel.appendChild(UIUtils.createLabeledTextInput("RegisterPage-Languages", "Languages that you speak", "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());

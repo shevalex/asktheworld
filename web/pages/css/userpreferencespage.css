@@ -1,0 +1,62 @@
+#UserPreferencesPage {
+  text-align: center;
+}
+
+#UserPreferencesPage-GeneralPanel {
+  display: block;
+  text-align: left;
+  
+  font-size: 20px;
+}
+
+
+#UserPreferencesPage-RequestPreferencesLabel, #UserPreferencesPage-InquiryPreferencesLabel {
+  text-align: left;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  
+  font-size: 25px;
+}
+
+#UserPreferencesPage-RequestPreferencesPanel, #UserPreferencesPage-InquiryPreferencesPanel {
+  width: 50%;
+  display: inline-block;
+
+  font-size: 20px;
+}
+
+#UserPreferencesPage-Quantity, #UserProfilePage-Gender, #UserPreferencesPage-AgeCategory, #UserPreferencesPage-WaitTime, #UserPreferencesPage-Gender, #UserPreferencesPage-DailyInquiryLimit, #UserPreferencesPage-InquiryAge, #UserPreferencesPage-InquiryGender {
+  margin-bottom: 15px;
+}
+
+
+
+
+#UserPreferencesPage-ControlPanel {
+  display: block;
+  margin-top: 50px;
+}
+
+
+#UserPreferencesPage-ControlPanel-UpdateButton {
+  width: 100%;
+  font-size: 20px;
+}
+
+#UserPreferencesPage-ControlPanel-ResetButton {
+  font-size: 20px;
+}
+
+
+#UserPreferencesPage-StatusPanel {
+  position: fixed;
+  left: 80%;
+  top: 50%;
+  display: inline-block;
+  width: 15%;
+
+  font-size: 20px;
+  color: rgb(255, 100, 100);
+}
+
+

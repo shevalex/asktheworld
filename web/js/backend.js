@@ -1,12 +1,32 @@
 
-var Backend = {};
+var Backend = {
+  _requestsCache: {},
+  _requestsChangeListeners: [],
+  _requestCacheInitialized: false
+};
 
-Backend.SERVER_BASE_URL = "http://env-7303452.whelastic.net/asktheworld3s/";
+Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
 
-Backend.UserProfile = {"login": null, "password": null, "gender": null, "languages": [], "age": null, "name": null, "userId": null};
+
+// USER MANAGEMENT
+
+Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age: null, name: null, userId: null};
+Backend.UserPreferences = {
+  responseQuantity: Application.Configuration.RESPONSE_QUANTITY[0],
+  responseWaitTime: Application.Configuration.RESPONSE_WAIT_TIME[0],
+  requestTargetAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0],
+  requestTargetGender: Application.Configuration.GENDER_PREFERENCE[0],
+  dailyInquiryLimit: Application.Configuration.INQUIRY_LIMIT_PREFERENCE[0],
+  inquiryAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0], 
+  inquiryGender: Application.Configuration.GENDER_PREFERENCE[0]
+};
 
 Backend.getUserProfile = function() {
   return this.UserProfile;
+}
+
+Backend.getUserPreferences = function() {
+  return this.UserPreferences;
 }
 
 Backend.logIn = function(login, password, callback) {
@@ -29,6 +49,17 @@ Backend.logIn = function(login, password, callback) {
   this._communicate("user?login=" + login, "GET", null, true, this._getAuthenticationHeader(login, password), communicationCallback);
 }
 
+Backend.logOut = function(callback) {
+  Backend.UserProfile.login = null;
+  Backend.UserProfile.password = null;
+  Backend.UserProfile.name = null;
+  Backend.UserProfile.userId = null;
+  
+  //We may need to inform the server maybe?
+  
+  callback();
+}
+
 Backend.pullUserProfile = function(callback) {
   if (Backend.UserProfile.userId == null) {
     throw "Must login or register first";
@@ -39,7 +70,7 @@ Backend.pullUserProfile = function(callback) {
       Backend.UserProfile.languages = data.languages;
       Backend.UserProfile.gender = data.gender;
       Backend.UserProfile.name = data.name;
-      Backend.UserProfile.age = data.birth_year;
+      Backend.UserProfile.age = data.age_category;
       Backend.UserProfile.languages = data.languages;
 
       callback.success();
@@ -81,9 +112,9 @@ Backend.registerUser = function(userProfile, callback) {
       login: userProfile.login,
       password: userProfile.password,
       gender: userProfile.gender,
-//      age: userProfile.age,
-      name: userProfile.name
-//      languages: userProfile.languages
+      age_category: userProfile.age,
+      name: userProfile.name,
+      languages: userProfile.languages
     }, 
     false, {}, communicationCallback);
 }
@@ -100,7 +131,7 @@ Backend.updateUser = function(userProfile, callback) {
       callback.success();
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 400) {
+      if (xhr.status == 400 || xhr.status == 401) {
         callback.failure();
       } else {
         callback.error();
@@ -112,8 +143,8 @@ Backend.updateUser = function(userProfile, callback) {
     { 
       password: userProfile.password,
       gender: userProfile.gender,
-//      age: userProfile.age,
-//      name: userProfile.name,
+      age_category: userProfile.age,
+      name: userProfile.name,
       languages: userProfile.languages
     },
     false, this._getAuthenticationHeader(), communicationCallback);
@@ -121,6 +152,286 @@ Backend.updateUser = function(userProfile, callback) {
   return true;
 }
 
+Backend.updateUserPreferences = function(userPreferences, callback) {
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      Backend.UserPreferences.requestTargetAge = userPreferences.requestTargetAge;
+      Backend.UserPreferences.requestTargetGender = userPreferences.requestTargetGender;
+      Backend.UserPreferences.responseQuantity = userPreferences.responseQuantity;
+      Backend.UserPreferences.responseWaitTime = userPreferences.responseWaitTime;
+      Backend.UserPreferences.dailyInquiryLimit = userPreferences.dailyInquiryLimit;
+      Backend.UserPreferences.inquiryAge = userPreferences.inquiryAge;
+      Backend.UserPreferences.inquiryGender = userPreferences.inquiryGender;
+
+      callback.success();
+    },
+    error: function(xhr, status, error) {
+      if (xhr.status == 400 || xhr.status == 401) {
+        callback.failure();
+      } else {
+        callback.error();
+      }
+    }
+  }
+
+  this._communicate("user/" + Backend.UserProfile.userId + "/settings", "PUT",
+    { 
+      default_response_quantity: userPreferences.responseQuantity,
+      default_response_wait_time: userPreferences.responseWaitTime,
+      default_response_age_group_preference: userPreferences.requestTargetAge,
+      default_gender_preference: userPreferences.requestTargetGender,
+      inquiry_quantity_per_day: userPreferences.dailyInquiryLimit,
+      inquiry_gender_preference: userPreferences.inquiryGender,
+      inquiry_age_group_preference: userPreferences.inquiryAge
+    },
+    false, this._getAuthenticationHeader(), communicationCallback);
+
+  return true;
+}
+
+
+
+
+// REQUEST (and Response) management
+
+Backend.Request = {};
+Backend.Request.STATUS_ACTIVE = "active";
+Backend.Request.STATUS_INACTIVE = "inactive";
+
+Backend.Response = {};
+Backend.Response.STATUS_UNREAD = "unread";
+Backend.Response.STATUS_READ = "read";
+
+
+
+Backend.createRequest = function(request, requestParams, transactionCallback) {
+  /*
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 201) {
+        Backend._updateRequestCache();
+        transactionCallback.success(xhr.getResponseHeader("Location"));
+      }
+    },
+    error: function(xhr, status, error) {
+      if (xhr.status == 400 || xhr.status == 401) {
+        transactionCallback.failure();
+      } else {
+        transactionCallback.error();
+      }
+    }
+  }
+
+  this._communicate("request", "POST",
+    { 
+      user_id: Backend.UserProfile.userId,
+      text: request.text,
+      pictures: request.pictures,
+      audios: request.audios,
+      response_quantity: requestParams.quantity,
+      response_wait_time: requestParams.waitTime,
+      response_age_group: requestParams.age,
+      response_gender: requestParams.gender
+    },
+    false, this._getAuthenticationHeader(), communicationCallback);
+    */
+}
+
+Backend.updateRequest = function(requestId, request, requestParams, transactionCallback) {
+  var existingRequest = this._requestsCache[requestId];
+
+  existingRequest.response_quantity = requestParams.quantity;
+  existingRequest.response_wait_time = requestParams.waitTime;
+  existingRequest.response_age_group = requestParams.age;
+  existingRequest.response_gender = requestParams.gender;
+    
+  for (var key in request) {
+    existingRequest[key] = request[key];
+  }
+
+  Backend._updateRequestCache();
+  transactionCallback.success();
+
+  /*
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        Backend._updateRequestCache();
+        transactionCallback.success();
+      }
+    },
+    error: function(xhr, status, error) {
+      if (xhr.status == 400 || xhr.status == 401) {
+        transactionCallback.failure();
+      } else {
+        transactionCallback.error();
+      }
+    }
+  }
+
+  this._communicate("request/" + requestId, "PUT",
+    { 
+      user_id: Backend.UserProfile.userId,
+      text: request.text,
+      pictures: request.pictures,
+      audios: request.audios,
+      response_quantity: requestParams.quantity,
+      response_wait_time: requestParams.waitTime,
+      response_age_group: requestParams.age,
+      response_gender: requestParams.gender,
+      status: requestParams.status
+    },
+    false, this._getAuthenticationHeader(), communicationCallback);
+    */
+}
+
+//TODO: We may not need it
+Backend.deleteRequest = function(requestId, transactionCallback) {
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        Backend._updateRequestCache();
+        transactionCallback.success();
+      }
+    },
+    error: function(xhr, status, error) {
+      if (xhr.status == 400 || xhr.status == 401) {
+        transactionCallback.failure();
+      } else {
+        transactionCallback.error();
+      }
+    }
+  }
+
+  this._communicate("request/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
+}
+
+Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
+  var existingResponse = this._requestsCache[requestId]._responses[responseId];
+                   
+  for (var key in response) {
+    existingResponse[key] = response[key];
+  }
+                   
+  Backend._updateRequestCache();
+  transactionCallback.success();
+}
+
+
+
+
+Backend.addRequestCacheChangeListener = function(listener) {
+  this._requestsChangeListeners.push(listener);
+  if (!this._requestCacheInitialized) {
+    this._updateRequestCache();
+  }
+}
+
+Backend.removeRequestCacheChangeListener = function(listener) {
+  for (var index in this._requestsChangeListeners) {
+    if (this._requestsChangeListeners[index] == listener) {
+      this._requestsChangeListeners.splice(index, 1);
+    }
+  }
+}
+
+
+Backend.isRequestCacheInitialized = function() {
+  return this._requestCacheInitialized;
+}
+
+Backend.getCachedRequestIds = function(requestStatus) {
+  var requestIds = [];
+  for (var id in this._requestsCache) {
+    if (requestStatus == null || this._requestsCache[id].status == requestStatus) {
+      requestIds.push(id);
+    }
+  }
+  
+  return requestIds;
+}
+
+Backend.getCachedRequest = function(requestId) {
+  return this._requestsCache[requestId];
+}
+
+Backend.getCachedResponse = function(requestId, responseId) {
+  var request = this._requestsCache[requestId];
+  if (request != null) {
+    return request._responses[responseId];
+  }
+  
+  return null;
+}
+  
+Backend._updateRequestCache = function() {
+  //TBD
+  
+  if (!this._requestCacheInitialized) {
+    // This is all one-time fake data
+    var numOfRequests = Math.random() * 100;
+    for (var requestCounter = 0; requestCounter < numOfRequests; requestCounter++) {
+      var quantity = Math.round(Math.random() * 3);
+      var waitTime = Math.round(Math.random() * 4);
+      var age = Math.round(Math.random() * 5);
+      var gender = Math.round(Math.random() * 2);
+      var activeStatus = Math.random() < 0.1;
+  
+      var requestId = "request" + requestCounter;
+      
+      var request = {
+        time: Date.now(),
+        text: "This is the request with the id " + requestId,
+        pictures: [],
+        audios: [],
+        response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity],
+        response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
+        response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
+        response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
+        status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE,
+        responseIds: [],
+        _responses: {}
+      };
+    
+      var numOfResponses = Math.random() * 100;
+      for (var responseCounter = 0; responseCounter < numOfResponses; responseCounter++) {
+        var age = Math.round(Math.random() * 4);
+        var gender = Math.round(Math.random());
+        var statusUnread = Math.random() < 0.1;
+    
+        var response = {
+          time: Date.now(),
+          text: "This is the response " + responseId + " to the request " + requestId,
+          pictures: [],
+          audios: [],
+          age_category: Application.Configuration.AGE_CATEGORIES[age],
+          gender: Application.Configuration.GENDERS[gender],
+          status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ
+        }
+      
+        var responseId = "response" + responseCounter;
+        request.responseIds.push(responseId);
+        request._responses[responseId] = response;
+      }
+    
+      this._requestsCache[requestId] = request;
+    }
+    
+    this._requestCacheInitialized = true;
+  }
+  
+  // This is a temporary behavior until we pull data from the server.
+  setTimeout(function() {
+    for (var index in this._requestsChangeListeners) {
+      this._requestsChangeListeners[index]();
+    }
+  }.bind(this), 3000);
+}
+
+
+
+
+// GENERAL UTILS
 
 
 Backend._communicate = function(resource, method, data, isJsonResponse, headers, callback) {

@@ -6,36 +6,43 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
   
   this._pageElement = document.createElement("div");
   this._pageElement.setAttribute("id", pageId);
+  this._pageElement.setAttribute("class", "application-page");
   
   this._isDefined = false;
 });
 
-AbstractPage.prototype.show = function(container) {
+AbstractPage.prototype.show = function(container, paramBundle) {
   this._pageElement.style.display = "block";
   container.appendChild(this._pageElement);
-  this.definePageContent(this._pageElement);
+  if (!this._isDefined) {
+    this.definePageContent(this._pageElement);
+    this._isDefined = true;
+  }
+  this.onShow(this._pageElement, paramBundle);
 }
 
-AbstractPage.prototype.showAnimated = function(container, completionObserver) {
+AbstractPage.prototype.showAnimated = function(container, paramBundle, completionObserver) {
   this._pageElement.style.display = "none";
   container.appendChild(this._pageElement);
   
   if (!this._isDefined) {
     this.definePageContent(this._pageElement);
     this._isDefined = true;
-  } else {
-    this.onShow();
   }
+  this.onShow(this._pageElement, paramBundle);
+  
   $("#" + this._pageId).slideDown("slow", completionObserver);
 }
 
 AbstractPage.prototype.hide = function() {
+  this.onHide();
   if (this._pageElement.parentElement != null) {
     this._pageElement.parentElement.removeChild(this._pageElement);
   }
 }
 
 AbstractPage.prototype.hideAnimated = function(completionObserver) {
+  this.onHide();
   $("#" + this._pageId).slideUp("fast", function() {
     this._pageElement.parentElement.removeChild(this._pageElement);
     if (completionObserver != null) {
@@ -52,5 +59,8 @@ AbstractPage.prototype.isShown = function() {
 AbstractPage.prototype.definePageContent = function(root) {
 }
 
-AbstractPage.prototype.onShow = function() {
+AbstractPage.prototype.onShow = function(root) {
+}
+
+AbstractPage.prototype.onHide = function() {
 }

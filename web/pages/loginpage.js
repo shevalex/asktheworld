@@ -20,24 +20,40 @@ LoginPage.prototype.definePageContent = function(root) {
     var login = $("#LoginPage-Login").val();
     if (login == "") {
       UIUtils.indicateInvalidInput("LoginPage-Login");
+    } else {
+      window.localStorage.login = login;
     }
     var password = $("#LoginPage-Password").val();
     if (password == "") {
       UIUtils.indicateInvalidInput("LoginPage-Password");
+    } else {
+      window.localStorage.password = password;
     }
     
     if (login != "" && password != "") {
       var backendCallback = {
         success: function() {
+          this._onCompletion();
           Application.showMenuPage();
         },
         failure: function() {
+          this._onCompletion();
           $("#LoginPage-StatusPanel").text("Invalid login/password combination");
         },
         error: function() {
+          this._onCompletion();
           $("#LoginPage-StatusPanel").text("Server communication error");
+        },
+        
+        _onCompletion: function() {
+          UIUtils.setEnabled("LoginPage-SignInButton", true);
+          Application.hideSpinningWheel();
         }
       }
+      
+      UIUtils.setEnabled("LoginPage-SignInButton", false);
+      Application.showSpinningWheel();
+      
       Backend.logIn(login, password, backendCallback);
     } else {
       $("#LoginPage-StatusPanel").text("Please provide login and password");
@@ -51,6 +67,16 @@ LoginPage.prototype.definePageContent = function(root) {
   $("#LoginPage-ForgotPasswordLink").click(function() {
     alert("This is not that smart of you to forget your password. What do you want me to do? It is all your fault!");
   });
+}
+
+LoginPage.prototype.onShow = function() {
+  //Eventually we may need to read the login info from local storage and initialize the fileds
+  if (window.localStorage.login != null) {
+    $("#LoginPage-Login").val(window.localStorage.login);
+  }
+  if (window.localStorage.password != null) {
+    $("#LoginPage-Password").val(window.localStorage.password);
+  }
 }
 
 

@@ -5,6 +5,7 @@
   width: 20%;
   vertical-align: top;
   margin-left: 0px;
+  margin-right: 50px;
   margin-top: 50px;
   display: inline-block;
   
@@ -23,9 +24,12 @@
 }
 
 #MenuPage-ContentPanel {
-  width: calc(80% - 30px);
+  width: calc(80% - 80px);
+  height: calc(100% - 50px);
+  overflow: scroll;
   margin-left: 10px;
   margin-top: 50px;
+  padding-right: 10px;
   display: inline-block;
 }
 

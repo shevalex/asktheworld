@@ -3,9 +3,15 @@ MenuPage = ClassUtils.defineClass(AbstractPage, function MenuPage() {
   
   this._contentPanel = null;
   this._selectedMenuItemId = null;
+  this._activePage = null;
   
   this._homePage = null;
   this._newRequestPage = null;
+  this._activeRequestsPage = null;
+  this._allRequestsPage = null;
+  this._requestDetailsPage = null;
+  this._userProfilePage = null;
+  this._userPreferencesPage = null;
 });
 
 MenuPage.prototype.HOME_ITEM_ID = "MenuPage-MenuPanel-Home";
@@ -17,6 +23,8 @@ MenuPage.prototype.ALL_INQUIRIES_ITEM_ID = "MenuPage-MenuPanel-AllInquiries";
 MenuPage.prototype.USER_PROFILE_ITEM_ID = "MenuPage-MenuPanel-UserProfile";
 MenuPage.prototype.USER_PREFERENCES_ITEM_ID = "MenuPage-MenuPanel-UserPreferences";
 MenuPage.prototype.LOGOUT_ITEM_ID = "MenuPage-MenuPanel-Logout";
+
+MenuPage.prototype.REQUEST_DETAILS_PAGE_ID = "MenuPage-RequestDetailsPage";
 
 
 MenuPage.prototype.definePageContent = function(root) {
@@ -35,24 +43,35 @@ MenuPage.prototype.selectMenuItem = function(itemId) {
   
   if (this._selectedMenuItemId != null) {
     $("#" + this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
-    var page = this._getPageForItem(this._selectedMenuItemId);
-    page.hideAnimated();
   }
-  
   
   // Special processing for log-out
   if (itemId == MenuPage.prototype.LOGOUT_ITEM_ID) {
-    Application.showLoginPage();
+    Backend.logOut(Application.showLoginPage.bind(Application));
     return;
   }
   
   this._selectedMenuItemId = itemId;
   $("#" + this._selectedMenuItemId).addClass("menupage-menuitem-selected");
-  
-  var page = this._getPageForItem(itemId);
-  page.showAnimated(this._contentPanel);
+
+  this.showPage(itemId);
 }
 
+MenuPage.prototype.showPage = function(pageId, paramBundle) {
+  if (this._activePage != null) {
+    this._activePage.hideAnimated();
+  }
+
+  this._activePage = this._getPageForItem(pageId);
+  if (this._activePage == null) {
+    this._activePage = this._getPageById(pageId);
+  }
+  if (this._activePage != null) {
+    this._activePage.showAnimated(this._contentPanel, paramBundle);
+  } else {
+    console.error("No page for id " + pageId);
+  }
+}
 
 
 MenuPage.prototype._createMenuPanel = function() {
@@ -113,10 +132,38 @@ MenuPage.prototype._getPageForItem = function(itemId) {
       this._newRequestPage = new NewRequestPage();
     }
     return this._newRequestPage;
-  } else {
-    if (this._newRequestPage == null) {
-      this._newRequestPage = new LoginPage();
+  } else if (itemId == MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID) {
+    if (this._activeRequestsPage == null) {
+      this._activeRequestsPage = new ActiveRequestsPage();
     }
-    return this._newRequestPage;
+    return this._activeRequestsPage;
+  } else if (itemId == MenuPage.prototype.ALL_REQUESTS_ITEM_ID) {
+    if (this._allRequestsPage == null) {
+      this._allRequestsPage = new AllRequestsPage();
+    }
+    return this._allRequestsPage;
+  } else if (itemId == MenuPage.prototype.USER_PROFILE_ITEM_ID) {
+    if (this._userProfilePage == null) {
+      this._userProfilePage = new UserProfilePage();
+    }
+    return this._userProfilePage;
+  } else if (itemId == MenuPage.prototype.USER_PREFERENCES_ITEM_ID) {
+    if (this._userPreferencesPage == null) {
+      this._userPreferencesPage = new UserPreferencesPage();
+    }
+    return this._userPreferencesPage;
+  } else {
+    return null;
+  }
+}
+
+MenuPage.prototype._getPageById = function(pageId) {
+  if (pageId == MenuPage.prototype.REQUEST_DETAILS_PAGE_ID) {
+    if (this._requestDetailsPage == null) {
+      this._requestDetailsPage = new RequestDetailsPage();
+    }
+    return this._requestDetailsPage;
+  } else {
+    return null;
   }
 }

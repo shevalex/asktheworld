@@ -1,5 +1,4 @@
 #NewRequestPage {
-  padding: 0px 50px 50px 50px;
 }
 
 #NewRequestPage-GeneralPanel {
@@ -22,6 +21,7 @@
 
 #NewRequestPage-RequestContentPanel-Text {
   display: block;
+  margin-top: 10px;
   
   font-size: 15px;
 }

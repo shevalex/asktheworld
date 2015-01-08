@@ -1,0 +1,57 @@
+button {
+  border-radius: 5px;
+  outline: none;
+}
+
+input {
+  border-radius: 5px;
+}
+
+select {
+  font-size: inherit;
+  border-color: #999;
+}
+
+.application-page {
+  padding-right: 10px;
+  padding-bottom: 10px;
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  overflow: scroll;
+}
+
+.link-button {
+  background: transparent;
+  border-style: none;
+  cursor: pointer;
+  outline: none;
+  
+  color: rgb(50, 50, 150);
+}
+
+.link-button:hover {
+  text-decoration: underline;
+  color: blue;
+}
+
+.link-button:active {
+  text-decoration: underline;
+  color: red;
+}
+
+.link-button:disabled {
+  text-decoration: none;
+  color: gray;
+}
+
+
+.spinning-wheel {
+  position: fixed;
+  left: calc(50% - 25px);
+  top: calc(50% - 25px);
+  
+  width: 50px;
+  height: 50px;
+}
+
+
