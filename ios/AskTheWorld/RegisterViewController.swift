@@ -69,17 +69,58 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
             alertView.show()
         } else {
             
+            var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!)
+            var session = NSURLSession.sharedSession()
+            request.HTTPMethod = "POST"
+            var params = ["login":"\(username)", "password":"\(password)", "name":"\(nickname)", "gender":"\(gender)", "age_category":"\(age_category)"] as Dictionary
+            
+            var err: NSError?
+            request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &err)
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+            
+            println(params)
+
+            var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+                println("Response: \(response)")
+                let res = response as NSHTTPURLResponse!;
+                if (res.statusCode == 201) {
+                    println("Register success!");
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                }
+                else if (res.statusCode == 409) {
+                    var alertView:UIAlertView = UIAlertView()
+                    alertView.title = "Register Failed!"
+                    alertView.message = "Such user already exist"
+                    alertView.delegate = self
+                    alertView.addButtonWithTitle("OK")
+                    alertView.show()
+                }
+                else {
+                    var alertView:UIAlertView = UIAlertView()
+                    alertView.title = "Register Failed!"
+                    alertView.message = "Connection Failed"
+                    alertView.delegate = self
+                    alertView.addButtonWithTitle("OK")
+                    alertView.show()
+                }
+
+                println(res.statusCode)
+            })
+
+            task.resume()
+            
+
+          /* Old method
             //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"name\":\"nickname\",\"gender\":\"male\",\"birth_year\":\(year_of_birth),\"languages\":[ENG]}"
             
              var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"name\":\"\(nickname)\",\"gender\":\"\(gender)\",\"age_category\":\"\(age_category)\"}"
             
-            //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"gender\":\"\(gender)\"}"
-            
             
             println("PostData:" + post);
             
-            //var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld2/user")!
-            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld3s/user")!
+            var url:NSURL = NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!
+            //var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld3s/user")!
             
             var postData:NSData = post.dataUsingEncoding(NSASCIIStringEncoding)!
             
@@ -122,7 +163,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
                     alertView.addButtonWithTitle("OK")
                     alertView.show()
                 }
-            }
+            }*/
             
         }
     }
@@ -279,7 +320,12 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        self.view.endEditing(true)
+        
+    }
+    
     /*
     // MARK: - Navigation
 

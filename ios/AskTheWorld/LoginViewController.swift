@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var UserNameField: UITextField!
     
@@ -27,18 +27,46 @@ class LoginViewController: UIViewController {
             alertView.addButtonWithTitle("OK")
             alertView.show()
         } else {
-            //var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld3s/user?login=\(username)")!
-            var url:NSURL = NSURL(string: "http://env-7303452.whelastic.net/asktheworld3s/user")!
+            
+            var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!)
+            var session = NSURLSession.sharedSession()
+            request.HTTPMethod = "GET"
+            var params = []
+            
+            var err: NSError?
+            request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &err)
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/json", forHTTPHeaderField: "Accept")
+            request.addValue("\"\(username)\":\"\(password)\"", forHTTPHeaderField: "Token")
+
+            var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+                println("Response: \(response)")
+                println("Error: \(error)")
+
+            })
+            
+            task.resume()
+
+            /*
+            var url:NSURL = NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!
             
             var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
             request.HTTPMethod = "GET"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("\(username):\(password)", forHTTPHeaderField: "Token")
             //request.setValue("\"\(username)\":\"\(password)\"", forHTTPHeaderField: "Token")
             
             var reponseError: NSError?
             var response: NSURLResponse?
             
+            println(request.allHTTPHeaderFields)
+            
             var urlData: NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse:&response, error:&reponseError)
+            
+            println(response)
+            println(reponseError)
+            
             if ( urlData != nil ) {
                 let res = response as NSHTTPURLResponse!
                 
@@ -68,7 +96,7 @@ class LoginViewController: UIViewController {
                 {
                     println("res is null")
                 }
-            }
+            }*/
 
 
         }
@@ -86,7 +114,11 @@ class LoginViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        self.view.endEditing(true)
+        
+    }
+    
     /*
     // MARK: - Navigation
 
