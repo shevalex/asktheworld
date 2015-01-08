@@ -100,7 +100,7 @@ AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = fu
   } else {
     requestHolderSelector.addClass("request-holder");
   }
-      
+  
   var appendRequestText = function() {
     requestHolderSelector.empty();
       
@@ -114,7 +114,7 @@ AbstractRequestPage._RequestResponseControl._appendRequestAndResponsesPanel = fu
     if (settings.requestClickListener != null) {
       requestTextSelector.addClass("request-text-holder-activable");
       requestTextSelector.click(function() {
-        settings.requestClickListener(requestId, request);
+        settings.requestClickListener(requestId);
       });
     }
         
@@ -170,7 +170,7 @@ AbstractRequestPage._RequestResponseControl._appendResponses = function(root, re
       responseSelector.addClass("response-text-holder");
       if (settings.requestClickListener != null) {
         responseSelector.addClass("response-text-holder-activable");
-        responseSelector.click(settings.requestClickListener.bind(this, requestId, request));
+        responseSelector.click(settings.requestClickListener.bind(this, requestId));
       }
 
       responseSelector.html("And more responses. Click to see them all");

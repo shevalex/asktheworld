@@ -20,7 +20,7 @@ ActiveRequestsPage.prototype.onShow = function(root) {
     
     var activeRequestIds = Backend.getCachedRequestIds(Backend.Request.STATUS_ACTIVE);
     AbstractRequestPage.appendRequestResponsesControl($("#ActiveRequestsPage-RequestsPanel").get(0), activeRequestIds, {
-      requestClickListener: function(requestId, request) {
+      requestClickListener: function(requestId) {
         var paramBundle = {
           returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID,
           requestId: requestId,
