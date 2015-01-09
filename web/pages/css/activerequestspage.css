@@ -12,6 +12,6 @@
   padding-right: 10px;
   height: calc(100% - 50px - 20px);
   width: calc(100% - 10px);
-  overflow: scroll;
+  overflow: auto;
 }
 

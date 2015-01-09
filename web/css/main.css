@@ -45,7 +45,7 @@ body {
 #RootContainer {
   width: calc(100% - 10px);
   height: calc(100% - 10px - 90px - 30px);
-  overflow: scroll;
+  overflow: auto;
   padding: 5px;
 }
 

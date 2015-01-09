@@ -5,7 +5,7 @@
 .responses-container {
   margin: 10px 0px 10px 50px;
 
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .request-holder {
