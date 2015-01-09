@@ -47,6 +47,7 @@ ActiveRequestsPage.prototype.onShow = function(root) {
 
 ActiveRequestsPage.prototype.onHide = function() {
   Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
+  Application.hideSpinningWheel();
 }
 
 

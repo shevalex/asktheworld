@@ -82,6 +82,7 @@ HomePage.prototype.onShow = function(root) {
 
 HomePage.prototype.onHide = function() {
   Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
+  Application.hideSpinningWheel();
 }
 
 
