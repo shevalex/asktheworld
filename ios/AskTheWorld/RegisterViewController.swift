@@ -84,32 +84,32 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
             var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
                 println("Response: \(response)")
                 let res = response as NSHTTPURLResponse!;
-                if (res.statusCode == 201) {
-                    println("Register success!");
-                    self.dismissViewControllerAnimated(true, completion: nil)
+                dispatch_async(dispatch_get_main_queue()) {
+                   if (res.statusCode == 201) {
+                       println("Register success!");
+                       self.dismissViewControllerAnimated(true, completion: nil)
+                   }
+                   else if (res.statusCode == 409) {
+                       var alertView:UIAlertView = UIAlertView()
+                       alertView.title = "Register Failed!"
+                       alertView.message = "Such user already exist"
+                       alertView.delegate = self
+                       alertView.addButtonWithTitle("OK")
+                       alertView.show()
+                   }
+                   else {
+                       var alertView:UIAlertView = UIAlertView()
+                       alertView.title = "Register Failed!"
+                       alertView.message = "Connection Failed"
+                       alertView.delegate = self
+                       alertView.addButtonWithTitle("OK")
+                       alertView.show()
+                   }
                 }
-                else if (res.statusCode == 409) {
-                    var alertView:UIAlertView = UIAlertView()
-                    alertView.title = "Register Failed!"
-                    alertView.message = "Such user already exist"
-                    alertView.delegate = self
-                    alertView.addButtonWithTitle("OK")
-                    alertView.show()
-                }
-                else {
-                    var alertView:UIAlertView = UIAlertView()
-                    alertView.title = "Register Failed!"
-                    alertView.message = "Connection Failed"
-                    alertView.delegate = self
-                    alertView.addButtonWithTitle("OK")
-                    alertView.show()
-                }
-
                 println(res.statusCode)
             })
 
             task.resume()
-            
 
           /* Old method
             //var post:NSString = "{\"login\":\"\(username)\",\"password\":\"\(password)\",\"name\":\"nickname\",\"gender\":\"male\",\"birth_year\":\(year_of_birth),\"languages\":[ENG]}"

@@ -28,11 +28,11 @@ class ViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
-        let isLoggedIn:Int = prefs.integerForKey("ISLOGGEDIN") as Int
+        let isLoggedIn:Int = prefs.integerForKey("IsLogin") as Int
         if (isLoggedIn != 1) {
             self.performSegueWithIdentifier("GoTo_LoginScreen", sender: self)
         } else {
-            self.UserNameLabel.text = prefs.valueForKey("USERNAME") as NSString
+            self.UserNameLabel.text = prefs.valueForKey("username") as NSString
         }
         
     //

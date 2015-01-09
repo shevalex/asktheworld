@@ -31,23 +31,44 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!)
             var session = NSURLSession.sharedSession()
             request.HTTPMethod = "GET"
-            var params = []
             
             var err: NSError?
-            request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &err)
+
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.addValue("application/json", forHTTPHeaderField: "Accept")
-            request.addValue("\"\(username)\":\"\(password)\"", forHTTPHeaderField: "Token")
+            request.addValue("\(username):\(password)", forHTTPHeaderField: "Token")
 
-            var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            var task = session.dataTaskWithRequest(request) {data, response, error -> Void in
                 println("Response: \(response)")
                 println("Error: \(error)")
+                println(request.allHTTPHeaderFields)
+                let res = response as NSHTTPURLResponse!;
+                dispatch_async(dispatch_get_main_queue()) {
+                    if (res.statusCode == 200)
+                    {
+                        var prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                        prefs.setObject(username, forKey: "username")
+                        prefs.setInteger(1, forKey: "IsLogin")
+                        prefs.synchronize()
+                        
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                    else {
+                        var alertView:UIAlertView = UIAlertView()
+                        alertView.title = "Login Failed!"
+                        alertView.message = "Error happened!"
+                        alertView.delegate = self
+                        alertView.addButtonWithTitle("OK")
+                        alertView.show()
+                    }
 
-            })
+                }
+
+            }
             
             task.resume()
 
-            /*
+            /* Old method
             var url:NSURL = NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!
             
             var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
@@ -117,6 +138,25 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         self.view.endEditing(true)
         
+    }
+    
+    func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge,
+        completionHandler: (NSURLSessionAuthChallengeDisposition,
+        NSURLCredential!) -> Void)
+    {
+            completionHandler(
+                NSURLSessionAuthChallengeDisposition.UseCredential,
+                NSURLCredential(forTrust:
+                    challenge.protectionSpace.serverTrust))
+    }
+    
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, willPerformHTTPRedirection response: NSHTTPURLResponse,
+        newRequest request: NSURLRequest,
+        completionHandler: (NSURLRequest!) -> Void)
+    {
+            var newRequest : NSURLRequest? = request
+            println(newRequest?.description);
+            completionHandler(newRequest)
     }
     
     /*
