@@ -16,7 +16,7 @@
 #HomePage-RequestPanel-Requests {
   margin-top: 20px;
   padding-right: 10px;
-  max-height: 200px;
+  max-height: calc(50% - 100px);
   overflow-y: scroll;
 }
 
@@ -26,5 +26,12 @@
 
 #HomePage-InquiryPanel-Status {
   font-size: 20px;
+}
+
+#HomePage-RequestPanel-Inquiries {
+  margin-top: 20px;
+  padding-right: 10px;
+  max-height: calc(50% - 100px);
+  overflow-y: scroll;
 }
 

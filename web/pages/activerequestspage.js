@@ -18,8 +18,8 @@ ActiveRequestsPage.prototype.onShow = function(root) {
   this._requestCacheUpdateListener = function() {
     Application.hideSpinningWheel();
     
-    var activeRequestIds = Backend.getCachedRequestIds(Backend.Request.STATUS_ACTIVE);
-    AbstractRequestPage.appendRequestResponsesControl($("#ActiveRequestsPage-RequestsPanel").get(0), activeRequestIds, {
+    var activeRequestIds = Backend.getCachedOutgoingRequestIds(Backend.Request.STATUS_ACTIVE);
+    AbstractRequestPage.appendOutgoingRequestResponsesControl($("#ActiveRequestsPage-RequestsPanel").get(0), activeRequestIds, {
       requestClickListener: function(requestId) {
         var paramBundle = {
           returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID,

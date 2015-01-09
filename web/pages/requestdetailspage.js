@@ -92,7 +92,7 @@ RequestDetailsPage.prototype._updatePage = function() {
   UIUtils.setEnabled("RequestDetailsPage-GeneralPanel-NextLink", this._getNextRequestId() != null);
   
   $("#RequestDetailsPage-RequestsPanel").empty();
-  AbstractRequestPage.appendRequestResponsesControl($("#RequestDetailsPage-RequestsPanel").get(0), [this._currentRequestId], {
+  AbstractRequestPage.appendOutgoingRequestResponsesControl($("#RequestDetailsPage-RequestsPanel").get(0), [this._currentRequestId], {
     requestClickListener: null,
     requestEditable: true,
     maxResponses: -1,

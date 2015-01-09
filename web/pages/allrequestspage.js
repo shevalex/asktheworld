@@ -20,13 +20,13 @@ AllRequestsPage.prototype.onShow = function(root) {
     Application.hideSpinningWheel();
     
     var requestPanelElement = $("#AllRequestsPage-RequestPanel").get(0);
-    AbstractRequestPage.appendRequestsTable($("#AllRequestsPage-TablePanel").get(0), function(requestId) {
-      AbstractRequestPage.appendRequestResponsesControl(requestPanelElement, [requestId], {
+    AbstractRequestPage.appendOutgoingRequestsTable($("#AllRequestsPage-TablePanel").get(0), function(requestId) {
+      AbstractRequestPage.appendOutgoingRequestResponsesControl(requestPanelElement, [requestId], {
         requestClickListener: function(requestId) {
           var paramBundle = {
             returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID,
             requestId: requestId,
-            otherRequestIds: Backend.getCachedRequestIds()
+            otherRequestIds: Backend.getCachedOutgoingRequestIds()
           }
           
           Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);

@@ -340,10 +340,23 @@ Backend.isRequestCacheInitialized = function() {
   return this._requestCacheInitialized;
 }
 
-Backend.getCachedRequestIds = function(requestStatus) {
+Backend.getCachedOutgoingRequestIds = function(requestStatus) {
   var requestIds = [];
   for (var id in this._requestsCache) {
-    if (requestStatus == null || this._requestsCache[id].status == requestStatus) {
+    if ((requestStatus == null || this._requestsCache[id].status == requestStatus)
+        && this._requestsCache[id]._owned) {
+      requestIds.push(id);
+    }
+  }
+  
+  return requestIds;
+}
+
+Backend.getCachedIncomingRequestIds = function(requestStatus) {
+  var requestIds = [];
+  for (var id in this._requestsCache) {
+    if ((requestStatus == null || this._requestsCache[id].status == requestStatus)
+        && !this._requestsCache[id]._owned) {
       requestIds.push(id);
     }
   }
@@ -376,6 +389,7 @@ Backend._updateRequestCache = function() {
       var age = Math.round(Math.random() * 5);
       var gender = Math.round(Math.random() * 2);
       var activeStatus = Math.random() < 0.1;
+      var owned = Math.random() < 0.3;
   
       var requestId = "request" + requestCounter;
       
@@ -390,6 +404,7 @@ Backend._updateRequestCache = function() {
         response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
         status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE,
         responseIds: [],
+        _owned: owned,
         _responses: {}
       };
     
