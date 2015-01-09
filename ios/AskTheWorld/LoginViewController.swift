@@ -140,25 +140,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-    func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge,
-        completionHandler: (NSURLSessionAuthChallengeDisposition,
-        NSURLCredential!) -> Void)
-    {
-            completionHandler(
-                NSURLSessionAuthChallengeDisposition.UseCredential,
-                NSURLCredential(forTrust:
-                    challenge.protectionSpace.serverTrust))
-    }
-    
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, willPerformHTTPRedirection response: NSHTTPURLResponse,
-        newRequest request: NSURLRequest,
-        completionHandler: (NSURLRequest!) -> Void)
-    {
-            var newRequest : NSURLRequest? = request
-            println(newRequest?.description);
-            completionHandler(newRequest)
-    }
-    
     /*
     // MARK: - Navigation
 

@@ -18,48 +18,22 @@
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to the Ask the World" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WOP-ZR-Rpy">
                                 <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="232" id="Zf1-U0-zLG"/>
-                                    <constraint firstAttribute="height" constant="21" id="wW0-nZ-3KO"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="Zf1-U0-zLG"/>
-                                        <exclude reference="wW0-nZ-3KO"/>
-                                    </mask>
-                                </variation>
-                                <variation key="widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="Zf1-U0-zLG"/>
-                                        <include reference="wW0-nZ-3KO"/>
-                                    </mask>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="44" y="99" width="232" height="21"/>
                                 </variation>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8S0-At-JmX">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <color key="backgroundColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="NXf-5S-nd5"/>
-                                    <constraint firstAttribute="width" constant="98" id="jg2-Co-FX9"/>
-                                </constraints>
                                 <state key="normal" title="Logout">
                                     <color key="titleColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="NXf-5S-nd5"/>
-                                        <exclude reference="jg2-Co-FX9"/>
-                                    </mask>
-                                </variation>
-                                <variation key="widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="NXf-5S-nd5"/>
-                                        <include reference="jg2-Co-FX9"/>
-                                    </mask>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="110" y="380" width="98" height="30"/>
                                 </variation>
                                 <connections>
                                     <action selector="LogoutButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="frV-Cp-j8A"/>
@@ -67,63 +41,34 @@
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9f0-ST-ilz">
                                 <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="96" id="5n0-P1-lVr"/>
-                                    <constraint firstAttribute="height" constant="29" id="wB6-rl-edb"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="5n0-P1-lVr"/>
-                                        <exclude reference="wB6-rl-edb"/>
-                                    </mask>
-                                </variation>
-                                <variation key="widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="5n0-P1-lVr"/>
-                                        <include reference="wB6-rl-edb"/>
-                                    </mask>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="112" y="148" width="96" height="29"/>
                                 </variation>
                             </label>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8VU-jI-oPN">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                 <items>
-                                    <barButtonItem systemItem="organize" id="a6v-RJ-uIz"/>
+                                    <barButtonItem title="Settings" id="a6v-RJ-uIz">
+                                        <connections>
+                                            <segue destination="0Yd-9w-2IV" kind="presentation" identifier="GoTo_SettingsScreen" id="O0r-pk-v83"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                    <rect key="frame" x="-1" y="437" width="320" height="44"/>
                                 </variation>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="9f0-ST-ilz" secondAttribute="centerX" id="3dQ-Rd-K9p"/>
-                            <constraint firstAttribute="centerX" secondItem="WOP-ZR-Rpy" secondAttribute="centerX" id="8Hr-qz-wSc"/>
-                            <constraint firstAttribute="centerX" secondItem="9f0-ST-ilz" secondAttribute="centerX" id="OJt-MM-DLV"/>
-                            <constraint firstItem="WOP-ZR-Rpy" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="35" id="k79-V0-TNL"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="8S0-At-JmX" secondAttribute="bottom" constant="136" id="siS-BC-5GV">
-                                <variation key="widthClass=compact" constant="100"/>
-                            </constraint>
-                            <constraint firstAttribute="centerX" secondItem="8S0-At-JmX" secondAttribute="centerX" id="wz4-T2-wJm"/>
-                            <constraint firstItem="9f0-ST-ilz" firstAttribute="top" secondItem="WOP-ZR-Rpy" secondAttribute="bottom" constant="28" id="yIO-9j-hoq"/>
-                        </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="WOP-ZR-Rpy"/>
                                 <exclude reference="8S0-At-JmX"/>
                                 <exclude reference="9f0-ST-ilz"/>
                                 <exclude reference="8VU-jI-oPN"/>
-                            </mask>
-                            <mask key="constraints">
-                                <exclude reference="8Hr-qz-wSc"/>
-                                <exclude reference="k79-V0-TNL"/>
-                                <exclude reference="3dQ-Rd-K9p"/>
-                                <exclude reference="OJt-MM-DLV"/>
-                                <exclude reference="yIO-9j-hoq"/>
-                                <exclude reference="wz4-T2-wJm"/>
-                                <exclude reference="siS-BC-5GV"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -132,15 +77,6 @@
                                 <include reference="8S0-At-JmX"/>
                                 <include reference="9f0-ST-ilz"/>
                                 <include reference="8VU-jI-oPN"/>
-                            </mask>
-                            <mask key="constraints">
-                                <include reference="8Hr-qz-wSc"/>
-                                <include reference="k79-V0-TNL"/>
-                                <include reference="3dQ-Rd-K9p"/>
-                                <include reference="OJt-MM-DLV"/>
-                                <include reference="yIO-9j-hoq"/>
-                                <include reference="wz4-T2-wJm"/>
-                                <include reference="siS-BC-5GV"/>
                             </mask>
                         </variation>
                     </view>
@@ -153,6 +89,48 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="973.5" y="564"/>
+        </scene>
+        <!--Settings Screen Controller-->
+        <scene sceneID="iwn-ru-klb">
+            <objects>
+                <viewController id="0Yd-9w-2IV" customClass="SettingsScreenController" customModule="AskTheWorld" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qPp-XA-2Pl"/>
+                        <viewControllerLayoutGuide type="bottom" id="oTL-2i-UFs"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Oii-LA-zbw">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qIx-fV-bvH">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="137" y="269" width="48" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="cancelSettingScreen:" destination="0Yd-9w-2IV" eventType="touchUpInside" id="Kc7-wi-GfI"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="qIx-fV-bvH"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="qIx-fV-bvH"/>
+                            </mask>
+                        </variation>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mKX-0M-dOC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="973.5" y="1258"/>
         </scene>
         <!--Register View Controller-->
         <scene sceneID="jn7-3K-qed">
