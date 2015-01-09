@@ -1,25 +1,25 @@
-ActiveRequestsPage = ClassUtils.defineClass(AbstractPage, function ActiveRequestsPage() {
-  AbstractPage.call(this, "ActiveRequestsPage");
+ActiveOutgoingRequestsPage = ClassUtils.defineClass(AbstractPage, function ActiveOutgoingRequestsPage() {
+  AbstractPage.call(this, "ActiveOutgoingRequestsPage");
   
   this._requestCacheUpdateListener;
 });
 
-ActiveRequestsPage.prototype.definePageContent = function(root) {
-  root.appendChild(UIUtils.createBlock("ActiveRequestsPage-GeneralPanel"));
-  $("#ActiveRequestsPage-GeneralPanel").html("This is what you recently Asked The World about and still waiting for more responses.<br>You can always see your older requests in the <a href='#' id='ActiveRequestsPage-GeneralPanel-AllRequestslink'>All Requests</a> section.");
-  $("#ActiveRequestsPage-GeneralPanel-AllRequestslink").click(function() {
+ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
+  root.appendChild(UIUtils.createBlock("ActiveOutgoingRequestsPage-GeneralPanel"));
+  $("#ActiveOutgoingRequestsPage-GeneralPanel").html("This is what you recently Asked The World about and still waiting for more responses.<br>You can always see your older requests in the <a href='#' id='ActiveOutgoingRequestsPage-GeneralPanel-AllRequestslink'>All Requests</a> section.");
+  $("#ActiveOutgoingRequestsPage-GeneralPanel-AllRequestslink").click(function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID);
   });
   
-  root.appendChild(UIUtils.createBlock("ActiveRequestsPage-RequestsPanel"));
+  root.appendChild(UIUtils.createBlock("ActiveOutgoingRequestsPage-RequestsPanel"));
 }
 
-ActiveRequestsPage.prototype.onShow = function(root) {
+ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
   this._requestCacheUpdateListener = function() {
     Application.hideSpinningWheel();
     
     var activeRequestIds = Backend.getCachedOutgoingRequestIds(Backend.Request.STATUS_ACTIVE);
-    AbstractRequestPage.appendOutgoingRequestResponsesControl($("#ActiveRequestsPage-RequestsPanel").get(0), activeRequestIds, {
+    AbstractRequestPage.appendOutgoingRequestResponsesControl($("#ActiveOutgoingRequestsPage-RequestsPanel").get(0), activeRequestIds, {
       requestClickListener: function(requestId) {
         var paramBundle = {
           returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID,
@@ -45,7 +45,7 @@ ActiveRequestsPage.prototype.onShow = function(root) {
   Backend.addRequestCacheChangeListener(this._requestCacheUpdateListener);
 }
 
-ActiveRequestsPage.prototype.onHide = function() {
+ActiveOutgoingRequestsPage.prototype.onHide = function() {
   Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
   Application.hideSpinningWheel();
 }

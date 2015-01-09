@@ -134,12 +134,12 @@ MenuPage.prototype._getPageForItem = function(itemId) {
     return this._newRequestPage;
   } else if (itemId == MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID) {
     if (this._activeRequestsPage == null) {
-      this._activeRequestsPage = new ActiveRequestsPage();
+      this._activeRequestsPage = new ActiveOutgoingRequestsPage();
     }
     return this._activeRequestsPage;
   } else if (itemId == MenuPage.prototype.ALL_REQUESTS_ITEM_ID) {
     if (this._allRequestsPage == null) {
-      this._allRequestsPage = new AllRequestsPage();
+      this._allRequestsPage = new AllOutgoingRequestsPage();
     }
     return this._allRequestsPage;
   } else if (itemId == MenuPage.prototype.USER_PROFILE_ITEM_ID) {
@@ -160,7 +160,7 @@ MenuPage.prototype._getPageForItem = function(itemId) {
 MenuPage.prototype._getPageById = function(pageId) {
   if (pageId == MenuPage.prototype.REQUEST_DETAILS_PAGE_ID) {
     if (this._requestDetailsPage == null) {
-      this._requestDetailsPage = new RequestDetailsPage();
+      this._requestDetailsPage = new OutgoingRequestDetailsPage();
     }
     return this._requestDetailsPage;
   } else {

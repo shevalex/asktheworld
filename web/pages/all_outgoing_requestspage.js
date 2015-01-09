@@ -1,26 +1,26 @@
-AllRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function AllRequestsPage() {
-  AbstractRequestPage.call(this, "AllRequestsPage", "all");
+AllOutgoingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function AllOutgoingRequestsPage() {
+  AbstractRequestPage.call(this, "AllOutgoingRequestsPage", "all");
   
   this._requestCacheUpdateListener;
 });
 
-AllRequestsPage.prototype.definePageContent = function(root) {
-  root.appendChild(UIUtils.createBlock("AllRequestsPage-GeneralPanel"));
-  $("#AllRequestsPage-GeneralPanel").html("This is the complete list of requests that you Asked The World about.<br>You can find your most recent active requests in the <a href='#' id='AllRequestsPage-GeneralPanel-ActiveRequestslink'>Active Requests</a> section.");
-  $("#AllRequestsPage-GeneralPanel-ActiveRequestslink").click(function() {
+AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
+  root.appendChild(UIUtils.createBlock("AllOutgoingRequestsPage-GeneralPanel"));
+  $("#AllOutgoingRequestsPage-GeneralPanel").html("This is the complete list of requests that you Asked The World about.<br>You can find your most recent active requests in the <a href='#' id='AllOutgoingRequestsPage-GeneralPanel-ActiveRequestslink'>Active Requests</a> section.");
+  $("#AllOutgoingRequestsPage-GeneralPanel-ActiveRequestslink").click(function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
   });
   
-  root.appendChild(UIUtils.createBlock("AllRequestsPage-TablePanel"));
-  root.appendChild(UIUtils.createBlock("AllRequestsPage-RequestPanel"));
+  root.appendChild(UIUtils.createBlock("AllOutgoingRequestsPage-TablePanel"));
+  root.appendChild(UIUtils.createBlock("AllOutgoingRequestsPage-RequestPanel"));
 }
 
-AllRequestsPage.prototype.onShow = function(root) {
+AllOutgoingRequestsPage.prototype.onShow = function(root) {
   this._requestCacheUpdateListener = function() {
     Application.hideSpinningWheel();
     
-    var requestPanelElement = $("#AllRequestsPage-RequestPanel").get(0);
-    AbstractRequestPage.appendOutgoingRequestsTable($("#AllRequestsPage-TablePanel").get(0), function(requestId) {
+    var requestPanelElement = $("#AllOutgoingRequestsPage-RequestPanel").get(0);
+    AbstractRequestPage.appendOutgoingRequestsTable($("#AllOutgoingRequestsPage-TablePanel").get(0), function(requestId) {
       AbstractRequestPage.appendOutgoingRequestResponsesControl(requestPanelElement, [requestId], {
         requestClickListener: function(requestId) {
           var paramBundle = {
@@ -47,7 +47,7 @@ AllRequestsPage.prototype.onShow = function(root) {
   Backend.addRequestCacheChangeListener(this._requestCacheUpdateListener);
 }
 
-AllRequestsPage.prototype.onHide = function() {
+AllOutgoingRequestsPage.prototype.onHide = function() {
   Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
   Application.hideSpinningWheel();
 }

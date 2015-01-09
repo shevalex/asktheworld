@@ -238,6 +238,16 @@ UIUtils.setEnabled = function(elementId, isEnabled) {
   $("#" + elementId).prop("disabled", !isEnabled);
 }
 
+UIUtils.geSelector = function(component) {
+  var id = null;
+  if (typeof component == "string") {
+    id = component;
+  } else {
+    id = component.getAttribute("id");
+  }
+  
+  return $("#" + id);
+}
 
 
 
