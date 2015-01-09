@@ -11,8 +11,10 @@ AbstractRequestPage.appendOutgoingRequestsTable = function(root, selectionCallba
 
 /*
  * settings.requestClickListener
- * settings.requestEditable
- * settings.maxResponses
+ * settings.requestEditable: boolean
+ * settings.maxResponses: integer, -1 for unlimited
+ * settings.responseAreaMaxHeight: "measure unit", -1 for unlimited
+ * settings.unviewedResponsesOnly: boolean
  */
 AbstractRequestPage.appendOutgoingRequestResponsesControl = function(root, requestIds, settings) {
   AbstractRequestPage._OutgoingRequestResponseControl.appendControl(root, requestIds, settings);
@@ -306,7 +308,6 @@ AbstractRequestPage.appendIncomingRequestsTable = function(root, selectionCallba
 /*
  * settings.incomingRequestClickListener
  * settings.canRespond
- * settings.
  */
 AbstractRequestPage.appendIncomingRequestResponseControl = function(root, incomingRequestIds, settings) {
   AbstractRequestPage._IncomingRequestResponseControl.appendControl(root, incomingRequestIds, settings);
@@ -369,65 +370,64 @@ AbstractRequestPage._IncomingRequestResponseControl.appendControl = function(roo
     containerElement = $("#" + controlPanelId).get(0);
   }
 
-  for (var index in IncomingRequestIds) {
-    this._appendIncomingRequestAndCommentPanel(containerElement, incomingRequestIds[index], settings);
+  for (var index in incomingRequestIds) {
+    this._appendIncomingRequestAndResponsePanel(containerElement, incomingRequestIds[index], settings);
   }
 }
 
 AbstractRequestPage._IncomingRequestResponseControl._appendIncomingRequestAndResponsePanel = function(root, incomingRequestId, settings) {
-  var incomingRequestPanelId = root.getAttribute("id") + "-" + incomingRequestId;
-  var incomingRequestPanel = root.appendChild(UIUtils.createBlock(incomingRequestPanelId));
+  var requestPanelId = root.getAttribute("id") + "-" + incomingRequestId;
+  var requestPanel = root.appendChild(UIUtils.createBlock(requestPanelId));
   
   //TODO: need to listen for changes and refresh
   
-  var incomingRequest = Backend.getCachedIncomingRequest(incomingRequestId);
+  var incomingRequest = Backend.getCachedRequest(incomingRequestId);
 
-  var incomingRequestHolderId = requestPanelId + "-IncomingRequestHolder";
-  var incomingRequestHolderElement = incomingRequestPanel.appendChild(UIUtils.createBlock(incomingRequestHolderId));
-  var incomingRequestHolderSelector = $("#" + incomingRequestHolderId);
+  var requestHolderId = requestPanelId + "-IncomingRequestHolder";
+  var requestHolderElement = requestPanel.appendChild(UIUtils.createBlock(requestHolderId));
+  var requestHolderSelector = $("#" + requestHolderId);
 
   var appendIncomingRequestText = function() {
-    incomingRequestHolderSelector.empty();
+    requestHolderSelector.empty();
     
     var canRespond = settings.canRespond == true && incomingRequest.status == Backend.Request.STATUS_ACTIVE && incomingRequest.responseIds.length == 0;
 
     if (canRespond) { 
-      incomingRequestHolderSelector.addClass("incomingrequest-holder-respondable");
+      requestHolderSelector.addClass("incomingrequest-holder-respondable");
     } else {
-      incomingRequestHolderSelector.addClass("incomingrequest-holder");
+      requestHolderSelector.addClass("incomingrequest-holder");
     }
 
-    var incomingRequestTextId = incomingRequestHolderId + "-IncomingRequestText";
-    var incomingRequestTextElement = incomingRequestHolderElement.appendChild(UIUtils.createBlock(incomingRequestTextId));
-    var incomingRequestTextSelector = $("#" + incomingRequestTextId);
+    var requestTextId = requestHolderId + "-IncomingRequestText";
+    var requestTextElement = requestHolderElement.appendChild(UIUtils.createBlock(requestTextId));
+    var requestTextSelector = $("#" + requestTextId);
 
-    var incomingRequestDate = new Date(incomingRequest.time);
-
-    incomingRequestTextSelector.addClass("incomingrequest-text-holder");
-    if (settings.incomingRequestClickListener != null) {
-      incomingRequestTextSelector.addClass("request-text-holder-activable");
-      incomingRequestTextSelector.click(function() {
-        settings.incomingRequestClickListener(incomingRequestId);
+    requestTextSelector.addClass("incomingrequest-text-holder");
+    if (settings.requestClickListener != null) {
+      requestTextSelector.addClass("incomingrequest-text-holder-activable");
+      requestTextSelector.click(function() {
+        settings.requestClickListener(incomingRequestId);
       });
     }
 
-    incomingRequestTextSelector.html("<b>On " + incomingRequestDate.toDateString() + ", " + incomingRequestDate.toLocaleTimeString() + " the World asked you:</b><br>" + incomingRequest.text);
+    var requestDate = new Date(incomingRequest.time);
+    requestTextSelector.html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + incomingRequest.text);
 
     if (canRespond) {
-      var controlPanelId = incomingRequestHolderId + "-ControlPanel";
-      var controlPanel = incomingRequestHolderElement.appendChild(UIUtils.createBlock(controlPanelId));
+      var controlPanelId = requestHolderId + "-ControlPanel";
+      var controlPanel = requestHolderElement.appendChild(UIUtils.createBlock(controlPanelId));
       $("#" + controlPanelId).addClass("incomingrequest-controls");
 
-      var incomingRequestAnswerButtonId = controlPanelId + "-AnswerButton";
-      controlPanel.appendChild(UIUtils.createButton(incomingRequestAnswerButtonId, "Comment"));
-      $("#" + incomingRequestAnswerButtonId).addClass("incomingrequest-answerbutton");
-      $("#" + incomingRequestAnswerButtonId).click(function() {
-        this._appendEditResponsePanel(incomingRequestHolderElement, incomingRequestId, incomingRequest, function() {
+      var requestAnswerButtonId = controlPanelId + "-AnswerButton";
+      controlPanel.appendChild(UIUtils.createButton(requestAnswerButtonId, "Comment"));
+      $("#" + requestAnswerButtonId).addClass("incomingrequest-answerbutton");
+      $("#" + requestAnswerButtonId).click(function() {
+        this._appendEditResponsePanel(requestHolderElement, incomingRequestId, incomingRequest, function() {
           appendIncomingRequestText();
         });
       }.bind(this));
     } else if (incomingRequest.responseIds.length > 0) {
-      this._appendResponse(incomingRequestPanel, incomingRequestId, incomingRequest, settings);
+      this._appendResponse(requestPanel, incomingRequestId, incomingRequest, settings);
     }
   }.bind(this);
   
@@ -436,10 +436,10 @@ AbstractRequestPage._IncomingRequestResponseControl._appendIncomingRequestAndRes
 
 AbstractRequestPage._IncomingRequestResponseControl._appendResponse = function(root, incomingRequestId, incomingRequest, settings) {
   var responsePanelId = root.getAttribute("id") + "-Response";
-  var responsePanel = root.appendChild(UIUtils.createBlock(commentPanelId));
-  $("#" + commentPanelId).addClass("outgoingresponse-container");
+  var responsePanel = root.appendChild(UIUtils.createBlock(responsePanelId));
+  $("#" + responsePanelId).addClass("outgoingresponse-container");
 
-  var responseId = incomingRequestId.responseIds[0]
+  var responseId = incomingRequest.responseIds[0]
   var response = Backend.getCachedResponse(incomingRequestId, responseId);
   
   var responseHolderId = responsePanelId + "-" + responseId;

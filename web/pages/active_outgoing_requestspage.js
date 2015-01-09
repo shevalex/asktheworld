@@ -6,8 +6,8 @@ ActiveOutgoingRequestsPage = ClassUtils.defineClass(AbstractPage, function Activ
 
 ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
   root.appendChild(UIUtils.createBlock("ActiveOutgoingRequestsPage-GeneralPanel"));
-  $("#ActiveOutgoingRequestsPage-GeneralPanel").html("This is what you recently Asked The World about and still waiting for more responses.<br>You can always see your older requests in the <a href='#' id='ActiveOutgoingRequestsPage-GeneralPanel-AllRequestslink'>All Requests</a> section.");
-  $("#ActiveOutgoingRequestsPage-GeneralPanel-AllRequestslink").click(function() {
+  $("#ActiveOutgoingRequestsPage-GeneralPanel").html("This is what you recently Asked The World about and still waiting for more responses.<br>You can always see your older requests in the <a href='#' id='ActiveOutgoingRequestsPage-GeneralPanel-AllRequestsLink'>All Requests</a> section.");
+  $("#ActiveOutgoingRequestsPage-GeneralPanel-AllRequestsLink").click(function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID);
   });
   
