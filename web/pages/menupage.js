@@ -9,6 +9,8 @@ MenuPage = ClassUtils.defineClass(AbstractPage, function MenuPage() {
   this._newRequestPage = null;
   this._activeRequestsPage = null;
   this._allRequestsPage = null;
+  this._activeInquiriesPage = null;
+  this._allInquiriesPage = null;
   this._requestDetailsPage = null;
   this._userProfilePage = null;
   this._userPreferencesPage = null;
@@ -134,14 +136,24 @@ MenuPage.prototype._getPageForItem = function(itemId) {
     return this._newRequestPage;
   } else if (itemId == MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID) {
     if (this._activeRequestsPage == null) {
-      this._activeRequestsPage = new ActiveRequestsPage();
+      this._activeRequestsPage = new ActiveOutgoingRequestsPage();
     }
     return this._activeRequestsPage;
   } else if (itemId == MenuPage.prototype.ALL_REQUESTS_ITEM_ID) {
     if (this._allRequestsPage == null) {
-      this._allRequestsPage = new AllRequestsPage();
+      this._allRequestsPage = new AllOutgoingRequestsPage();
     }
     return this._allRequestsPage;
+  } else if (itemId == MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID) {
+    if (this._activeInquiriesPage == null) {
+      this._activeInquiriesPage = new ActiveIncomingRequestsPage();
+    }
+    return this._activeInquiriesPage;
+  } else if (itemId == MenuPage.prototype.ALL_INQUIRIES_ITEM_ID) {
+    if (this._allInquiriesPage == null) {
+      this._allInquiriesPage = new ActiveIncomingRequestsPage();
+    }
+    return this._allInquiriesPage;
   } else if (itemId == MenuPage.prototype.USER_PROFILE_ITEM_ID) {
     if (this._userProfilePage == null) {
       this._userProfilePage = new UserProfilePage();
@@ -160,7 +172,7 @@ MenuPage.prototype._getPageForItem = function(itemId) {
 MenuPage.prototype._getPageById = function(pageId) {
   if (pageId == MenuPage.prototype.REQUEST_DETAILS_PAGE_ID) {
     if (this._requestDetailsPage == null) {
-      this._requestDetailsPage = new RequestDetailsPage();
+      this._requestDetailsPage = new OutgoingRequestDetailsPage();
     }
     return this._requestDetailsPage;
   } else {

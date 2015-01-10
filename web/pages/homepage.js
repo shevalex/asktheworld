@@ -26,7 +26,7 @@ HomePage.prototype.onShow = function(root) {
     
     var responseCount = 0;
     var requestsWithUnviewedResponses = [];
-    var activeRequestIds = Backend.getCachedRequestIds(Backend.Request.STATUS_ACTIVE);
+    var activeRequestIds = Backend.getCachedOutgoingRequestIds(Backend.Request.STATUS_ACTIVE);
     for (var requestIndex in activeRequestIds) {
       var isAdded = false;
       var requestId = activeRequestIds[requestIndex];
@@ -47,7 +47,7 @@ HomePage.prototype.onShow = function(root) {
     if (requestsWithUnviewedResponses.length > 0) {
       $("#HomePage-RequestPanel-Status").html("You have " + responseCount + " unviewed responses for " + requestsWithUnviewedResponses.length + " your requests:");
       
-      AbstractRequestPage.appendRequestResponsesControl($("#HomePage-RequestPanel-Requests").get(0), requestsWithUnviewedResponses, {
+      AbstractRequestPage.appendOutgoingRequestResponsesControl($("#HomePage-RequestPanel-Requests").get(0), requestsWithUnviewedResponses, {
         requestClickListener: function(requestId) {
           var paramBundle = {
             returnPageId: MenuPage.prototype.HOME_ITEM_ID,
@@ -82,6 +82,7 @@ HomePage.prototype.onShow = function(root) {
 
 HomePage.prototype.onHide = function() {
   Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
+  Application.hideSpinningWheel();
 }
 
 

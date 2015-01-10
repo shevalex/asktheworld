@@ -1,17 +1,11 @@
 
-.request-and-responses-container {
+.outgoingrequest-and-responses-container {
 }
 
-.responses-container {
-  margin: 10px 0px 10px 50px;
-
-  overflow-y: scroll;
+.outgoingrequest-holder {
 }
 
-.request-holder {
-}
-
-.request-holder-editable {
+.outgoingrequest-holder-editable {
   padding: 5px;
   margin-bottom: 10px;
   
@@ -23,7 +17,7 @@
   background: white;
 }
 
-.request-text-holder {
+.outgoingrequest-text-holder {
   padding: 5px;
   margin-bottom: 10px;
   
@@ -36,27 +30,36 @@
   background: white;
 }
 
-.request-text-holder-activable {
+.outgoingrequest-text-holder-activable {
 }
 
-.request-text-holder-activable:hover {
+.outgoingrequest-text-holder-activable:hover {
   color: black;
   background: gray;
   border-color: blue;
 }
 
-.request-text-holder-activable:active {
+.outgoingrequest-text-holder-activable:active {
   color: white;
   background: green;
   border-color: red;
 }
 
-.request-edit-control {
+.outgoingrequest-controls {
   text-align: right;
 }
 
+.outgoingrequest-editbutton {
+}
 
-.response-text-holder {
+
+.incomingresponses-container {
+  margin: 10px 0px 10px 50px;
+
+  overflow-y: auto;
+}
+
+.incomingresponse-text-holder {
   padding: 5px;
   margin-bottom: 10px;
   
@@ -69,19 +72,119 @@
   background: rgb(150, 150, 100);
 }
 
-.response-text-holder-activable {
+.incomingresponse-text-holder-activable {
   color: white;
   background: blue;
 }
 
-.response-text-holder-activable:hover {
+.incomingresponse-text-holder-activable:hover {
   color: black;
   background: gray;
   border-color: blue;
 }
 
-.response-text-holder-activable:active {
+.incomingresponse-text-holder-activable:active {
   color: white;
   background: green;
   border-color: red;
+}
+
+
+
+
+.incomingrequest-and-response-container {
+}
+
+.incomingrequest-holder {
+}
+
+.incomingrequest-holder-respondable {
+  padding: 5px;
+  margin-bottom: 10px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+  
+  background: white;
+}
+
+.incomingrequest-text-holder {
+  padding: 5px;
+  margin-bottom: 10px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+  
+  color: black;
+  background: white;
+}
+
+.incomingrequest-text-holder-activable {
+}
+
+.incomingrequest-text-holder-activable:hover {
+  color: black;
+  background: gray;
+  border-color: blue;
+}
+
+.incomingrequest-text-holder-activable:active {
+  color: white;
+  background: green;
+  border-color: red;
+}
+
+.incomingrequest-controls {
+  text-align: right;
+}
+
+.incomingrequest-answerbutton {
+}
+
+.outgoingresponse-container {
+  padding: 5px;
+  margin: 10px 0px 10px 50px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+}
+
+.outgoingresponse-text-holder {
+  padding: 5px;
+  margin-bottom: 10px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+  
+  color: black;
+  background: rgb(150, 150, 100);
+}
+
+.outgoingresponse-controls {
+  text-align: right;
+}
+
+.outgoingresponse-editbutton {
+}
+
+.outgoingresponse-editpanel {
+  margin: 10px 0px 10px 50px;
+}
+
+.outgoingresponse-editpanel-controls {
+  text-align: right;
+}
+
+.outgoingresponse-editpanel-submitbutton {
+}
+
+outgoingresponse-editpanel-cancelbutton {
 }

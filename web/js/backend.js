@@ -306,6 +306,25 @@ Backend.deleteRequest = function(requestId, transactionCallback) {
   this._communicate("request/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
+Backend.createResponse = function(requestId, response, transactionCallback) {
+  var responseId = "response" + this._requestsCache[requestId].responseIds.length;
+  
+  var request = this._requestsCache[requestId];
+  request.responseIds.push(responseId);
+  
+  response.time = Date.now();
+  response.pictures = [];
+  response.audios = [];
+  response.age_category = Backend.UserProfile.age;
+  response.gender = Backend.UserProfile.gender;
+  response.status = Backend.Response.STATUS_UNREAD;
+
+  request._responses[responseId] = response;
+                   
+  Backend._updateRequestCache();
+  transactionCallback.success();
+}
+
 Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
   var existingResponse = this._requestsCache[requestId]._responses[responseId];
                    
@@ -340,10 +359,23 @@ Backend.isRequestCacheInitialized = function() {
   return this._requestCacheInitialized;
 }
 
-Backend.getCachedRequestIds = function(requestStatus) {
+Backend.getCachedOutgoingRequestIds = function(requestStatus) {
   var requestIds = [];
   for (var id in this._requestsCache) {
-    if (requestStatus == null || this._requestsCache[id].status == requestStatus) {
+    if ((requestStatus == null || this._requestsCache[id].status == requestStatus)
+        && this._requestsCache[id]._owned) {
+      requestIds.push(id);
+    }
+  }
+  
+  return requestIds;
+}
+
+Backend.getCachedIncomingRequestIds = function(requestStatus) {
+  var requestIds = [];
+  for (var id in this._requestsCache) {
+    if ((requestStatus == null || this._requestsCache[id].status == requestStatus)
+        && !this._requestsCache[id]._owned) {
       requestIds.push(id);
     }
   }
@@ -376,6 +408,7 @@ Backend._updateRequestCache = function() {
       var age = Math.round(Math.random() * 5);
       var gender = Math.round(Math.random() * 2);
       var activeStatus = Math.random() < 0.1;
+      var owned = Math.random() < 0.3;
   
       var requestId = "request" + requestCounter;
       
@@ -390,10 +423,11 @@ Backend._updateRequestCache = function() {
         response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
         status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE,
         responseIds: [],
+        _owned: owned,
         _responses: {}
       };
     
-      var numOfResponses = Math.random() * 100;
+      var numOfResponses = 0;;//Math.random() * 100;
       for (var responseCounter = 0; responseCounter < numOfResponses; responseCounter++) {
         var age = Math.round(Math.random() * 4);
         var gender = Math.round(Math.random());
