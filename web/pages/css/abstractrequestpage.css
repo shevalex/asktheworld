@@ -139,15 +139,20 @@
 }
 
 .incomingrequest-controls {
+  text-align: right;
 }
 
 .incomingrequest-answerbutton {
 }
 
 .outgoingresponse-container {
+  padding: 5px;
   margin: 10px 0px 10px 50px;
-
-  overflow-y: auto;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
 }
 
 .outgoingresponse-text-holder {
@@ -168,4 +173,18 @@
 }
 
 .outgoingresponse-editbutton {
+}
+
+.outgoingresponse-editpanel {
+  margin: 10px 0px 10px 50px;
+}
+
+.outgoingresponse-editpanel-controls {
+  text-align: right;
+}
+
+.outgoingresponse-editpanel-submitbutton {
+}
+
+outgoingresponse-editpanel-cancelbutton {
 }

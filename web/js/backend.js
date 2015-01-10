@@ -306,6 +306,25 @@ Backend.deleteRequest = function(requestId, transactionCallback) {
   this._communicate("request/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
+Backend.createResponse = function(requestId, response, transactionCallback) {
+  var responseId = "response" + this._requestsCache[requestId].responseIds.length;
+  
+  var request = this._requestsCache[requestId];
+  request.responseIds.push(responseId);
+  
+  response.time = Date.now();
+  response.pictures = [];
+  response.audios = [];
+  response.age_category = Backend.UserProfile.age;
+  response.gender = Backend.UserProfile.gender;
+  response.status = Backend.Response.STATUS_UNREAD;
+
+  request._responses[responseId] = response;
+                   
+  Backend._updateRequestCache();
+  transactionCallback.success();
+}
+
 Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
   var existingResponse = this._requestsCache[requestId]._responses[responseId];
                    
@@ -408,7 +427,7 @@ Backend._updateRequestCache = function() {
         _responses: {}
       };
     
-      var numOfResponses = Math.random() * 100;
+      var numOfResponses = 0;;//Math.random() * 100;
       for (var responseCounter = 0; responseCounter < numOfResponses; responseCounter++) {
         var age = Math.round(Math.random() * 4);
         var gender = Math.round(Math.random());
