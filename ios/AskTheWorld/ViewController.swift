@@ -9,13 +9,12 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet weak var UserNameLabel: UILabel!
     
-    @IBAction func LogoutButton(sender: UIButton) {
-       self.performSegueWithIdentifier("GoTo_LoginScreen", sender: self)
-    } 
-    
+    @IBAction func LogoutButton(sender: AnyObject) {
+        self.performSegueWithIdentifier("GoTo_LoginScreen", sender: self)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.

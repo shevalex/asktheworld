@@ -10,7 +10,6 @@ import UIKit
 
 class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFieldDelegate {
 
-    
     @IBOutlet weak var UserNameField_Reg: UITextField!
     
     @IBOutlet weak var PasswordField_Reg: UITextField!
@@ -18,13 +17,14 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
     @IBOutlet weak var ConfirmPassword_Reg: UITextField!
     
     @IBOutlet weak var NickName_Reg: UITextField!
-    
+
     @IBOutlet weak var AgeCategory_Reg: UITextField!
     
     @IBOutlet weak var Gender_Reg: UITextField!
+
     
-    @IBAction func RegisterButton_Reg(sender: UIButton) {
-        
+    
+    @IBAction func RegisterButton_Reg(sender: AnyObject) {        
         var username:NSString = UserNameField_Reg.text
         var password:NSString = PasswordField_Reg.text
         var confirm_password:NSString = ConfirmPassword_Reg.text
@@ -168,9 +168,10 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
         }
     }
 
-    @IBAction func LoginButton_Reg(sender: UIButton) {
+    @IBAction func LoginButton_Reg(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
+    
     
 /*  Next 3 function commented out - they are only for test purposes at the moment. UIButtons from storyboard also removed.
     Should be added back - if need to test these actions.
