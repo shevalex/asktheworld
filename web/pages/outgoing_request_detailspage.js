@@ -3,6 +3,8 @@ OutgoingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function Outgo
   
   this._returnPageId;
   this._navigatableRequestIds;
+  this._requestList = null;
+  this._requestsPanel = null;
 });
 
 OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
@@ -16,7 +18,7 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   UIUtils.setEnabled("OutgoingRequestDetailsPage-GeneralPanel-NextLink", false);
 
 
-  root.appendChild(UIUtils.createBlock("OutgoingRequestDetailsPage-RequestsPanel"));
+  this._requestsPanel = root.appendChild(UIUtils.createBlock("OutgoingRequestDetailsPage-RequestsPanel"));
 
 
   $("#OutgoingRequestDetailsPage-GeneralPanel-GoBackLink").click(function() {
@@ -39,15 +41,13 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._navigatableRequestIds = paramBundle.otherRequestIds;
   this._currentRequestId = paramBundle.requestId;
 
-  this._requestCacheUpdateListener = this._updatePage.bind(this);
-
   this._updatePage();
-  
-  Backend.addRequestCacheChangeListener(this._requestCacheUpdateListener);
 }
 
 OutgoingRequestDetailsPage.prototype.onHide = function() {
-  Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
+  if (this._requestList != null) {
+    this._requestList.remove();
+  }
 }
 
 
@@ -91,14 +91,28 @@ OutgoingRequestDetailsPage.prototype._updatePage = function() {
   UIUtils.setEnabled("OutgoingRequestDetailsPage-GeneralPanel-PreviousLink", this._getPreviousRequestId() != null);
   UIUtils.setEnabled("OutgoingRequestDetailsPage-GeneralPanel-NextLink", this._getNextRequestId() != null);
   
-  $("#OutgoingRequestDetailsPage-RequestsPanel").empty();
-  AbstractRequestPage.appendOutgoingRequestResponsesControl($("#OutgoingRequestDetailsPage-RequestsPanel").get(0), [this._currentRequestId], {
+  if (this._requestList != null) {
+    this._requestList.remove();
+  }
+  
+  this._requestList = new AbstractRequestPage.OutgoingRequestList({
     requestClickListener: null,
+    requestIds: [this._currentRequestId],
     requestEditable: true,
     maxResponses: -1,
+    responseAreaMaxHeight: -1,
     unviewedResponsesOnly: false,
-    responseAreaMaxHeight: -1
+    updateListener: {
+      updateStarted: function() {
+        Application.showSpinningWheel();
+      },
+      updateFinished: function() {
+        Application.hideSpinningWheel();
+      }
+    }
   });
+  
+  this._requestList.append(this._requestsPanel);
 }
 
 

@@ -75,17 +75,27 @@ AbstractRequestPage.OutgoingRequestList.prototype.append = function(root) {
 
   
   if (this._settings.requestIds != null) {
-    for (var index in settings.requestIds) {
-      this._appendOutgoingRequestAndResponsesPanel(this._rootContainer, this._settings.requestIds[index]);
+    for (var index in this._settings.requestIds) {
+      var requestPanel = new AbstractRequestPage.OutgoingRequestList.RequestPanel(this._settings.requestIds[index], this._settings);
+      this._requestPanels.push(requestPanel);
+      requestPanel.append(this._rootContainer);
     }
   } else {
     var appendRequestPanels = function() {
       var requestIds = Backend.getOutgoingRequestIds(this._settings.requestStatus);
       if (requestIds != null) {
+        if (this._settings.updateListener != null) {
+          this._settings.updateListener.updateFinished();
+        }
+        
         for (var index in requestIds) {
           var requestPanel = new AbstractRequestPage.OutgoingRequestList.RequestPanel(requestIds[index], this._settings);
           this._requestPanels.push(requestPanel);
           requestPanel.append(this._rootContainer);
+        }
+      } else {
+        if (this._settings.updateListener != null) {
+          this._settings.updateListener.updateStarted();
         }
       }
     }.bind(this);
@@ -111,8 +121,33 @@ AbstractRequestPage.OutgoingRequestList.prototype.remove = function() {
   if (this._cacheChangeListener != null) {
     Backend.removeCacheChangeListener(this._cacheChangeListener);
   }
+  for (var index in this._requestPanels) {
+    this._requestPanels[index].remove();
+  }
+  
   UIUtils.get$(this._rootContainer).remove();
 }
+
+AbstractRequestPage.OutgoingRequestList.prototype.getInfo = function() {
+  var requestIds = [];
+  var responseIds = [];
+  for (var requestIndex in this._requestPanels) {
+    var requestPanel = this._requestPanels[requestIndex];
+    requestIds.push(requestPanel._requestId);
+    
+    for (var responseIndex in requestPanel._responsePanels) {
+      responseIds.push(requestPanel._responsePanels[responseIndex]._responseId);
+    }
+  }
+  
+  var info = {
+    requestIds: requestIds,
+    responseIds: responseIds 
+  }
+  
+  return info;
+}
+
 
 AbstractRequestPage.OutgoingRequestList.RequestPanel = function(requestId, settings) {
   this._settings = settings;
@@ -129,7 +164,15 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype.append = function
   var appendRequestElement = function() {
     var request = Backend.getRequest(this._requestId);
     if (request != null) {
+      if (this._settings.updateListener != null) {
+        this._settings.updateListener.updateFinished();
+      }
+      
       this._appendRequestElement(request);
+    } else {
+      if (this._settings.updateListener != null) {
+        this._settings.updateListener.updateStarted();
+      }
     }
   }.bind(this);
   
@@ -153,20 +196,24 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype.remove = function
   if (this._cacheResponsesChangeListener != null) {
     Backend.removeCacheChangeListener(this._cacheResponsesChangeListener);
   }
+  for (var index in this._responsePanels) {
+    this._responsePanels[index].remove();
+  }
+  
   UIUtils.get$(this._rootContainer).remove();
 }
 
 AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendRequestElement = function(request) {
   var requestHolderElement = UIUtils.appendBlock(this._rootContainer, "RequestHolder");
-    
+
   var isEditable = this._settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE;
-  
+
   if (isEditable) { 
     UIUtils.addClass(requestHolderElement, "outgoingrequest-holder-editable");
   } else {
     UIUtils.addClass(requestHolderElement, "outgoingrequest-holder");
   }
-  
+
   var appendRequestText = function() {
     var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
     
@@ -181,7 +228,7 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendRequestEle
     }
         
     UIUtils.get$(requestTextElement).html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + request.text);
-        
+    
     if (isEditable) {
       var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
       UIUtils.addClass(controlPanel, "outgoingrequest-controls");
@@ -191,7 +238,8 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendRequestEle
       UIUtils.setClickListener(editButton, function() {
         UIUtils.emptyContainer(requestHolderElement);
             
-        this._appendEditPanel(requestHolderElement, requestId, request, function() {
+        this._appendEditPanel(requestHolderElement, request, function() {
+          UIUtils.emptyContainer(requestHolderElement);
           appendRequestText();
         });
       }.bind(this));
@@ -203,25 +251,29 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendRequestEle
   this._appendResponses(this._requestId);
 }
 
-AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendEditPanel = function(root, requestId, request, completionCallback) {
+AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendEditPanel = function(root, request, completionCallback) {
   var editPanel = UIUtils.appendBlock(root, "RequestEditPanel");
   
   var requestDate = new Date(request.time);
   UIUtils.appendLabel(editPanel, "Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>");
   
-  var genderList = editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Gender"), "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
-  UIUtils.get$(genderList).val(request.response_gender);
+  var genderListId = UIUtils.createId(editPanel, "Gender");
+  editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(genderListId, "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  UIUtils.get$(genderListId).val(request.response_gender);
   
-  var ageList = editPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "AgeCategory"), "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
-  UIUtils.get$(ageList).val(request.response_age_group);
+  var ageListId = UIUtils.createId(editPanel, "AgeCategory");
+  editPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(ageListId, "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  UIUtils.get$(ageListId).val(request.response_age_group);
   
   editPanel.appendChild(UIUtils.createLineBreak());
   
-  var waitTimeList = editPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "WaitTime"), "Wait time for responses", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
-  UIUtils.get$(waitTimeList).val(request.response_wait_time);
+  var waitTimeListId = UIUtils.createId(editPanel, "WaitTime");
+  editPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 20px 0")).appendChild(UIUtils.createLabeledDropList(waitTimeListId, "Wait time for responses", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
+  UIUtils.get$(waitTimeListId).val(request.response_wait_time);
   
-  var quantityList = editPanel.appendChild(UIUtils.createSpan("48%", "20px 0 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Quantity"), "Maximum # of responses", Application.Configuration.RESPONSE_QUANTITY, "10px"));
-  UIUtils.get$(quantityList).val(request.response_quantity);
+  var quantityListId = UIUtils.createId(editPanel, "Quantity");
+  editPanel.appendChild(UIUtils.createSpan("48%", "20px 0 20px 0")).appendChild(UIUtils.createLabeledDropList(quantityListId, "Maximum # of responses", Application.Configuration.RESPONSE_QUANTITY, "10px"));
+  UIUtils.get$(quantityListId).val(request.response_quantity);
   
   var textArea = editPanel.appendChild(UIUtils.createTextArea(UIUtils.createId(editPanel, "Text"), 6));
   UIUtils.get$(textArea).val(request.text);
@@ -232,21 +284,21 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendEditPanel 
   var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", "Update");
   UIUtils.setClickListener(updateButton, function() {
     request.text = UIUtils.get$(textArea).val();
-    request.response_quantity = UIUtils.get$(quantityList).val();
-    request.response_wait_time = UIUtils.get$(waitTimeList).val();
-    request.response_age_group = UIUtils.get$(ageList).val();
-    request.response_gender = UIUtils.get$(genderList).val();
-    
-    AbstractRequestPage.OutgoingRequestList._updateRequest(requestId, request, completionCallback);
-  });
+    request.response_quantity = UIUtils.get$(quantityListId).val();
+    request.response_wait_time = UIUtils.get$(waitTimeListId).val();
+    request.response_age_group = UIUtils.get$(ageListId).val();
+    request.response_gender = UIUtils.get$(genderListId).val();
+
+    AbstractRequestPage.OutgoingRequestList._updateRequest(this._requestId, request, completionCallback);
+  }.bind(this));
   
   var deactivateButton = UIUtils.appendButton(controlPanel, "DeactivateButton", "Deactivate");
-  UIUtils.setClickListener(updateButton, function() {
+  UIUtils.setClickListener(deactivateButton, function() {
     request.status = Backend.Request.STATUS_INACTIVE;
-    AbstractRequestPage.OutgoingRequestList._updateRequest(requestId, request, completionCallback);
-  });
+    AbstractRequestPage.OutgoingRequestList._updateRequest(this._requestId, request, completionCallback);
+  }.bind(this));
   
-  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Csncel");
+  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
   UIUtils.setClickListener(cancelButton, completionCallback);
 }
 
@@ -261,6 +313,10 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendResponses 
   var appendResponsePanels = function() {
     var responseIds = Backend.getIncomingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_UNREAD : null);
     if (responseIds != null) {
+      if (this._settings.updateListener != null) {
+        this._settings.updateListener.updateFinished();
+      }
+      
       for (var responseCount = 0; responseCount < responseIds.length; responseCount++) {
         var responsePanel = null;
         if (this._settings.maxResponses == null || this._settings.maxResponses == -1 || responseCount < this._settings.maxResponses) {
@@ -274,6 +330,10 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendResponses 
         this._responsePanels.push(responsePanel);
         responsePanel.append(responsesPanel);
       }
+    } else {
+      if (this._settings.updateListener != null) {
+        this._settings.updateListener.updateStarted();
+      }
     }
   }.bind(this);
 
@@ -281,8 +341,8 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendResponses 
     if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED
         && (event.requestId == this._requestId)) {
 
-      for (var index in this._responsePanel) {
-        this._responsePanel[index].remove();
+      for (var index in this._responsePanels) {
+        this._responsePanels[index].remove();
       }
 
       appendResponsePanels();
@@ -309,7 +369,15 @@ AbstractRequestPage.OutgoingRequestList.ResponsePanel.prototype.append = functio
   var appendResponseElement = function() {
     var response = Backend.getResponse(this._requestId, this._responseId);
     if (response != null) {
+      if (this._settings.updateListener != null) {
+        this._settings.updateListener.updateFinished();
+      }
+      
       this._appendResponseElement(response);
+    } else {
+      if (this._settings.updateListener != null) {
+        this._settings.updateListener.updateStarted();
+      }
     }
   }.bind(this);
   
@@ -350,8 +418,9 @@ AbstractRequestPage.OutgoingRequestList.ResponsePanel.prototype._appendResponseE
     if (response.status == Backend.Response.STATUS_UNREAD) {
       UIUtils.addClass(responseHolder, "incomingresponse-text-holder-activable");
       UIUtils.setClickListener(responseHolder, function() {
-        AbstractRequestPage.OutgoingRequestList._setResponseStatus(this._requestId, this._responseId, Backend.Response.STATUS_READ);
-//        UIUtils.removeClass(responseHolder, "incomingresponse-text-holder-activable");
+        AbstractRequestPage.OutgoingRequestList._setResponseStatus(this._requestId, this._responseId, Backend.Response.STATUS_READ, function() {
+        });
+        UIUtils.removeClass(responseHolder, "incomingresponse-text-holder-activable");
       }.bind(this));
     }
       
@@ -359,9 +428,10 @@ AbstractRequestPage.OutgoingRequestList.ResponsePanel.prototype._appendResponseE
   }
 }
 
-AbstractRequestPage.OutgoingRequestList._setResponseStatus = function(requestId, responseId, status) {
+AbstractRequestPage.OutgoingRequestList._setResponseStatus = function(requestId, responseId, status, completionCallback) {
   var callback = {
     success: function() {
+      completionCallback();
     },
     failure: function() {
     },

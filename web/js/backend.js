@@ -237,14 +237,17 @@ Backend.createRequest = function(request, requestParams, transactionCallback) {
 }
 
 Backend.updateRequest = function(requestId, request, transactionCallback) {
-  var existingRequest = this._requestsCache[requestId];
+  setTimeout(function() {
+    var existingRequest = this._cache.requests[requestId];
+    
+    for (var key in request) {
+      existingRequest[key] = request[key];
+    }
 
-  for (var key in request) {
-    existingRequest[key] = request[key];
-  }
+    transactionCallback.success();
 
-  Backend._updateRequestCache();
-  transactionCallback.success();
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId});
+  }.bind(this), 1000);
 
   /*
   var communicationCallback = {
@@ -279,26 +282,6 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
     */
 }
 
-//TODO: We may not need it
-Backend.deleteRequest = function(requestId, transactionCallback) {
-  var communicationCallback = {
-    success: function(data, status, xhr) {
-      if (xhr.status == 200) {
-        Backend._updateRequestCache();
-        transactionCallback.success();
-      }
-    },
-    error: function(xhr, status, error) {
-      if (xhr.status == 400 || xhr.status == 401) {
-        transactionCallback.failure();
-      } else {
-        transactionCallback.error();
-      }
-    }
-  }
-
-  this._communicate("request/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
-}
 
 Backend.createResponse = function(requestId, response, transactionCallback) {
   var responseId = "response" + this._requestsCache[requestId].responseIds.length;
@@ -369,9 +352,9 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
     } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
       responseIds = this._cache.incomingResponseIds[requestId].unviewed.slice(0);
     } else {
-      responseIds = this._cache.incomingResponseIds[requestId].viewed.slice(0);
-      for (var index in this._cache.incomingResponseIds[requestId].unviewed) {
-        responseIds.push(this._cache.incomingResponseIds[requestId].unviewed[index]);
+      responseIds = this._cache.incomingResponseIds[requestId].unviewed.slice(0);
+      for (var index in this._cache.incomingResponseIds[requestId].viewed) {
+        responseIds.push(this._cache.incomingResponseIds[requestId].viewed[index]);
       }
     }
 
@@ -441,10 +424,8 @@ Backend._pullIncomingResponseIds = function(requestId) {
     for (var i = 0; i < numOfResponses; i++) {
       var responseId = requestId + "-response" + i;
       if (Math.random() < 0.5) {
-      var responseId = requestId + "-viewedresponse" + i;
         this._cache.incomingResponseIds[requestId].viewed.push(responseId);
       } else {
-      var responseId = requestId + "-unviewedresponse" + i;
         this._cache.incomingResponseIds[requestId].unviewed.push(responseId);
       }
     }
@@ -491,7 +472,7 @@ Backend._createDummyRequest = function(requestId) {
   var waitTime = Math.round(Math.random() * 4);
   var age = Math.round(Math.random() * 5);
   var gender = Math.round(Math.random() * 2);
-  var activeStatus = Math.random() < 0.1;
+  var activeStatus = Math.random() < 0.5;
 
   var request = {
     time: Date.now(),
@@ -502,15 +483,9 @@ Backend._createDummyRequest = function(requestId) {
     response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
     response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
     response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
-    status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE,
-    responseIds: [],
+    status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE
   };
     
-  var numOfResponses = Math.random() * 100;
-  for (var i = 0; i < numOfResponses; i++) {
-    request.responseIds.push("response" + i);
-  }
-  
   return request;
 }
 
