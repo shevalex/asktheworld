@@ -23,6 +23,19 @@ HomePage.prototype.definePageContent = function(root) {
 
 HomePage.prototype.onShow = function(root) {
   this._requestList = new AbstractRequestPage.OutgoingRequestList({
+    requestClickListener: function(requestId) {
+      var paramBundle = {
+        returnPageId: MenuPage.prototype.HOME_ITEM_ID,
+        requestId: requestId,
+        otherRequestIds: Backend.getOutgoingRequestIds()
+      }
+
+      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+    },
+    requestEditable: false,
+    maxResponses: 3,
+    responseAreaMaxHeight: -1,
+    unviewedResponsesOnly: true
   });
   
   this._requestList.append(this._requestsPanelRequests);

@@ -319,18 +319,6 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
   transactionCallback.success();
 }
 
-Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
-  var existingResponse = this._requestsCache[requestId]._responses[responseId];
-                   
-  for (var key in response) {
-    existingResponse[key] = response[key];
-  }
-                   
-  Backend._updateRequestCache();
-  transactionCallback.success();
-}
-
-
 
 
 Backend.addCacheChangeListener = function(listener) {
@@ -373,12 +361,20 @@ Backend.getRequest = function(requestId) {
 }
 
 Backend.getIncomingResponseIds = function(requestId, responseStatus) {
-  if (this._cache.incomingResponseIds != null) {
+  if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
     var responseIds = [];
-    for (var index in this._cache.incomingResponseIds) {
-      responseIds.push(this._cache.incomingResponseIds[index]);
+  
+    if (responseStatus == Backend.Response.STATUS_READ) {
+      responseIds = this._cache.incomingResponseIds[requestId].viewed.slice(0);
+    } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
+      responseIds = this._cache.incomingResponseIds[requestId].unviewed.slice(0);
+    } else {
+      responseIds = this._cache.incomingResponseIds[requestId].viewed.slice(0);
+      for (var index in this._cache.incomingResponseIds[requestId].unviewed) {
+        responseIds.push(this._cache.incomingResponseIds[requestId].unviewed[index]);
+      }
     }
-    
+
     return responseIds;
   } else {
     Backend._pullIncomingResponseIds(requestId);
@@ -398,6 +394,20 @@ Backend.getResponse = function(requestId, responseId) {
   Backend._pullResponse(requestId, responseId);
   return null;
 }
+
+Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
+  setTimeout(function() {
+    var existingResponse = this._cache.responses[responseId];
+    for (var key in response) {
+      existingResponse[key] = response[key];
+    }
+
+    transactionCallback.success();
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
+  }.bind(this), 1000);
+}
+
 
 
 
@@ -422,11 +432,21 @@ Backend._pullOutgoingRequestIds = function() {
 
 Backend._pullIncomingResponseIds = function(requestId) {
   setTimeout(function() {
-    this._cache.incomingResponseIds = [];
+    if (this._cache.incomingResponseIds == null) {
+      this._cache.incomingResponseIds = {};
+    }
 
+    this._cache.incomingResponseIds[requestId] = {viewed: [], unviewed: []};
     var numOfResponses = Math.random() * 100;
     for (var i = 0; i < numOfResponses; i++) {
-      this._cache.incomingResponseIds.push(requestId + "-response" + i);
+      var responseId = requestId + "-response" + i;
+      if (Math.random() < 0.5) {
+      var responseId = requestId + "-viewedresponse" + i;
+        this._cache.incomingResponseIds[requestId].viewed.push(responseId);
+      } else {
+      var responseId = requestId + "-unviewedresponse" + i;
+        this._cache.incomingResponseIds[requestId].unviewed.push(responseId);
+      }
     }
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
@@ -451,7 +471,7 @@ Backend._pullResponse = function(requestId, responseId) {
       this._cache.responses = {};
     }
 
-    this._cache.responses[responseId] = this._createDummyResponse(responseId);
+    this._cache.responses[responseId] = this._createDummyResponse(requestId, responseId);
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
   }.bind(this), 1000);
@@ -497,8 +517,14 @@ Backend._createDummyRequest = function(requestId) {
 Backend._createDummyResponse = function(requestId, responseId) {
   var age = Math.round(Math.random() * 4);
   var gender = Math.round(Math.random());
-  var statusUnread = Math.random() < 0.1;
-
+  var statusUnread = false;
+  for (var index in this._cache.incomingResponseIds[requestId].unviewed) {
+    if (this._cache.incomingResponseIds[requestId].unviewed[index] == responseId) {
+      statusUnread = true;
+      break;
+    }
+  }
+  
   var response = {
     time: Date.now(),
     text: "This is the response " + responseId + " to the request " + requestId,

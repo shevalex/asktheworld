@@ -259,23 +259,20 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendResponses 
   }
 
   var appendResponsePanels = function() {
-    var responseIds = Backend.getIncomingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_READ : null);
+    var responseIds = Backend.getIncomingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_UNREAD : null);
     if (responseIds != null) {
-      var responseCount = 0;
-      
-      for (var index in responseIds) {
+      for (var responseCount = 0; responseCount < responseIds.length; responseCount++) {
         var responsePanel = null;
-        
-        if (this._settings.maxResponses == null || this._settings.maxResponses != -1 || responseCount < this._settings.maxResponses) {
-          responsePanel = new AbstractRequestPage.OutgoingRequestList.ResponsePanel(requestId, responseIds[index], this._settings);
-        } else if (this._settings.maxResponses == responseCount) {
+        if (this._settings.maxResponses == null || this._settings.maxResponses == -1 || responseCount < this._settings.maxResponses) {
+          responsePanel = new AbstractRequestPage.OutgoingRequestList.ResponsePanel(requestId, responseIds[responseCount], this._settings);
+        } else if (responseCount == this._settings.maxResponses) {
           responsePanel = new AbstractRequestPage.OutgoingRequestList.ResponsePanel(requestId, -1, this._settings);
         } else {
           break;
         }
 
         this._responsePanels.push(responsePanel);
-        responsePanel.append(this._rootContainer);
+        responsePanel.append(responsesPanel);
       }
     }
   }.bind(this);
@@ -338,27 +335,24 @@ AbstractRequestPage.OutgoingRequestList.ResponsePanel.prototype.remove = functio
 }
 
 AbstractRequestPage.OutgoingRequestList.ResponsePanel.prototype._appendResponseElement = function(response) {
+  var responseHolder = UIUtils.appendBlock(this._rootContainer, "TextHolder");
+  UIUtils.addClass(responseHolder, "incomingresponse-text-holder");
+  
   if (this._responseId == -1) {
-    var responseHolder = UIUtils.appendBlock(this._rootContainer, "andmode");
-    UIUtils.addClass(responseHolder, "incomingresponse-text-holder");
     if (this._settings.requestClickListener != null) {
       UIUtils.addClass(responseHolder, "incomingresponse-text-holder-activable");
-      UIUtils.setClickListener(responseHolder, settings.requestClickListener.bind(this, this._requestId))
+      UIUtils.setClickListener(responseHolder, this._settings.requestClickListener.bind(this, this._requestId))
 
       UIUtils.get$(responseHolder).html("And more responses. Click to see them all");
     } 
   } else {
-    var responseHolder = UIUtils.appendBlock(this._rootContainer, "andmode");
-    UIUtils.addClass(responseHolder, "incomingresponse-text-holder");
-
-    var responseDate = new Date(response.time);
-          
+    var responseDate = new Date(response.time);          
     if (response.status == Backend.Response.STATUS_UNREAD) {
       UIUtils.addClass(responseHolder, "incomingresponse-text-holder-activable");
       UIUtils.setClickListener(responseHolder, function() {
-        AbstractRequestPage.OutgoingRequestList._setResponseStatus(requestId, responseId, Backend.Response.STATUS_READ);
-        UIUtils.removeClass(responseHolder, "incomingresponse-text-holder-activable");
-      });
+        AbstractRequestPage.OutgoingRequestList._setResponseStatus(this._requestId, this._responseId, Backend.Response.STATUS_READ);
+//        UIUtils.removeClass(responseHolder, "incomingresponse-text-holder-activable");
+      }.bind(this));
     }
       
     UIUtils.get$(responseHolder).html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
