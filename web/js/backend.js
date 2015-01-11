@@ -1,11 +1,7 @@
 
 var Backend = {
   _cache: {},
-  
-  
-  _requestsCache: {},
-  _requestsChangeListeners: [],
-  _requestCacheInitialized: false
+  _cacheChangeListeners: [],
 };
 
 Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
@@ -338,48 +334,183 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 
 
 Backend.addCacheChangeListener = function(listener) {
-  this._requestsChangeListeners.push(listener);
-  if (!this._requestCacheInitialized) {
-    this._updateRequestCache();
-  }
+  this._cacheChangeListeners.push(listener);
 }
 
 Backend.removeCacheChangeListener = function(listener) {
-  for (var index in this._requestsChangeListeners) {
-    if (this._requestsChangeListeners[index] == listener) {
-      this._requestsChangeListeners.splice(index, 1);
+  for (var index in this._cacheChangeListeners) {
+    if (this._cacheChangeListeners[index] == listener) {
+      this._cacheChangeListeners.splice(index, 1);
     }
   }
 }
 
 Backend.getOutgoingRequestIds = function(requestStatus) {
-  if (Backend._cache.outgoingRequestIds != null) {
-    return Backend.getCachedOutgoingRequestIds(requestStatus);
+  if (this._cache.outgoingRequestIds != null) {
+    var requestIds = [];
+    for (var index in this._cache.outgoingRequestIds) {
+      requestIds.push(this._cache.outgoingRequestIds[index]);
+    }
+    
+    return requestIds;
   } else {
     Backend._pullOutgoingRequestIds();
     return null;
   }
 }
 
-Backend.getIncomingResponseIds = function(requestId, responseStatus) {
+Backend.getRequest = function(requestId) {
+  if (this._cache.requests != null) {
+    var request = this._cache.requests[requestId];
+    
+    if (request != null) {
+      return request;
+    }
+  }
+  
+  Backend._pullRequest(requestId);
+  return null;
 }
+
+Backend.getIncomingResponseIds = function(requestId, responseStatus) {
+  if (this._cache.incomingResponseIds != null) {
+    var responseIds = [];
+    for (var index in this._cache.incomingResponseIds) {
+      requestIds.push(this._cache.outgoingRequestIds[index]);
+    }
+    
+    return requestIds;
+  } else {
+    Backend._pullIncomingResponseIds();
+    return null;
+  }
+}
+
+Backend.getResponse = function(requestId, responseId) {
+  if (this._cache.responses != null) {
+    var response = this._cache.responses[responseId];
+    
+    if (response != null) {
+      return response;
+    }
+  }
+  
+  Backend._pullResponse(requestId, responseId);
+  return null;
+}
+
+
 
 Backend.CacheChangeEvent = {type: null, requestId: null, responseId: null};
 Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED = "outgoing_requests_changed";
 Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED = "request_changed";
 Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED = "response_changed";
-Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED = "incoming_requests_changed";
+Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSE_CHANGED = "incoming_response_changed";
 
 Backend._pullOutgoingRequestIds = function() {
-  Backend._cache.outgoingRequestIds = [];
   setTimeout(function() {
-    Backend._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, data: Backend._cache.outgoingRequestIds});
-  }, 3000);
+    this._cache.outgoingRequestIds = [];
+
+    var numOfRequests = Math.random(10);
+    for (var i = 0; i < numOfRequests; i++) {
+      this._cache.outgoingRequestIds.push("request" + i);
+    }
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
+  }.bind(this), 3000);
+}
+
+Backend._pullIncomingResponseIds = function(requestId) {
+  setTimeout(function() {
+    this._cache.incomingResponseIds = [];
+
+    var numOfResponses = Math.random(100);
+    for (var i = 0; i < numOfResponses; i++) {
+      this._cache.incomingResponseIds.push(requestId + "-response" + i);
+    }
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSE_CHANGED, requestId: requestId});
+  }.bind(this), 3000);
+}
+
+Backend._pullRequest = function(requestId) {
+  setTimeout(function() {
+    if (this._cache.requests == null) {
+      this._cache.requests = {};
+    }
+
+    this._cache.requests[requestId] = this._createDummyRequest(requestId);
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId});
+  }.bind(this), 3000);
+}
+
+Backend._pullResponse = function(requestId, responseId) {
+  setTimeout(function() {
+    if (this._cache.responses == null) {
+      this._cache.responses = {};
+    }
+
+    this._cache.responses[responseId] = this._createDummyResponse(responseId);
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
+  }.bind(this), 3000);
+}
+
+
+Backend._notifyCacheUpdateListeners = function(event) {
+  for (var index in this._cacheChangeListeners) {
+    this._cacheChangeListeners[index](event);
+  }
 }
 
 
 
+Backend._createDummyRequest = function(requestId) {
+  var quantity = Math.round(Math.random() * 3);
+  var waitTime = Math.round(Math.random() * 4);
+  var age = Math.round(Math.random() * 5);
+  var gender = Math.round(Math.random() * 2);
+  var activeStatus = Math.random() < 0.1;
 
+  var request = {
+    time: Date.now(),
+    text: "This is the request with the id " + requestId,
+    pictures: [],
+    audios: [],
+    response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity],
+    response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
+    response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
+    response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
+    status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE,
+    responseIds: [],
+  };
+    
+  var numOfResponses = Math.random() * 100;
+  for (var i = 0; i < numOfResponses; i++) {
+    request.responseIds.push("response" + i);
+  }
+  
+  return request;
+}
+
+Backend._createDummyResponse = function(requestId, responseId) {
+  var age = Math.round(Math.random() * 4);
+  var gender = Math.round(Math.random());
+  var statusUnread = Math.random() < 0.1;
+
+  var response = {
+    time: Date.now(),
+    text: "This is the response " + responseId + " to the request " + requestId,
+    pictures: [],
+    audios: [],
+    age_category: Application.Configuration.AGE_CATEGORIES[age],
+    gender: Application.Configuration.GENDERS[gender],
+    status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ
+  }
+
+  return response;
+}
 
 
 
@@ -428,6 +559,7 @@ Backend.getCachedResponse = function(requestId, responseId) {
   return null;
 }
   
+
 Backend._updateRequestCache = function() {
   //TBD
   

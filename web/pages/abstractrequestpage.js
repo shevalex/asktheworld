@@ -125,7 +125,7 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel = function(requestId, setti
 }
 
 AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype.append = function(container) {
-  this._rootContainer = UIUtils.appendBlock(container, requestId);
+  this._rootContainer = UIUtils.appendBlock(container, this._requestId);
   
   var appendRequestElement = function() {
     var request = Backend.getRequest(this._requestId);
