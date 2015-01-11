@@ -9,12 +9,12 @@
 import UIKit
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
-
-    @IBOutlet weak var UserNameField: UITextField!
     
-    @IBOutlet weak var PasswordField: UITextField!
+    @IBOutlet weak var UserNameField: UITextField!
 
-    @IBAction func SignInButton(sender: UIButton) {
+    @IBOutlet weak var PasswordField: UITextField!
+    
+    @IBAction func SignInButton(sender: AnyObject) {
         
         var username:NSString = UserNameField.text
         var password:NSString = PasswordField.text
