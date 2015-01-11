@@ -12,6 +12,15 @@ HomePage.prototype.definePageContent = function(root) {
 
   var requestsPanel = UIUtils.appendBlock(root, "RequestPanel");
   this._requestsStatusElement = UIUtils.appendBlock(requestsPanel, "Status");
+  
+  var seeActiveRequestsElement = UIUtils.appendBlock(requestsPanel, "SeeActiveRequests");
+  var activeRequestsLinkId = UIUtils.createId(seeActiveRequestsElement, "Link");
+  UIUtils.get$(seeActiveRequestsElement).html("You can always find all your active requests in the <a href='#' id='" + activeRequestsLinkId + "'>Active Requests</a> section.");
+  UIUtils.setClickListener(activeRequestsLinkId, function() {
+    Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
+  });
+  
+  
   this._requestsPanelRequests = UIUtils.appendBlock(requestsPanel, "Requests");
 
   /*
@@ -46,7 +55,7 @@ HomePage.prototype.onShow = function(root) {
         Application.hideSpinningWheel();
         
         var info = this._requestList.getInfo();
-        UIUtils.get$(this._requestsStatusElement).html("You have " + info.responseIds.length + " unviewed responses for " + info.requestIds.length + " your requests:");
+        UIUtils.get$(this._requestsStatusElement).html("You have " + info.responseIds.length + " unviewed responses for " + info.requestIds.length + " your requests");
       }.bind(this)
     }
   });
