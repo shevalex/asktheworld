@@ -3,13 +3,64 @@ AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequ
 });
 
 
-AbstractRequestPage.appendOutgoingRequestsTable = function(root, selectionCallback) {
-  UIUtils.get$(root).empty();
-  AbstractRequestPage._appendOutgoingRequestsTable("OutgoingRequestsTable", root, selectionCallback);
+/*
+ * settings.requestStatus
+ * settings.selectionObserver
+ * settings.updateListener
+ */
+AbstractRequestPage.OutgoingRequestsTable = function(settings) {
+  this._settings = settings;
+  this._cacheChangeListener = null;
+  this._cacheRowListeners = {};
+  this._rootContainer = null;
 }
 
+AbstractRequestPage.OutgoingRequestsTable.prototype.append = function(container) {
+  this._rootContainer = UIUtils.appendBlock(container, "TableContainer");
+
+  var appendTableElement  = function() {
+    var requestIds = Backend.getOutgoingRequestIds(this._settings.requestStatus);
+    if (requestIds != null) {
+      if (this._settings.updateListener != null) {
+        this._settings.updateListener.updateFinished();
+      }
+      this._appendTableElement();
+    } else {
+      if (this._settings.updateListener != null) {
+        this._settings.updateListener.updateStarted();
+      }
+    }
+  }.bind(this);
   
-AbstractRequestPage._appendOutgoingRequestsTable = function(tableId, root, selectionCallback) {
+  this._cacheChangeListener = function(event) {
+    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
+      UIUtils.emptyContainer(this._rootContainer);
+      this._cacheRowListeners = {};
+      
+      appendTableElement();
+    } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED
+               || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED) {
+      
+      for (var id in this._cacheRowListeners) {
+        if (event.requestId == null || id == event.requestId) {
+          this._cacheRowListeners[id]();
+        }
+      }
+    }
+  }.bind(this);
+  
+  Backend.addCacheChangeListener(this._cacheChangeListener);
+  appendTableElement();
+}
+
+AbstractRequestPage.OutgoingRequestsTable.prototype.remove = function() {
+  this._cacheRowListeners = {};
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
+  UIUtils.get$(this._rootContainer).remove();
+}
+
+
+AbstractRequestPage.OutgoingRequestsTable.prototype._appendTableElement = function() {
   var columns = [
     {title: "Date", data: "time", type: "date", width: "100px"},
     {title: "Responses", data: "numOfResponses", type: "num", width: "40px"},
@@ -19,7 +70,7 @@ AbstractRequestPage._appendOutgoingRequestsTable = function(tableId, root, selec
   var rowDataProvider = {
     getRows: function() {
       var rowData = [];
-      var requestIds = Backend.getCachedOutgoingRequestIds();
+      var requestIds = Backend.getOutgoingRequestIds();
       for (var requestId in requestIds) {
         rowData.push({rowId: requestIds[requestId], temporary: true, time: "--", text: "--", numOfResponses: "--"});
       }
@@ -29,25 +80,35 @@ AbstractRequestPage._appendOutgoingRequestsTable = function(tableId, root, selec
     
     getRowDetails: function(rowId, callback) {
       function convertRequestToRowData(request) {
-        return {time: new Date(request.time).toDateString(), text: request.text, numOfResponses: request.responseIds.length};
+        return {time: new Date(request.time).toDateString(), text: request.text, numOfResponses: Backend.getIncomingResponseIds(rowId).length};
       }
 
-      function notifyCallback() {
-        var request = Backend.getCachedRequest(rowId);
-        if (request != null) {
+      var reportRowDataReady = function() {
+        var request = Backend.getRequest(rowId);
+        var responseIds = Backend.getIncomingResponseIds(rowId);
+        if (request != null && responseIds != null) {
+          if (this._settings.updateListener != null) {
+            this._settings.updateListener.updateFinished();
+          }
+          
           callback(convertRequestToRowData(request));
+        } else {
+          if (this._settings.updateListener != null) {
+            this._settings.updateListener.updateStarted();
+          }
         }
-      }
-      notifyCallback();
+      }.bind(this);
       
-      Backend.addRequestCacheChangeListener(notifyCallback);
+      this._cacheRowListeners[rowId] = reportRowDataReady;
+      reportRowDataReady();
     }.bind(this)
   }
   
-  return UIUtils.appendFeaturedTable(tableId, root, columns, rowDataProvider, function(rowId) {
-    selectionCallback(rowId);
+  return UIUtils.appendFeaturedTable("Table", this._rootContainer, columns, rowDataProvider, function(rowId) {
+    this._settings.selectionObserver(rowId);
   }.bind(this));
 }
+
 
 
 /*

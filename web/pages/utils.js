@@ -191,11 +191,13 @@ UIUtils.createImage = function(imageId, src) {
 UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener) {
   var tableElement = document.createElement("table");
   tableElement.setAttribute("class", "display");
-  tableElement.setAttribute("id", UIUtils.createId(root, tableId));
+  
+  var tableElementId = UIUtils.createId(root, tableId);
+  tableElement.setAttribute("id", tableElementId);
   
   root.appendChild(tableElement);
   
-  var dataTableObject = $("#" + tableId).DataTable({
+  var dataTableObject = $("#" + tableElementId).DataTable({
     columns: columns,
     data: rowDataProvider.getRows(),
     createdRow: function(row, rowData, index) {

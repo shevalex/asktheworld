@@ -5,9 +5,18 @@
   margin-bottom: 30px;
   
   font-size: 20px;
+  max-height: 40px;
+}
+
+#AllOutgoingRequestsPage-TablePanel {
+  margin-top: 30px;
+  max-height: 300px;
+  overflow: hidden;
 }
 
 #AllOutgoingRequestsPage-RequestPanel {
   margin-top: 30px;
+  max-height: calc(100% - 400px);
+  overflow-y: auto;
 }
 
