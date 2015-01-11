@@ -46,6 +46,11 @@ UIUtils.createLabel = function(labelId, labelText) {
   return labelElement;
 }
 
+UIUtils.appendLabel = function(root, labelId, text) {
+  return root.appendChild(UIUtils.createLabel(UIUtils.createId(root, labelId), text));
+}
+
+
 UIUtils.createButton = function(buttonId, text) {
   var buttonElement = document.createElement("button");
   buttonElement.setAttribute("id", buttonId);
@@ -57,6 +62,11 @@ UIUtils.createButton = function(buttonId, text) {
   return buttonElement;
 }
 
+UIUtils.appendButton = function(root, buttonId, text) {
+  return root.appendChild(UIUtils.createButton(UIUtils.createId(root, buttonId), text));
+}
+
+
 UIUtils.createBlock = function(blockId) {
   var blockElement = document.createElement("div");
   if (blockId != null) {
@@ -64,6 +74,10 @@ UIUtils.createBlock = function(blockId) {
   }
   
   return blockElement;
+}
+
+UIUtils.appendBlock = function(root, blockId) {
+  return root.appendChild(UIUtils.createBlock(UIUtils.createId(root, blockId)));
 }
 
 UIUtils.createSpan = function(width, margin, blockId) {
@@ -81,6 +95,7 @@ UIUtils.createSpan = function(width, margin, blockId) {
   
   return blockElement;
 }
+
 
 UIUtils.createTextInput = function(inputFieldId) {
   return UIUtils._createInputField(inputFieldId, "text");
@@ -176,7 +191,7 @@ UIUtils.createImage = function(imageId, src) {
 UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener) {
   var tableElement = document.createElement("table");
   tableElement.setAttribute("class", "display");
-  tableElement.setAttribute("id", tableId);
+  tableElement.setAttribute("id", UIUtils.createId(root, tableId));
   
   root.appendChild(tableElement);
   
@@ -216,13 +231,13 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
 }
 
 
-UIUtils.animateBackgroundColor = function(elementId, color, speed, observer) {
-  var jQueryObject = $("#" + elementId);
-  var initialColor = jQueryObject.css("backgroundColor");
+UIUtils.animateBackgroundColor = function(element, color, speed, observer) {
+  var selector = UIUtils.get$$(element);
+  var initialColor = selector.css("backgroundColor");
   
   var speed = speed || "slow";
-  jQueryObject.animate({backgroundColor: color}, speed, function() {
-    jQueryObject.animate({backgroundColor: initialColor}, speed, function() {
+  selector.animate({backgroundColor: color}, speed, function() {
+    selector.animate({backgroundColor: initialColor}, speed, function() {
       if (observer != null) {
         observer();
       }
@@ -230,23 +245,40 @@ UIUtils.animateBackgroundColor = function(elementId, color, speed, observer) {
   });
 }
 
-UIUtils.indicateInvalidInput = function(elementId, observer) {
-  UIUtils.animateBackgroundColor(elementId, UIUtils.INVALID_INPUT_BACKGROUND, "slow", observer);
+UIUtils.indicateInvalidInput = function(element, observer) {
+  UIUtils.animateBackgroundColor(element, UIUtils.INVALID_INPUT_BACKGROUND, "slow", observer);
 }
 
-UIUtils.setEnabled = function(elementId, isEnabled) {
-  $("#" + elementId).prop("disabled", !isEnabled);
+UIUtils.setEnabled = function(element, isEnabled) {
+  UIUtils.get$(element).prop("disabled", !isEnabled);
 }
 
 UIUtils.getSelector = function(component) {
-  var id = null;
-  if (typeof component == "string") {
-    id = component;
-  } else {
-    id = component.getAttribute("id");
-  }
-  
-  return $("#" + id);
+  return $("#" + UIUtils._getId(component));
+}
+UIUtils.get$ = function(component) {
+  return UIUtils.getSelector(component);
+}
+
+UIUtils.addClass = function(component, cls) {
+  UIUtils.get$(component).addClass(cls);
+}
+
+UIUtils.removeClass = function(component, cls) {
+  UIUtils.get$(component).removeClass(cls);
+}
+
+UIUtils.emptyContainer = function(container) {
+  UIUtils.get$(container).empty();
+}
+
+UIUtils.setClickListener = function(element, listener) {
+  UIUtils.get$(element).click(listener);
+}
+
+
+UIUtils.createId = function(container, elementId) {
+  return UIUtils._getId(container) + "-" + elementId;
 }
 
 
@@ -280,3 +312,13 @@ UIUtils._createInputField = function(inputFieldId, inputType) {
   return inputFieldElement;
 }
 
+UIUtils._getId = function(component) {
+  var id = null;
+  if (typeof component == "string") {
+    id = component;
+  } else {
+    id = component.getAttribute("id");
+  }
+  
+  return id;
+}

@@ -1,5 +1,8 @@
 
 var Backend = {
+  _cache: {},
+  
+  
   _requestsCache: {},
   _requestsChangeListeners: [],
   _requestCacheInitialized: false
@@ -237,14 +240,9 @@ Backend.createRequest = function(request, requestParams, transactionCallback) {
     */
 }
 
-Backend.updateRequest = function(requestId, request, requestParams, transactionCallback) {
+Backend.updateRequest = function(requestId, request, transactionCallback) {
   var existingRequest = this._requestsCache[requestId];
 
-  existingRequest.response_quantity = requestParams.quantity;
-  existingRequest.response_wait_time = requestParams.waitTime;
-  existingRequest.response_age_group = requestParams.age;
-  existingRequest.response_gender = requestParams.gender;
-    
   for (var key in request) {
     existingRequest[key] = request[key];
   }
@@ -339,14 +337,14 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 
 
 
-Backend.addRequestCacheChangeListener = function(listener) {
+Backend.addCacheChangeListener = function(listener) {
   this._requestsChangeListeners.push(listener);
   if (!this._requestCacheInitialized) {
     this._updateRequestCache();
   }
 }
 
-Backend.removeRequestCacheChangeListener = function(listener) {
+Backend.removeCacheChangeListener = function(listener) {
   for (var index in this._requestsChangeListeners) {
     if (this._requestsChangeListeners[index] == listener) {
       this._requestsChangeListeners.splice(index, 1);
@@ -354,10 +352,44 @@ Backend.removeRequestCacheChangeListener = function(listener) {
   }
 }
 
+Backend.getOutgoingRequestIds = function(requestStatus) {
+  if (Backend._cache.outgoingRequestIds != null) {
+    return Backend.getCachedOutgoingRequestIds(requestStatus);
+  } else {
+    Backend._pullOutgoingRequestIds();
+    return null;
+  }
+}
+
+Backend.getIncomingResponseIds = function(requestId, responseStatus) {
+}
+
+Backend.CacheChangeEvent = {type: null, requestId: null, responseId: null};
+Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED = "outgoing_requests_changed";
+Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED = "request_changed";
+Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED = "response_changed";
+Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED = "incoming_requests_changed";
+
+Backend._pullOutgoingRequestIds = function() {
+  Backend._cache.outgoingRequestIds = [];
+  setTimeout(function() {
+    Backend._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, data: Backend._cache.outgoingRequestIds});
+  }, 3000);
+}
+
+
+
+
+
+
 
 Backend.isRequestCacheInitialized = function() {
   return this._requestCacheInitialized;
 }
+
+
+
+
 
 Backend.getCachedOutgoingRequestIds = function(requestStatus) {
   var requestIds = [];

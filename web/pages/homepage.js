@@ -1,26 +1,33 @@
 HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   AbstractPage.call(this, "HomePage");
   
-  this._requestCacheUpdateListener;
+  this._requestList = null;
+  this._requestsPanelRequests = null;
 });
 
 HomePage.prototype.definePageContent = function(root) {
-  root.appendChild(UIUtils.createBlock("HomePage-GeneralPanel"));
-  $("#HomePage-GeneralPanel").html("Welcome, " + Backend.getUserProfile().name + ".");
+  var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
+  UIUtils.get$(generalPanel).html("Welcome, " + Backend.getUserProfile().name + ".");
 
-  var requestPanel = root.appendChild(UIUtils.createBlock("HomePage-RequestPanel"));
-  requestPanel.appendChild(UIUtils.createBlock("HomePage-RequestPanel-Status"));
-  $("#HomePage-RequestPanel-Status").html("Checking if you have any new responses to your requests...");
-  
-  requestPanel.appendChild(UIUtils.createBlock("HomePage-RequestPanel-Requests"));
-  
+  var requestsPanel = UIUtils.appendBlock(root, "RequestPanel");
+  var requestsStatus = UIUtils.appendBlock(requestsPanel, "Status");
+  UIUtils.get$(requestsStatus).html("Checking if you have any new responses to your requests...");
+  this._requestsPanelRequests = UIUtils.appendBlock(requestsPanel, "Requests");
 
+  /*
   var inquiryPanel = root.appendChild(UIUtils.createBlock("HomePage-InquiryPanel"));
   inquiryPanel.appendChild(UIUtils.createBlock("HomePage-InquiryPanel-Status"));
   $("#HomePage-InquiryPanel-Status").html("Checking if you have any new inquiries...");
+  */
 }
 
 HomePage.prototype.onShow = function(root) {
+  this._requestList = new AbstractRequestPage.OutgoingRequestList({
+  });
+  
+  this._requestList.append(this._requestsPanelRequests);
+  
+/*  
   this._requestCacheUpdateListener = function() {
     Application.hideSpinningWheel();
     
@@ -77,12 +84,14 @@ HomePage.prototype.onShow = function(root) {
     this._requestCacheUpdateListener();
   }
   
-  Backend.addRequestCacheChangeListener(this._requestCacheUpdateListener);
+  Backend.addCacheChangeListener(this._requestCacheUpdateListener);
+  */
 }
 
 HomePage.prototype.onHide = function() {
-  Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
-  Application.hideSpinningWheel();
+  this._requestList.remove();
+//  Backend.removeCacheChangeListener(this._requestCacheUpdateListener);
+//  Application.hideSpinningWheel();
 }
 
 
