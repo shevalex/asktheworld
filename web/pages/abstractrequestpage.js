@@ -99,7 +99,7 @@ AbstractRequestPage.OutgoingRequestList.prototype.append = function(root) {
         appendRequestPanels();
       } 
     }.bind(this);
-    
+
     Backend.addCacheChangeListener(this._cacheChangeListener);
     appendRequestPanels();
   }
@@ -117,7 +117,6 @@ AbstractRequestPage.OutgoingRequestList.prototype.remove = function() {
 AbstractRequestPage.OutgoingRequestList.RequestPanel = function(requestId, settings) {
   this._settings = settings;
   this._requestId = requestId;
-  
   this._rootContainer = null;
   this._responsePanels = [];
   this._cacheResponsesChangeListener = null;
@@ -137,11 +136,11 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype.append = function
   this._cacheRequestChangeListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED 
         && (event.requestId == null || event.requestId == this._requestId)) {
-      
+
       UIUtils.emptyContainer(this._rootContainer);
       appendRequestElement();
     }
-  }
+  }.bind(this);
   
   Backend.addCacheChangeListener(this._cacheRequestChangeListener);
   appendRequestElement();
@@ -169,8 +168,6 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendRequestEle
   }
   
   var appendRequestText = function() {
-    requestHolderSelector.empty();
-    
     var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
     
     var requestDate = new Date(request.time);
@@ -179,7 +176,7 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendRequestEle
     if (this._settings.requestClickListener != null) {
       UIUtils.addClass(requestTextElement, "outgoingrequest-text-holder-activable");
       UIUtils.setClickListener(requestTextElement, function() {
-        this._settings.requestClickListener(requestId);
+        this._settings.requestClickListener(this._requestId);
       }.bind(this));
     }
         
@@ -192,7 +189,7 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendRequestEle
       var editButton = UIUtils.appendButton(controlPanel, "EditButton", "Edit");
       UIUtils.addClass(editButton, "outgoingrequest-editbutton");
       UIUtils.setClickListener(editButton, function() {
-        requestHolderSelector.empty();
+        UIUtils.emptyContainer(requestHolderElement);
             
         this._appendEditPanel(requestHolderElement, requestId, request, function() {
           appendRequestText();
@@ -203,7 +200,7 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendRequestEle
       
   appendRequestText();
     
-  this._appendResponses(requestPanel, requestId, request);
+  this._appendResponses(this._requestId);
 }
 
 AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendEditPanel = function(root, requestId, request, completionCallback) {
@@ -254,13 +251,13 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendEditPanel 
 }
 
 
-AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendResponses = function(root, requestId) {
-  var responsesPanel = UIUtils.appendBlock(root, "ResponsesPanel");
-  UIUtils.addClass("incomingresponses-container");
+AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendResponses = function(requestId) {
+  var responsesPanel = UIUtils.appendBlock(this._rootContainer, "ResponsesPanel");
+  UIUtils.addClass(responsesPanel, "incomingresponses-container");
   if (this._settings.responseAreaMaxHeight != null && this._settings.responseAreaMaxHeight != -1) {
     responsesPanel.style.maxHeight = this._settings.responseAreaMaxHeight;
   }
-  
+
   var appendResponsePanels = function() {
     var responseIds = Backend.getIncomingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_READ : null);
     if (responseIds != null) {
@@ -268,9 +265,10 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendResponses 
       
       for (var index in responseIds) {
         var responsePanel = null;
-        if (this._settings.maxResponses != null && this._settings.maxResponses != -1 && responseCount < this._settings.maxResponses) {
+        
+        if (this._settings.maxResponses == null || this._settings.maxResponses != -1 || responseCount < this._settings.maxResponses) {
           responsePanel = new AbstractRequestPage.OutgoingRequestList.ResponsePanel(requestId, responseIds[index], this._settings);
-        } else if (this._settings.maxResponses == this._settings.maxResponses) {
+        } else if (this._settings.maxResponses == responseCount) {
           responsePanel = new AbstractRequestPage.OutgoingRequestList.ResponsePanel(requestId, -1, this._settings);
         } else {
           break;
@@ -284,7 +282,7 @@ AbstractRequestPage.OutgoingRequestList.RequestPanel.prototype._appendResponses 
 
   this._cacheResponsesChangeListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED
-        && (event.requestId == requestId)) {
+        && (event.requestId == this._requestId)) {
 
       for (var index in this._responsePanel) {
         this._responsePanel[index].remove();
@@ -303,13 +301,14 @@ AbstractRequestPage.OutgoingRequestList.ResponsePanel = function(requestId, resp
   this._settings = settings;
   this._requestId = requestId;
   this._responseId = responseId;
-  
+
   this._rootContainer = null;
+  this._cacheChangeListener = null;
 }
 
 AbstractRequestPage.OutgoingRequestList.ResponsePanel.prototype.append = function(container) {
-  this._rootContainer = UIUtils.appendBlock(container, requestId);
-  
+  this._rootContainer = UIUtils.appendBlock(container, this._responseId);
+
   var appendResponseElement = function() {
     var response = Backend.getResponse(this._requestId, this._responseId);
     if (response != null) {
@@ -319,12 +318,13 @@ AbstractRequestPage.OutgoingRequestList.ResponsePanel.prototype.append = functio
   
   this._cacheChangeListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED 
+        && event.requestId == this._requestId 
         && (event.responseId == null || event.responseId == this._responseId)) {
-      
+
       UIUtils.emptyContainer(this._rootContainer);
       appendResponseElement();
     }
-  }
+  }.bind(this);
   
   Backend.addCacheChangeListener(this._cacheChangeListener);
   appendResponseElement();

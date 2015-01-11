@@ -376,12 +376,12 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   if (this._cache.incomingResponseIds != null) {
     var responseIds = [];
     for (var index in this._cache.incomingResponseIds) {
-      requestIds.push(this._cache.outgoingRequestIds[index]);
+      responseIds.push(this._cache.incomingResponseIds[index]);
     }
     
-    return requestIds;
+    return responseIds;
   } else {
-    Backend._pullIncomingResponseIds();
+    Backend._pullIncomingResponseIds(requestId);
     return null;
   }
 }
@@ -405,32 +405,32 @@ Backend.CacheChangeEvent = {type: null, requestId: null, responseId: null};
 Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED = "outgoing_requests_changed";
 Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED = "request_changed";
 Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED = "response_changed";
-Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSE_CHANGED = "incoming_response_changed";
+Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED = "incoming_responses_changed";
 
 Backend._pullOutgoingRequestIds = function() {
   setTimeout(function() {
     this._cache.outgoingRequestIds = [];
 
-    var numOfRequests = Math.random(10);
+    var numOfRequests = Math.random() * 10;
     for (var i = 0; i < numOfRequests; i++) {
       this._cache.outgoingRequestIds.push("request" + i);
     }
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
-  }.bind(this), 3000);
+  }.bind(this), 1000);
 }
 
 Backend._pullIncomingResponseIds = function(requestId) {
   setTimeout(function() {
     this._cache.incomingResponseIds = [];
 
-    var numOfResponses = Math.random(100);
+    var numOfResponses = Math.random() * 100;
     for (var i = 0; i < numOfResponses; i++) {
       this._cache.incomingResponseIds.push(requestId + "-response" + i);
     }
 
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSE_CHANGED, requestId: requestId});
-  }.bind(this), 3000);
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
+  }.bind(this), 1000);
 }
 
 Backend._pullRequest = function(requestId) {
@@ -442,7 +442,7 @@ Backend._pullRequest = function(requestId) {
     this._cache.requests[requestId] = this._createDummyRequest(requestId);
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId});
-  }.bind(this), 3000);
+  }.bind(this), 1000);
 }
 
 Backend._pullResponse = function(requestId, responseId) {
@@ -454,7 +454,7 @@ Backend._pullResponse = function(requestId, responseId) {
     this._cache.responses[responseId] = this._createDummyResponse(responseId);
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
-  }.bind(this), 3000);
+  }.bind(this), 1000);
 }
 
 
