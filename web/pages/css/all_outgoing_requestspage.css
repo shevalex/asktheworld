@@ -2,21 +2,21 @@
 }
 
 #AllOutgoingRequestsPage-GeneralPanel {
-  margin-bottom: 30px;
+  height: 50px;
   
   font-size: 20px;
-  max-height: 40px;
 }
 
 #AllOutgoingRequestsPage-TablePanel {
-  margin-top: 30px;
   max-height: 300px;
+  margin-top: 30px;
   overflow: hidden;
 }
 
 #AllOutgoingRequestsPage-RequestPanel {
   margin-top: 30px;
-  max-height: calc(100% - 400px);
+  padding-right: 10px;
+  max-height: calc(100% - 50px - 30px - 300px - 30px);
   overflow-y: auto;
 }
 
