@@ -3,8 +3,14 @@
 
 #ActiveOutgoingRequestsPage-GeneralPanel {
   height: 50px;
-  
+}
+
+#ActiveOutgoingRequestsPage-GeneralPanel-Text {
   font-size: 20px;
+}
+
+#ActiveOutgoingRequestsPage-GeneralPanel-SeeAll {
+  font-size: 15px;
 }
 
 #ActiveOutgoingRequestsPage-RequestsPanel {

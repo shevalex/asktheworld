@@ -1,88 +1,70 @@
 HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   AbstractPage.call(this, "HomePage");
   
-  this._requestCacheUpdateListener;
+  this._requestList = null;
+  this._requestsPanelRequests = null;
+  this._requestsStatusElement = null;
 });
 
 HomePage.prototype.definePageContent = function(root) {
-  root.appendChild(UIUtils.createBlock("HomePage-GeneralPanel"));
-  $("#HomePage-GeneralPanel").html("Welcome, " + Backend.getUserProfile().name + ".");
+  var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
+  UIUtils.get$(generalPanel).html("Welcome, " + Backend.getUserProfile().name + ".");
 
-  var requestPanel = root.appendChild(UIUtils.createBlock("HomePage-RequestPanel"));
-  requestPanel.appendChild(UIUtils.createBlock("HomePage-RequestPanel-Status"));
-  $("#HomePage-RequestPanel-Status").html("Checking if you have any new responses to your requests...");
+  var requestsPanel = UIUtils.appendBlock(root, "RequestPanel");
+  this._requestsStatusElement = UIUtils.appendBlock(requestsPanel, "Status");
   
-  requestPanel.appendChild(UIUtils.createBlock("HomePage-RequestPanel-Requests"));
+  var seeActiveRequestsElement = UIUtils.appendBlock(requestsPanel, "SeeActiveRequests");
+  var activeRequestsLinkId = UIUtils.createId(seeActiveRequestsElement, "Link");
+  UIUtils.get$(seeActiveRequestsElement).html("You can always find all your active requests in the <a href='#' id='" + activeRequestsLinkId + "'>Active Requests</a> section.");
+  UIUtils.setClickListener(activeRequestsLinkId, function() {
+    Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
+  });
   
+  
+  this._requestsPanelRequests = UIUtils.appendBlock(requestsPanel, "Requests");
 
+  /*
   var inquiryPanel = root.appendChild(UIUtils.createBlock("HomePage-InquiryPanel"));
   inquiryPanel.appendChild(UIUtils.createBlock("HomePage-InquiryPanel-Status"));
   $("#HomePage-InquiryPanel-Status").html("Checking if you have any new inquiries...");
+  */
 }
 
 HomePage.prototype.onShow = function(root) {
-  this._requestCacheUpdateListener = function() {
-    Application.hideSpinningWheel();
-    
-    var responseCount = 0;
-    var requestsWithUnviewedResponses = [];
-    var activeRequestIds = Backend.getCachedOutgoingRequestIds(Backend.Request.STATUS_ACTIVE);
-    for (var requestIndex in activeRequestIds) {
-      var isAdded = false;
-      var requestId = activeRequestIds[requestIndex];
-      var request = Backend.getCachedRequest(requestId);
-      for (var responseIndex in request.responseIds) {
-        var response = Backend.getCachedResponse(requestId, request.responseIds[responseIndex]);
-        if (response.status == Backend.Response.STATUS_UNREAD) {
-          responseCount++;
-          
-          if (!isAdded) {
-            requestsWithUnviewedResponses.push(requestId);
-            isAdded = true;
-          }
-        }
+  UIUtils.get$(this._requestsStatusElement).html("Checking if you have any new responses to your requests...");
+  
+  this._requestList = new AbstractRequestPage.OutgoingRequestList({
+    requestClickListener: function(requestId) {
+      var paramBundle = {
+        returnPageId: MenuPage.prototype.HOME_ITEM_ID,
+        requestId: requestId,
+        otherRequestIds: Backend.getOutgoingRequestIds()
       }
-    }
-    
-    if (requestsWithUnviewedResponses.length > 0) {
-      $("#HomePage-RequestPanel-Status").html("You have " + responseCount + " unviewed responses for " + requestsWithUnviewedResponses.length + " your requests:");
-      
-      AbstractRequestPage.appendOutgoingRequestResponsesControl($("#HomePage-RequestPanel-Requests").get(0), requestsWithUnviewedResponses, {
-        requestClickListener: function(requestId) {
-          var paramBundle = {
-            returnPageId: MenuPage.prototype.HOME_ITEM_ID,
-            requestId: requestId,
-            otherRequestIds: requestsWithUnviewedResponses
-          }
+
+      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+    },
+    requestEditable: false,
+    maxResponses: 3,
+    responseAreaMaxHeight: -1,
+    unviewedResponsesOnly: true,
+    updateListener: {
+      updateStarted: function() {
+        Application.showSpinningWheel();
+      },
+      updateFinished: function() {
+        Application.hideSpinningWheel();
         
-          Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
-        },
-        requestEditable: false,
-        maxResponses: 3,
-        responseAreaMaxHeight: -1,
-        unviewedResponsesOnly: true
-      });
-    } else {
-      $("#HomePage-RequestPanel-Status").html("You have no new responses. You can review your <a href='#' id='HomePage-RequestPanel-ActiveRequestLink'>active requests</a>.");
-      $("#HomePage-RequestPanel-ActiveRequestLink").click(function() {
-        Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
-      });
-      $("#HomePage-RequestPanel-Requests").empty();
+        var info = this._requestList.getInfo();
+        UIUtils.get$(this._requestsStatusElement).html("You have " + info.responseIds.length + " unviewed responses for " + info.requestIds.length + " your requests");
+      }.bind(this)
     }
-  }
+  });
   
-  if (!Backend.isRequestCacheInitialized()) {
-    Application.showSpinningWheel();
-  } else {
-    this._requestCacheUpdateListener();
-  }
-  
-  Backend.addRequestCacheChangeListener(this._requestCacheUpdateListener);
+  this._requestList.append(this._requestsPanelRequests);
 }
 
 HomePage.prototype.onHide = function() {
-  Backend.removeRequestCacheChangeListener(this._requestCacheUpdateListener);
-  Application.hideSpinningWheel();
+  this._requestList.remove();
 }
 
 

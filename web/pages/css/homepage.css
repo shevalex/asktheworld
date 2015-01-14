@@ -13,6 +13,10 @@
   font-size: 20px;
 }
 
+#HomePage-RequestPanel-SeeActiveRequests {
+  font-size: 15px;
+}
+
 #HomePage-RequestPanel-Requests {
   margin-top: 20px;
   padding-right: 10px;
