@@ -8,14 +8,16 @@
 
 import UIKit
 
-class SettingsScreenController: UIViewController {
-
+class SettingsScreenController: UITableViewController, UITableViewDelegate
+{
 
     @IBAction func cancelSettingsScreen(sender: AnyObject) {
-                self.dismissViewControllerAnimated(true, completion: nil)
+                    self.dismissViewControllerAnimated(true, completion: nil)
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBarHidden = false
+
 
         // Do any additional setup after loading the view.
     }
@@ -24,6 +26,19 @@ class SettingsScreenController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+  /*  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
+        return 1
+    }*/
+    
+ /*   override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    {
+        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
+        cell.textLabel?.text = "test"
+        return cell
+        
+    }*/
     
 
     /*

@@ -15,6 +15,7 @@
 		F76214DA1A38B555001BD37D /* AskTheWorldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76214D91A38B555001BD37D /* AskTheWorldTests.swift */; };
 		F76214E41A38C13F001BD37D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76214E31A38C13F001BD37D /* LoginViewController.swift */; };
 		F76214E61A38C349001BD37D /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76214E51A38C349001BD37D /* RegisterViewController.swift */; };
+		F7B3E06A1A6626C000DA156F /* UpdateSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B3E0691A6626C000DA156F /* UpdateSettingsViewController.swift */; };
 		F7B49AD11A5F8D9A00C13D4D /* SettingsScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B49AD01A5F8D9A00C13D4D /* SettingsScreenController.swift */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +42,7 @@
 		F76214D91A38B555001BD37D /* AskTheWorldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskTheWorldTests.swift; sourceTree = "<group>"; };
 		F76214E31A38C13F001BD37D /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		F76214E51A38C349001BD37D /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		F7B3E0691A6626C000DA156F /* UpdateSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateSettingsViewController.swift; sourceTree = "<group>"; };
 		F7B49AD01A5F8D9A00C13D4D /* SettingsScreenController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreenController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -86,6 +88,7 @@
 				F76214C31A38B554001BD37D /* AppDelegate.swift */,
 				F76214C51A38B554001BD37D /* ViewController.swift */,
 				F76214C71A38B555001BD37D /* Main.storyboard */,
+				F7B3E0691A6626C000DA156F /* UpdateSettingsViewController.swift */,
 				F7B49AD01A5F8D9A00C13D4D /* SettingsScreenController.swift */,
 				F76214CA1A38B555001BD37D /* Images.xcassets */,
 				F76214CC1A38B555001BD37D /* LaunchScreen.xib */,
@@ -221,6 +224,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7B3E06A1A6626C000DA156F /* UpdateSettingsViewController.swift in Sources */,
 				F76214E41A38C13F001BD37D /* LoginViewController.swift in Sources */,
 				F76214C61A38B554001BD37D /* ViewController.swift in Sources */,
 				F76214C41A38B554001BD37D /* AppDelegate.swift in Sources */,
