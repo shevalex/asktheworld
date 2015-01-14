@@ -144,7 +144,9 @@ Application.getMenuPage = function() {
 }
 
 Application.showSpinningWheel = function() {
-  $("body").append("<img src='imgs/ajax-loader.gif' class='spinning-wheel'></img>");
+  if ($(".spinning-wheel").length == 0) {
+    $("body").append("<img src='imgs/ajax-loader.gif' class='spinning-wheel'></img>");
+  }
 }
 
 Application.hideSpinningWheel = function() {

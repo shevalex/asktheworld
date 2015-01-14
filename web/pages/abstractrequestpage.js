@@ -214,7 +214,6 @@ AbstractRequestPage._AbstractRequestList.prototype.append = function(root) {
   this._rootContainer = UIUtils.appendBlock(root, "RequestResponsesContainer");
   UIUtils.addClass(this._rootContainer, "request-and-responses-container");
 
-  
   if (this._settings.requestIds != null) {
     for (var index in this._settings.requestIds) {
       var requestPanel = this._createRequestPanel(this._settings.requestIds[index]);
@@ -311,7 +310,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype._append
 
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.append = function(container) {
   this._rootContainer = UIUtils.appendBlock(container, this._requestId);
-  
+
   var appendRequestElement = function() {
     var request = Backend.getRequest(this._requestId);
     if (request != null) {

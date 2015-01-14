@@ -1,7 +1,6 @@
-
 var Backend = {
   _cache: {},
-  _cacheChangeListeners: [],
+  _cacheChangeListeners: []
 };
 
 Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
@@ -432,8 +431,10 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 
 Backend.CacheChangeEvent = {type: null, requestId: null, responseId: null};
 Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED = "outgoing_requests_changed";
+Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED = "incoming_requests_changed";
 Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED = "request_changed";
 Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED = "response_changed";
+Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED = "outgoing_responses_changed";
 Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED = "incoming_responses_changed";
 
 Backend._pullOutgoingRequestIds = function() {
