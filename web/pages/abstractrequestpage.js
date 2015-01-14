@@ -523,8 +523,6 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
   var appendRequestText = function() {
     var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
     
-    var requestDate = new Date(request.time);
-      
     UIUtils.addClass(requestTextElement, "outgoingrequest-text-holder");
     if (this._settings.requestClickListener != null) {
       UIUtils.addClass(requestTextElement, "outgoingrequest-text-holder-activable");
@@ -533,6 +531,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
       }.bind(this));
     }
         
+    var requestDate = new Date(request.time);
     UIUtils.get$(requestTextElement).html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + request.text);
     
     if (isEditable) {
@@ -628,8 +627,6 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
 
   var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
 
-  var requestDate = new Date(request.time);
-
   UIUtils.addClass(requestTextElement, "incomingrequest-text-holder");
   if (this._settings.requestClickListener != null) {
     UIUtils.addClass(requestTextElement, "incomingrequest-text-holder-activable");
@@ -638,7 +635,8 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
     }.bind(this));
   }
 
-  UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + incomingRequest.text);
+  var requestDate = new Date(request.time);
+  UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + request.text);
 
   if (isEditable) {
     var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
@@ -648,15 +646,15 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
     UIUtils.addClass(commentButton, "incomingrequest-commentbutton");
     UIUtils.setClickListener(commentButton, function() {
       this.__appendCreateResponsePanel(request, function() {});
-    });
+    }.bind(this));
   }
 }
 
 AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appendCreateResponsePanel = function(request, completionCallback) {
   var createResponsePanel = UIUtils.appendBlock(this._rootContainer, "CreateResponsePanel");
-  UIUtils.addClass(editPanel, "outgoingresponse-createresponsepanel");
+  UIUtils.addClass(createResponsePanel, "outgoingresponse-createresponsepanel");
 
-  var responseTextElement = editPanel.appendChild(UIUtils.createTextArea(UIUtils.createId(createResponsePanel, "ResponseText"), 5));
+  var responseTextElement = createResponsePanel.appendChild(UIUtils.createTextArea(UIUtils.createId(createResponsePanel, "ResponseText"), 5));
   
   var controlPanel = UIUtils.appendBlock(createResponsePanel, "ControlPanel");
   UIUtils.addClass(controlPanel, "outgoingresponse-controls");
@@ -698,7 +696,6 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
       UIUtils.get$(responseHolder).html("And more responses. Click to see them all");
     } 
   } else {
-    var responseDate = new Date(response.time);          
     if (response.status == Backend.Response.STATUS_UNREAD) {
       UIUtils.addClass(responseHolder, "incomingresponse-text-holder-activable");
       UIUtils.setClickListener(responseHolder, function() {
@@ -708,7 +705,8 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
       }.bind(this));
     }
       
-    UIUtils.get$(responseHolder).html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+    var responseDate = new Date(response.time);
+    UIUtils.get$(responseHolder).html("<b>A " + Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
   }
 }
 
@@ -720,24 +718,40 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
   var responseHolder = UIUtils.appendBlock(this._rootContainer, "TextHolder");
   UIUtils.addClass(responseHolder, "outgoingresponse-text-holder");
   
-  if (this._settings.requestClickListener != null) {
-    UIUtils.addClass(responseHolder, "outgoingresponse-text-holder-activable");
-    UIUtils.setClickListener(responseHolder, this._settings.requestClickListener.bind(this, this._requestId))
-  }
-  if (this._responseId == -1) {
-    UIUtils.get$(responseHolder).html("And more responses. Click to see them all");
-  } else {
-    UIUtils.get$(responseHolder).html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
-  }
+  var appendResponseText = function() {
+    if (this._responseId == -1) {
+      if (this._settings.requestClickListener != null) {
+        UIUtils.addClass(responseHolder, "outgoingresponse-text-holder-activable");
+        UIUtils.setClickListener(responseHolder, this._settings.requestClickListener.bind(this, this._requestId))
+      }
+
+      UIUtils.get$(responseHolder).html("And more responses. Click to see them all");
+    } else {
+      var responseDate = new Date(response.time);
+      UIUtils.get$(responseHolder).html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+    }
+
+    if (response.status == Backend.Response.STATUS_UNREAD) {
+      var responseControlPanel = UIUtils.appendBlock(responseHolder, "ControlPanel");
+      UIUtils.addClass(responseControlPanel, "outgoingresponse-controls");
+
+      var editButton = UIUtils.appendButton(responseControlPanel, "ModifyButton", "Modify");
+      UIUtils.addClass(editButton, "outgoingresponse-editbutton");
+      UIUtils.setClickListener(editButton, function() {
+        UIUtils.emptyContainer(responseHolder);
+
+        this.__appendEditPanel(responseHolder, response, function() {
+          UIUtils.emptyContainer(responseHolder);
+          appendResponseText();
+        });
+      }.bind(this));
+    }
+  }.bind(this);
   
-  if (response.status == Backend.Response.STATUS_UNREAD) {
-    var responseControlPanel = UIUtils.appendBlock(responseHolder, "ControlPanel");
-    UIUtils.addClass(responseControlPanel, "outgoingresponse-controls");
-    
-    var editButton = UIUtils.appendButton(responseControlPanel, "ModifyButton", "Modify");
-    UIUtils.addClass(editButton, "outgoingresponse-editbutton");
-    UIUtils.setClickListener(editButton, modifyListener);
-  }
+  appendResponseText();
+}
+
+AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appendEditPanel = function(root, response, completionCallback) {
 }
 
 

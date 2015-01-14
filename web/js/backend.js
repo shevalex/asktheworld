@@ -330,6 +330,20 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
   }
 }
 
+Backend.getIncomingRequestIds = function(requestStatus) {
+  if (this._cache.incomingRequestIds != null) {
+    var requestIds = [];
+    for (var index in this._cache.incomingRequestIds) {
+      requestIds.push(this._cache.incomingRequestIds[index]);
+    }
+    
+    return requestIds;
+  } else {
+    Backend._pullIncomingRequestIds();
+    return null;
+  }
+}
+
 Backend.getRequest = function(requestId) {
   if (this._cache.requests != null) {
     var request = this._cache.requests[requestId];
@@ -361,6 +375,28 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
     return responseIds;
   } else {
     Backend._pullIncomingResponseIds(requestId);
+    return null;
+  }
+}
+
+Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
+  if (this._cache.outgoingResponseIds != null && this._cache.outgoingResponseIds[requestId] != null) {
+    var responseIds = [];
+  
+    if (responseStatus == Backend.Response.STATUS_READ) {
+      responseIds = this._cache.outgoingResponseIds[requestId].viewed.slice(0);
+    } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
+      responseIds = this._cache.outgoingResponseIds[requestId].unviewed.slice(0);
+    } else {
+      responseIds = this._cache.outgoingResponseIds[requestId].unviewed.slice(0);
+      for (var index in this._cache.outgoingResponseIds[requestId].viewed) {
+        responseIds.push(this._cache.outgoingResponseIds[requestId].viewed[index]);
+      }
+    }
+
+    return responseIds;
+  } else {
+    Backend._pullOutgoingResponseIds(requestId);
     return null;
   }
 }
@@ -413,6 +449,19 @@ Backend._pullOutgoingRequestIds = function() {
   }.bind(this), 1000);
 }
 
+Backend._pullIncomingRequestIds = function() {
+  setTimeout(function() {
+    this._cache.incomingRequestIds = [];
+
+    var numOfRequests = Math.random() * 10;
+    for (var i = 100; i < 100 + numOfRequests; i++) {
+      this._cache.incomingRequestIds.push("request" + i);
+    }
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
+  }.bind(this), 1000);
+}
+
 Backend._pullIncomingResponseIds = function(requestId) {
   setTimeout(function() {
     if (this._cache.incomingResponseIds == null) {
@@ -431,6 +480,27 @@ Backend._pullIncomingResponseIds = function(requestId) {
     }
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
+  }.bind(this), 1000);
+}
+
+Backend._pullOutgoingResponseIds = function(requestId) {
+  setTimeout(function() {
+    if (this._cache.outgoingResponseIds == null) {
+      this._cache.outgoingResponseIds = {};
+    }
+
+    this._cache.outgoingResponseIds[requestId] = {viewed: [], unviewed: []};
+    var numOfResponses = Math.random() * 100;
+    for (var i = 0; i < numOfResponses; i++) {
+      var responseId = requestId + "-response" + i;
+      if (Math.random() < 0.5) {
+        this._cache.outgoingResponseIds[requestId].viewed.push(responseId);
+      } else {
+        this._cache.outgoingResponseIds[requestId].unviewed.push(responseId);
+      }
+    }
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId});
   }.bind(this), 1000);
 }
 
@@ -493,8 +563,15 @@ Backend._createDummyResponse = function(requestId, responseId) {
   var age = Math.round(Math.random() * 4);
   var gender = Math.round(Math.random());
   var statusUnread = false;
-  for (var index in this._cache.incomingResponseIds[requestId].unviewed) {
-    if (this._cache.incomingResponseIds[requestId].unviewed[index] == responseId) {
+  
+  var responses = null;
+  if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
+    responses = this._cache.incomingResponseIds[requestId];
+  } else {
+    responses = this._cache.outgoingResponseIds[requestId];
+  }
+  for (var index in responses.unviewed) {
+    if (responses.unviewed[index] == responseId) {
       statusUnread = true;
       break;
     }
