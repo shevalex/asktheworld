@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var UserNameLabel: UILabel!
     
-    @IBAction func LogoutButton(sender: AnyObject) {
+    @IBAction func LogoutBarButton(sender: AnyObject) {
         self.performSegueWithIdentifier("GoTo_LoginScreen", sender: self)
     }
     override func viewDidLoad() {
