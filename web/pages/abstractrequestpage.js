@@ -200,6 +200,11 @@ AbstractRequestPage._AbstractRequestList.prototype._getRequestIds = function() {
 }
 
 //abstract
+AbstractRequestPage._AbstractRequestList.prototype._getResponseIds = function(requestId) {
+  throw "Not implemented"
+}
+
+//abstract
 AbstractRequestPage._AbstractRequestList.prototype._getRequestIdsChangeEventType = function() {
   throw "Not implemented"
 }
@@ -358,7 +363,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
   }
 
   var appendResponsePanels = function() {
-    var responseIds = Backend.getIncomingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_UNREAD : null);
+    var responseIds = this._requestList._getResponseIds(requestId);
     if (responseIds != null) {
       if (this._settings.updateListener != null) {
         this._settings.updateListener.updateFinished();
@@ -385,7 +390,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
   }.bind(this);
 
   this._cacheResponsesChangeListener = function(event) {
-    if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED
+    if (event.type == this._requestList._getResponseIdsChangeEventType()
         && (event.requestId == this._requestId)) {
 
       for (var index in this._responsePanels) {
@@ -484,7 +489,19 @@ AbstractRequestPage._AbstractRequestList.__updateRequest = function(requestId, r
   Backend.updateRequest(requestId, request, callback);
 }
 
-
+AbstractRequestPage._AbstractRequestList.__updateResponse = function(requestId, response, completionCallback) {
+  var callback = {
+    success: function(requestId) {
+      completionCallback();
+    },
+    failure: function() {
+    },
+    error: function() {
+    }
+  }
+  
+  Backend.createResponse(requestId, response, callback);
+}
 
 
 
@@ -593,13 +610,83 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
 }
 
 
-AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestId, responseId, settings) {
+
+AbstractRequestPage._AbstractRequestList._IncomingRequestPanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractRequestPanel, function _IncomingRequestPanel(requestList, requestId, settings) {
+  AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.call(this, requestList, requestId, settings);
+});
+
+AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._appendRequestElement = function(request) {
+  var requestHolderElement = UIUtils.appendBlock(this._rootContainer, "RequestHolder");
+
+  var isEditable = this._settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE;
+  
+  if (isEditable) { 
+    UIUtils.addClass(requestHolderElement, "incomingrequest-holder-editable");
+  } else {
+    UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
+  }
+
+  var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
+
+  var requestDate = new Date(request.time);
+
+  UIUtils.addClass(requestTextElement, "incomingrequest-text-holder");
+  if (this._settings.requestClickListener != null) {
+    UIUtils.addClass(requestTextElement, "incomingrequest-text-holder-activable");
+    UIUtils.setClickListener(requestTextElement, function() {
+      this._settings.requestClickListener(this._requestId);
+    }.bind(this));
+  }
+
+  UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + incomingRequest.text);
+
+  if (isEditable) {
+    var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
+    UIUtils.addClass(controlPanel, "incomingrequest-controls");
+
+    var commentButton = UIUtils.appendButton(controlPanel, "CommentButton", "Comment");
+    UIUtils.addClass(commentButton, "incomingrequest-commentbutton");
+    UIUtils.setClickListener(commentButton, function() {
+      this.__appendCreateResponsePanel(request, function() {});
+    });
+  }
+}
+
+AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appendCreateResponsePanel = function(request, completionCallback) {
+  var createResponsePanel = UIUtils.appendBlock(this._rootContainer, "CreateResponsePanel");
+  UIUtils.addClass(editPanel, "outgoingresponse-createresponsepanel");
+
+  var responseTextElement = editPanel.appendChild(UIUtils.createTextArea(UIUtils.createId(createResponsePanel, "ResponseText"), 5));
+  
+  var controlPanel = UIUtils.appendBlock(createResponsePanel, "ControlPanel");
+  UIUtils.addClass(controlPanel, "outgoingresponse-controls");
+    
+  var submitButton = UIUtils.appendButton(controlPanel, "SubmitButton", "Send");
+  UIUtils.addClass(submitButton, "outgoingresponse-submitbutton");
+  
+  UIUtils.setClickListener(submitButton, function() {
+    var responseText = UIUtils.get$(responseTextElement).val();
+    if (responseText != "") {
+      response = {
+        text: responseText
+      }
+      AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, response, completionCallback);
+    } else {
+      UIUtils.indicateInvalidInput(responseElementId);
+    }
+  });
+
+  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
+  UIUtils.addClass(cancelButton, "outgoingresponse-cancelbutton");
+  UIUtils.setClickListener(cancelButton, completionCallback);
+}
+
+
+AbstractRequestPage._AbstractRequestList._IncomingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _IncomingResponsePanel(requestId, responseId, settings) {
   AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestId, responseId, settings); 
 });
 
-
-
-AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appendResponseElement = function(response) {
+AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appendResponseElement = function(response) {
   var responseHolder = UIUtils.appendBlock(this._rootContainer, "TextHolder");
   UIUtils.addClass(responseHolder, "incomingresponse-text-holder");
   
@@ -625,6 +712,34 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
   }
 }
 
+AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestId, responseId, settings) {
+  AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestId, responseId, settings); 
+});
+
+AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appendResponseElement = function(response) {
+  var responseHolder = UIUtils.appendBlock(this._rootContainer, "TextHolder");
+  UIUtils.addClass(responseHolder, "outgoingresponse-text-holder");
+  
+  if (this._settings.requestClickListener != null) {
+    UIUtils.addClass(responseHolder, "outgoingresponse-text-holder-activable");
+    UIUtils.setClickListener(responseHolder, this._settings.requestClickListener.bind(this, this._requestId))
+  }
+  if (this._responseId == -1) {
+    UIUtils.get$(responseHolder).html("And more responses. Click to see them all");
+  } else {
+    UIUtils.get$(responseHolder).html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+  }
+  
+  if (response.status == Backend.Response.STATUS_UNREAD) {
+    var responseControlPanel = UIUtils.appendBlock(responseHolder, "ControlPanel");
+    UIUtils.addClass(responseControlPanel, "outgoingresponse-controls");
+    
+    var editButton = UIUtils.appendButton(responseControlPanel, "ModifyButton", "Modify");
+    UIUtils.addClass(editButton, "outgoingresponse-editbutton");
+    UIUtils.setClickListener(editButton, modifyListener);
+  }
+}
+
 
 
 AbstractRequestPage.OutgoingRequestList = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList, function OutgoingRequestList(settings) {
@@ -636,229 +751,54 @@ AbstractRequestPage.OutgoingRequestList.prototype._createRequestPanel = function
 }
 
 AbstractRequestPage.OutgoingRequestList.prototype._createResponsePanel = function(requestId, responseId) {
-  return new AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel(requestId, responseId, this._settings);
+  return new AbstractRequestPage._AbstractRequestList._IncomingResponsePanel(requestId, responseId, this._settings);
 }
 
 AbstractRequestPage.OutgoingRequestList.prototype._getRequestIds = function() {
   return Backend.getOutgoingRequestIds(this._settings.requestStatus);
 }
 
+AbstractRequestPage.OutgoingRequestList.prototype._getResponseIds = function(requestId) {
+  return Backend.getIncomingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_UNREAD : null);
+}
+
 AbstractRequestPage.OutgoingRequestList.prototype._getRequestIdsChangeEventType = function() {
   return Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED;
 }
 
-
-
-
-
-
-
-
-  
-
-
-
-/*
- * settings.incomingRequestClickListener
- * settings.canRespond
- */
-AbstractRequestPage.appendIncomingRequestResponseControl = function(root, incomingRequestIds, settings) {
-  AbstractRequestPage._IncomingRequestResponseControl.appendControl(root, incomingRequestIds, settings);
-}
-  
-
-
-AbstractRequestPage._IncomingRequestResponseControl = {};
-
-AbstractRequestPage._IncomingRequestResponseControl.appendControl = function(root, incomingRequestIds, settings) {
-  var controlPanelId = root.getAttribute("id") + "-IncomingRequestResponseContainer";
-  $("#" + controlPanelId).addClass("incomingrequest-and-respose-container");
-  
-  var containerElement;
-  if ($("#" + controlPanelId).length == 0) {
-    containerElement = root.appendChild(UIUtils.createBlock(controlPanelId));
-  } else {
-    $("#" + controlPanelId).empty();
-    containerElement = $("#" + controlPanelId).get(0);
-  }
-
-  for (var index in incomingRequestIds) {
-    this._appendIncomingRequestAndResponsePanel(containerElement, incomingRequestIds[index], settings);
-  }
+AbstractRequestPage.OutgoingRequestList.prototype._getResponseIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED;
 }
 
-AbstractRequestPage._IncomingRequestResponseControl._appendIncomingRequestAndResponsePanel = function(root, incomingRequestId, settings) {
-  var requestPanelId = root.getAttribute("id") + "-" + incomingRequestId;
-  var requestPanel = root.appendChild(UIUtils.createBlock(requestPanelId));
-  
-  //TODO: need to listen for changes and refresh
-  
-  var incomingRequest = Backend.getCachedRequest(incomingRequestId);
 
-  var appendIncomingRequestText = function(editResponse) {
-    UIUtils.getSelector(requestPanelId).empty();
-    
-    var requestHolderId = requestPanelId + "-IncomingRequestHolder";
-    var requestHolderElement = requestPanel.appendChild(UIUtils.createBlock(requestHolderId));
-    var requestHolderSelector = $("#" + requestHolderId);
 
-    var canRespond = !editResponse && settings.canRespond == true && incomingRequest.status == Backend.Request.STATUS_ACTIVE && incomingRequest.responseIds.length == 0;
 
-    if (canRespond) { 
-      requestHolderSelector.addClass("incomingrequest-holder-respondable");
-    } else {
-      requestHolderSelector.addClass("incomingrequest-holder");
-    }
+AbstractRequestPage.IncomingRequestList = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList, function IncomingRequestList(settings) {
+  AbstractRequestPage._AbstractRequestList.call(this, settings);
+});
 
-    var requestTextId = requestHolderId + "-IncomingRequestText";
-    var requestTextElement = requestHolderElement.appendChild(UIUtils.createBlock(requestTextId));
-    var requestTextSelector = $("#" + requestTextId);
-
-    requestTextSelector.addClass("incomingrequest-text-holder");
-    if (settings.requestClickListener != null) {
-      requestTextSelector.addClass("incomingrequest-text-holder-activable");
-      requestTextSelector.click(function() {
-        settings.requestClickListener(incomingRequestId);
-      });
-    }
-
-    var requestDate = new Date(incomingRequest.time);
-    requestTextSelector.html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + incomingRequest.text);
-
-    if (canRespond) {
-      var controlPanelId = requestHolderId + "-ControlPanel";
-      var controlPanel = requestHolderElement.appendChild(UIUtils.createBlock(controlPanelId));
-      $("#" + controlPanelId).addClass("incomingrequest-controls");
-
-      var requestAnswerButtonId = controlPanelId + "-AnswerButton";
-      controlPanel.appendChild(UIUtils.createButton(requestAnswerButtonId, "Comment"));
-      
-      var answerButtonSelector = UIUtils.getSelector(requestAnswerButtonId);
-      answerButtonSelector.addClass("incomingrequest-answerbutton");
-      answerButtonSelector.click(function() {
-        appendIncomingRequestText(true);
-      });
-    } else if (editResponse) {
-      this._appendEditResponsePanel(requestPanel, incomingRequestId, incomingRequest, function() {
-        appendIncomingRequestText(false);
-      });
-    } else if (incomingRequest.responseIds.length > 0) {
-      this._appendResponse(requestPanel, incomingRequestId, incomingRequest, function() {
-        appendIncomingRequestText(true);
-      });
-    }
-  }.bind(this);
-  
-  appendIncomingRequestText(false);
+AbstractRequestPage.IncomingRequestList.prototype._createRequestPanel = function(requestId) {
+  return new AbstractRequestPage._AbstractRequestList._IncomingRequestPanel(this, requestId, this._settings);
 }
 
-AbstractRequestPage._IncomingRequestResponseControl._appendResponse = function(root, incomingRequestId, incomingRequest, modifyListener) {
-  var responsePanelId = root.getAttribute("id") + "-Response";
-  var responsePanel = root.appendChild(UIUtils.createBlock(responsePanelId));
-  var responsePanelSelector = UIUtils.getSelector(responsePanelId);
-  responsePanelSelector.addClass("outgoingresponse-container");
-
-  var responseId = incomingRequest.responseIds[0]
-  var response = Backend.getCachedResponse(incomingRequestId, responseId);
-  
-  var responseHolderId = responsePanelId + "-" + responseId;
-  responsePanel.appendChild(UIUtils.createBlock(responseHolderId));
-
-  var responseSelector = $("#" + responseHolderId);
-  responseSelector.addClass("outgoingresponse-text-holder");
-  responseSelector.html(response.text);
-  
-  if (incomingRequest.status == Backend.Request.STATUS_ACTIVE) {
-    var responseControlPanelId = responsePanelId + "-ControlPanel";
-    var responseControlPanel = responsePanel.appendChild(UIUtils.createBlock(responseControlPanelId));
-    
-    UIUtils.getSelector(responseControlPanelId).addClass("outgoingresponse-controls");
-    
-    var editButtonId = responseControlPanelId + "-EditButton";
-    var editButton = responseControlPanel.appendChild(UIUtils.createButton(editButtonId, "Modify"));
-    
-    var editButtonSelector = UIUtils.getSelector(editButtonId);
-    editButtonSelector.addClass("outgoingresponse-editbutton");
-    editButtonSelector.click(modifyListener);
-  }
+AbstractRequestPage.IncomingRequestList.prototype._createResponsePanel = function(requestId, responseId) {
+  return new AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel(requestId, responseId, this._settings);
 }
 
-AbstractRequestPage._IncomingRequestResponseControl._appendEditResponsePanel = function(root, incomingRequestId, incomingRequest, completionCallback) {
-  var editPanelId = root.getAttribute("id") + "-EditResponsePanel";
-  var editPanel = root.appendChild(UIUtils.createBlock(editPanelId));
-  var editPanelSelector = UIUtils.getSelector(editPanelId);
-  editPanelSelector.addClass("outgoingresponse-editpanel");
-
-  var responseElementId = editPanelId + "-ResponseText";
-  var responseTextElement = editPanel.appendChild(UIUtils.createTextArea(responseElementId, 5));
-  var responseElementSelector = UIUtils.getSelector(responseElementId);
-  
-  var responseId = incomingRequest.responseIds[0]
-  var response = Backend.getCachedResponse(incomingRequestId, responseId);
-  
-  if (responseId != null) {
-    responseElementSelector.val(response.text);
-  }
-  
-  var controlPanelId = editPanelId + "-ControlPanel";
-  var controlPanel = editPanel.appendChild(UIUtils.createBlock(controlPanelId));
-  UIUtils.getSelector(controlPanelId).addClass("outgoingresponse-editpanel-controls");
-    
-  var submitButtonId = controlPanelId + "-SubmitButton";
-  var submitButton = controlPanel.appendChild(UIUtils.createButton(submitButtonId, "Send"));
-  var submitButtonSelector = UIUtils.getSelector(submitButtonId);
-  submitButtonSelector.addClass("outgoingresponse-editpanel-submitbutton");
-  
-  submitButtonSelector.click(function() {
-    var responseText = responseElementSelector.val();
-    if (responseText != "") {
-      if (response != null) {
-        response.text = responseText;
-        AbstractRequestPage._IncomingRequestResponseControl._updateResponse(incomingRequestId, responseId, response, completionCallback);
-      } else {
-        response = {
-          text: responseText
-        }
-        AbstractRequestPage._IncomingRequestResponseControl._createResponse(incomingRequestId, response, completionCallback);
-      }
-    } else {
-      UIUtils.indicateInvalidInput(responseElementId);
-    }
-  });
-
-  var cancelButtonId = controlPanelId + "-CancelButton";
-  var cancelButton = controlPanel.appendChild(UIUtils.createButton(cancelButtonId, "Cancel"));
-  var cancelButtonSelector = UIUtils.getSelector(cancelButtonId);
-  cancelButtonSelector.addClass("outgoingresponse-editpanel-cancelbutton");
-  cancelButtonSelector.click(completionCallback);
-}
-                                  
-AbstractRequestPage._IncomingRequestResponseControl._createResponse = function(requestId, response, completionCallback) {
-  var callback = {
-    success: function() {
-      completionCallback();
-    },
-    failure: function() {
-    },
-    error: function() {
-    }
-  }
-  
-  Backend.createResponse(requestId, response, callback);
+AbstractRequestPage.IncomingRequestList.prototype._getRequestIds = function() {
+  return Backend.getIncomingRequestIds(this._settings.requestStatus);
 }
 
-AbstractRequestPage._IncomingRequestResponseControl._updateResponse = function(requestId, responseId, response, completionCallback) {
-  var callback = {
-    success: function() {
-      completionCallback();
-    },
-    failure: function() {
-    },
-    error: function() {
-    }
-  }
-  
-  Backend.updateResponse(requestId, responseId, response, callback);
+AbstractRequestPage.IncomingRequestList.prototype._getResponseIds = function(requestId) {
+  return Backend.getOutgoingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_UNREAD : null);
+}
+
+AbstractRequestPage.IncomingRequestList.prototype._getRequestIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED;
+}
+
+AbstractRequestPage.IncomingRequestList.prototype._getResponseIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
 }
 
 
