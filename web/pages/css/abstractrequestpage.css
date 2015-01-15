@@ -1,11 +1,16 @@
-
-.outgoingrequest-and-responses-container {
+.request-and-responses-container {
 }
 
-.outgoingrequest-holder {
+.responses-container {
+  margin: 10px 0px 10px 50px;
+
+  overflow-y: auto;
 }
 
-.outgoingrequest-holder-editable {
+.outgoingrequest-holder, .incomingrequest-holder {
+}
+
+.outgoingrequest-holder-editable, .incomingrequest-holder-editable {
   padding: 5px;
   
   border-style: solid;
@@ -16,7 +21,7 @@
   background: white;
 }
 
-.outgoingrequest-text-holder {
+.outgoingrequest-text-holder, .incomingrequest-text-holder {
   padding: 5px;
   
   border-style: solid;
@@ -28,22 +33,22 @@
   background: white;
 }
 
-.outgoingrequest-text-holder-activable {
+.outgoingrequest-text-holder-activable, .incomingrequest-text-holder-activable {
 }
 
-.outgoingrequest-text-holder-activable:hover {
+.outgoingrequest-text-holder-activable:hover, .incomingrequest-text-holder-activable:hover {
   color: black;
   background: gray;
   border-color: blue;
 }
 
-.outgoingrequest-text-holder-activable:active {
+.outgoingrequest-text-holder-activable:active, .incomingrequest-text-holder-activable:active {
   color: white;
   background: green;
   border-color: red;
 }
 
-.outgoingrequest-controls {
+.outgoingrequest-controls, .incomingrequest-controls {
   margin-top: 10px;
   text-align: right;
 }
@@ -61,138 +66,56 @@
 }
 
 
-.incomingresponses-container {
-  margin: 10px 0px 10px 50px;
-
-  overflow-y: auto;
-}
-
-.incomingresponse-text-holder {
-  padding: 5px;
-  margin-bottom: 10px;
-  
-  border-style: solid;
-  border-color: black;
-  border-width: 1;
-  border-radius: 5px;
-  
-  color: black;
-  background: rgb(150, 150, 100);
-}
-
-.incomingresponse-text-holder-activable {
-  color: white;
-  background: blue;
-}
-
-.incomingresponse-text-holder-activable:hover {
-  color: black;
-  background: gray;
-  border-color: blue;
-}
-
-.incomingresponse-text-holder-activable:active {
-  color: white;
-  background: green;
-  border-color: red;
+.incomingrequest-commentbutton {
 }
 
 
-
-
-.incomingrequest-and-response-container {
-}
-
-.incomingrequest-holder {
-}
-
-.incomingrequest-holder-respondable {
-  padding: 5px;
-  margin-bottom: 10px;
-  
-  border-style: solid;
-  border-color: black;
-  border-width: 1;
-  border-radius: 5px;
-  
-  background: white;
-}
-
-.incomingrequest-text-holder {
-  padding: 5px;
-  margin-bottom: 10px;
-  
-  border-style: solid;
-  border-color: black;
-  border-width: 1;
-  border-radius: 5px;
-  
-  color: black;
-  background: white;
-}
-
-.incomingrequest-text-holder-activable {
-}
-
-.incomingrequest-text-holder-activable:hover {
-  color: black;
-  background: gray;
-  border-color: blue;
-}
-
-.incomingrequest-text-holder-activable:active {
-  color: white;
-  background: green;
-  border-color: red;
-}
-
-.incomingrequest-controls {
-  text-align: right;
-}
-
-.incomingrequest-answerbutton {
-}
-
-.outgoingresponse-container {
-  padding: 5px;
-  margin: 10px 0px 10px 50px;
-  
-  border-style: solid;
-  border-color: black;
-  border-width: 1;
-  border-radius: 5px;
-}
-
-.outgoingresponse-text-holder {
-  padding: 5px;
-  margin-bottom: 10px;
-  
-  border-style: solid;
-  border-color: black;
-  border-width: 1;
-  border-radius: 5px;
-  
-  color: black;
-  background: rgb(150, 150, 100);
+.outgoingresponse-createresponsepanel {
+  margin-top: 20px;
 }
 
 .outgoingresponse-controls {
+  margin-top: 10px;
   text-align: right;
 }
 
 .outgoingresponse-editbutton {
 }
 
-.outgoingresponse-editpanel {
-  margin: 10px 0px 10px 50px;
+.outgoingresponse-submitbutton {
 }
 
-.outgoingresponse-editpanel-controls {
-  text-align: right;
+.outgoingresponse-cancelbutton {
 }
 
-.outgoingresponse-editpanel-submitbutton {
+
+.incomingresponse-text-holder, .outgoingresponse-text-holder {
+  padding: 5px;
+  margin-bottom: 10px;
+  
+  border-style: solid;
+  border-color: black;
+  border-width: 1;
+  border-radius: 5px;
+  
+  color: black;
+  background: rgb(150, 150, 100);
 }
 
-outgoingresponse-editpanel-cancelbutton {
+.incomingresponse-text-holder-activable, .outgoingresponse-text-holder-activable {
+  color: white;
+  background: blue;
 }
+
+.incomingresponse-text-holder-activable:hover, .outgoingresponse-text-holder-activable:hover {
+  color: black;
+  background: gray;
+  border-color: blue;
+}
+
+.incomingresponse-text-holder-activable:active, .outgoingresponse-text-holder-activable:active {
+  color: white;
+  background: green;
+  border-color: red;
+}
+

@@ -50,7 +50,7 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
 }
 
 ActiveOutgoingRequestsPage.prototype.onHide = function() {
-  this._requestList.remove();
+  this._requestList.destroy();
 }
 
 

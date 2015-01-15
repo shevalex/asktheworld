@@ -1,7 +1,6 @@
-
 var Backend = {
   _cache: {},
-  _cacheChangeListeners: [],
+  _cacheChangeListeners: []
 };
 
 Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
@@ -204,6 +203,21 @@ Backend.Response.STATUS_READ = "read";
 
 
 Backend.createRequest = function(request, requestParams, transactionCallback) {
+  setTimeout(function() {
+    var newRequestId = "request" + this._cache.outgoingRequestIds.length;
+    this._cache.outgoingRequestIds.push(newRequestId);
+    
+    request.time = Date.now();
+    request.status = Backend.Request.STATUS_ACTIVE;
+    
+    this._cache.requests[newRequestId] = request;
+    
+    transactionCallback.success();
+    
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: newRequestId});
+  }.bind(this), 1000);
+  
+  
   /*
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -284,37 +298,31 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
 
 
 Backend.createResponse = function(requestId, response, transactionCallback) {
-  var responseId = "response" + this._requestsCache[requestId].responseIds.length;
-  
-  var request = this._requestsCache[requestId];
-  request.responseIds.push(responseId);
-  
-  response.time = Date.now();
-  response.pictures = [];
-  response.audios = [];
-  response.age_category = Backend.UserProfile.age;
-  response.gender = Backend.UserProfile.gender;
-  response.status = Backend.Response.STATUS_UNREAD;
+  setTimeout(function() {
+    var newResponseId = requestId + "-response" + this._cache.outgoingResponseIds[requestId].unviewed.length;
 
-  request._responses[responseId] = response;
-                   
-  Backend._updateRequestCache();
-  transactionCallback.success();
+    this._cache.outgoingResponseIds[requestId].unviewed.push(newResponseId);
+    
+    response.time = Date.now();
+    response.pictures = [];
+    response.audios = [];
+    response.age_category = Backend.UserProfile.age;
+    response.gender = Backend.UserProfile.gender;
+    response.status = Backend.Response.STATUS_UNREAD;
+
+    this._cache.responses[newResponseId] = response;
+    
+    transactionCallback.success();
+    
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId});
+  }.bind(this), 1000);
 }
 
 
 
-Backend.addCacheChangeListener = function(listener) {
-  this._cacheChangeListeners.push(listener);
-}
 
-Backend.removeCacheChangeListener = function(listener) {
-  for (var index in this._cacheChangeListeners) {
-    if (this._cacheChangeListeners[index] == listener) {
-      this._cacheChangeListeners.splice(index, 1);
-    }
-  }
-}
+
+
 
 Backend.getOutgoingRequestIds = function(requestStatus) {
   if (this._cache.outgoingRequestIds != null) {
@@ -326,6 +334,20 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
     return requestIds;
   } else {
     Backend._pullOutgoingRequestIds();
+    return null;
+  }
+}
+
+Backend.getIncomingRequestIds = function(requestStatus) {
+  if (this._cache.incomingRequestIds != null) {
+    var requestIds = [];
+    for (var index in this._cache.incomingRequestIds) {
+      requestIds.push(this._cache.incomingRequestIds[index]);
+    }
+    
+    return requestIds;
+  } else {
+    Backend._pullIncomingRequestIds();
     return null;
   }
 }
@@ -365,6 +387,28 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   }
 }
 
+Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
+  if (this._cache.outgoingResponseIds != null && this._cache.outgoingResponseIds[requestId] != null) {
+    var responseIds = [];
+  
+    if (responseStatus == Backend.Response.STATUS_READ) {
+      responseIds = this._cache.outgoingResponseIds[requestId].viewed.slice(0);
+    } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
+      responseIds = this._cache.outgoingResponseIds[requestId].unviewed.slice(0);
+    } else {
+      responseIds = this._cache.outgoingResponseIds[requestId].unviewed.slice(0);
+      for (var index in this._cache.outgoingResponseIds[requestId].viewed) {
+        responseIds.push(this._cache.outgoingResponseIds[requestId].viewed[index]);
+      }
+    }
+
+    return responseIds;
+  } else {
+    Backend._pullOutgoingResponseIds(requestId);
+    return null;
+  }
+}
+
 Backend.getResponse = function(requestId, responseId) {
   if (this._cache.responses != null) {
     var response = this._cache.responses[responseId];
@@ -396,9 +440,26 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 
 Backend.CacheChangeEvent = {type: null, requestId: null, responseId: null};
 Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED = "outgoing_requests_changed";
+Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED = "incoming_requests_changed";
 Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED = "request_changed";
 Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED = "response_changed";
+Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED = "outgoing_responses_changed";
 Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED = "incoming_responses_changed";
+
+
+Backend.addCacheChangeListener = function(listener) {
+  this._cacheChangeListeners.push(listener);
+}
+
+Backend.removeCacheChangeListener = function(listener) {
+  for (var index in this._cacheChangeListeners) {
+    if (this._cacheChangeListeners[index] == listener) {
+      this._cacheChangeListeners.splice(index, 1);
+    }
+  }
+}
+
+
 
 Backend._pullOutgoingRequestIds = function() {
   setTimeout(function() {
@@ -410,6 +471,19 @@ Backend._pullOutgoingRequestIds = function() {
     }
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
+  }.bind(this), 1000);
+}
+
+Backend._pullIncomingRequestIds = function() {
+  setTimeout(function() {
+    this._cache.incomingRequestIds = [];
+
+    var numOfRequests = Math.random() * 10;
+    for (var i = 0; i < numOfRequests; i++) {
+      this._cache.incomingRequestIds.push("request" + (100 + i));
+    }
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
   }.bind(this), 1000);
 }
 
@@ -431,6 +505,27 @@ Backend._pullIncomingResponseIds = function(requestId) {
     }
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
+  }.bind(this), 1000);
+}
+
+Backend._pullOutgoingResponseIds = function(requestId) {
+  setTimeout(function() {
+    if (this._cache.outgoingResponseIds == null) {
+      this._cache.outgoingResponseIds = {};
+    }
+
+    this._cache.outgoingResponseIds[requestId] = {viewed: [], unviewed: []};
+    var numOfResponses = Math.random() * 10;
+    for (var i = 0; i < numOfResponses; i++) {
+      var responseId = requestId + "-response" + (100 + i);
+      if (Math.random() < 0.5) {
+        this._cache.outgoingResponseIds[requestId].viewed.push(responseId);
+      } else {
+        this._cache.outgoingResponseIds[requestId].unviewed.push(responseId);
+      }
+    }
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId});
   }.bind(this), 1000);
 }
 
@@ -493,8 +588,15 @@ Backend._createDummyResponse = function(requestId, responseId) {
   var age = Math.round(Math.random() * 4);
   var gender = Math.round(Math.random());
   var statusUnread = false;
-  for (var index in this._cache.incomingResponseIds[requestId].unviewed) {
-    if (this._cache.incomingResponseIds[requestId].unviewed[index] == responseId) {
+  
+  var responses = null;
+  if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
+    responses = this._cache.incomingResponseIds[requestId];
+  } else {
+    responses = this._cache.outgoingResponseIds[requestId];
+  }
+  for (var index in responses.unviewed) {
+    if (responses.unviewed[index] == responseId) {
       statusUnread = true;
       break;
     }

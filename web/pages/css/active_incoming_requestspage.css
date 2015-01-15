@@ -1,13 +1,13 @@
-#ActiveOutgoingRequestsPage {
+#ActiveIncomingRequestsPage {
 }
 
-#ActiveOutgoingRequestsPage-GeneralPanel {
+#ActiveIncomingRequestsPage-GeneralPanel {
   height: 50px;
   
   font-size: 20px;
 }
 
-#ActiveOutgoingRequestsPage-RequestsPanel {
+#ActiveIncomingRequestsPage-RequestsPanel {
   margin-top: 20px;
   padding-right: 10px;
   height: calc(100% - 50px - 20px);

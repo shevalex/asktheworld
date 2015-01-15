@@ -234,7 +234,7 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
 
 
 UIUtils.animateBackgroundColor = function(element, color, speed, observer) {
-  var selector = UIUtils.get$$(element);
+  var selector = UIUtils.get$(element);
   var initialColor = selector.css("backgroundColor");
   
   var speed = speed || "slow";
@@ -255,11 +255,8 @@ UIUtils.setEnabled = function(element, isEnabled) {
   UIUtils.get$(element).prop("disabled", !isEnabled);
 }
 
-UIUtils.getSelector = function(component) {
-  return $("#" + UIUtils._getId(component));
-}
 UIUtils.get$ = function(component) {
-  return UIUtils.getSelector(component);
+  return $("#" + UIUtils._getId(component));
 }
 
 UIUtils.addClass = function(component, cls) {

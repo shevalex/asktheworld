@@ -2,19 +2,38 @@ package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class User implements Serializable {
+@Entity
+public class ATWUser implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 927995499391295373L;
-	@JsonIgnore	private int id;
+ 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column
+	@JsonIgnore	
+	private int id;
+	
+	@Column
 	private String login;
+	@Column
 	private String password;
+	@Column
 	private String languages[];
+	@Column
 	private String gender;
+	@Column
 	private String name;
+	@Column
 	private String age_category;
 
 	public String getGender() {
@@ -54,8 +73,10 @@ public class User implements Serializable {
 		this.name = name;
 	}
 	
-	public User createCopy() {
-		User user  = new User();
+	
+	
+	public ATWUser createCopy() {
+		ATWUser user  = new ATWUser();
 		user.setId(getId());
 		user.setLogin(getLogin());
 		user.setGender(getGender());
@@ -69,5 +90,15 @@ public class User implements Serializable {
 	}
 	public void setAge_category(String age_category) {
 		this.age_category = age_category;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		 if (this == obj) return true;
+		 if (obj == null) return false;
+	     if (getClass() != obj.getClass()) return false;
+	     final ATWUser other = (ATWUser) obj;
+	     if (login != null && login.equals(other.getLogin()))  return true;
+	     return false;
 	}
 }
