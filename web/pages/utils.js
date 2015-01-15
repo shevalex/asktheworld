@@ -255,11 +255,8 @@ UIUtils.setEnabled = function(element, isEnabled) {
   UIUtils.get$(element).prop("disabled", !isEnabled);
 }
 
-UIUtils.getSelector = function(component) {
-  return $("#" + UIUtils._getId(component));
-}
 UIUtils.get$ = function(component) {
-  return UIUtils.getSelector(component);
+  return $("#" + UIUtils._getId(component));
 }
 
 UIUtils.addClass = function(component, cls) {

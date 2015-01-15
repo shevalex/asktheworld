@@ -10,23 +10,53 @@ AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequ
  * settings.selectionObserver
  * settings.updateListener
  */
-AbstractRequestPage.OutgoingRequestsTable = function(settings) {
+AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, function _AbstractRequestsTable(settings) {
   this._settings = settings;
   this._cacheChangeListener = null;
   this._cacheRowListeners = {};
   this._rootContainer = null;
+});
+
+//abstract
+AbstractRequestPage._AbstractRequestsTable.prototype._getRequests = function() {
+  throw "Not implemented";
 }
 
-AbstractRequestPage.OutgoingRequestsTable.prototype.append = function(container) {
+//abstract
+AbstractRequestPage._AbstractRequestsTable.prototype._getResponses = function(requestId) {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestsTable.prototype._getRequestIdsChangeEventType = function() {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestsTable.prototype._getResponseIdsChangeEventType = function() {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestsTable.prototype._getColumns = function() {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestsTable.prototype._getRowData = function(requestId, request) {
+  throw "Not implemented";
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.append = function(container) {
   this._rootContainer = UIUtils.appendBlock(container, "TableContainer");
 
   var appendTableElement  = function() {
-    var requestIds = Backend.getOutgoingRequestIds(this._settings.requestStatus);
+    var requestIds = this._getRequests();
     if (requestIds != null) {
       if (this._settings.updateListener != null) {
         this._settings.updateListener.updateFinished();
       }
-      this._appendTableElement();
+      this.__appendTableElement();
     } else {
       if (this._settings.updateListener != null) {
         this._settings.updateListener.updateStarted();
@@ -35,13 +65,13 @@ AbstractRequestPage.OutgoingRequestsTable.prototype.append = function(container)
   }.bind(this);
   
   this._cacheChangeListener = function(event) {
-    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
+    if (event.type == this._getRequestIdsChangeEventType()) {
       UIUtils.emptyContainer(this._rootContainer);
       this._cacheRowListeners = {};
       
       appendTableElement();
     } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED
-               || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED) {
+               || event.type == this._getResponseIdsChangeEventType()) {
       
       for (var id in this._cacheRowListeners) {
         if (event.requestId == null || id == event.requestId) {
@@ -55,30 +85,33 @@ AbstractRequestPage.OutgoingRequestsTable.prototype.append = function(container)
   appendTableElement();
 }
 
-AbstractRequestPage.OutgoingRequestsTable.prototype.remove = function() {
+AbstractRequestPage._AbstractRequestsTable.prototype.remove = function() {
   this._cacheRowListeners = {};
   Backend.removeCacheChangeListener(this._cacheChangeListener);
   UIUtils.get$(this._rootContainer).remove();
 }
 
+AbstractRequestPage._AbstractRequestsTable.prototype.destroy = function() {
+  this.destroy();
+}
 
-AbstractRequestPage.OutgoingRequestsTable.prototype._appendTableElement = function() {
-  var columns = [
-    {title: "Date", data: "time", type: "date", width: "100px"},
-    {title: "Responses", data: "numOfResponses", type: "num", width: "40px"},
-    {title: "Your Request", data: "text", type: "string"}
-  ];
-            
+AbstractRequestPage._AbstractRequestsTable.prototype.__appendTableElement = function() {
   var rowDataProvider = {
     getRows: function() {
       var rowData = [];
-      var requestIds = Backend.getOutgoingRequestIds();
+      var columns = this._getColumns();
+      var requestIds = this._getRequests();
       for (var requestId in requestIds) {
-        rowData.push({rowId: requestIds[requestId], temporary: true, time: "--", text: "--", numOfResponses: "--"});
+        var defaultRowData = {rowId: requestIds[requestId], temporary: true};
+        for (var index in columns) {
+          defaultRowData[columns[index].data] = "--";
+        }
+        
+        rowData.push(defaultRowData);
       }
       
       return rowData;
-    },
+    }.bind(this),
     
     getRowDetails: function(rowId, callback) {
       function convertRequestToRowData(request) {
@@ -87,13 +120,13 @@ AbstractRequestPage.OutgoingRequestsTable.prototype._appendTableElement = functi
 
       var reportRowDataReady = function() {
         var request = Backend.getRequest(rowId);
-        var responseIds = Backend.getIncomingResponseIds(rowId);
+        var responseIds = this._getResponses(rowId);
         if (request != null && responseIds != null) {
           if (this._settings.updateListener != null) {
             this._settings.updateListener.updateFinished();
           }
           
-          callback(convertRequestToRowData(request));
+          callback(this._getRowData(rowId, request));
         } else {
           if (this._settings.updateListener != null) {
             this._settings.updateListener.updateStarted();
@@ -106,54 +139,75 @@ AbstractRequestPage.OutgoingRequestsTable.prototype._appendTableElement = functi
     }.bind(this)
   }
   
-  return UIUtils.appendFeaturedTable("Table", this._rootContainer, columns, rowDataProvider, function(rowId) {
+  return UIUtils.appendFeaturedTable("Table", this._rootContainer, this._getColumns(), rowDataProvider, function(rowId) {
     this._settings.selectionObserver(rowId);
   }.bind(this));
 }
 
-AbstractRequestPage.appendIncomingRequestsTable = function(root, selectionCallback) {
-  var containerId = root.getAttribute("id");
-  $("#" + containerId).empty();
-  AbstractRequestPage._appendIncomingRequestsTable(containerId + "-Table", root, selectionCallback);
+
+
+AbstractRequestPage.OutgoingRequestsTable = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsTable, function OutgoingRequestsTable(settings) {
+  AbstractRequestPage._AbstractRequestsTable.call(this, settings);
+});
+
+AbstractRequestPage.OutgoingRequestsTable.prototype._getRequests = function() {
+  return Backend.getOutgoingRequestIds(this._settings.requestStatus);
 }
 
-AbstractRequestPage._appendIncomingRequestsTable = function(tableId, root, selectionCallback) {
-  var columns = [
+AbstractRequestPage.OutgoingRequestsTable.prototype._getResponses = function(requestId) {
+  return Backend.getIncomingResponseIds(requestId);
+}
+
+AbstractRequestPage.OutgoingRequestsTable.prototype._getRequestIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED;
+}
+
+AbstractRequestPage.OutgoingRequestsTable.prototype._getResponseIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED;
+}
+
+AbstractRequestPage.OutgoingRequestsTable.prototype._getColumns = function() {
+  return [
+    {title: "Date", data: "time", type: "date", width: "100px"},
+    {title: "Responses", data: "numOfResponses", type: "num", width: "40px"},
+    {title: "Your Request", data: "text", type: "string"}
+  ];
+}
+
+AbstractRequestPage.OutgoingRequestsTable.prototype._getRowData = function(requestId, request) {
+  return {time: new Date(request.time).toDateString(), text: request.text, numOfResponses: this._getResponses(requestId).length};
+}
+
+
+AbstractRequestPage.IncomingRequestsTable = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsTable, function IncomingRequestsTable(settings) {
+  AbstractRequestPage._AbstractRequestsTable.call(this, settings);
+});
+
+AbstractRequestPage.IncomingRequestsTable.prototype._getRequests = function() {
+  return Backend.getIncomingRequestIds(this._settings.requestStatus);
+}
+
+AbstractRequestPage.IncomingRequestsTable.prototype._getResponses = function(requestId) {
+  return Backend.getOutgoingResponseIds(requestId);
+}
+
+AbstractRequestPage.IncomingRequestsTable.prototype._getRequestIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED;
+}
+
+AbstractRequestPage.IncomingRequestsTable.prototype._getResponseIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
+}
+
+AbstractRequestPage.IncomingRequestsTable.prototype._getColumns = function() {
+  return [
     {title: "Date", data: "time", type: "date", width: "100px"},
     {title: "Inquiry", data: "text", type: "string"}
   ];
-            
-  var rowDataProvider = {
-    getRows: function() {
-      var rowData = [];
-      var incomingRequestIds = Backend.getCachedIncomingRequestIds();
-      for (var incomingRequestId in incomingRequestIds) {
-        rowData.push({rowId: incomingRequestIds[incomingRequestId], temporary: true, time: "--", text: "--"});
-      }
-      
-      return rowData;
-    },
-    
-    getRowDetails: function(rowId, callback) {
-      function convertIncomingRequestToRowData(incomingRequest) {
-        return {time: new Date(request.time).toDateString(), text: incomingRequest.text};
-      }
+}
 
-      function notifyCallback() {
-        var incomingRequest = Backend.getCachedIncomingRequest(rowId);
-        if (incomingRequest != null) {
-          callback(convertIncomingRequestToRowData(incomingRequest));
-        }
-      }
-      notifyCallback();
-      
-      Backend.addIncomingRequestCacheChangeListener(notifyCallback);
-    }.bind(this)
-  }
-  
-  return UIUtils.appendFeaturedTable(tableId, root, columns, rowDataProvider, function(rowId) {
-    selectionCallback(rowId);
-  }.bind(this));
+AbstractRequestPage.IncomingRequestsTable.prototype._getRowData = function(requestId, request) {
+  return {time: new Date(request.time).toDateString(), text: request.text};
 }
 
 

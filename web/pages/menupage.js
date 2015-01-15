@@ -151,7 +151,7 @@ MenuPage.prototype._getPageForItem = function(itemId) {
     return this._activeInquiriesPage;
   } else if (itemId == MenuPage.prototype.ALL_INQUIRIES_ITEM_ID) {
     if (this._allInquiriesPage == null) {
-      this._allInquiriesPage = new ActiveIncomingRequestsPage();
+      this._allInquiriesPage = new AllIncomingRequestsPage();
     }
     return this._allInquiriesPage;
   } else if (itemId == MenuPage.prototype.USER_PROFILE_ITEM_ID) {

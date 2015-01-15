@@ -1,5 +1,5 @@
-AllOutgoingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function AllOutgoingRequestsPage() {
-  AbstractRequestPage.call(this, "AllOutgoingRequestsPage", "all");
+AllIncomingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function AllIncomingRequestsPage() {
+  AbstractRequestPage.call(this, "AllIncomingRequestsPage", "all");
   
   this._requestTable = null;
   this._requestTableContainer = null;
@@ -7,21 +7,21 @@ AllOutgoingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function A
   this._requestList = null;
 });
 
-AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
+AllIncomingRequestsPage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
   
   var linkId = UIUtils.createId(generalPanel, "ActiveRequestsLink");
-  UIUtils.get$(generalPanel).html("This is the complete list of requests that you Asked The World about.<br>You can find your most recent active requests in the <a href='#' id='" + linkId + "'>Active Requests</a> section.");
-  
+  UIUtils.get$(generalPanel).html("This is the complete list of requests that The World asked you about.<br>You can find the most recent requests in the <a href='#' id='" + linkId + "'>Active Inquiries</a> section.");
   UIUtils.setClickListener(linkId, function() {
-    Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
+    Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
   });
-  
+
+
   this._requestTableContainer = UIUtils.appendBlock(root, "TablePanel");
   this._requestsContainer = UIUtils.appendBlock(root, "RequestPanel");
 }
 
-AllOutgoingRequestsPage.prototype.onShow = function(root) {
+AllIncomingRequestsPage.prototype.onShow = function(root) {
   var updateListener = {
     updateStarted: function() {
       Application.showSpinningWheel();
@@ -31,23 +31,15 @@ AllOutgoingRequestsPage.prototype.onShow = function(root) {
     }
   }
   
-  this._requestTable = new AbstractRequestPage.OutgoingRequestsTable({
+  this._requestTable = new AbstractRequestPage.IncomingRequestsTable({
     requestStatus: null,
     selectionObserver: function(requestId) {
       if (this._requestList != null) {
         this._requestList.destroy();
       }
       
-      this._requestList = new AbstractRequestPage.OutgoingRequestList({
-        requestClickListener: function(requestId) {
-          var paramBundle = {
-            returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID,
-            requestId: requestId,
-            otherRequestIds: Backend.getOutgoingRequestIds()
-          }
-
-          Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
-        },
+      this._requestList = new AbstractRequestPage.IncomingRequestList({
+        requestClickListener: null,
         requestIds: [requestId],
         requestEditable: true,
         maxResponses: 3,
@@ -64,7 +56,7 @@ AllOutgoingRequestsPage.prototype.onShow = function(root) {
   this._requestTable.append(this._requestTableContainer);
 }
 
-AllOutgoingRequestsPage.prototype.onHide = function() {
+AllIncomingRequestsPage.prototype.onHide = function() {
   this._requestTable.remove();
   
   if (this._requestList != null) {

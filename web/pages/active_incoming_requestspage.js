@@ -10,7 +10,7 @@ ActiveIncomingRequestsPage.prototype.definePageContent = function(root) {
   
   var linkId = UIUtils.createId(generalPanel, "AllInquiriesLink");
   UIUtils.get$(generalPanel).html("This is what the World is asking you to comment and is awaiting your opinion about<br>You can always see your older inquiries in the <a href='#' id='" + linkId + "'>All Inquiries</a> section.");
-  $(linkId).click(function() {
+  UIUtils.setClickListener(linkId, function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ALL_INQUIRIES_ITEM_ID);
   });
   
