@@ -34,7 +34,6 @@ class ViewController: UIViewController {
             self.UserNameLabel.text = prefs.valueForKey("username") as NSString
         }
         
-    //
     }
 
 }
