@@ -203,6 +203,21 @@ Backend.Response.STATUS_READ = "read";
 
 
 Backend.createRequest = function(request, requestParams, transactionCallback) {
+  setTimeout(function() {
+    var newRequestId = "request" + this._cache.outgoingRequestIds.length;
+    this._cache.outgoingRequestIds.push(newRequestId);
+    
+    request.time = Date.now();
+    request.status = Backend.Request.STATUS_ACTIVE;
+    
+    this._cache.requests[newRequestId] = request;
+    
+    transactionCallback.success();
+    
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: newRequestId});
+  }.bind(this), 1000);
+  
+  
   /*
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -283,37 +298,31 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
 
 
 Backend.createResponse = function(requestId, response, transactionCallback) {
-  var responseId = "response" + this._requestsCache[requestId].responseIds.length;
-  
-  var request = this._requestsCache[requestId];
-  request.responseIds.push(responseId);
-  
-  response.time = Date.now();
-  response.pictures = [];
-  response.audios = [];
-  response.age_category = Backend.UserProfile.age;
-  response.gender = Backend.UserProfile.gender;
-  response.status = Backend.Response.STATUS_UNREAD;
+  setTimeout(function() {
+    var newResponseId = requestId + "-response" + this._cache.outgoingResponseIds[requestId].unviewed.length;
 
-  request._responses[responseId] = response;
-                   
-  Backend._updateRequestCache();
-  transactionCallback.success();
+    this._cache.outgoingResponseIds[requestId].unviewed.push(newResponseId);
+    
+    response.time = Date.now();
+    response.pictures = [];
+    response.audios = [];
+    response.age_category = Backend.UserProfile.age;
+    response.gender = Backend.UserProfile.gender;
+    response.status = Backend.Response.STATUS_UNREAD;
+
+    this._cache.responses[newResponseId] = response;
+    
+    transactionCallback.success();
+    
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId});
+  }.bind(this), 1000);
 }
 
 
 
-Backend.addCacheChangeListener = function(listener) {
-  this._cacheChangeListeners.push(listener);
-}
 
-Backend.removeCacheChangeListener = function(listener) {
-  for (var index in this._cacheChangeListeners) {
-    if (this._cacheChangeListeners[index] == listener) {
-      this._cacheChangeListeners.splice(index, 1);
-    }
-  }
-}
+
+
 
 Backend.getOutgoingRequestIds = function(requestStatus) {
   if (this._cache.outgoingRequestIds != null) {
@@ -437,6 +446,21 @@ Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED = "response_changed";
 Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED = "outgoing_responses_changed";
 Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED = "incoming_responses_changed";
 
+
+Backend.addCacheChangeListener = function(listener) {
+  this._cacheChangeListeners.push(listener);
+}
+
+Backend.removeCacheChangeListener = function(listener) {
+  for (var index in this._cacheChangeListeners) {
+    if (this._cacheChangeListeners[index] == listener) {
+      this._cacheChangeListeners.splice(index, 1);
+    }
+  }
+}
+
+
+
 Backend._pullOutgoingRequestIds = function() {
   setTimeout(function() {
     this._cache.outgoingRequestIds = [];
@@ -455,8 +479,8 @@ Backend._pullIncomingRequestIds = function() {
     this._cache.incomingRequestIds = [];
 
     var numOfRequests = Math.random() * 10;
-    for (var i = 100; i < 100 + numOfRequests; i++) {
-      this._cache.incomingRequestIds.push("request" + i);
+    for (var i = 0; i < numOfRequests; i++) {
+      this._cache.incomingRequestIds.push("request" + (100 + i));
     }
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
@@ -491,9 +515,9 @@ Backend._pullOutgoingResponseIds = function(requestId) {
     }
 
     this._cache.outgoingResponseIds[requestId] = {viewed: [], unviewed: []};
-    var numOfResponses = Math.random() * 100;
+    var numOfResponses = Math.random() * 10;
     for (var i = 0; i < numOfResponses; i++) {
-      var responseId = requestId + "-response" + i;
+      var responseId = requestId + "-response" + (100 + i);
       if (Math.random() < 0.5) {
         this._cache.outgoingResponseIds[requestId].viewed.push(responseId);
       } else {

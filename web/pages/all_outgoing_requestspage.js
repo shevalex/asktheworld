@@ -32,7 +32,7 @@ AllOutgoingRequestsPage.prototype.onShow = function(root) {
     requestStatus: null,
     selectionObserver: function(requestId) {
       if (this._requestList != null) {
-        this._requestList.remove();
+        this._requestList.destroy();
       }
       
       this._requestList = new AbstractRequestPage.OutgoingRequestList({
@@ -63,7 +63,10 @@ AllOutgoingRequestsPage.prototype.onShow = function(root) {
 
 AllOutgoingRequestsPage.prototype.onHide = function() {
   this._requestTable.remove();
-  this._requestList.remove();
+  
+  if (this._requestList != null) {
+    this._requestList.destroy();
+  }
 }
 
 

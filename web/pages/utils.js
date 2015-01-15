@@ -234,7 +234,7 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
 
 
 UIUtils.animateBackgroundColor = function(element, color, speed, observer) {
-  var selector = UIUtils.get$$(element);
+  var selector = UIUtils.get$(element);
   var initialColor = selector.css("backgroundColor");
   
   var speed = speed || "slow";

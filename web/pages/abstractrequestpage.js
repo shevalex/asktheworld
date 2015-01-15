@@ -356,7 +356,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.remove 
 
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appendResponses = function(requestId) {
   var responsesPanel = UIUtils.appendBlock(this._rootContainer, "ResponsesPanel");
-  UIUtils.addClass(responsesPanel, "incomingresponses-container");
+  UIUtils.addClass(responsesPanel, "responses-container");
   if (this._settings.responseAreaMaxHeight != null && this._settings.responseAreaMaxHeight != -1) {
     responsesPanel.style.maxHeight = this._settings.responseAreaMaxHeight;
   }
@@ -488,7 +488,7 @@ AbstractRequestPage._AbstractRequestList.__updateRequest = function(requestId, r
   Backend.updateRequest(requestId, request, callback);
 }
 
-AbstractRequestPage._AbstractRequestList.__updateResponse = function(requestId, response, completionCallback) {
+AbstractRequestPage._AbstractRequestList.__createResponse = function(requestId, response, completionCallback) {
   var callback = {
     success: function(requestId) {
       completionCallback();
@@ -498,7 +498,7 @@ AbstractRequestPage._AbstractRequestList.__updateResponse = function(requestId, 
     error: function() {
     }
   }
-  
+
   Backend.createResponse(requestId, response, callback);
 }
 
@@ -634,23 +634,28 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
     }.bind(this));
   }
 
-  var requestDate = new Date(request.time);
-  UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + request.text);
+  var appendTextElement = function() {
+    var requestDate = new Date(request.time);
+    UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + request.text);
 
-  if (isEditable) {
-    var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
-    UIUtils.addClass(controlPanel, "incomingrequest-controls");
+    if (isEditable) {
+      var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
+      UIUtils.addClass(controlPanel, "incomingrequest-controls");
 
-    var commentButton = UIUtils.appendButton(controlPanel, "CommentButton", "Comment");
-    UIUtils.addClass(commentButton, "incomingrequest-commentbutton");
-    UIUtils.setClickListener(commentButton, function() {
-      this.__appendCreateResponsePanel(request, function() {});
-    }.bind(this));
-  }
+      var commentButton = UIUtils.appendButton(controlPanel, "CommentButton", "Comment");
+      UIUtils.addClass(commentButton, "incomingrequest-commentbutton");
+      UIUtils.setClickListener(commentButton, function() {
+        UIUtils.get$(controlPanel).remove();
+        this.__appendCreateResponsePanel(requestHolderElement, request, appendTextElement);
+      }.bind(this));
+    }
+  }.bind(this);
+  
+  appendTextElement();
 }
 
-AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appendCreateResponsePanel = function(request, completionCallback) {
-  var createResponsePanel = UIUtils.appendBlock(this._rootContainer, "CreateResponsePanel");
+AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appendCreateResponsePanel = function(root, request, completionCallback) {
+  var createResponsePanel = UIUtils.appendBlock(root, "CreateResponsePanel");
   UIUtils.addClass(createResponsePanel, "outgoingresponse-createresponsepanel");
 
   var responseTextElement = createResponsePanel.appendChild(UIUtils.createTextArea(UIUtils.createId(createResponsePanel, "ResponseText"), 5));
@@ -661,21 +666,26 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
   var submitButton = UIUtils.appendButton(controlPanel, "SubmitButton", "Send");
   UIUtils.addClass(submitButton, "outgoingresponse-submitbutton");
   
+  var finishEditing = function() {
+    UIUtils.get$(createResponsePanel).remove();
+    completionCallback();
+  }
+  
   UIUtils.setClickListener(submitButton, function() {
     var responseText = UIUtils.get$(responseTextElement).val();
     if (responseText != "") {
       response = {
         text: responseText
       }
-      AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, response, completionCallback);
+      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, response, finishEditing);
     } else {
-      UIUtils.indicateInvalidInput(responseElementId);
+      UIUtils.indicateInvalidInput(responseTextElement);
     }
-  });
+  }.bind(this));
 
   var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
   UIUtils.addClass(cancelButton, "outgoingresponse-cancelbutton");
-  UIUtils.setClickListener(cancelButton, completionCallback);
+  UIUtils.setClickListener(cancelButton, finishEditing);
 }
 
 
@@ -727,7 +737,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
       UIUtils.get$(responseHolder).html("And more responses. Click to see them all");
     } else {
       var responseDate = new Date(response.time);
-      UIUtils.get$(responseHolder).html("<b>A " +  Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+      UIUtils.get$(responseHolder).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
     }
 
     if (response.status == Backend.Response.STATUS_UNREAD) {

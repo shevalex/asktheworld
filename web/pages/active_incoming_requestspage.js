@@ -19,15 +19,7 @@ ActiveIncomingRequestsPage.prototype.definePageContent = function(root) {
 
 ActiveIncomingRequestsPage.prototype.onShow = function(root) {
   this._requestList = new AbstractRequestPage.IncomingRequestList({
-    requestClickListener: function(requestId) {
-      var paramBundle = {
-        returnPageId: MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID,
-        requestId: requestId,
-        otherRequestIds: Backend.getIncomingRequestIds(Backend.Request.STATUS_ACTIVE)
-      }
-
-      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
-    },
+    requestClickListener: null,
     requestEditable: true,
     maxResponses: -1,
     responseAreaMaxHeight: "300px",
