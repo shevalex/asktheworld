@@ -5,7 +5,7 @@
 
 	<groupId>com.pisoft</groupId>
 	<artifactId>asktheworld</artifactId>
-	<version>0.0.2s</version>
+	<version>0.0.6s</version>
 	<packaging>war</packaging>
 
 	<name>asktheworld</name>
@@ -40,7 +40,27 @@
          <groupId>org.springframework.security</groupId>
          <artifactId>spring-security-web</artifactId>
     </dependency>
-
+    <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-tx</artifactId>
+    </dependency>
+    <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-orm</artifactId>
+    </dependency>
+	<dependency>
+  		<groupId>org.hibernate.javax.persistence</groupId>
+  		<artifactId>hibernate-jpa-2.0-api</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-entitymanager</artifactId>
+	</dependency>
+    <dependency>
+  		<groupId>org.postgresql</groupId>
+    	<artifactId>postgresql</artifactId>
+    	<version>9.3-1102-jdbc41</version>
+    </dependency>
 <!-- comment for a while
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -69,7 +89,15 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
+            <plugin>
+              <groupId>com.heroku.sdk</groupId>
+              <artifactId>heroku-maven-plugin</artifactId>
+              <version>0.3.0</version>
+              <configuration>
+                <appName>hidden-taiga-8809</appName>
+              </configuration>
+            </plugin>
+          </plugins>
 	</build>
 
     <repositories>
