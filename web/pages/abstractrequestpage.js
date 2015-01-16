@@ -373,7 +373,10 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.append 
       }
       
       this._appendRequestElement(request);
-      this.__appendResponses(this._requestId);
+      
+      if (this._settings.maxResponses != 0) {
+        this.__appendResponses(this._requestId);
+      }
     } else {
       if (this._settings.updateListener != null) {
         this._settings.updateListener.updateStarted();
@@ -513,21 +516,6 @@ AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype._appen
   throw "Not implemented"
 }
 
-AbstractRequestPage._AbstractRequestList.__setResponseStatus = function(requestId, responseId, status, completionCallback) {
-  var callback = {
-    success: function() {
-      completionCallback();
-    },
-    failure: function() {
-    },
-    error: function() {
-    }
-  }
-  
-  var response = {status: Backend.Response.STATUS_READ};
-  Backend.updateResponse(requestId, responseId, response, callback);
-}
-
 AbstractRequestPage._AbstractRequestList.__updateRequest = function(requestId, request, completionCallback) {
   var callback = {
     success: function(requestId) {
@@ -554,6 +542,24 @@ AbstractRequestPage._AbstractRequestList.__createResponse = function(requestId, 
   }
 
   Backend.createResponse(requestId, response, callback);
+}
+
+AbstractRequestPage._AbstractRequestList.__setResponseStatus = function(requestId, responseId, status, completionCallback) {
+  this.__updateResponse(requestId, responseId, {status: Backend.Response.STATUS_READ}, completionCallback);
+}
+
+AbstractRequestPage._AbstractRequestList.__updateResponse = function(requestId, responseId, response, completionCallback) {
+  var callback = {
+    success: function() {
+      completionCallback();
+    },
+    failure: function() {
+    },
+    error: function() {
+    }
+  }
+  
+  Backend.updateResponse(requestId, responseId, response, callback);
 }
 
 
@@ -764,7 +770,8 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
       UIUtils.setClickListener(responseHolder, function() {
         AbstractRequestPage._AbstractRequestList.__setResponseStatus(this._requestId, this._responseId, Backend.Response.STATUS_READ, function() {
         });
-        UIUtils.removeClass(responseHolder, "incomingresponse-text-holder-activable");
+        //We update when the server informs us to update
+        //UIUtils.removeClass(responseHolder, "incomingresponse-text-holder-activable");
       }.bind(this));
     }
       
@@ -815,6 +822,33 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
 }
 
 AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appendEditPanel = function(root, response, completionCallback) {
+  var editPanel = UIUtils.appendBlock(root, "RequestEditPanel");
+  
+  var responseDate = new Date(response.time);
+  UIUtils.appendLabel(editPanel, "Label", "You responded on <b>" + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() +"</b>");
+  
+  var textArea = editPanel.appendChild(UIUtils.createTextArea(UIUtils.createId(editPanel, "Text"), 6));
+  UIUtils.get$(textArea).val(response.text);
+
+  var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
+  UIUtils.addClass(controlPanel, "outgoingresponse-controls");
+  
+  var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", "Update");
+  UIUtils.addClass(updateButton, "outgoingresponse-updatebutton");
+  UIUtils.setClickListener(updateButton, function() {
+    response.text = UIUtils.get$(textArea).val();
+
+    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, response, completionCallback);
+  }.bind(this));
+  
+  UIUtils.setClickListener(deactivateButton, function() {
+    request.status = Backend.Request.STATUS_INACTIVE;
+    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, this._responseId, request, completionCallback);
+  }.bind(this));
+  
+  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
+  UIUtils.addClass(cancelButton, "outgoingresponse-cancelbutton");
+  UIUtils.setClickListener(cancelButton, completionCallback);
 }
 
 
@@ -849,7 +883,6 @@ AbstractRequestPage.OutgoingRequestList.prototype._getResponseIdsChangeEventType
 
 
 
-
 AbstractRequestPage.IncomingRequestList = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList, function IncomingRequestList(settings) {
   AbstractRequestPage._AbstractRequestList.call(this, settings);
 });
@@ -878,4 +911,134 @@ AbstractRequestPage.IncomingRequestList.prototype._getResponseIdsChangeEventType
   return Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
 }
 
+
+
+
+
+// THIS IS THE SECTION WHICH DEFINES RequestStatistics object
+
+AbstractRequestPage._AbstractRequestStatistics = ClassUtils.defineClass(Object, function _AbstractRequestStatistics(requestStatus, responseStatus, updateListener) {
+  this._requestStatus = requestStatus;
+  this._responseStatus = responseStatus;
+  this._updateListener = updateListener;
+
+  this._statistics = {};
+  
+  this._cacheChangeListener = function(event) {
+    if (event.type == this._getRequestIdsChangeEventType()) {
+      var requestIds = this._getRequestIds(this._requestStatus);
+      for (var index in requestIds) {
+        var requestId = requestIds[index];
+        if (!this._statistics.hasOwnProperty(requestId)) {
+          var responseIds = this._getResponseIds(requestId, this._responseStatus);
+          if (responseIds != null) {
+            this._statistics[this.requestId] = responseIds.length;
+          } else {
+            this._statistics[requestId] = null;
+          }
+        }
+      }
+
+      this._updateListener();
+      //TODO: remove obsolete records from statistics if needed
+    } else if (event.type == this._getResponseIdsChangeEventType()
+               && this._statistics.hasOwnProperty(event.requestId)) {
+
+      this._statistics[this.requestId] = this._getResponseIds(event.requestId, this._responseStatus).length;
+
+      this._updateListener();
+    }
+  }.bind(this);
+});
+
+AbstractRequestPage._AbstractRequestStatistics.prototype.start = function() {
+  Backend.addCacheChangeListener(this._cacheChangeListener);
+  
+  var requestIds = this._getRequestIds(this._requestStatus);
+  if (requestIds != null) {
+    for (var index in requestIds) {
+      var requestId = requestIds[index];
+
+      this._statistics[requestId] = null;
+      
+      var responseIds = this._getResponseIds(requestId, this._responseStatus);
+      if (responseIds != null) {
+        this._statistics[this.requestId] = responseIds.length;
+      }
+    }
+  }
+  
+  this._updateListener();
+}
+
+AbstractRequestPage._AbstractRequestStatistics.prototype.stop = function() {
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
+}
+
+AbstractRequestPage._AbstractRequestStatistics.prototype.getStatistics = function() {
+  return this._statistics;
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestStatistics.prototype._getRequestIds = function(requestStatus) {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestStatistics.prototype._getRequestIdsChangeEventType = function() {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestStatistics.prototype._getResponseIds = function(requestId, responseStatus) {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestStatistics.prototype._getResponseIdsChangeEventType = function() {
+  throw "Not implemented";
+}
+
+
+
+AbstractRequestPage.OutgoingRequestStatistics = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestStatistics, function OutgoingRequestStatistics(requestStatus, responseStatus, updateListener) {
+  AbstractRequestPage._AbstractRequestStatistics.call(this, requestStatus, responseStatus, updateListener);
+});
+
+AbstractRequestPage.OutgoingRequestStatistics.prototype._getRequestIds = function(requestStatus) {
+  return Backend.getOutgoingRequestIds(requestStatus);
+}
+
+AbstractRequestPage.OutgoingRequestStatistics.prototype._getRequestIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED;
+}
+
+AbstractRequestPage.OutgoingRequestStatistics.prototype._getResponseIds = function(requestId, responseStatus) {
+  return Backend.getIncomingResponseIds(requestId, responseStatus);
+}
+
+AbstractRequestPage.OutgoingRequestStatistics.prototype._getResponseIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED;
+}
+
+
+AbstractRequestPage.IncomingRequestStatistics = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestStatistics, function IncomingRequestStatistics(requestStatus, responseStatus, updateListener) {
+  AbstractRequestPage._AbstractRequestStatistics.call(this, requestStatus, responseStatus, updateListener);
+});
+
+AbstractRequestPage.IncomingRequestStatistics.prototype._getRequestIds = function(requestStatus) {
+  return Backend.getIncomingResponseIds(requestStatus);
+}
+
+AbstractRequestPage.IncomingRequestStatistics.prototype._getRequestIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED;
+}
+
+AbstractRequestPage.IncomingRequestStatistics._getResponseIds = function(requestId, responseStatus) {
+  return Backend.getOutgoingResponseIds(requestId, responseStatus);
+}
+
+AbstractRequestPage.IncomingRequestStatistics.prototype._getResponseIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
+}
 

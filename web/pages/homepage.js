@@ -4,6 +4,8 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   this._requestList = null;
   this._requestsPanelRequests = null;
   this._requestsStatusElement = null;
+  
+  this._statistics = null;
 });
 
 HomePage.prototype.definePageContent = function(root) {
@@ -28,11 +30,28 @@ HomePage.prototype.definePageContent = function(root) {
   inquiryPanel.appendChild(UIUtils.createBlock("HomePage-InquiryPanel-Status"));
   $("#HomePage-InquiryPanel-Status").html("Checking if you have any new inquiries...");
   */
+  
+  
+  this._statistics = new AbstractRequestPage.OutgoingRequestStatistics(Backend.Request.STATUS_ACTIVE, Backend.Response.STATUS_UNREAD, function() {
+    var info = this._statistics.getStatistics();
+    
+    var countRequests = 0;
+    var countResponses = 0; 
+    for (var id in info) {
+      countRequests++;
+      if (info[id] != null) {
+        countResponses += info[id];
+      }
+    }
+    
+    UIUtils.get$(this._requestsStatusElement).html("You have " + countResponses + " unviewed responses for " + countRequests + " your requests");
+  }.bind(this));
 }
 
 HomePage.prototype.onShow = function(root) {
   UIUtils.get$(this._requestsStatusElement).html("Checking if you have any new responses to your requests...");
-  
+  this._statistics.start();
+
   this._requestList = new AbstractRequestPage.OutgoingRequestList({
     requestClickListener: function(requestId) {
       var paramBundle = {
@@ -44,18 +63,16 @@ HomePage.prototype.onShow = function(root) {
       Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     },
     requestEditable: false,
-    maxResponses: 3,
+    maxResponses: 0,
     responseAreaMaxHeight: -1,
     unviewedResponsesOnly: true,
+    requestStatus: Backend.Request.STATUS_ACTIVE,
     updateListener: {
       updateStarted: function() {
         Application.showSpinningWheel();
       },
       updateFinished: function() {
         Application.hideSpinningWheel();
-        
-        var info = this._requestList.getInfo();
-        UIUtils.get$(this._requestsStatusElement).html("You have " + info.responseIds.length + " unviewed responses for " + info.requestIds.length + " your requests");
       }.bind(this)
     }
   });
@@ -65,6 +82,7 @@ HomePage.prototype.onShow = function(root) {
 
 HomePage.prototype.onHide = function() {
   this._requestList.remove();
+  this._statistics.stop();
 }
 
 

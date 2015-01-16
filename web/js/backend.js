@@ -202,7 +202,7 @@ Backend.Response.STATUS_READ = "read";
 
 
 
-Backend.createRequest = function(request, requestParams, transactionCallback) {
+Backend.createRequest = function(request, transactionCallback) {
   setTimeout(function() {
     var newRequestId = "request" + this._cache.outgoingRequestIds.length;
     this._cache.outgoingRequestIds.push(newRequestId);
@@ -365,6 +365,42 @@ Backend.getRequest = function(requestId) {
   return null;
 }
 
+Backend.getResponse = function(requestId, responseId) {
+  if (this._cache.responses != null) {
+    var response = this._cache.responses[responseId];
+    
+    if (response != null) {
+      return response;
+    }
+  }
+  
+  Backend._pullResponse(requestId, responseId);
+  return null;
+}
+
+Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
+  setTimeout(function() {
+    var existingResponse = this._cache.responses[responseId];
+    for (var key in response) {
+      if (key == "status" && existingResponse[key] != response[key] && response.status == Backend.Response.STATUS_READ) {
+        for (var index in this._cache.incomingResponseIds[requestId].unviewed) {
+          if (this._cache.incomingResponseIds[requestId].unviewed[index] == responseId) {
+            this._cache.incomingResponseIds[requestId].unviewed.splice(index, 1);
+            this._cache.incomingResponseIds[requestId].viewed.push(responseId);
+            break;
+          }
+        }
+      }
+      existingResponse[key] = response[key];
+    }
+
+    transactionCallback.success();
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
+  }.bind(this), 1000);
+}
+
+
 Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
     var responseIds = [];
@@ -409,33 +445,6 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
   }
 }
 
-Backend.getResponse = function(requestId, responseId) {
-  if (this._cache.responses != null) {
-    var response = this._cache.responses[responseId];
-    
-    if (response != null) {
-      return response;
-    }
-  }
-  
-  Backend._pullResponse(requestId, responseId);
-  return null;
-}
-
-Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
-  setTimeout(function() {
-    var existingResponse = this._cache.responses[responseId];
-    for (var key in response) {
-      existingResponse[key] = response[key];
-    }
-
-    transactionCallback.success();
-
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
-  }.bind(this), 1000);
-}
-
-
 
 
 Backend.CacheChangeEvent = {type: null, requestId: null, responseId: null};
@@ -448,7 +457,9 @@ Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED = "incoming_responses_c
 
 
 Backend.addCacheChangeListener = function(listener) {
-  this._cacheChangeListeners.push(listener);
+  if (listener != null) {
+    this._cacheChangeListeners.push(listener);
+  }
 }
 
 Backend.removeCacheChangeListener = function(listener) {

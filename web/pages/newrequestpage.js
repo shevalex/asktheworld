@@ -67,18 +67,15 @@ NewRequestPage.prototype._createRequest = function() {
   var request = {
     text: $("#NewRequestPage-RequestContentPanel-Text").val(),
     pictures: [],
-    audios: []
-  }
-  
-  var requestParams = {
+    audios: [],
     gender: $("#NewRequestPage-RequestParametersPanel-Gender").val(),
     quantity: $("#NewRequestPage-RequestParametersPanel-Quantity").val(),
     waitTime: $("#NewRequestPage-RequestParametersPanel-WaitTime").val(),
     age: $("#NewRequestPage-RequestParametersPanel-AgeCategory").val()
   }
-
+  
   UIUtils.setEnabled("NewRequestPage-RequestControlPanel-SendButton", false);
   Application.showSpinningWheel();
 
-  Backend.createRequest(request, requestParams, callback);
+  Backend.createRequest(request, callback);
 }
