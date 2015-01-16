@@ -33,10 +33,10 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
       Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     },
     requestEditable: true,
-    requestStatus: Backend.Request.STATUS_ACTIVE,
     maxResponses: -1,
     responseAreaMaxHeight: "300px",
-    unviewedResponsesOnly: true,
+    requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE,
+    responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED,
     updateListener: {
       updateStarted: function() {
         Application.showSpinningWheel();

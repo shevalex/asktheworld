@@ -221,12 +221,12 @@ AbstractRequestPage.IncomingRequestsTable.prototype._getRowData = function(reque
 
 /*
  * settings.requestIds
- * settings.requestStatus
  * settings.requestClickListener
  * settings.requestEditable: boolean
+ * settings.requestInclusionPolicy: mask
+ * settings.responseInclusionPolicy: mask
  * settings.maxResponses: integer, -1 for unlimited
  * settings.responseAreaMaxHeight: "measure unit", -1 for unlimited
- * settings.unviewedResponsesOnly: boolean
  * settings.updateListener
  */
 AbstractRequestPage._AbstractRequestList = ClassUtils.defineClass(Object, function _AbstractRequestList(settings) {
@@ -237,6 +237,17 @@ AbstractRequestPage._AbstractRequestList = ClassUtils.defineClass(Object, functi
   this._cacheChangeListener = null;
   this._requestPanels = [];
 });
+
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ALL = 0;
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITH_RESPONSES = 1;
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES = 2;
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE = 4;
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_INACTIVE = 8;
+
+AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_ALL = 0;
+AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_VIEWED = 1;
+AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED = 2;
+
 
 //abstract
 AbstractRequestPage._AbstractRequestList.prototype._createRequestPanel = function(requestId) {
@@ -249,12 +260,12 @@ AbstractRequestPage._AbstractRequestList.prototype._createResponsePanel = functi
 }
 
 //abstract
-AbstractRequestPage._AbstractRequestList.prototype._getRequestIds = function() {
+AbstractRequestPage._AbstractRequestList.prototype._getRequestIds = function(status) {
   throw "Not implemented"
 }
 
 //abstract
-AbstractRequestPage._AbstractRequestList.prototype._getResponseIds = function(requestId) {
+AbstractRequestPage._AbstractRequestList.prototype._getResponseIds = function(requestId, status) {
   throw "Not implemented"
 }
 
@@ -275,8 +286,10 @@ AbstractRequestPage._AbstractRequestList.prototype.append = function(root) {
       requestPanel.append(this._rootContainer);
     }
   } else {
+    var status = this.__getRequestStatusFromSettings();
+    
     var appendRequestPanels = function() {
-      var requestIds = this._getRequestIds();
+      var requestIds = this._getRequestIds(status);
       if (requestIds != null) {
         if (this._settings.updateListener != null) {
           this._settings.updateListener.updateFinished();
@@ -345,6 +358,27 @@ AbstractRequestPage._AbstractRequestList.prototype.getInfo = function() {
   
   return info;
 }
+
+AbstractRequestPage._AbstractRequestList.prototype.__getRequestStatusFromSettings = function() {
+  var status = null;
+  if ((this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE) != 0) {
+    status = Backend.Request.STATUS_ACTIVE;
+  } else if ((this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_INACTIVE) != 0) {
+    status = Backend.Request.REQUEST_INCLUSION_POLICY_STATUS_INACTIVE;
+  }
+  return status;
+}
+
+AbstractRequestPage._AbstractRequestList.prototype.__getResponseStatusFromSettings = function() {
+  var status = null;
+  if ((this._settings.responseInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_VIEWED) != 0) {
+    status = Backend.Response.STATUS_READ;
+  } else if ((this._settings.responseInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED) != 0) {
+    status = Backend.Response.STATUS_UNREAD;
+  }
+  return status;
+}
+
 
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel = ClassUtils.defineClass(Object, function _AbstractRequestPanel(requestList, requestId, settings) {
   this._settings = settings;
@@ -417,9 +451,11 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
   if (this._settings.responseAreaMaxHeight != null && this._settings.responseAreaMaxHeight != -1) {
     responsesPanel.style.maxHeight = this._settings.responseAreaMaxHeight;
   }
+  
+  var status = this._requestList.__getResponseStatusFromSettings();
 
   var appendResponsePanels = function() {
-    var responseIds = this._requestList._getResponseIds(requestId);
+    var responseIds = this._requestList._getResponseIds(requestId, status);
     if (responseIds != null) {
       if (this._settings.updateListener != null) {
         this._settings.updateListener.updateFinished();
@@ -865,12 +901,12 @@ AbstractRequestPage.OutgoingRequestList.prototype._createResponsePanel = functio
   return new AbstractRequestPage._AbstractRequestList._IncomingResponsePanel(requestId, responseId, this._settings);
 }
 
-AbstractRequestPage.OutgoingRequestList.prototype._getRequestIds = function() {
-  return Backend.getOutgoingRequestIds(this._settings.requestStatus);
+AbstractRequestPage.OutgoingRequestList.prototype._getRequestIds = function(status) {
+  return Backend.getOutgoingRequestIds(status);
 }
 
-AbstractRequestPage.OutgoingRequestList.prototype._getResponseIds = function(requestId) {
-  return Backend.getIncomingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_UNREAD : null);
+AbstractRequestPage.OutgoingRequestList.prototype._getResponseIds = function(requestId, status) {
+  return Backend.getIncomingResponseIds(requestId, status);
 }
 
 AbstractRequestPage.OutgoingRequestList.prototype._getRequestIdsChangeEventType = function() {
@@ -895,12 +931,12 @@ AbstractRequestPage.IncomingRequestList.prototype._createResponsePanel = functio
   return new AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel(requestId, responseId, this._settings);
 }
 
-AbstractRequestPage.IncomingRequestList.prototype._getRequestIds = function() {
-  return Backend.getIncomingRequestIds(this._settings.requestStatus);
+AbstractRequestPage.IncomingRequestList.prototype._getRequestIds = function(status) {
+  return Backend.getIncomingRequestIds(status);
 }
 
-AbstractRequestPage.IncomingRequestList.prototype._getResponseIds = function(requestId) {
-  return Backend.getOutgoingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_UNREAD : null);
+AbstractRequestPage.IncomingRequestList.prototype._getResponseIds = function(requestId, status) {
+  return Backend.getOutgoingResponseIds(requestId, status);
 }
 
 AbstractRequestPage.IncomingRequestList.prototype._getRequestIdsChangeEventType = function() {

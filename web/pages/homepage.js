@@ -65,8 +65,8 @@ HomePage.prototype.onShow = function(root) {
     requestEditable: false,
     maxResponses: 0,
     responseAreaMaxHeight: -1,
-    unviewedResponsesOnly: true,
-    requestStatus: Backend.Request.STATUS_ACTIVE,
+    requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE,
+    responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED,
     updateListener: {
       updateStarted: function() {
         Application.showSpinningWheel();
