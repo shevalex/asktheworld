@@ -473,6 +473,11 @@ Backend.removeCacheChangeListener = function(listener) {
 
 
 Backend._pullOutgoingRequestIds = function() {
+  if (this._cache.outgoingRequestIds_pulling != null) {
+    return;
+  }
+  this._cache.outgoingRequestIds_pulling = "";
+  
   setTimeout(function() {
     this._cache.outgoingRequestIds = [];
 
@@ -481,11 +486,17 @@ Backend._pullOutgoingRequestIds = function() {
       this._cache.outgoingRequestIds.push("request" + i);
     }
 
+    this._cache.outgoingRequestIds_pulling = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
   }.bind(this), 1000);
 }
 
 Backend._pullIncomingRequestIds = function() {
+  if (this._cache.incomingRequestIds_pulling != null) {
+    return;
+  }
+  this._cache.incomingRequestIds_pulling = "";
+  
   setTimeout(function() {
     this._cache.incomingRequestIds = [];
 
@@ -494,11 +505,21 @@ Backend._pullIncomingRequestIds = function() {
       this._cache.incomingRequestIds.push("request" + (100 + i));
     }
 
+    this._cache.incomingRequestIds_pulling = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
   }.bind(this), 1000);
 }
 
 Backend._pullIncomingResponseIds = function(requestId) {
+  if (this._cache.incomingResponseIds_pulling != null) {
+    if (this._cache.incomingResponseIds_pulling[requestId] != null) {
+      return;
+    }
+  } else {
+    this._cache.incomingResponseIds_pulling = {};
+  }
+  this._cache.incomingResponseIds_pulling[requestId] = "";
+
   setTimeout(function() {
     if (this._cache.incomingResponseIds == null) {
       this._cache.incomingResponseIds = {};
@@ -515,11 +536,21 @@ Backend._pullIncomingResponseIds = function(requestId) {
       }
     }
 
+    this._cache.incomingResponseIds_pulling[requestId] = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
   }.bind(this), 1000);
 }
 
 Backend._pullOutgoingResponseIds = function(requestId) {
+  if (this._cache.outgoingResponseIds_pulling != null) {
+    if (this._cache.outgoingResponseIds_pulling[requestId] != null) {
+      return;
+    }
+  } else {
+    this._cache.outgoingRequestIds_pulling = {};
+  }
+  this._cache.outgoingResponseIds_pulling[requestId] = "";
+
   setTimeout(function() {
     if (this._cache.outgoingResponseIds == null) {
       this._cache.outgoingResponseIds = {};
@@ -536,11 +567,21 @@ Backend._pullOutgoingResponseIds = function(requestId) {
       }
     }
 
+    this._cache.outgoingResponseIds_pulling[requestId] = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId});
   }.bind(this), 1000);
 }
 
 Backend._pullRequest = function(requestId) {
+  if (this._cache.requests_pulling != null) {
+    if (this._cache.requests_pulling[requestId] != null) {
+      return;
+    }
+  } else {
+    this._cache.requests_pulling = {};
+  }
+  this._cache.requests_pulling[requestId] = "";
+  
   setTimeout(function() {
     if (this._cache.requests == null) {
       this._cache.requests = {};
@@ -548,11 +589,21 @@ Backend._pullRequest = function(requestId) {
 
     this._cache.requests[requestId] = this._createDummyRequest(requestId);
 
+    this._cache.requests_pulling[requestId] = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId});
   }.bind(this), 1000);
 }
 
 Backend._pullResponse = function(requestId, responseId) {
+  if (this._cache.responses_pulling != null) {
+    if (this._cache.responses_pulling[responseId] != null) {
+      return;
+    }
+  } else {
+    this._cache.responses_pulling = {};
+  }
+  this._cache.responses_pulling[responseId] = "";
+
   setTimeout(function() {
     if (this._cache.responses == null) {
       this._cache.responses = {};
@@ -560,6 +611,7 @@ Backend._pullResponse = function(requestId, responseId) {
 
     this._cache.responses[responseId] = this._createDummyResponse(requestId, responseId);
 
+    this._cache.responses_pulling[responseId] = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
   }.bind(this), 1000);
 }
@@ -626,119 +678,6 @@ Backend._createDummyResponse = function(requestId, responseId) {
   return response;
 }
 
-
-
-Backend.isRequestCacheInitialized = function() {
-  return this._requestCacheInitialized;
-}
-
-
-
-
-
-Backend.getCachedOutgoingRequestIds = function(requestStatus) {
-  var requestIds = [];
-  for (var id in this._requestsCache) {
-    if ((requestStatus == null || this._requestsCache[id].status == requestStatus)
-        && this._requestsCache[id]._owned) {
-      requestIds.push(id);
-    }
-  }
-  
-  return requestIds;
-}
-
-Backend.getCachedIncomingRequestIds = function(requestStatus) {
-  var requestIds = [];
-  for (var id in this._requestsCache) {
-    if ((requestStatus == null || this._requestsCache[id].status == requestStatus)
-        && !this._requestsCache[id]._owned) {
-      requestIds.push(id);
-    }
-  }
-  
-  return requestIds;
-}
-
-Backend.getCachedRequest = function(requestId) {
-  return this._requestsCache[requestId];
-}
-
-Backend.getCachedResponse = function(requestId, responseId) {
-  var request = this._requestsCache[requestId];
-  if (request != null) {
-    return request._responses[responseId];
-  }
-  
-  return null;
-}
-  
-
-Backend._updateRequestCache = function() {
-  //TBD
-  
-  if (!this._requestCacheInitialized) {
-    // This is all one-time fake data
-    var numOfRequests = Math.random() * 100;
-    for (var requestCounter = 0; requestCounter < numOfRequests; requestCounter++) {
-      var quantity = Math.round(Math.random() * 3);
-      var waitTime = Math.round(Math.random() * 4);
-      var age = Math.round(Math.random() * 5);
-      var gender = Math.round(Math.random() * 2);
-      var activeStatus = Math.random() < 0.1;
-      var owned = Math.random() < 0.3;
-  
-      var requestId = "request" + requestCounter;
-      
-      var request = {
-        time: Date.now(),
-        text: "This is the request with the id " + requestId,
-        pictures: [],
-        audios: [],
-        response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity],
-        response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
-        response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
-        response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
-        status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE,
-        responseIds: [],
-        _owned: owned,
-        _responses: {}
-      };
-    
-      var numOfResponses = 0;;//Math.random() * 100;
-      for (var responseCounter = 0; responseCounter < numOfResponses; responseCounter++) {
-        var age = Math.round(Math.random() * 4);
-        var gender = Math.round(Math.random());
-        var statusUnread = Math.random() < 0.1;
-    
-        var response = {
-          time: Date.now(),
-          text: "This is the response " + responseId + " to the request " + requestId,
-          pictures: [],
-          audios: [],
-          age_category: Application.Configuration.AGE_CATEGORIES[age],
-          gender: Application.Configuration.GENDERS[gender],
-          status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ
-        }
-      
-        var responseId = "response" + responseCounter;
-        request.responseIds.push(responseId);
-        request._responses[responseId] = response;
-      }
-    
-      this._requestsCache[requestId] = request;
-    }
-    
-    this._requestCacheInitialized = true;
-  }
-  
-  // This is a temporary behavior until we pull data from the server.
-  setTimeout(function() {
-    for (var index in this._requestsChangeListeners) {
-      this._requestsChangeListeners[index]();
-    }
-  }.bind(this), 3000);
-}
 
 
 

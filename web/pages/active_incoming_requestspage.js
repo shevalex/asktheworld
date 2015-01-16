@@ -21,6 +21,7 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
   this._requestList = new AbstractRequestPage.IncomingRequestList({
     requestClickListener: null,
     requestEditable: true,
+    requestStatus: Backend.Request.STATUS_ACTIVE,
     maxResponses: -1,
     responseAreaMaxHeight: "300px",
     unviewedResponsesOnly: true,

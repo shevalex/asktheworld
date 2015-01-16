@@ -424,7 +424,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
       if (this._settings.updateListener != null) {
         this._settings.updateListener.updateFinished();
       }
-      
+
       for (var responseCount = 0; responseCount < responseIds.length; responseCount++) {
         var responsePanel = null;
         if (this._settings.maxResponses == null || this._settings.maxResponses == -1 || responseCount < this._settings.maxResponses) {
@@ -481,7 +481,7 @@ AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype.append
       if (this._settings.updateListener != null) {
         this._settings.updateListener.updateFinished();
       }
-      
+
       this._appendResponseElement(response);
     } else {
       if (this._settings.updateListener != null) {
@@ -756,7 +756,7 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel = ClassUtils.def
 AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appendResponseElement = function(response) {
   var responseHolder = UIUtils.appendBlock(this._rootContainer, "TextHolder");
   UIUtils.addClass(responseHolder, "incomingresponse-text-holder");
-  
+
   if (this._responseId == -1) {
     if (this._settings.requestClickListener != null) {
       UIUtils.addClass(responseHolder, "incomingresponse-text-holder-activable");
@@ -927,12 +927,14 @@ AbstractRequestPage._AbstractRequestStatistics = ClassUtils.defineClass(Object, 
   this._cacheChangeListener = function(event) {
     if (event.type == this._getRequestIdsChangeEventType()) {
       var requestIds = this._getRequestIds(this._requestStatus);
+
       for (var index in requestIds) {
         var requestId = requestIds[index];
+        
         if (!this._statistics.hasOwnProperty(requestId)) {
           var responseIds = this._getResponseIds(requestId, this._responseStatus);
           if (responseIds != null) {
-            this._statistics[this.requestId] = responseIds.length;
+            this._statistics[requestId] = responseIds.length;
           } else {
             this._statistics[requestId] = null;
           }
@@ -944,7 +946,7 @@ AbstractRequestPage._AbstractRequestStatistics = ClassUtils.defineClass(Object, 
     } else if (event.type == this._getResponseIdsChangeEventType()
                && this._statistics.hasOwnProperty(event.requestId)) {
 
-      this._statistics[this.requestId] = this._getResponseIds(event.requestId, this._responseStatus).length;
+      this._statistics[event.requestId] = this._getResponseIds(event.requestId, this._responseStatus).length;
 
       this._updateListener();
     }

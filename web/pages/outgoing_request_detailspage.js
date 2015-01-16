@@ -13,7 +13,7 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink("OutgoingRequestDetailsPage-GeneralPanel-PreviousLink", "Previous"));
   UIUtils.setEnabled("OutgoingRequestDetailsPage-GeneralPanel-PreviousLink", false);
 
-  generalPanel.appendChild(UIUtils.createSpan("56%", "0 2% 2% 0")).appendChild(UIUtils.createLink("OutgoingRequestDetailsPage-GeneralPanel-GoBackLink", "Go back to the request list"));
+  generalPanel.appendChild(UIUtils.createSpan("56%", "0 2% 2% 0")).appendChild(UIUtils.createLink("OutgoingRequestDetailsPage-GeneralPanel-GoBackLink", "Take me back"));
   generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink("OutgoingRequestDetailsPage-GeneralPanel-NextLink", "Next"));
   UIUtils.setEnabled("OutgoingRequestDetailsPage-GeneralPanel-NextLink", false);
 
