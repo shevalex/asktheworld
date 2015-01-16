@@ -2,18 +2,38 @@ package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
 
-public class UserSettings implements Serializable {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+public class ATWUserSettings implements Serializable {
 /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@Column
+	@JsonIgnore	
+	private int id;
+	
+	@Column
 	private int	default_response_quantity = 5;
+	@Column
 	private int default_response_wait_time = 1; //hour  
+	@Column
 	String default_response_age_group_preference;
 	//”: [“teens”, “adult”, “senior”],  
+	@Column
 	private int inquary_quantity_per_day = 5;
+	@Column
 	private String inquary_gender_preference = "any";
+	@Column
 	private String inquary_age_group_preference;
 	//[“teens”, “adult”, “senior”]
 
@@ -54,9 +74,14 @@ public class UserSettings implements Serializable {
 	public void setInquary_age_group_preference(String inquary_age_group_preference) {
 		this.inquary_age_group_preference = inquary_age_group_preference;
 	}
-	
-	public UserSettings copy() {
-		UserSettings userSettings = new UserSettings();
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}	
+	public ATWUserSettings copy() {
+		ATWUserSettings userSettings = new ATWUserSettings();
 		
 		//check fields
 		if ( default_response_quantity > 0 && default_response_quantity < 1000) userSettings.setDefault_response_quantity(default_response_quantity);
@@ -71,8 +96,10 @@ public class UserSettings implements Serializable {
 		return userSettings;
 	}
 	
-	
-	
+	@Override
+	public String toString() {
+		return "id="+id+"; default_response_quantity="+default_response_quantity+"; default_response_wait_time="+default_response_wait_time+"; and etc";
+	}
 }
 
 

@@ -22,8 +22,12 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
     
     @IBOutlet weak var Gender_Reg: UITextField!
 
+    @IBOutlet weak var Languages_Reg: UITextField!
     
-    
+    @IBAction func Language_Type_2(sender: AnyObject) {
+        
+            self.performSegueWithIdentifier("Lang_seg", sender: self)
+    }
     @IBAction func RegisterButton_Reg(sender: AnyObject) {        
         var username:NSString = UserNameField_Reg.text
         var password:NSString = PasswordField_Reg.text
@@ -84,6 +88,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
             var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
                 println("Response: \(response)")
                 let res = response as NSHTTPURLResponse!;
+                println(res.statusCode)
                 dispatch_async(dispatch_get_main_queue()) {
                    if (res.statusCode == 201) {
                        println("Register success!");
@@ -106,7 +111,6 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
                        alertView.show()
                    }
                 }
-                println(res.statusCode)
             })
 
             task.resume()

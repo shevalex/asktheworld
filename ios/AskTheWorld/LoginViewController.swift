@@ -28,7 +28,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             alertView.show()
         } else {
             
-            var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!)
+           // var url:NSURL = NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user?login=\(username)")!
+           // println(url)
+           // var request = NSMutableURLRequest(URL: url)
+            var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user?login=\(username)")!)
             var session = NSURLSession.sharedSession()
             request.HTTPMethod = "GET"
             
@@ -39,9 +42,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             request.addValue("\(username):\(password)", forHTTPHeaderField: "Token")
 
             var task = session.dataTaskWithRequest(request) {data, response, error -> Void in
-                println("Response: \(response)")
                 println("Error: \(error)")
                 println(request.allHTTPHeaderFields)
+            //    var strData = NSString(data: data, encoding: NSUTF8StringEncoding)!
+            //    println("Data: \(strData)")
+                
                 let res = response as NSHTTPURLResponse!;
                 dispatch_async(dispatch_get_main_queue()) {
                     if (res.statusCode == 200)
@@ -50,6 +55,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                         prefs.setObject(username, forKey: "username")
                         prefs.setInteger(1, forKey: "IsLogin")
                         prefs.synchronize()
+                        
+                        var userId_dict: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as NSDictionary
+                      //  println(userId_dict["userId"]!)
                         
                         self.dismissViewControllerAnimated(true, completion: nil)
                     }
@@ -68,15 +76,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             
             task.resume()
 
-            /* Old method
+            /* Old method - just for reference
             var url:NSURL = NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!
             
             var request:NSMutableURLRequest = NSMutableURLRequest(URL: url)
             request.HTTPMethod = "GET"
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.setValue("\(username):\(password)", forHTTPHeaderField: "Token")
-            //request.setValue("\"\(username)\":\"\(password)\"", forHTTPHeaderField: "Token")
+            request.addValue("\(username):\(password)", forHTTPHeaderField: "Token")
             
             var reponseError: NSError?
             var response: NSURLResponse?
@@ -98,8 +105,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 if (res.statusCode == 200)
                 {
                     var prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
-                    prefs.setObject(username, forKey: "USERNAME")
-                    prefs.setInteger(1, forKey: "ISLOGGEDIN")
+                    prefs.setObject(username, forKey: "username")
+                    prefs.setInteger(1, forKey: "IsLogin")
                     prefs.synchronize()
                     
                     self.dismissViewControllerAnimated(true, completion: nil)

@@ -27,7 +27,8 @@ import com.pisoft.asktheworld.data.DB;
 public class AuthFilter extends GenericFilterBean {
 
     AuthenticationManager authManager;
-    DB db = DB.getInstance();
+    @Autowired
+    private DB db;
     Collection<GrantedAuthority> admin;
     Collection<GrantedAuthority> user;
     Collection<GrantedAuthority> realUser;
@@ -44,8 +45,6 @@ public class AuthFilter extends GenericFilterBean {
         realUser.add(new GrantedAuthorityImpl("ROLE_REAL_USER"));
 
     }
-    
-    
     
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
@@ -66,11 +65,12 @@ public class AuthFilter extends GenericFilterBean {
             	System.out.println("Path info: " +pattern);
             	UsernamePasswordAuthenticationToken authentication;
             	// build an Authentication object with the user's info
-            	if(pattern.endsWith("/"+db.findUser(cr[0]).getId())) {
-
+            	if(pattern.startsWith("/user/"+db.findUser(cr[0]).getId())) {
+            		System.out.println("Pattern presents");
                     authentication = 
                             new UsernamePasswordAuthenticationToken(cr[0], cr[1], cr[0].equals("Alex") ? admin:realUser );
-            	} else { 
+            	} else {
+            		System.out.println("Pattern Is not presents");
                     authentication = 
                             new UsernamePasswordAuthenticationToken(cr[0], cr[1], cr[0].equals("Alex") ? admin:user );
             	}
