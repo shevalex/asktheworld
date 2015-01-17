@@ -24,7 +24,7 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
     maxResponses: -1,
     responseAreaMaxHeight: "300px",
     requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE,
-    responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED,
+    responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_ALL,
     updateListener: {
       updateStarted: function() {
         Application.showSpinningWheel();

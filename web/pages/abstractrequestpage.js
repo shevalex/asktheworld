@@ -255,7 +255,7 @@ AbstractRequestPage._AbstractRequestList.prototype._createRequestPanel = functio
 }
 
 //abstract
-AbstractRequestPage._AbstractRequestList.prototype._createResponsePanel = function(requestId, responseId) {
+AbstractRequestPage._AbstractRequestList.prototype._createResponsePanel = function(requestList, requestId, responseId) {
   throw "Not implemented"
 }
 
@@ -498,9 +498,9 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
       for (var responseCount = 0; responseCount < responseIds.length; responseCount++) {
         var responsePanel = null;
         if (this._settings.maxResponses == null || this._settings.maxResponses == -1 || responseCount < this._settings.maxResponses) {
-          responsePanel = this._requestList._createResponsePanel(requestId, responseIds[responseCount]);
+          responsePanel = this._requestList._createResponsePanel(this._requestList, requestId, responseIds[responseCount]);
         } else if (responseCount == this._settings.maxResponses) {
-          responsePanel = this._requestList._createResponsePanel(requestId, -1);
+          responsePanel = this._requestList._createResponsePanel(this._requestList, requestId, -1);
         } else {
           break;
         }
@@ -530,10 +530,11 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
 }
 
 
-AbstractRequestPage._AbstractRequestList._AbstractResponsePanel = ClassUtils.defineClass(Object, function _AbstractResponsePanel(requestId, responseId, settings) {
+AbstractRequestPage._AbstractRequestList._AbstractResponsePanel = ClassUtils.defineClass(Object, function _AbstractResponsePanel(requestList, requestId, responseId, settings) {
   this._settings = settings;
   this._requestId = requestId;
   this._responseId = responseId;
+  this._requestList = requestList;
 
   this._rootContainer = null;
   this._cacheChangeListener = null;
@@ -622,7 +623,7 @@ AbstractRequestPage._AbstractRequestList.__updateResponse = function(requestId, 
     error: function() {
     }
   }
-  
+
   Backend.updateResponse(requestId, responseId, response, callback);
 }
 
@@ -813,8 +814,8 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
 }
 
 
-AbstractRequestPage._AbstractRequestList._IncomingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _IncomingResponsePanel(requestId, responseId, settings) {
-  AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestId, responseId, settings); 
+AbstractRequestPage._AbstractRequestList._IncomingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _IncomingResponsePanel(requestList, requestId, responseId, settings) {
+  AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestList, requestId, responseId, settings); 
 });
 
 AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appendResponseElement = function(response) {
@@ -844,8 +845,8 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
   }
 }
 
-AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestId, responseId, settings) {
-  AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestId, responseId, settings); 
+AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestList, requestId, responseId, settings) {
+  AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestList, requestId, responseId, settings); 
 });
 
 AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appendResponseElement = function(response) {
@@ -902,12 +903,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   UIUtils.setClickListener(updateButton, function() {
     response.text = UIUtils.get$(textArea).val();
 
-    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, response, completionCallback);
-  }.bind(this));
-  
-  UIUtils.setClickListener(deactivateButton, function() {
-    request.status = Backend.Request.STATUS_INACTIVE;
-    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, this._responseId, request, completionCallback);
+    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, response, completionCallback);
   }.bind(this));
   
   var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
@@ -925,8 +921,8 @@ AbstractRequestPage.OutgoingRequestList.prototype._createRequestPanel = function
   return new AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel(this, requestId, this._settings);
 }
 
-AbstractRequestPage.OutgoingRequestList.prototype._createResponsePanel = function(requestId, responseId) {
-  return new AbstractRequestPage._AbstractRequestList._IncomingResponsePanel(requestId, responseId, this._settings);
+AbstractRequestPage.OutgoingRequestList.prototype._createResponsePanel = function(requestList, requestId, responseId) {
+  return new AbstractRequestPage._AbstractRequestList._IncomingResponsePanel(requestList, requestId, responseId, this._settings);
 }
 
 AbstractRequestPage.OutgoingRequestList.prototype._getRequestIds = function(status) {
@@ -955,8 +951,8 @@ AbstractRequestPage.IncomingRequestList.prototype._createRequestPanel = function
   return new AbstractRequestPage._AbstractRequestList._IncomingRequestPanel(this, requestId, this._settings);
 }
 
-AbstractRequestPage.IncomingRequestList.prototype._createResponsePanel = function(requestId, responseId) {
-  return new AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel(requestId, responseId, this._settings);
+AbstractRequestPage.IncomingRequestList.prototype._createResponsePanel = function(requestList, requestId, responseId) {
+  return new AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel(requestList, requestId, responseId, this._settings);
 }
 
 AbstractRequestPage.IncomingRequestList.prototype._getRequestIds = function(status) {
@@ -1029,7 +1025,7 @@ AbstractRequestPage._AbstractRequestStatistics.prototype.start = function() {
       
       var responseIds = this._getResponseIds(requestId, this._responseStatus);
       if (responseIds != null) {
-        this._statistics[this.requestId] = responseIds.length;
+        this._statistics[requestId] = responseIds.length;
       }
     }
   }
@@ -1093,14 +1089,14 @@ AbstractRequestPage.IncomingRequestStatistics = ClassUtils.defineClass(AbstractR
 });
 
 AbstractRequestPage.IncomingRequestStatistics.prototype._getRequestIds = function(requestStatus) {
-  return Backend.getIncomingResponseIds(requestStatus);
+  return Backend.getIncomingRequestIds(requestStatus);
 }
 
 AbstractRequestPage.IncomingRequestStatistics.prototype._getRequestIdsChangeEventType = function() {
   return Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED;
 }
 
-AbstractRequestPage.IncomingRequestStatistics._getResponseIds = function(requestId, responseStatus) {
+AbstractRequestPage.IncomingRequestStatistics.prototype._getResponseIds = function(requestId, responseStatus) {
   return Backend.getOutgoingResponseIds(requestId, responseStatus);
 }
 

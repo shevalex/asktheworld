@@ -547,7 +547,7 @@ Backend._pullOutgoingResponseIds = function(requestId) {
       return;
     }
   } else {
-    this._cache.outgoingRequestIds_pulling = {};
+    this._cache.outgoingResponseIds_pulling = {};
   }
   this._cache.outgoingResponseIds_pulling[requestId] = "";
 
