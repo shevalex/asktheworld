@@ -274,6 +274,11 @@ AbstractRequestPage._AbstractRequestList.prototype._getRequestIdsChangeEventType
   throw "Not implemented"
 }
 
+//abstract
+AbstractRequestPage._AbstractRequestList.prototype._getResponseIdsChangeEventType = function() {
+  throw "Not implemented"
+}
+
 
 AbstractRequestPage._AbstractRequestList.prototype.append = function(root) {
   this._rootContainer = UIUtils.appendBlock(root, "RequestResponsesContainer");
@@ -291,9 +296,7 @@ AbstractRequestPage._AbstractRequestList.prototype.append = function(root) {
     var appendRequestPanels = function() {
       var requestIds = this._getRequestIds(status);
       if (requestIds != null) {
-        if (this._settings.updateListener != null) {
-          this._settings.updateListener.updateFinished();
-        }
+        this.__updateFinished();
         
         for (var index in requestIds) {
           var requestPanel = this._createRequestPanel(requestIds[index]);
@@ -301,9 +304,7 @@ AbstractRequestPage._AbstractRequestList.prototype.append = function(root) {
           requestPanel.append(this._rootContainer);
         }
       } else {
-        if (this._settings.updateListener != null) {
-          this._settings.updateListener.updateStarted();
-        }
+        this.__updateStarted();
       }
     }.bind(this);
     
@@ -359,6 +360,7 @@ AbstractRequestPage._AbstractRequestList.prototype.getInfo = function() {
   return info;
 }
 
+
 AbstractRequestPage._AbstractRequestList.prototype.__getRequestStatusFromSettings = function() {
   var status = null;
   if ((this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE) != 0) {
@@ -377,6 +379,17 @@ AbstractRequestPage._AbstractRequestList.prototype.__getResponseStatusFromSettin
     status = Backend.Response.STATUS_UNREAD;
   }
   return status;
+}
+
+AbstractRequestPage._AbstractRequestList.prototype.__updateStarted = function() {
+  if (this._settings.updateListener != null) {
+    this._settings.updateListener.updateStarted();
+  }
+}
+AbstractRequestPage._AbstractRequestList.prototype.__updateFinished = function() {
+  if (this._settings.updateListener != null) {
+    this._settings.updateListener.updateFinished();
+  }
 }
 
 
@@ -399,28 +412,51 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype._append
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.append = function(container) {
   this._rootContainer = UIUtils.appendBlock(container, this._requestId);
 
+    var requestOnlyWithResponses = (this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITH_RESPONSES) != 0;
+    var requestOnlyWithoutResponses = (this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES) != 0;
+  
   var appendRequestElement = function() {
     var request = Backend.getRequest(this._requestId);
     if (request != null) {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateFinished();
+      var readyToProceed = true;
+      var needToProceed = true;
+      
+      if (requestOnlyWithResponses || requestOnlyWithoutResponses) {
+        var responseIds = this._requestList._getResponseIds(this._requestId, this._requestList.__getResponseStatusFromSettings());
+      
+        if (responseIds != null) {
+
+          if (requestOnlyWithResponses && responseIds.length == 0
+              || requestOnlyWithoutResponses && responseIds.length > 0) {
+
+            needToProceed = false;
+          }
+        } else {
+          readyToProceed = false;
+        }
       }
       
-      this._appendRequestElement(request);
-      
-      if (this._settings.maxResponses != 0) {
-        this.__appendResponses(this._requestId);
-      }
-    } else {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateStarted();
+      if (!needToProceed) {
+        this._requestList.__updateFinished();
+      } else if (readyToProceed) {
+        this._requestList.__updateFinished();
+
+        this._appendRequestElement(request);
+
+        if (this._settings.maxResponses != 0) {
+          this.__appendResponses(this._requestId);
+        }
+      } else {
+        this._requestList.__updateStarted();
       }
     }
   }.bind(this);
   
   this._cacheRequestChangeListener = function(event) {
-    if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED 
-        && (event.requestId == null || event.requestId == this._requestId)) {
+    if ((event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED 
+         && (event.requestId == null || event.requestId == this._requestId))
+        || (requestOnlyWithResponses || requestOnlyWithoutResponses)
+           && event.type == this._requestList._getResponseIdsChangeEventType() && event.requestId == this._requestId) {
 
       UIUtils.emptyContainer(this._rootContainer);
       appendRequestElement();
@@ -457,9 +493,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
   var appendResponsePanels = function() {
     var responseIds = this._requestList._getResponseIds(requestId, status);
     if (responseIds != null) {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateFinished();
-      }
+      this._requestList.__updateFinished();
 
       for (var responseCount = 0; responseCount < responseIds.length; responseCount++) {
         var responsePanel = null;
@@ -475,9 +509,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
         responsePanel.append(responsesPanel);
       }
     } else {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateStarted();
-      }
+      this._requestList.__updateStarted();
     }
   }.bind(this);
 
@@ -514,15 +546,11 @@ AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype.append
   var appendResponseElement = function() {
     var response = Backend.getResponse(this._requestId, this._responseId);
     if (response != null) {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateFinished();
-      }
+      this._requestList.__updateFinished();
 
       this._appendResponseElement(response);
     } else {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateStarted();
-      }
+      this._requestList.__updateStarted();
     }
   }.bind(this);
   

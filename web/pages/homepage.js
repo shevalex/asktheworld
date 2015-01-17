@@ -38,8 +38,8 @@ HomePage.prototype.definePageContent = function(root) {
     var countRequests = 0;
     var countResponses = 0; 
     for (var id in info) {
-      countRequests++;
       if (info[id] != null) {
+        countRequests++;
         countResponses += info[id];
       }
     }
@@ -65,7 +65,7 @@ HomePage.prototype.onShow = function(root) {
     requestEditable: false,
     maxResponses: 0,
     responseAreaMaxHeight: -1,
-    requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE,
+    requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE | AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITH_RESPONSES,
     responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED,
     updateListener: {
       updateStarted: function() {
