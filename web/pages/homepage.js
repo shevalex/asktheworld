@@ -37,7 +37,7 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   
   this._incomingRequestList = new AbstractRequestPage.IncomingRequestList({
     requestClickListener: function(requestId) {
-      Application.getMenuPage().showPage(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
+      Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
     },
     requestEditable: false,
     maxResponses: 0,
