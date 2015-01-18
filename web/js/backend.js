@@ -676,8 +676,25 @@ Backend._createDummyRequest = function(requestId) {
   var waitTime = Math.round(Math.random() * 4);
   var age = Math.round(Math.random() * 5);
   var gender = Math.round(Math.random() * 2);
-  var activeStatus = Math.random() < 0.5;
 
+  var status = Backend.Request.STATUS_INACTIVE;
+
+  if (this._cache.incomingRequestIds != null) {
+    for (var index in this._cache.incomingRequestIds.active) {
+      if (this._cache.incomingRequestIds.active[index] == requestId) {
+        status = Backend.Request.STATUS_ACTIVE;
+        break;
+      }
+    }
+  } else if (this._cache.outgoingRequestIds != null) {
+    for (var index in this._cache.outgoingRequestIds.active) {
+      if (this._cache.outgoingRequestIds.active[index] == requestId) {
+        status = Backend.Request.STATUS_ACTIVE;
+        break;
+      }
+    }
+  }
+  
   var request = {
     time: Date.now(),
     text: "This is the request with the id " + requestId,
@@ -687,7 +704,7 @@ Backend._createDummyRequest = function(requestId) {
     response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
     response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
     response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
-    status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE
+    status: status
   };
     
   return request;

@@ -767,7 +767,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
     }
 
     var isEditable = responseIds.length == 0 && this._settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE;
-
+    
     if (isEditable) { 
       UIUtils.addClass(requestHolderElement, "incomingrequest-holder-editable");
     } else {
