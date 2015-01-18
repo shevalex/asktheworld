@@ -106,7 +106,7 @@ HomePage.prototype.definePageContent = function(root) {
 
     var countRequests = 0;
     for (var id in info) {
-      if (info[id] == null || info[id] == 0) {
+      if (info[id] != null && info[id] == 0) {
         countRequests++;
       }
     }
