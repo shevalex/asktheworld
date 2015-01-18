@@ -736,30 +736,44 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
 
 AbstractRequestPage._AbstractRequestList._IncomingRequestPanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractRequestPanel, function _IncomingRequestPanel(requestList, requestId, settings) {
   AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.call(this, requestList, requestId, settings);
+  
+  this._responseIdsChangeListener = null;
 });
+
+AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.remove = function() {
+  Backend.removeCacheChangeListener(this._responseIdsChangeListener);
+  AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.remove.call(this);
+}
 
 AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._appendRequestElement = function(request) {
   var requestHolderElement = UIUtils.appendBlock(this._rootContainer, "RequestHolder");
 
-  var isEditable = this._settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE;
-
-  if (isEditable) { 
-    UIUtils.addClass(requestHolderElement, "incomingrequest-holder-editable");
-  } else {
-    UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
-  }
-
-  var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
-
-  UIUtils.addClass(requestTextElement, "incomingrequest-text-holder");
-  if (this._settings.requestClickListener != null) {
-    UIUtils.addClass(requestTextElement, "incomingrequest-text-holder-activable");
-    UIUtils.setClickListener(requestTextElement, function() {
-      this._settings.requestClickListener(this._requestId);
-    }.bind(this));
-  }
-
   var appendTextElement = function() {
+    var responseIds = this._requestList._getResponseIds(this._requestId);
+
+    if (responseIds == null) {
+      this._requestList.__updateStarted();
+      return;
+    }
+
+    var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
+
+    UIUtils.addClass(requestTextElement, "incomingrequest-text-holder");
+    if (this._settings.requestClickListener != null) {
+      UIUtils.addClass(requestTextElement, "incomingrequest-text-holder-activable");
+      UIUtils.setClickListener(requestTextElement, function() {
+        this._settings.requestClickListener(this._requestId);
+      }.bind(this));
+    }
+
+    var isEditable = responseIds.length == 0 && this._settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE;
+
+    if (isEditable) { 
+      UIUtils.addClass(requestHolderElement, "incomingrequest-holder-editable");
+    } else {
+      UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
+    }
+
     var requestDate = new Date(request.time);
     UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + request.text);
 
@@ -775,7 +789,19 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       }.bind(this));
     }
   }.bind(this);
+
+  this._responseIdsChangeListener = function(event) {
+    if (event.type == this._requestList._getResponseIdsChangeEventType()
+        && event.requestId == this._requestId) {
+
+      this._requestList.__updateFinished();
+      
+      UIUtils.emptyContainer(requestHolderElement);
+      appendTextElement();
+    }
+  }.bind(this);
   
+  Backend.addCacheChangeListener(this._responseIdsChangeListener);
   appendTextElement();
 }
 
