@@ -37,18 +37,12 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   
   this._incomingRequestList = new AbstractRequestPage.IncomingRequestList({
     requestClickListener: function(requestId) {
-      var paramBundle = {
-        returnPageId: MenuPage.prototype.HOME_ITEM_ID,
-        requestId: requestId,
-        otherRequestIds: Backend.getIncomingRequestIds(Backend.Request.STATUS_ACTIVE)
-      }
-
-      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+      Application.getMenuPage().showPage(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
     },
     requestEditable: false,
     maxResponses: 0,
     responseAreaMaxHeight: -1,
-    requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE | AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES,
+    requestInclusionPolicy: AbstractRequestPage.IncomingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE | AbstractRequestPage.IncomingRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES,
     //responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_ALL,
     updateListener: {
       updateStarted: function() {
@@ -129,7 +123,7 @@ HomePage.prototype.onShow = function(root) {
   this._incomingStatistics.start();
 
   this._outgoingRequestList.append(this._outgoingRequestsPanelRequests);
-  this._incomingRequestList.append(this._outgoingRequestsPanelRequests);
+  this._incomingRequestList.append(this._incomingRequestsPanelRequests);
 }
 
 HomePage.prototype.onHide = function() {
