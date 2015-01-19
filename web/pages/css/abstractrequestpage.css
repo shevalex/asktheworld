@@ -8,6 +8,7 @@
 }
 
 .outgoingrequest-holder, .incomingrequest-holder {
+  margin-bottom: 10px;
 }
 
 .outgoingrequest-holder-editable, .incomingrequest-holder-editable {
@@ -83,6 +84,9 @@
 }
 
 .outgoingresponse-submitbutton {
+}
+
+.outgoingresponse-updatebutton {
 }
 
 .outgoingresponse-cancelbutton {

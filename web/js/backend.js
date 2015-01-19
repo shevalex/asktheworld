@@ -202,10 +202,10 @@ Backend.Response.STATUS_READ = "read";
 
 
 
-Backend.createRequest = function(request, requestParams, transactionCallback) {
+Backend.createRequest = function(request, transactionCallback) {
   setTimeout(function() {
-    var newRequestId = "request" + this._cache.outgoingRequestIds.length;
-    this._cache.outgoingRequestIds.push(newRequestId);
+    var newRequestId = "request" + (this._cache.outgoingRequestIds.active.length + this._cache.outgoingRequestIds.inactive.length);
+    this._cache.outgoingRequestIds.active.push(newRequestId);
     
     request.time = Date.now();
     request.status = Backend.Request.STATUS_ACTIVE;
@@ -255,6 +255,16 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
     var existingRequest = this._cache.requests[requestId];
     
     for (var key in request) {
+      if (key == "status" && existingRequest[key] != request[key] && request.status == Backend.Request.STATUS_INACTIVE) {
+        for (var index in this._cache.outgoingRequestIds.active) {
+          if (this._cache.outgoingRequestIds.active[index] == requestId) {
+            this._cache.outgoingRequestIds.active.splice(index, 1);
+            this._cache.outgoingRequestIds.inactive.push(responseId);
+            break;
+          }
+        }
+      }
+      
       existingRequest[key] = request[key];
     }
 
@@ -310,6 +320,9 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     response.gender = Backend.UserProfile.gender;
     response.status = Backend.Response.STATUS_UNREAD;
 
+    if (this._cache.responses == null) {
+      this._cache.responses = {};
+    }
     this._cache.responses[newResponseId] = response;
     
     transactionCallback.success();
@@ -327,8 +340,16 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
 Backend.getOutgoingRequestIds = function(requestStatus) {
   if (this._cache.outgoingRequestIds != null) {
     var requestIds = [];
-    for (var index in this._cache.outgoingRequestIds) {
-      requestIds.push(this._cache.outgoingRequestIds[index]);
+    
+    if (requestStatus == Backend.Request.STATUS_ACTIVE || requestStatus == null) {
+      for (var index in this._cache.outgoingRequestIds.active) {
+        requestIds.push(this._cache.outgoingRequestIds.active[index]);
+      }
+    }
+    if (requestStatus == Backend.Request.STATUS_INACTIVE || requestStatus == null) {
+      for (var index in this._cache.outgoingRequestIds.inactive) {
+        requestIds.push(this._cache.outgoingRequestIds.inactive[index]);
+      }
     }
     
     return requestIds;
@@ -341,8 +362,16 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
 Backend.getIncomingRequestIds = function(requestStatus) {
   if (this._cache.incomingRequestIds != null) {
     var requestIds = [];
-    for (var index in this._cache.incomingRequestIds) {
-      requestIds.push(this._cache.incomingRequestIds[index]);
+
+    if (requestStatus == Backend.Request.STATUS_ACTIVE || requestStatus == null) {
+      for (var index in this._cache.incomingRequestIds.active) {
+        requestIds.push(this._cache.incomingRequestIds.active[index]);
+      }
+    }
+    if (requestStatus == Backend.Request.STATUS_INACTIVE || requestStatus == null) {
+      for (var index in this._cache.incomingRequestIds.inactive) {
+        requestIds.push(this._cache.incomingRequestIds.inactive[index]);
+      }
     }
     
     return requestIds;
@@ -364,6 +393,42 @@ Backend.getRequest = function(requestId) {
   Backend._pullRequest(requestId);
   return null;
 }
+
+Backend.getResponse = function(requestId, responseId) {
+  if (this._cache.responses != null) {
+    var response = this._cache.responses[responseId];
+    
+    if (response != null) {
+      return response;
+    }
+  }
+  
+  Backend._pullResponse(requestId, responseId);
+  return null;
+}
+
+Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
+  setTimeout(function() {
+    var existingResponse = this._cache.responses[responseId];
+    for (var key in response) {
+      if (key == "status" && existingResponse[key] != response[key] && response.status == Backend.Response.STATUS_READ) {
+        for (var index in this._cache.incomingResponseIds[requestId].unviewed) {
+          if (this._cache.incomingResponseIds[requestId].unviewed[index] == responseId) {
+            this._cache.incomingResponseIds[requestId].unviewed.splice(index, 1);
+            this._cache.incomingResponseIds[requestId].viewed.push(responseId);
+            break;
+          }
+        }
+      }
+      existingResponse[key] = response[key];
+    }
+
+    transactionCallback.success();
+
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
+  }.bind(this), 1000);
+}
+
 
 Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
@@ -409,33 +474,6 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
   }
 }
 
-Backend.getResponse = function(requestId, responseId) {
-  if (this._cache.responses != null) {
-    var response = this._cache.responses[responseId];
-    
-    if (response != null) {
-      return response;
-    }
-  }
-  
-  Backend._pullResponse(requestId, responseId);
-  return null;
-}
-
-Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
-  setTimeout(function() {
-    var existingResponse = this._cache.responses[responseId];
-    for (var key in response) {
-      existingResponse[key] = response[key];
-    }
-
-    transactionCallback.success();
-
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
-  }.bind(this), 1000);
-}
-
-
 
 
 Backend.CacheChangeEvent = {type: null, requestId: null, responseId: null};
@@ -448,7 +486,9 @@ Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED = "incoming_responses_c
 
 
 Backend.addCacheChangeListener = function(listener) {
-  this._cacheChangeListeners.push(listener);
+  if (listener != null) {
+    this._cacheChangeListeners.push(listener);
+  }
 }
 
 Backend.removeCacheChangeListener = function(listener) {
@@ -462,32 +502,67 @@ Backend.removeCacheChangeListener = function(listener) {
 
 
 Backend._pullOutgoingRequestIds = function() {
+  if (this._cache.outgoingRequestIds_pulling != null) {
+    return;
+  }
+  this._cache.outgoingRequestIds_pulling = "";
+  
   setTimeout(function() {
-    this._cache.outgoingRequestIds = [];
+    this._cache.outgoingRequestIds = {active: [], inactive: []};
 
     var numOfRequests = Math.random() * 10;
     for (var i = 0; i < numOfRequests; i++) {
-      this._cache.outgoingRequestIds.push("request" + i);
+      var isActive = Math.random() < 0.5;
+      
+      var id = "request" + i;
+      if (isActive) {
+        this._cache.outgoingRequestIds.active.push(id);
+      } else {
+        this._cache.outgoingRequestIds.inactive.push(id);
+      }
     }
 
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
+    this._cache.outgoingRequestIds_pulling = null;
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED});
   }.bind(this), 1000);
 }
 
 Backend._pullIncomingRequestIds = function() {
+  if (this._cache.incomingRequestIds_pulling != null) {
+    return;
+  }
+  this._cache.incomingRequestIds_pulling = "";
+  
   setTimeout(function() {
-    this._cache.incomingRequestIds = [];
+    this._cache.incomingRequestIds = {active: [], inactive: []};
 
     var numOfRequests = Math.random() * 10;
     for (var i = 0; i < numOfRequests; i++) {
-      this._cache.incomingRequestIds.push("request" + (100 + i));
+      var isActive = Math.random() < 0.5;
+      
+      var id = "request" + (100 + i);
+      if (isActive) {
+        this._cache.incomingRequestIds.active.push(id);
+      } else {
+        this._cache.incomingRequestIds.inactive.push(id);
+      }
     }
 
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestIds: this._cache.outgoingRequestIds});
+    this._cache.incomingRequestIds_pulling = null;
+    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED});
   }.bind(this), 1000);
 }
 
 Backend._pullIncomingResponseIds = function(requestId) {
+  if (this._cache.incomingResponseIds_pulling != null) {
+    if (this._cache.incomingResponseIds_pulling[requestId] != null) {
+      return;
+    }
+  } else {
+    this._cache.incomingResponseIds_pulling = {};
+  }
+  this._cache.incomingResponseIds_pulling[requestId] = "";
+
   setTimeout(function() {
     if (this._cache.incomingResponseIds == null) {
       this._cache.incomingResponseIds = {};
@@ -504,11 +579,21 @@ Backend._pullIncomingResponseIds = function(requestId) {
       }
     }
 
+    this._cache.incomingResponseIds_pulling[requestId] = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
   }.bind(this), 1000);
 }
 
 Backend._pullOutgoingResponseIds = function(requestId) {
+  if (this._cache.outgoingResponseIds_pulling != null) {
+    if (this._cache.outgoingResponseIds_pulling[requestId] != null) {
+      return;
+    }
+  } else {
+    this._cache.outgoingResponseIds_pulling = {};
+  }
+  this._cache.outgoingResponseIds_pulling[requestId] = "";
+
   setTimeout(function() {
     if (this._cache.outgoingResponseIds == null) {
       this._cache.outgoingResponseIds = {};
@@ -516,6 +601,9 @@ Backend._pullOutgoingResponseIds = function(requestId) {
 
     this._cache.outgoingResponseIds[requestId] = {viewed: [], unviewed: []};
     var numOfResponses = Math.random() * 10;
+    if (numOfResponses > 4) {
+      numOfResponses = 0;
+    }
     for (var i = 0; i < numOfResponses; i++) {
       var responseId = requestId + "-response" + (100 + i);
       if (Math.random() < 0.5) {
@@ -525,11 +613,21 @@ Backend._pullOutgoingResponseIds = function(requestId) {
       }
     }
 
+    this._cache.outgoingResponseIds_pulling[requestId] = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId});
   }.bind(this), 1000);
 }
 
 Backend._pullRequest = function(requestId) {
+  if (this._cache.requests_pulling != null) {
+    if (this._cache.requests_pulling[requestId] != null) {
+      return;
+    }
+  } else {
+    this._cache.requests_pulling = {};
+  }
+  this._cache.requests_pulling[requestId] = "";
+  
   setTimeout(function() {
     if (this._cache.requests == null) {
       this._cache.requests = {};
@@ -537,11 +635,21 @@ Backend._pullRequest = function(requestId) {
 
     this._cache.requests[requestId] = this._createDummyRequest(requestId);
 
+    this._cache.requests_pulling[requestId] = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId});
   }.bind(this), 1000);
 }
 
 Backend._pullResponse = function(requestId, responseId) {
+  if (this._cache.responses_pulling != null) {
+    if (this._cache.responses_pulling[responseId] != null) {
+      return;
+    }
+  } else {
+    this._cache.responses_pulling = {};
+  }
+  this._cache.responses_pulling[responseId] = "";
+
   setTimeout(function() {
     if (this._cache.responses == null) {
       this._cache.responses = {};
@@ -549,6 +657,7 @@ Backend._pullResponse = function(requestId, responseId) {
 
     this._cache.responses[responseId] = this._createDummyResponse(requestId, responseId);
 
+    this._cache.responses_pulling[responseId] = null;
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
   }.bind(this), 1000);
 }
@@ -567,8 +676,25 @@ Backend._createDummyRequest = function(requestId) {
   var waitTime = Math.round(Math.random() * 4);
   var age = Math.round(Math.random() * 5);
   var gender = Math.round(Math.random() * 2);
-  var activeStatus = Math.random() < 0.5;
 
+  var status = Backend.Request.STATUS_INACTIVE;
+
+  if (this._cache.incomingRequestIds != null) {
+    for (var index in this._cache.incomingRequestIds.active) {
+      if (this._cache.incomingRequestIds.active[index] == requestId) {
+        status = Backend.Request.STATUS_ACTIVE;
+        break;
+      }
+    }
+  } else if (this._cache.outgoingRequestIds != null) {
+    for (var index in this._cache.outgoingRequestIds.active) {
+      if (this._cache.outgoingRequestIds.active[index] == requestId) {
+        status = Backend.Request.STATUS_ACTIVE;
+        break;
+      }
+    }
+  }
+  
   var request = {
     time: Date.now(),
     text: "This is the request with the id " + requestId,
@@ -578,7 +704,7 @@ Backend._createDummyRequest = function(requestId) {
     response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
     response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
     response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
-    status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE
+    status: status
   };
     
   return request;
@@ -615,119 +741,6 @@ Backend._createDummyResponse = function(requestId, responseId) {
   return response;
 }
 
-
-
-Backend.isRequestCacheInitialized = function() {
-  return this._requestCacheInitialized;
-}
-
-
-
-
-
-Backend.getCachedOutgoingRequestIds = function(requestStatus) {
-  var requestIds = [];
-  for (var id in this._requestsCache) {
-    if ((requestStatus == null || this._requestsCache[id].status == requestStatus)
-        && this._requestsCache[id]._owned) {
-      requestIds.push(id);
-    }
-  }
-  
-  return requestIds;
-}
-
-Backend.getCachedIncomingRequestIds = function(requestStatus) {
-  var requestIds = [];
-  for (var id in this._requestsCache) {
-    if ((requestStatus == null || this._requestsCache[id].status == requestStatus)
-        && !this._requestsCache[id]._owned) {
-      requestIds.push(id);
-    }
-  }
-  
-  return requestIds;
-}
-
-Backend.getCachedRequest = function(requestId) {
-  return this._requestsCache[requestId];
-}
-
-Backend.getCachedResponse = function(requestId, responseId) {
-  var request = this._requestsCache[requestId];
-  if (request != null) {
-    return request._responses[responseId];
-  }
-  
-  return null;
-}
-  
-
-Backend._updateRequestCache = function() {
-  //TBD
-  
-  if (!this._requestCacheInitialized) {
-    // This is all one-time fake data
-    var numOfRequests = Math.random() * 100;
-    for (var requestCounter = 0; requestCounter < numOfRequests; requestCounter++) {
-      var quantity = Math.round(Math.random() * 3);
-      var waitTime = Math.round(Math.random() * 4);
-      var age = Math.round(Math.random() * 5);
-      var gender = Math.round(Math.random() * 2);
-      var activeStatus = Math.random() < 0.1;
-      var owned = Math.random() < 0.3;
-  
-      var requestId = "request" + requestCounter;
-      
-      var request = {
-        time: Date.now(),
-        text: "This is the request with the id " + requestId,
-        pictures: [],
-        audios: [],
-        response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity],
-        response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
-        response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
-        response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
-        status: activeStatus ? Backend.Request.STATUS_ACTIVE : Backend.Request.STATUS_INACTIVE,
-        responseIds: [],
-        _owned: owned,
-        _responses: {}
-      };
-    
-      var numOfResponses = 0;;//Math.random() * 100;
-      for (var responseCounter = 0; responseCounter < numOfResponses; responseCounter++) {
-        var age = Math.round(Math.random() * 4);
-        var gender = Math.round(Math.random());
-        var statusUnread = Math.random() < 0.1;
-    
-        var response = {
-          time: Date.now(),
-          text: "This is the response " + responseId + " to the request " + requestId,
-          pictures: [],
-          audios: [],
-          age_category: Application.Configuration.AGE_CATEGORIES[age],
-          gender: Application.Configuration.GENDERS[gender],
-          status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ
-        }
-      
-        var responseId = "response" + responseCounter;
-        request.responseIds.push(responseId);
-        request._responses[responseId] = response;
-      }
-    
-      this._requestsCache[requestId] = request;
-    }
-    
-    this._requestCacheInitialized = true;
-  }
-  
-  // This is a temporary behavior until we pull data from the server.
-  setTimeout(function() {
-    for (var index in this._requestsChangeListeners) {
-      this._requestsChangeListeners[index]();
-    }
-  }.bind(this), 3000);
-}
 
 
 

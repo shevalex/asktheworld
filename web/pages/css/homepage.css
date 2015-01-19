@@ -3,39 +3,48 @@
 
 #HomePage-GeneralPanel {
   font-size: 20px;
+  height: 30px;
 }
 
-#HomePage-RequestPanel {
-  margin-top: 30px;
+#HomePage-OutgoingRequestPanel {
+  margin-top: 10px;
 }
 
-#HomePage-RequestPanel-Status {
+#HomePage-OutgoingRequestPanel-Status {
   font-size: 20px;
+  height: 30px;
 }
 
-#HomePage-RequestPanel-SeeActiveRequests {
+#HomePage-OutgoingRequestPanel-SeeActiveRequests {
   font-size: 15px;
+  height: 20px;
 }
 
-#HomePage-RequestPanel-Requests {
-  margin-top: 20px;
+#HomePage-OutgoingRequestPanel-Requests {
+  margin-top: 10px;
   padding-right: 10px;
-  max-height: calc(50% - 100px);
+  max-height: calc(50% - 90px);
   overflow-y: auto;
 }
 
-#HomePage-InquiryPanel {
-  margin-top: 30px;
-}
-
-#HomePage-InquiryPanel-Status {
-  font-size: 20px;
-}
-
-#HomePage-RequestPanel-Inquiries {
+#HomePage-IncomingRequestPanel {
   margin-top: 20px;
+}
+
+#HomePage-IncomingRequestPanel-Status {
+  font-size: 20px;
+  height: 30px;
+}
+
+#HomePage-IncomingRequestPanel-SeeActiveRequests {
+  font-size: 15px;
+  height: 20px;
+}
+
+#HomePage-IncomingRequestPanel-Requests {
+  margin-top: 10px;
   padding-right: 10px;
-  max-height: calc(50% - 100px);
-  overflow-y: scroll;
+  max-height: calc(50% - 90px);
+  overflow-y: auto;
 }
 

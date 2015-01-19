@@ -221,12 +221,12 @@ AbstractRequestPage.IncomingRequestsTable.prototype._getRowData = function(reque
 
 /*
  * settings.requestIds
- * settings.requestStatus
  * settings.requestClickListener
  * settings.requestEditable: boolean
+ * settings.requestInclusionPolicy: mask
+ * settings.responseInclusionPolicy: mask
  * settings.maxResponses: integer, -1 for unlimited
  * settings.responseAreaMaxHeight: "measure unit", -1 for unlimited
- * settings.unviewedResponsesOnly: boolean
  * settings.updateListener
  */
 AbstractRequestPage._AbstractRequestList = ClassUtils.defineClass(Object, function _AbstractRequestList(settings) {
@@ -238,28 +238,44 @@ AbstractRequestPage._AbstractRequestList = ClassUtils.defineClass(Object, functi
   this._requestPanels = [];
 });
 
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ALL = 0;
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITH_RESPONSES = 1;
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES = 2;
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE = 4;
+AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_INACTIVE = 8;
+
+AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_ALL = 0;
+AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_VIEWED = 1;
+AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED = 2;
+
+
 //abstract
 AbstractRequestPage._AbstractRequestList.prototype._createRequestPanel = function(requestId) {
   throw "Not implemented"
 }
 
 //abstract
-AbstractRequestPage._AbstractRequestList.prototype._createResponsePanel = function(requestId, responseId) {
+AbstractRequestPage._AbstractRequestList.prototype._createResponsePanel = function(requestList, requestId, responseId) {
   throw "Not implemented"
 }
 
 //abstract
-AbstractRequestPage._AbstractRequestList.prototype._getRequestIds = function() {
+AbstractRequestPage._AbstractRequestList.prototype._getRequestIds = function(status) {
   throw "Not implemented"
 }
 
 //abstract
-AbstractRequestPage._AbstractRequestList.prototype._getResponseIds = function(requestId) {
+AbstractRequestPage._AbstractRequestList.prototype._getResponseIds = function(requestId, status) {
   throw "Not implemented"
 }
 
 //abstract
 AbstractRequestPage._AbstractRequestList.prototype._getRequestIdsChangeEventType = function() {
+  throw "Not implemented"
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestList.prototype._getResponseIdsChangeEventType = function() {
   throw "Not implemented"
 }
 
@@ -275,12 +291,12 @@ AbstractRequestPage._AbstractRequestList.prototype.append = function(root) {
       requestPanel.append(this._rootContainer);
     }
   } else {
+    var status = this.__getRequestStatusFromSettings();
+    
     var appendRequestPanels = function() {
-      var requestIds = this._getRequestIds();
+      var requestIds = this._getRequestIds(status);
       if (requestIds != null) {
-        if (this._settings.updateListener != null) {
-          this._settings.updateListener.updateFinished();
-        }
+        this.__updateFinished();
         
         for (var index in requestIds) {
           var requestPanel = this._createRequestPanel(requestIds[index]);
@@ -288,9 +304,7 @@ AbstractRequestPage._AbstractRequestList.prototype.append = function(root) {
           requestPanel.append(this._rootContainer);
         }
       } else {
-        if (this._settings.updateListener != null) {
-          this._settings.updateListener.updateStarted();
-        }
+        this.__updateStarted();
       }
     }.bind(this);
     
@@ -346,6 +360,39 @@ AbstractRequestPage._AbstractRequestList.prototype.getInfo = function() {
   return info;
 }
 
+
+AbstractRequestPage._AbstractRequestList.prototype.__getRequestStatusFromSettings = function() {
+  var status = null;
+  if ((this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE) != 0) {
+    status = Backend.Request.STATUS_ACTIVE;
+  } else if ((this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_INACTIVE) != 0) {
+    status = Backend.Request.REQUEST_INCLUSION_POLICY_STATUS_INACTIVE;
+  }
+  return status;
+}
+
+AbstractRequestPage._AbstractRequestList.prototype.__getResponseStatusFromSettings = function() {
+  var status = null;
+  if ((this._settings.responseInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_VIEWED) != 0) {
+    status = Backend.Response.STATUS_READ;
+  } else if ((this._settings.responseInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED) != 0) {
+    status = Backend.Response.STATUS_UNREAD;
+  }
+  return status;
+}
+
+AbstractRequestPage._AbstractRequestList.prototype.__updateStarted = function() {
+  if (this._settings.updateListener != null) {
+    this._settings.updateListener.updateStarted();
+  }
+}
+AbstractRequestPage._AbstractRequestList.prototype.__updateFinished = function() {
+  if (this._settings.updateListener != null) {
+    this._settings.updateListener.updateFinished();
+  }
+}
+
+
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel = ClassUtils.defineClass(Object, function _AbstractRequestPanel(requestList, requestId, settings) {
   this._settings = settings;
   this._requestId = requestId;
@@ -365,25 +412,51 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype._append
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.append = function(container) {
   this._rootContainer = UIUtils.appendBlock(container, this._requestId);
 
+    var requestOnlyWithResponses = (this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITH_RESPONSES) != 0;
+    var requestOnlyWithoutResponses = (this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES) != 0;
+  
   var appendRequestElement = function() {
     var request = Backend.getRequest(this._requestId);
     if (request != null) {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateFinished();
+      var readyToProceed = true;
+      var needToProceed = true;
+      
+      if (requestOnlyWithResponses || requestOnlyWithoutResponses) {
+        var responseIds = this._requestList._getResponseIds(this._requestId, this._requestList.__getResponseStatusFromSettings());
+      
+        if (responseIds != null) {
+
+          if (requestOnlyWithResponses && responseIds.length == 0
+              || requestOnlyWithoutResponses && responseIds.length > 0) {
+
+            needToProceed = false;
+          }
+        } else {
+          readyToProceed = false;
+        }
       }
       
-      this._appendRequestElement(request);
-      this.__appendResponses(this._requestId);
-    } else {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateStarted();
+      if (!needToProceed) {
+        this._requestList.__updateFinished();
+      } else if (readyToProceed) {
+        this._requestList.__updateFinished();
+
+        this._appendRequestElement(request);
+
+        if (this._settings.maxResponses != 0) {
+          this.__appendResponses(this._requestId);
+        }
+      } else {
+        this._requestList.__updateStarted();
       }
     }
   }.bind(this);
   
   this._cacheRequestChangeListener = function(event) {
-    if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED 
-        && (event.requestId == null || event.requestId == this._requestId)) {
+    if ((event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED 
+         && (event.requestId == null || event.requestId == this._requestId))
+        || (requestOnlyWithResponses || requestOnlyWithoutResponses)
+           && event.type == this._requestList._getResponseIdsChangeEventType() && event.requestId == this._requestId) {
 
       UIUtils.emptyContainer(this._rootContainer);
       appendRequestElement();
@@ -414,20 +487,20 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
   if (this._settings.responseAreaMaxHeight != null && this._settings.responseAreaMaxHeight != -1) {
     responsesPanel.style.maxHeight = this._settings.responseAreaMaxHeight;
   }
+  
+  var status = this._requestList.__getResponseStatusFromSettings();
 
   var appendResponsePanels = function() {
-    var responseIds = this._requestList._getResponseIds(requestId);
+    var responseIds = this._requestList._getResponseIds(requestId, status);
     if (responseIds != null) {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateFinished();
-      }
-      
+      this._requestList.__updateFinished();
+
       for (var responseCount = 0; responseCount < responseIds.length; responseCount++) {
         var responsePanel = null;
         if (this._settings.maxResponses == null || this._settings.maxResponses == -1 || responseCount < this._settings.maxResponses) {
-          responsePanel = this._requestList._createResponsePanel(requestId, responseIds[responseCount]);
+          responsePanel = this._requestList._createResponsePanel(this._requestList, requestId, responseIds[responseCount]);
         } else if (responseCount == this._settings.maxResponses) {
-          responsePanel = this._requestList._createResponsePanel(requestId, -1);
+          responsePanel = this._requestList._createResponsePanel(this._requestList, requestId, -1);
         } else {
           break;
         }
@@ -436,9 +509,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
         responsePanel.append(responsesPanel);
       }
     } else {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateStarted();
-      }
+      this._requestList.__updateStarted();
     }
   }.bind(this);
 
@@ -459,10 +530,11 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
 }
 
 
-AbstractRequestPage._AbstractRequestList._AbstractResponsePanel = ClassUtils.defineClass(Object, function _AbstractResponsePanel(requestId, responseId, settings) {
+AbstractRequestPage._AbstractRequestList._AbstractResponsePanel = ClassUtils.defineClass(Object, function _AbstractResponsePanel(requestList, requestId, responseId, settings) {
   this._settings = settings;
   this._requestId = requestId;
   this._responseId = responseId;
+  this._requestList = requestList;
 
   this._rootContainer = null;
   this._cacheChangeListener = null;
@@ -475,15 +547,11 @@ AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype.append
   var appendResponseElement = function() {
     var response = Backend.getResponse(this._requestId, this._responseId);
     if (response != null) {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateFinished();
-      }
-      
+      this._requestList.__updateFinished();
+
       this._appendResponseElement(response);
     } else {
-      if (this._settings.updateListener != null) {
-        this._settings.updateListener.updateStarted();
-      }
+      this._requestList.__updateStarted();
     }
   }.bind(this);
   
@@ -513,21 +581,6 @@ AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype._appen
   throw "Not implemented"
 }
 
-AbstractRequestPage._AbstractRequestList.__setResponseStatus = function(requestId, responseId, status, completionCallback) {
-  var callback = {
-    success: function() {
-      completionCallback();
-    },
-    failure: function() {
-    },
-    error: function() {
-    }
-  }
-  
-  var response = {status: Backend.Response.STATUS_READ};
-  Backend.updateResponse(requestId, responseId, response, callback);
-}
-
 AbstractRequestPage._AbstractRequestList.__updateRequest = function(requestId, request, completionCallback) {
   var callback = {
     success: function(requestId) {
@@ -554,6 +607,24 @@ AbstractRequestPage._AbstractRequestList.__createResponse = function(requestId, 
   }
 
   Backend.createResponse(requestId, response, callback);
+}
+
+AbstractRequestPage._AbstractRequestList.__setResponseStatus = function(requestId, responseId, status, completionCallback) {
+  this.__updateResponse(requestId, responseId, {status: Backend.Response.STATUS_READ}, completionCallback);
+}
+
+AbstractRequestPage._AbstractRequestList.__updateResponse = function(requestId, responseId, response, completionCallback) {
+  var callback = {
+    success: function() {
+      completionCallback();
+    },
+    failure: function() {
+    },
+    error: function() {
+    }
+  }
+
+  Backend.updateResponse(requestId, responseId, response, callback);
 }
 
 
@@ -665,30 +736,44 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
 
 AbstractRequestPage._AbstractRequestList._IncomingRequestPanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractRequestPanel, function _IncomingRequestPanel(requestList, requestId, settings) {
   AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.call(this, requestList, requestId, settings);
+  
+  this._responseIdsChangeListener = null;
 });
+
+AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.remove = function() {
+  Backend.removeCacheChangeListener(this._responseIdsChangeListener);
+  AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.remove.call(this);
+}
 
 AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._appendRequestElement = function(request) {
   var requestHolderElement = UIUtils.appendBlock(this._rootContainer, "RequestHolder");
 
-  var isEditable = this._settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE;
-  
-  if (isEditable) { 
-    UIUtils.addClass(requestHolderElement, "incomingrequest-holder-editable");
-  } else {
-    UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
-  }
-
-  var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
-
-  UIUtils.addClass(requestTextElement, "incomingrequest-text-holder");
-  if (this._settings.requestClickListener != null) {
-    UIUtils.addClass(requestTextElement, "incomingrequest-text-holder-activable");
-    UIUtils.setClickListener(requestTextElement, function() {
-      this._settings.requestClickListener(this._requestId);
-    }.bind(this));
-  }
-
   var appendTextElement = function() {
+    var responseIds = this._requestList._getResponseIds(this._requestId);
+
+    if (responseIds == null) {
+      this._requestList.__updateStarted();
+      return;
+    }
+
+    var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
+
+    UIUtils.addClass(requestTextElement, "incomingrequest-text-holder");
+    if (this._settings.requestClickListener != null) {
+      UIUtils.addClass(requestTextElement, "incomingrequest-text-holder-activable");
+      UIUtils.setClickListener(requestTextElement, function() {
+        this._settings.requestClickListener(this._requestId);
+      }.bind(this));
+    }
+
+    var isEditable = responseIds.length == 0 && this._settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE;
+    
+    if (isEditable) { 
+      UIUtils.addClass(requestHolderElement, "incomingrequest-holder-editable");
+    } else {
+      UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
+    }
+
     var requestDate = new Date(request.time);
     UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + request.text);
 
@@ -704,7 +789,19 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       }.bind(this));
     }
   }.bind(this);
+
+  this._responseIdsChangeListener = function(event) {
+    if (event.type == this._requestList._getResponseIdsChangeEventType()
+        && event.requestId == this._requestId) {
+
+      this._requestList.__updateFinished();
+      
+      UIUtils.emptyContainer(requestHolderElement);
+      appendTextElement();
+    }
+  }.bind(this);
   
+  Backend.addCacheChangeListener(this._responseIdsChangeListener);
   appendTextElement();
 }
 
@@ -743,14 +840,14 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
 }
 
 
-AbstractRequestPage._AbstractRequestList._IncomingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _IncomingResponsePanel(requestId, responseId, settings) {
-  AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestId, responseId, settings); 
+AbstractRequestPage._AbstractRequestList._IncomingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _IncomingResponsePanel(requestList, requestId, responseId, settings) {
+  AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestList, requestId, responseId, settings); 
 });
 
 AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appendResponseElement = function(response) {
   var responseHolder = UIUtils.appendBlock(this._rootContainer, "TextHolder");
   UIUtils.addClass(responseHolder, "incomingresponse-text-holder");
-  
+
   if (this._responseId == -1) {
     if (this._settings.requestClickListener != null) {
       UIUtils.addClass(responseHolder, "incomingresponse-text-holder-activable");
@@ -764,7 +861,8 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
       UIUtils.setClickListener(responseHolder, function() {
         AbstractRequestPage._AbstractRequestList.__setResponseStatus(this._requestId, this._responseId, Backend.Response.STATUS_READ, function() {
         });
-        UIUtils.removeClass(responseHolder, "incomingresponse-text-holder-activable");
+        //We update when the server informs us to update
+        //UIUtils.removeClass(responseHolder, "incomingresponse-text-holder-activable");
       }.bind(this));
     }
       
@@ -773,8 +871,8 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
   }
 }
 
-AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestId, responseId, settings) {
-  AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestId, responseId, settings); 
+AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestList, requestId, responseId, settings) {
+  AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.call(this, requestList, requestId, responseId, settings); 
 });
 
 AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appendResponseElement = function(response) {
@@ -815,6 +913,28 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
 }
 
 AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appendEditPanel = function(root, response, completionCallback) {
+  var editPanel = UIUtils.appendBlock(root, "RequestEditPanel");
+  
+  var responseDate = new Date(response.time);
+  UIUtils.appendLabel(editPanel, "Label", "You responded on <b>" + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() +"</b>");
+  
+  var textArea = editPanel.appendChild(UIUtils.createTextArea(UIUtils.createId(editPanel, "Text"), 6));
+  UIUtils.get$(textArea).val(response.text);
+
+  var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
+  UIUtils.addClass(controlPanel, "outgoingresponse-controls");
+  
+  var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", "Update");
+  UIUtils.addClass(updateButton, "outgoingresponse-updatebutton");
+  UIUtils.setClickListener(updateButton, function() {
+    response.text = UIUtils.get$(textArea).val();
+
+    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, response, completionCallback);
+  }.bind(this));
+  
+  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
+  UIUtils.addClass(cancelButton, "outgoingresponse-cancelbutton");
+  UIUtils.setClickListener(cancelButton, completionCallback);
 }
 
 
@@ -827,16 +947,16 @@ AbstractRequestPage.OutgoingRequestList.prototype._createRequestPanel = function
   return new AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel(this, requestId, this._settings);
 }
 
-AbstractRequestPage.OutgoingRequestList.prototype._createResponsePanel = function(requestId, responseId) {
-  return new AbstractRequestPage._AbstractRequestList._IncomingResponsePanel(requestId, responseId, this._settings);
+AbstractRequestPage.OutgoingRequestList.prototype._createResponsePanel = function(requestList, requestId, responseId) {
+  return new AbstractRequestPage._AbstractRequestList._IncomingResponsePanel(requestList, requestId, responseId, this._settings);
 }
 
-AbstractRequestPage.OutgoingRequestList.prototype._getRequestIds = function() {
-  return Backend.getOutgoingRequestIds(this._settings.requestStatus);
+AbstractRequestPage.OutgoingRequestList.prototype._getRequestIds = function(status) {
+  return Backend.getOutgoingRequestIds(status);
 }
 
-AbstractRequestPage.OutgoingRequestList.prototype._getResponseIds = function(requestId) {
-  return Backend.getIncomingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_UNREAD : null);
+AbstractRequestPage.OutgoingRequestList.prototype._getResponseIds = function(requestId, status) {
+  return Backend.getIncomingResponseIds(requestId, status);
 }
 
 AbstractRequestPage.OutgoingRequestList.prototype._getRequestIdsChangeEventType = function() {
@@ -849,7 +969,6 @@ AbstractRequestPage.OutgoingRequestList.prototype._getResponseIdsChangeEventType
 
 
 
-
 AbstractRequestPage.IncomingRequestList = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList, function IncomingRequestList(settings) {
   AbstractRequestPage._AbstractRequestList.call(this, settings);
 });
@@ -858,16 +977,16 @@ AbstractRequestPage.IncomingRequestList.prototype._createRequestPanel = function
   return new AbstractRequestPage._AbstractRequestList._IncomingRequestPanel(this, requestId, this._settings);
 }
 
-AbstractRequestPage.IncomingRequestList.prototype._createResponsePanel = function(requestId, responseId) {
-  return new AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel(requestId, responseId, this._settings);
+AbstractRequestPage.IncomingRequestList.prototype._createResponsePanel = function(requestList, requestId, responseId) {
+  return new AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel(requestList, requestId, responseId, this._settings);
 }
 
-AbstractRequestPage.IncomingRequestList.prototype._getRequestIds = function() {
-  return Backend.getIncomingRequestIds(this._settings.requestStatus);
+AbstractRequestPage.IncomingRequestList.prototype._getRequestIds = function(status) {
+  return Backend.getIncomingRequestIds(status);
 }
 
-AbstractRequestPage.IncomingRequestList.prototype._getResponseIds = function(requestId) {
-  return Backend.getOutgoingResponseIds(requestId, this._settings.unviewedResponsesOnly ? Backend.Response.STATUS_UNREAD : null);
+AbstractRequestPage.IncomingRequestList.prototype._getResponseIds = function(requestId, status) {
+  return Backend.getOutgoingResponseIds(requestId, status);
 }
 
 AbstractRequestPage.IncomingRequestList.prototype._getRequestIdsChangeEventType = function() {
@@ -878,4 +997,136 @@ AbstractRequestPage.IncomingRequestList.prototype._getResponseIdsChangeEventType
   return Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
 }
 
+
+
+
+
+// THIS IS THE SECTION WHICH DEFINES RequestStatistics object
+
+AbstractRequestPage._AbstractRequestStatistics = ClassUtils.defineClass(Object, function _AbstractRequestStatistics(requestStatus, responseStatus, updateListener) {
+  this._requestStatus = requestStatus;
+  this._responseStatus = responseStatus;
+  this._updateListener = updateListener;
+
+  this._statistics = {};
+  
+  this._cacheChangeListener = function(event) {
+    if (event.type == this._getRequestIdsChangeEventType()) {
+      var requestIds = this._getRequestIds(this._requestStatus);
+
+      for (var index in requestIds) {
+        var requestId = requestIds[index];
+        
+        if (!this._statistics.hasOwnProperty(requestId)) {
+          var responseIds = this._getResponseIds(requestId, this._responseStatus);
+          if (responseIds != null) {
+            this._statistics[requestId] = responseIds.length;
+          } else {
+            this._statistics[requestId] = null;
+          }
+        }
+      }
+
+      this._updateListener();
+      //TODO: remove obsolete records from statistics if needed
+    } else if (event.type == this._getResponseIdsChangeEventType()
+               && this._statistics.hasOwnProperty(event.requestId)) {
+
+      this._statistics[event.requestId] = this._getResponseIds(event.requestId, this._responseStatus).length;
+
+      this._updateListener();
+    }
+  }.bind(this);
+});
+
+AbstractRequestPage._AbstractRequestStatistics.prototype.start = function() {
+  Backend.addCacheChangeListener(this._cacheChangeListener);
+  
+  var requestIds = this._getRequestIds(this._requestStatus);
+  if (requestIds != null) {
+    for (var index in requestIds) {
+      var requestId = requestIds[index];
+
+      this._statistics[requestId] = null;
+      
+      var responseIds = this._getResponseIds(requestId, this._responseStatus);
+      if (responseIds != null) {
+        this._statistics[requestId] = responseIds.length;
+      }
+    }
+  }
+  
+  this._updateListener();
+}
+
+AbstractRequestPage._AbstractRequestStatistics.prototype.stop = function() {
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
+}
+
+AbstractRequestPage._AbstractRequestStatistics.prototype.getStatistics = function() {
+  return this._statistics;
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestStatistics.prototype._getRequestIds = function(requestStatus) {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestStatistics.prototype._getRequestIdsChangeEventType = function() {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestStatistics.prototype._getResponseIds = function(requestId, responseStatus) {
+  throw "Not implemented";
+}
+
+//abstract
+AbstractRequestPage._AbstractRequestStatistics.prototype._getResponseIdsChangeEventType = function() {
+  throw "Not implemented";
+}
+
+
+
+AbstractRequestPage.OutgoingRequestStatistics = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestStatistics, function OutgoingRequestStatistics(requestStatus, responseStatus, updateListener) {
+  AbstractRequestPage._AbstractRequestStatistics.call(this, requestStatus, responseStatus, updateListener);
+});
+
+AbstractRequestPage.OutgoingRequestStatistics.prototype._getRequestIds = function(requestStatus) {
+  return Backend.getOutgoingRequestIds(requestStatus);
+}
+
+AbstractRequestPage.OutgoingRequestStatistics.prototype._getRequestIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED;
+}
+
+AbstractRequestPage.OutgoingRequestStatistics.prototype._getResponseIds = function(requestId, responseStatus) {
+  return Backend.getIncomingResponseIds(requestId, responseStatus);
+}
+
+AbstractRequestPage.OutgoingRequestStatistics.prototype._getResponseIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED;
+}
+
+
+AbstractRequestPage.IncomingRequestStatistics = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestStatistics, function IncomingRequestStatistics(requestStatus, responseStatus, updateListener) {
+  AbstractRequestPage._AbstractRequestStatistics.call(this, requestStatus, responseStatus, updateListener);
+});
+
+AbstractRequestPage.IncomingRequestStatistics.prototype._getRequestIds = function(requestStatus) {
+  return Backend.getIncomingRequestIds(requestStatus);
+}
+
+AbstractRequestPage.IncomingRequestStatistics.prototype._getRequestIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED;
+}
+
+AbstractRequestPage.IncomingRequestStatistics.prototype._getResponseIds = function(requestId, responseStatus) {
+  return Backend.getOutgoingResponseIds(requestId, responseStatus);
+}
+
+AbstractRequestPage.IncomingRequestStatistics.prototype._getResponseIdsChangeEventType = function() {
+  return Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
+}
 
