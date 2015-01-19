@@ -10,6 +10,8 @@ import UIKit
 
 class UpdateSettingsViewController: UIViewController {
 
+    var activityIndicator:UIActivityIndicatorView = UIActivityIndicatorView()
+    
     func displayAlert(alertTitle:String,alertError:String)
     {
         var alert = UIAlertController(title: alertTitle, message: alertError, preferredStyle: UIAlertControllerStyle.Alert)
@@ -38,6 +40,14 @@ class UpdateSettingsViewController: UIViewController {
             displayAlert("Update Failed!", alertError: "Passwords doesn't match")
         } else
         {
+            activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50))
+            activityIndicator.center = self.view.center
+            activityIndicator.hidesWhenStopped = true
+            activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+            view.addSubview(activityIndicator)
+            activityIndicator.startAnimating()
+            UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+            
             let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
             var username:NSString = prefs.valueForKey("username") as NSString
             // println(username)
@@ -82,19 +92,27 @@ class UpdateSettingsViewController: UIViewController {
                             println(res.statusCode)
                             if (res.statusCode == 200) {
                                 println("Update Success!");
+                                self.activityIndicator.stopAnimating()
+                                UIApplication.sharedApplication().endIgnoringInteractionEvents()
                                 self.dismissViewControllerAnimated(true, completion: nil)
                             }
                             else if (res.statusCode == 400) {
-                                println("Bad request")
+                                self.activityIndicator.stopAnimating()
+                                UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                                self.displayAlert("Update Failed!", alertError: "Error happened!")
                             }
                             else {
-                                println("Error!")
+                                self.activityIndicator.stopAnimating()
+                                UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                                self.displayAlert("Update Failed!", alertError: "Error happened!")
                             }
                         })
                         
                         task.resume()
                     }
                     else {
+                        self.activityIndicator.stopAnimating()
+                        UIApplication.sharedApplication().endIgnoringInteractionEvents()
                         self.displayAlert("Update Failed!", alertError: "Error happened!")
                     }
                 }

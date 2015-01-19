@@ -10,6 +10,8 @@ import UIKit
 
 class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFieldDelegate {
 
+    var activityIndicator:UIActivityIndicatorView = UIActivityIndicatorView()
+    
     func displayAlert(alertTitle:String,alertError:String)
     {
         var alert = UIAlertController(title: alertTitle, message: alertError, preferredStyle: UIAlertControllerStyle.Alert)
@@ -56,6 +58,14 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
             displayAlert("Register Failed!", alertError: "Please choose Gender")
         } else {
             
+            activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50)) //need to check this coordinates.
+            activityIndicator.center = self.view.center
+            activityIndicator.hidesWhenStopped = true
+            activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+            view.addSubview(activityIndicator)
+            activityIndicator.startAnimating()
+            UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+            
             var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!)
             var session = NSURLSession.sharedSession()
             request.HTTPMethod = "POST"
@@ -75,13 +85,19 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
                 dispatch_async(dispatch_get_main_queue()) {
                    if (res.statusCode == 201) {
                        println("Register success!");
+                       self.activityIndicator.stopAnimating()
+                       UIApplication.sharedApplication().endIgnoringInteractionEvents()
                        self.dismissViewControllerAnimated(true, completion: nil)
                    }
                    else if (res.statusCode == 409) {
+                       self.activityIndicator.stopAnimating()
+                       UIApplication.sharedApplication().endIgnoringInteractionEvents()
                        self.displayAlert("Register Failed!", alertError: "Such user already exist")
                    }
                    else {
-                      self.displayAlert("Register Failed!", alertError: "Connection Failed")
+                       self.activityIndicator.stopAnimating()
+                       UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                       self.displayAlert("Register Failed!", alertError: "Connection Failed")
                    }
                 }
             })

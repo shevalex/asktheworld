@@ -10,6 +10,8 @@ import UIKit
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     
+    var activityIndicator:UIActivityIndicatorView = UIActivityIndicatorView()
+    
     func displayAlert(alertTitle:String,alertError:String)
     {
         var alert = UIAlertController(title: alertTitle, message: alertError, preferredStyle: UIAlertControllerStyle.Alert)
@@ -30,6 +32,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         if ( username.isEqualToString("") || password.isEqualToString("") ){
             displayAlert("Login Failed!", alertError: "Please enter User Name and Password")
         } else {
+            
+            activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50))
+            activityIndicator.center = self.view.center
+            activityIndicator.hidesWhenStopped = true
+            activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+            view.addSubview(activityIndicator)
+            activityIndicator.startAnimating()
+            UIApplication.sharedApplication().beginIgnoringInteractionEvents()
             
            // var url:NSURL = NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user?login=\(username)")!
            // var request = NSMutableURLRequest(URL: url)
@@ -60,11 +70,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                         
                         var userId_dict: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as NSDictionary
                       //  println(userId_dict["userId"]!)
-                        
+                        self.activityIndicator.stopAnimating()
+                        UIApplication.sharedApplication().endIgnoringInteractionEvents()
                         self.dismissViewControllerAnimated(true, completion: nil)
                     }
                     else {
                         self.displayAlert("Login Failed!", alertError: "Error happened!")
+                        self.activityIndicator.stopAnimating()
+                        UIApplication.sharedApplication().endIgnoringInteractionEvents()
                     }
 
                 }
