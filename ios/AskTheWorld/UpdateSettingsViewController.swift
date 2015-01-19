@@ -10,6 +10,14 @@ import UIKit
 
 class UpdateSettingsViewController: UIViewController {
 
+    func displayAlert(alertTitle:String,alertError:String)
+    {
+        var alert = UIAlertController(title: alertTitle, message: alertError, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in
+        }))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     @IBOutlet weak var CurrentPasswordField_USVC: UITextField!
     
     @IBOutlet weak var NewPasswordField_USVC: UITextField!
@@ -25,19 +33,9 @@ class UpdateSettingsViewController: UIViewController {
         var nickname:NSString = NicknameField_USVC.text
         
         if ( current_password.isEqualToString("") ){
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Update Failed!"
-            alertView.message = "Please enter the valid current password"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
+            displayAlert("Update Failed!", alertError: "Please enter the valid current password")
         } else if ( !new_password.isEqual(confirm_new_password) ) {
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Register Failed!"
-            alertView.message = "Passwords doesn't Match"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
+            displayAlert("Update Failed!", alertError: "Passwords doesn't match")
         } else
         {
             let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
@@ -97,12 +95,7 @@ class UpdateSettingsViewController: UIViewController {
                         task.resume()
                     }
                     else {
-                        var alertView:UIAlertView = UIAlertView()
-                        alertView.title = "Error!"
-                        alertView.message = "Error happened!"
-                        alertView.delegate = self
-                        alertView.addButtonWithTitle("OK")
-                        alertView.show()
+                        self.displayAlert("Update Failed!", alertError: "Error happened!")
                     }
                 }
             }
