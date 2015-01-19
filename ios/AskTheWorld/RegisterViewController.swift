@@ -10,6 +10,16 @@ import UIKit
 
 class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFieldDelegate {
 
+    var activityIndicator:UIActivityIndicatorView = UIActivityIndicatorView()
+    
+    func displayAlert(alertTitle:String,alertError:String)
+    {
+        var alert = UIAlertController(title: alertTitle, message: alertError, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in
+        }))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     @IBOutlet weak var UserNameField_Reg: UITextField!
     
     @IBOutlet weak var PasswordField_Reg: UITextField!
@@ -37,41 +47,24 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
         var age_category:NSString = AgeCategory_Reg.text
         
         if ( username.isEqualToString("") || password.isEqualToString("") ){
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Register Failed!"
-            alertView.message = "Please enter User Name and Password"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
+            displayAlert("Register Failed!", alertError: "Please enter User Name and Password")
         } else if ( !password.isEqual(confirm_password) ) {
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Register Failed!"
-            alertView.message = "Passwords doesn't Match"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
-        } else if (age_category.isEqualToString("Please Select")) {
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Register Failed!"
-            alertView.message = "Please choose the Age Category"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
+            displayAlert("Register Failed!", alertError: "Passwords doesn't Match")
         } else if (nickname.isEqualToString("")) {
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Register Failed!"
-            alertView.message = "NickName cannot be empty"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
-        } else if (gender.isEqualToString("Please Select")) {
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Register Failed!"
-            alertView.message = "Please choose Gender"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
+            displayAlert("Register Failed!", alertError: "Nickname cannot be empty")
+        } else if (age_category.isEqualToString("Please Select") || age_category.isEqualToString("")) {
+            displayAlert("Register Failed!", alertError: "Please choose the Age Category")
+        } else if (gender.isEqualToString("Please Select") || gender.isEqualToString("") ) {
+            displayAlert("Register Failed!", alertError: "Please choose Gender")
         } else {
+            
+            activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50)) //need to check this coordinates.
+            activityIndicator.center = self.view.center
+            activityIndicator.hidesWhenStopped = true
+            activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+            view.addSubview(activityIndicator)
+            activityIndicator.startAnimating()
+            UIApplication.sharedApplication().beginIgnoringInteractionEvents()
             
             var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user")!)
             var session = NSURLSession.sharedSession()
@@ -92,23 +85,19 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
                 dispatch_async(dispatch_get_main_queue()) {
                    if (res.statusCode == 201) {
                        println("Register success!");
+                       self.activityIndicator.stopAnimating()
+                       UIApplication.sharedApplication().endIgnoringInteractionEvents()
                        self.dismissViewControllerAnimated(true, completion: nil)
                    }
                    else if (res.statusCode == 409) {
-                       var alertView:UIAlertView = UIAlertView()
-                       alertView.title = "Register Failed!"
-                       alertView.message = "Such user already exist"
-                       alertView.delegate = self
-                       alertView.addButtonWithTitle("OK")
-                       alertView.show()
+                       self.activityIndicator.stopAnimating()
+                       UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                       self.displayAlert("Register Failed!", alertError: "Such user already exist")
                    }
                    else {
-                       var alertView:UIAlertView = UIAlertView()
-                       alertView.title = "Register Failed!"
-                       alertView.message = "Connection Failed"
-                       alertView.delegate = self
-                       alertView.addButtonWithTitle("OK")
-                       alertView.show()
+                       self.activityIndicator.stopAnimating()
+                       UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                       self.displayAlert("Register Failed!", alertError: "Connection Failed")
                    }
                 }
             })

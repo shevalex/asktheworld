@@ -10,6 +10,16 @@ import UIKit
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
     
+    var activityIndicator:UIActivityIndicatorView = UIActivityIndicatorView()
+    
+    func displayAlert(alertTitle:String,alertError:String)
+    {
+        var alert = UIAlertController(title: alertTitle, message: alertError, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in
+        }))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     @IBOutlet weak var UserNameField: UITextField!
 
     @IBOutlet weak var PasswordField: UITextField!
@@ -20,16 +30,18 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         var password:NSString = PasswordField.text
 
         if ( username.isEqualToString("") || password.isEqualToString("") ){
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Login Failed!"
-            alertView.message = "Please enter User Name and Password"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
+            displayAlert("Login Failed!", alertError: "Please enter User Name and Password")
         } else {
             
+            activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50))
+            activityIndicator.center = self.view.center
+            activityIndicator.hidesWhenStopped = true
+            activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+            view.addSubview(activityIndicator)
+            activityIndicator.startAnimating()
+            UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+            
            // var url:NSURL = NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user?login=\(username)")!
-           // println(url)
            // var request = NSMutableURLRequest(URL: url)
             var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user?login=\(username)")!)
             var session = NSURLSession.sharedSession()
@@ -58,16 +70,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                         
                         var userId_dict: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as NSDictionary
                       //  println(userId_dict["userId"]!)
-                        
+                        self.activityIndicator.stopAnimating()
+                        UIApplication.sharedApplication().endIgnoringInteractionEvents()
                         self.dismissViewControllerAnimated(true, completion: nil)
                     }
                     else {
-                        var alertView:UIAlertView = UIAlertView()
-                        alertView.title = "Login Failed!"
-                        alertView.message = "Error happened!"
-                        alertView.delegate = self
-                        alertView.addButtonWithTitle("OK")
-                        alertView.show()
+                        self.displayAlert("Login Failed!", alertError: "Error happened!")
+                        self.activityIndicator.stopAnimating()
+                        UIApplication.sharedApplication().endIgnoringInteractionEvents()
                     }
 
                 }

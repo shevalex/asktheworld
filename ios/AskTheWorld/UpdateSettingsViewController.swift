@@ -10,32 +10,44 @@ import UIKit
 
 class UpdateSettingsViewController: UIViewController {
 
+    var activityIndicator:UIActivityIndicatorView = UIActivityIndicatorView()
+    
+    func displayAlert(alertTitle:String,alertError:String)
+    {
+        var alert = UIAlertController(title: alertTitle, message: alertError, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in
+        }))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     @IBOutlet weak var CurrentPasswordField_USVC: UITextField!
     
     @IBOutlet weak var NewPasswordField_USVC: UITextField!
     
     @IBOutlet weak var ConfirmNewPasswordField_USVC: UITextField!
     
+    @IBOutlet weak var NicknameField_USVC: UITextField!
+    
     @IBAction func UpdateUserSettings_USVC(sender: AnyObject) {
         var current_password:NSString = CurrentPasswordField_USVC.text
         var new_password:NSString = NewPasswordField_USVC.text
         var confirm_new_password:NSString = ConfirmNewPasswordField_USVC.text
+        var nickname:NSString = NicknameField_USVC.text
+        
         if ( current_password.isEqualToString("") ){
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Update Failed!"
-            alertView.message = "Please enter the valid current password"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
+            displayAlert("Update Failed!", alertError: "Please enter the valid current password")
         } else if ( !new_password.isEqual(confirm_new_password) ) {
-            var alertView:UIAlertView = UIAlertView()
-            alertView.title = "Register Failed!"
-            alertView.message = "Passwords doesn't Match"
-            alertView.delegate = self
-            alertView.addButtonWithTitle("OK")
-            alertView.show()
+            displayAlert("Update Failed!", alertError: "Passwords doesn't match")
         } else
         {
+            activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, 0, 50, 50))
+            activityIndicator.center = self.view.center
+            activityIndicator.hidesWhenStopped = true
+            activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+            view.addSubview(activityIndicator)
+            activityIndicator.startAnimating()
+            UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+            
             let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
             var username:NSString = prefs.valueForKey("username") as NSString
             // println(username)
@@ -64,7 +76,7 @@ class UpdateSettingsViewController: UIViewController {
                         var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user/\(userId!)")!)
                         var session = NSURLSession.sharedSession()
                         request.HTTPMethod = "PUT"
-                        var params = ["password":"\(new_password)"] as Dictionary
+                        var params = ["password":"\(new_password)","name":"\(nickname)"] as Dictionary
                         
                         var err: NSError?
                         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &err)
@@ -80,25 +92,28 @@ class UpdateSettingsViewController: UIViewController {
                             println(res.statusCode)
                             if (res.statusCode == 200) {
                                 println("Update Success!");
+                                self.activityIndicator.stopAnimating()
+                                UIApplication.sharedApplication().endIgnoringInteractionEvents()
                                 self.dismissViewControllerAnimated(true, completion: nil)
                             }
                             else if (res.statusCode == 400) {
-                                println("Bad request")
+                                self.activityIndicator.stopAnimating()
+                                UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                                self.displayAlert("Update Failed!", alertError: "Error happened!")
                             }
                             else {
-                                println("Error!")
+                                self.activityIndicator.stopAnimating()
+                                UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                                self.displayAlert("Update Failed!", alertError: "Error happened!")
                             }
                         })
                         
                         task.resume()
                     }
                     else {
-                        var alertView:UIAlertView = UIAlertView()
-                        alertView.title = "Error!"
-                        alertView.message = "Error happened!"
-                        alertView.delegate = self
-                        alertView.addButtonWithTitle("OK")
-                        alertView.show()
+                        self.activityIndicator.stopAnimating()
+                        UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                        self.displayAlert("Update Failed!", alertError: "Error happened!")
                     }
                 }
             }
