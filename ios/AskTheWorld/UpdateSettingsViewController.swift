@@ -16,10 +16,14 @@ class UpdateSettingsViewController: UIViewController {
     
     @IBOutlet weak var ConfirmNewPasswordField_USVC: UITextField!
     
+    @IBOutlet weak var NicknameField_USVC: UITextField!
+    
     @IBAction func UpdateUserSettings_USVC(sender: AnyObject) {
         var current_password:NSString = CurrentPasswordField_USVC.text
         var new_password:NSString = NewPasswordField_USVC.text
         var confirm_new_password:NSString = ConfirmNewPasswordField_USVC.text
+        var nickname:NSString = NicknameField_USVC.text
+        
         if ( current_password.isEqualToString("") ){
             var alertView:UIAlertView = UIAlertView()
             alertView.title = "Update Failed!"
@@ -64,7 +68,7 @@ class UpdateSettingsViewController: UIViewController {
                         var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user/\(userId!)")!)
                         var session = NSURLSession.sharedSession()
                         request.HTTPMethod = "PUT"
-                        var params = ["password":"\(new_password)"] as Dictionary
+                        var params = ["password":"\(new_password)","name":"\(nickname)"] as Dictionary
                         
                         var err: NSError?
                         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &err)
