@@ -25,13 +25,12 @@
 .outgoingrequest-text-holder, .incomingrequest-text-holder {
   padding: 5px;
   
-  border-style: solid;
-  border-color: black;
-  border-width: 1;
-  border-radius: 5px;
+  border-bottom-style: groove;
+  border-bottom-width: 1px;
+  border-bottom-color: black;
   
   color: black;
-  background: white;
+  background: rgba(100, 100, 100, 0.5);
 }
 
 .outgoingrequest-text-holder-activable, .incomingrequest-text-holder-activable {

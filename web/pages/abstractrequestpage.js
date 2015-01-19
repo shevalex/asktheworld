@@ -680,7 +680,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
 
 AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appendEditPanel = function(root, request, completionCallback) {
   var editPanel = UIUtils.appendBlock(root, "RequestEditPanel");
-  
+
   var requestDate = new Date(request.time);
   UIUtils.appendLabel(editPanel, "Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>");
   
