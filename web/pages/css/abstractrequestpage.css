@@ -8,7 +8,7 @@
 }
 
 .outgoingrequest-holder, .incomingrequest-holder {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .outgoingrequest-holder-editable, .incomingrequest-holder-editable {
@@ -23,31 +23,50 @@
 }
 
 .outgoingrequest-text-holder, .incomingrequest-text-holder {
-  padding: 5px;
+  padding: 2px 5px 2px 5px;
   
+  border-radius: 3px;
   border-bottom-style: groove;
   border-bottom-width: 1px;
   border-bottom-color: black;
+  border-right-style: groove;
+  border-right-width: 1px;
+  border-right-color: black;
   
   color: black;
-  background: rgba(100, 100, 100, 0.5);
+}
+.outgoingrequest-text-holder {
+  background: rgb(135, 225, 200);
+}
+
+.incomingrequest-text-holder {
+  background: rgb(125, 200, 225);
 }
 
 .outgoingrequest-text-holder-activable, .incomingrequest-text-holder-activable {
 }
 
-.outgoingrequest-text-holder-activable:hover, .incomingrequest-text-holder-activable:hover {
-  color: black;
-  background: gray;
-  border-color: blue;
-}
-
-.outgoingrequest-text-holder-activable:active, .incomingrequest-text-holder-activable:active {
+.outgoingrequest-text-holder-activable:hover {
   color: white;
-  background: green;
-  border-color: red;
+  background: rgb(5, 110, 75);
 }
 
+.outgoingrequest-text-holder-activable:active {
+  color: white;
+  background: rgb(95, 115, 110);
+}
+
+.incomingrequest-text-holder-activable:hover {
+  color: white;
+  background: rgb(25, 120, 135);
+}
+
+.incomingrequest-text-holder-activable:active {
+  color: white;
+  background: rgb(85, 110, 115);
+}
+  
+  
 .outgoingrequest-controls, .incomingrequest-controls {
   margin-top: 10px;
   text-align: right;
