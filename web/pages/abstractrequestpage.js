@@ -680,6 +680,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
 
 AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appendEditPanel = function(root, request, completionCallback) {
   var editPanel = UIUtils.appendBlock(root, "RequestEditPanel");
+  UIUtils.addClass(editPanel, "outgoingrequest-editpanel");
 
   var requestDate = new Date(request.time);
   UIUtils.appendLabel(editPanel, "Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>");
@@ -711,7 +712,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", "Update");
   UIUtils.addClass(updateButton, "outgoingrequest-updatebutton");
   UIUtils.setClickListener(updateButton, function() {
-    this._requestList.updateStarted();
+    this._requestList.__updateStarted();
 
     request.text = UIUtils.get$(textArea).val();
     request.response_quantity = UIUtils.get$(quantityListId).val();
@@ -720,7 +721,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     request.response_gender = UIUtils.get$(genderListId).val();
     
     AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
-      this._requestList.updateFinished();
+      this._requestList.__updateFinished();
       completionCallback();
     }.bind(this));
   }.bind(this));
@@ -728,10 +729,10 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   var deactivateButton = UIUtils.appendButton(controlPanel, "DeactivateButton", "Deactivate");
   UIUtils.addClass(updateButton, "outgoingrequest-deactivatebutton");
   UIUtils.setClickListener(deactivateButton, function() {
-    this._requestList.updateStarted();
+    this._requestList.__updateStarted();
     request.status = Backend.Request.STATUS_INACTIVE;
     AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
-      this._requestList.updateFinished();
+      this._requestList.__updateFinished();
       completionCallback();
     }.bind(this));
   }.bind(this));
@@ -938,11 +939,11 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", "Update");
   UIUtils.addClass(updateButton, "outgoingresponse-updatebutton");
   UIUtils.setClickListener(updateButton, function() {
-    this._requestList.updateStarted();
+    this._requestList.__updateStarted();
     
     response.text = UIUtils.get$(textArea).val();
     AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, response, function() {
-      this._requestList.updateFinished();
+      this._requestList.__updateFinished();
       completionCallback();
     }.bind(this));
   }.bind(this));

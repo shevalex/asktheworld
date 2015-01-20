@@ -12,14 +12,14 @@
 }
 
 .outgoingrequest-holder-editable, .incomingrequest-holder-editable {
-  padding: 5px;
+  border-radius: 3px;
   
-  border-style: solid;
-  border-color: black;
-  border-width: 1;
-  border-radius: 5px;
-  
-  background: white;
+  color: black;
+  background: rgb(230, 210, 180);
+}
+
+.outgoingrequest-editpanel {
+  padding: 5px 5px 0 5px;
 }
 
 .outgoingrequest-text-holder, .incomingrequest-text-holder {
@@ -38,7 +38,6 @@
 .outgoingrequest-text-holder {
   background: rgb(135, 225, 200);
 }
-
 .incomingrequest-text-holder {
   background: rgb(125, 200, 225);
 }
@@ -68,7 +67,7 @@
   
   
 .outgoingrequest-controls, .incomingrequest-controls {
-  margin-top: 10px;
+  padding: 5px;
   text-align: right;
 }
 
@@ -94,7 +93,7 @@
 }
 
 .outgoingresponse-controls {
-  margin-top: 10px;
+  margin-top: 5px;
   text-align: right;
 }
 
@@ -112,32 +111,34 @@
 
 
 .incomingresponse-text-holder, .outgoingresponse-text-holder {
-  padding: 5px;
-  margin-bottom: 10px;
+  padding: 2px 5px 2px 5px;
   
-  border-style: solid;
-  border-color: black;
-  border-width: 1;
-  border-radius: 5px;
+  margin-bottom: 5px;
+  
+  border-radius: 3px;
+  border-bottom-style: groove;
+  border-bottom-width: 1px;
+  border-bottom-color: black;
+  border-right-style: groove;
+  border-right-width: 1px;
+  border-right-color: black;
   
   color: black;
-  background: rgb(150, 150, 100);
+  background: rgb(220, 230, 250);
 }
 
 .incomingresponse-text-holder-activable, .outgoingresponse-text-holder-activable {
-  color: white;
-  background: blue;
+  color: black;
+  background: rgb(125, 200, 255);
 }
 
 .incomingresponse-text-holder-activable:hover, .outgoingresponse-text-holder-activable:hover {
-  color: black;
-  background: gray;
-  border-color: blue;
+  color: white;
+  background: rgb(20, 120, 200);
 }
 
 .incomingresponse-text-holder-activable:active, .outgoingresponse-text-holder-activable:active {
   color: white;
-  background: green;
-  border-color: red;
+  background: rgb(60, 25, 255);
 }
 
