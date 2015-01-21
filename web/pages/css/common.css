@@ -7,6 +7,10 @@ input {
   border-radius: 5px;
 }
 
+textarea {
+  border-radius: 5px;
+}
+
 select {
   font-size: inherit;
   border-color: #999;

@@ -18,10 +18,6 @@
   background: rgb(230, 210, 180);
 }
 
-.outgoingrequest-editpanel {
-  padding: 5px 5px 0 5px;
-}
-
 .outgoingrequest-text-holder, .incomingrequest-text-holder {
   padding: 2px 5px 2px 5px;
   
@@ -64,7 +60,17 @@
   color: white;
   background: rgb(85, 110, 115);
 }
-  
+
+.outgoingrequest-editpanel {
+  padding: 5px 5px 0 5px;
+  font-size: 20px;
+  background: rgb(200, 240, 210);
+}
+
+.outgoingrequest-editpanel-text {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
   
 .outgoingrequest-controls, .incomingrequest-controls {
   padding: 5px;
@@ -72,15 +78,19 @@
 }
 
 .outgoingrequest-editbutton {
+  margin-left: 10px;
 }
 
 .outgoingrequest-updatebutton {
+  margin-left: 10px;
 }
 
 .outgoingrequest-deactivatebutton {
+  margin-left: 10px;
 }
 
 .outgoingrequest-cancelbutton {
+  margin-left: 10px;
 }
 
 

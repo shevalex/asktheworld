@@ -684,6 +684,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
 
   var requestDate = new Date(request.time);
   UIUtils.appendLabel(editPanel, "Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>");
+  editPanel.appendChild(UIUtils.createLineBreak());
   
   var genderListId = UIUtils.createId(editPanel, "Gender");
   editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(genderListId, "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
@@ -704,6 +705,8 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.get$(quantityListId).val(request.response_quantity);
   
   var textArea = editPanel.appendChild(UIUtils.createTextArea(UIUtils.createId(editPanel, "Text"), 6));
+  UIUtils.addClass(textArea, "outgoingrequest-editpanel-text");
+  
   UIUtils.get$(textArea).val(request.text);
 
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
@@ -727,7 +730,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   }.bind(this));
   
   var deactivateButton = UIUtils.appendButton(controlPanel, "DeactivateButton", "Deactivate");
-  UIUtils.addClass(updateButton, "outgoingrequest-deactivatebutton");
+  UIUtils.addClass(deactivateButton, "outgoingrequest-deactivatebutton");
   UIUtils.setClickListener(deactivateButton, function() {
     this._requestList.__updateStarted();
     request.status = Backend.Request.STATUS_INACTIVE;
