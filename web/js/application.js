@@ -105,14 +105,18 @@ var Application = {
   
   _loginPage: null,
   _registerPage: null,
-  _menuPage: null
+  _menuPage: null,
+  
+  _messageTimer: null
 };
+
+Application.DEFAULT_MESSAGE_TIMEOUT = 5;
+
 
 Application.start = function() {
   this._rootContainer = document.getElementById("RootContainer");
   
   this.showLoginPage();
-  //this.showMenuPage();
 }
 
 Application.showLoginPage = function(observer) {
@@ -151,6 +155,28 @@ Application.showSpinningWheel = function() {
 
 Application.hideSpinningWheel = function() {
   $(".spinning-wheel").remove();
+}
+
+Application.showMessage = function(msg, timeout) {
+  if ($(".popup-message").length > 0) {
+    Application.hideMessage();
+  }
+  $("body").append("<div class='popup-message'>" + msg + "</div>");
+  $(".popup-message").fadeIn("slow");
+  
+  if (this._messageTimer != null) {
+    clearTimeout(this._messageTimer);
+  }
+  
+  this._messageTimer = setTimeout(function() {
+    Application.hideMessage();
+  }, (timeout != null ? timeout : Application.DEFAULT_MESSAGE_TIMEOUT) * 1000);
+}
+
+Application.hideMessage = function() {
+  $(".popup-message").fadeOut("slow", function() {
+    $(this).remove();
+  });
 }
 
 

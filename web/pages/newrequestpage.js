@@ -18,9 +18,9 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var requestTextPanel = UIUtils.appendBlock(root, "RequestContentPanel");
   UIUtils.appendLabel(requestTextPanel, "Label", "1. Type in the text of your request first...");
   
-  var defaultText = "Start typing here...";
+  
   this._requestTextId = UIUtils.createId(requestTextPanel, "Text");
-  requestTextPanel.appendChild(UIUtils.createTextArea(this._requestTextId, 6, defaultText));
+  requestTextPanel.appendChild(UIUtils.createTextArea(this._requestTextId, 6, "Start typing here..."));
 
   var requestParamsPanel = UIUtils.appendBlock(root, "RequestParametersPanel");
   var prefLinkId = UIUtils.createId(root, "PreferencesLink");
@@ -49,8 +49,8 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var buttonHolder = UIUtils.appendBlock(controlPanel, "ButtonHolder");
   this._sendButton = UIUtils.appendButton(buttonHolder, "SendButton", "Ask The World!");
   UIUtils.setClickListener(this._sendButton, function() {
-    var value = UIUtils.get$(this._requestTextId).val();
-    if (value != "" && value != defaultText) {
+    var textElement = UIUtils.get$(this._requestTextId).get(0);
+    if (textElement.value != "" && textElement.value != textElement.defaultValue) {
       this._createRequest();
     } else {
       UIUtils.indicateInvalidInput(this._requestTextId);
@@ -59,6 +59,9 @@ NewRequestPage.prototype.definePageContent = function(root) {
 }
 
 NewRequestPage.prototype.onShow = function() {
+  var textElement = UIUtils.get$(this._requestTextId).get(0);
+  textElement.value = textElement.defaultValue;
+
   UIUtils.get$(this._requestGenderId).val(Backend.getUserPreferences().requestTargetGender);
   UIUtils.get$(this._requestAgeId).val(Backend.getUserPreferences().requestTargetAge);
   UIUtils.get$(this._requestQuantityId).val(Backend.getUserPreferences().responseQuantity);
@@ -69,19 +72,23 @@ NewRequestPage.prototype.onShow = function() {
 NewRequestPage.prototype._createRequest = function() {
   var callback = {
     success: function(requestId) {
+      Application.showMessage("New request was successfully sent");
       this._onCompletion();
     },
     failure: function() {
+      Application.showMessage("Failed to send a request. Try again later");
       this._onCompletion();
     },
     error: function() {
+      Application.showMessage("Error: cannot reach the server");
       this._onCompletion();
     },
     
     _onCompletion: function() {
       Application.hideSpinningWheel();
+      UIUtils.setEnabled(this._sendButton, true);
       Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
-    }
+    }.bind(this)
   }
   
   var request = {
