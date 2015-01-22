@@ -78,7 +78,7 @@ HomePage.prototype.definePageContent = function(root) {
     var countRequests = 0;
     var countResponses = 0; 
     for (var id in info) {
-      if (info[id] != null) {
+      if (info[id] != null && info[id] != 0) {
         countRequests++;
         countResponses += info[id];
       }

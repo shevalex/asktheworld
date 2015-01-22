@@ -384,7 +384,6 @@ Backend.getIncomingRequestIds = function(requestStatus) {
 Backend.getRequest = function(requestId) {
   if (this._cache.requests != null) {
     var request = this._cache.requests[requestId];
-    
     if (request != null) {
       return request;
     }
@@ -678,7 +677,6 @@ Backend._createDummyRequest = function(requestId) {
   var gender = Math.round(Math.random() * 2);
 
   var status = Backend.Request.STATUS_INACTIVE;
-
   if (this._cache.incomingRequestIds != null) {
     for (var index in this._cache.incomingRequestIds.active) {
       if (this._cache.incomingRequestIds.active[index] == requestId) {
@@ -686,7 +684,8 @@ Backend._createDummyRequest = function(requestId) {
         break;
       }
     }
-  } else if (this._cache.outgoingRequestIds != null) {
+  }
+  if (this._cache.outgoingRequestIds != null) {
     for (var index in this._cache.outgoingRequestIds.active) {
       if (this._cache.outgoingRequestIds.active[index] == requestId) {
         status = Backend.Request.STATUS_ACTIVE;
@@ -694,7 +693,7 @@ Backend._createDummyRequest = function(requestId) {
       }
     }
   }
-  
+
   var request = {
     time: Date.now(),
     text: "This is the request with the id " + requestId,

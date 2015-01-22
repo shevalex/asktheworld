@@ -57,7 +57,10 @@
   font-size: 20px;
 }
 
-#NewRequestPage-RequestControlPanel-SendButton {
+#NewRequestPage-RequestControlPanel-ButtonHolder {
+}
+
+#NewRequestPage-RequestControlPanel-ButtonHolder-SendButton {
   padding: 10px 50px 10px 50px;
   font-size: 30px;
 }
