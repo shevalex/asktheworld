@@ -187,6 +187,41 @@ UIUtils.createImage = function(imageId, src) {
   return imageElement;
 }
 
+UIUtils.createTable = function(tableId, columns) {
+  var tableElement = document.createElement("table");
+  tableElement.setAttribute("id", tableId);
+  tableElement.style.width = "100%";
+  
+  var rowElement = document.createElement("tr");
+  rowElement.setAttribute("id", UIUtils.createId(tableId, "row1"));
+  tableElement.appendChild(rowElement);
+  
+  for (var index in columns) {
+    var column = columns[index];
+    
+    var columnElement = document.createElement("td");
+    columnElement.setAttribute("id", UIUtils.createId(rowElement, "column" + index));
+    rowElement.appendChild(columnElement);
+    
+    if (column.width != null) {
+      columnElement.style.width = column.width;
+      columnElement.style.verticalAlign = "top";
+    }
+    
+    if (column.text != null) {
+      UIUtils.get$(columnElement).html(column.text);
+    } else if (column.element != null) {
+      columnElement.appendChild(column.element);
+    }
+  }
+  
+  return tableElement;
+}
+
+UIUtils.appendTable = function(root, tableId, columns) {
+  return root.appendChild(UIUtils.createTable(UIUtils.createId(root, tableId), columns));
+}
+
 
 UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener) {
   var tableElement = document.createElement("table");
