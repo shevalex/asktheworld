@@ -402,6 +402,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel = ClassUtils.defi
   this._responsePanels = [];
   this._cacheResponsesChangeListener = null;
   this._cacheRequestChangeListener = null;
+  this._requestUpdateListeners = [];
 });
 
 //abstract
@@ -443,6 +444,10 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.append 
 
       UIUtils.emptyContainer(this._rootContainer);
       appendRequestElement();
+    } else if (this._settings.showResponseCount && event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED && event.requestId == this._requestId) {
+      for (var index in this._requestUpdateListeners) {
+        this._requestUpdateListeners[index]();
+      }
     }
   }.bind(this);
   
@@ -525,16 +530,20 @@ AbstractRequestPage._AbstractRequestList._AbstractResponsePanel = ClassUtils.def
 
 
 AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype.append = function(container) {
-  this._rootContainer = UIUtils.appendBlock(container, this._responseId);
+  this._rootContainer = UIUtils.appendBlock(container, this._responseId != -1 ? this._responseId : "andmore");
 
   var appendResponseElement = function() {
-    var response = Backend.getResponse(this._requestId, this._responseId);
-    if (response != null) {
-      this._requestList.__updateFinished();
+    if (this._responseId != -1) {
+      var response = Backend.getResponse(this._requestId, this._responseId);
+      if (response != null) {
+        this._requestList.__updateFinished();
 
-      this._appendResponseElement(response);
+        this._appendResponseElement(response);
+      } else {
+        this._requestList.__updateStarted();
+      }
     } else {
-      this._requestList.__updateStarted();
+      this._appendMoreResponsesElement();
     }
   }.bind(this);
   
@@ -562,6 +571,20 @@ AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype.remove
 //abstract
 AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype._appendResponseElement = function(response) {
   throw "Not implemented"
+}
+
+AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype._appendMoreResponsesElement = function() {
+  var responseTextElement = UIUtils.appendBlock(this._rootContainer, "TextMessage");
+  UIUtils.addClass(responseTextElement, "common-moreresponses");
+
+  if (this._settings.requestClickListener != null) {
+    UIUtils.addClass(responseTextElement, "common-moreresponses-activable");
+    UIUtils.setClickListener(responseTextElement, this._settings.requestClickListener.bind(this, this._requestId))
+
+    UIUtils.get$(responseTextElement).html("And more responses. Click to see them all");
+  } else {
+    UIUtils.get$(responseTextElement).html("And more responses...");
+  }
 }
 
 AbstractRequestPage._AbstractRequestList.__updateRequest = function(requestId, request, completionCallback) {
@@ -642,18 +665,26 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
     UIUtils.addClass(textElement, "outgoingrequest-message");
         
     if (this._settings.showResponseCount) {
-      var unviewedResponses = this._requestList._getResponseIds(this._requestId, Backend.Response.STATUS_UNREAD);
-      numOfUnviewedResponses = unviewedResponses != null ? unviewedResponses.length : 0;
-      
-      var viewedResponses = this._requestList._getResponseIds(this._requestId, Backend.Response.STATUS_READ);
-      numOfViewedResponses = viewedResponses != null ? viewedResponses.length : 0;
-      
       var responseCounterElement = UIUtils.createBlock(UIUtils.createId(requestInfoElement, "ResponseCounter"));
-      
       var infoTableElement = UIUtils.appendTable(requestInfoElement, "InfoTable", [{element: textElement}, {element: responseCounterElement, width: "50px"}]);
-
       UIUtils.addClass(responseCounterElement, "outgoingrequest-responsecounter");
-      UIUtils.get$(responseCounterElement).html("<b>" + numOfUnviewedResponses + "</b>/" + (numOfViewedResponses + numOfUnviewedResponses));
+      
+      var drawCounterText = function() {
+        var unviewedResponses = this._requestList._getResponseIds(this._requestId, Backend.Response.STATUS_UNREAD);
+        numOfUnviewedResponses = unviewedResponses != null ? unviewedResponses.length : 0;
+
+        var viewedResponses = this._requestList._getResponseIds(this._requestId, Backend.Response.STATUS_READ);
+        numOfViewedResponses = viewedResponses != null ? viewedResponses.length : 0;
+
+        var counterText = numOfUnviewedResponses > 0 ? "<b>" : "";
+        counterText += numOfUnviewedResponses;
+        counterText += numOfUnviewedResponses > 0 ? "</b>" : "";
+        counterText += "/" + (numOfViewedResponses + numOfUnviewedResponses);
+        UIUtils.get$(responseCounterElement).html(counterText);
+      }.bind(this);
+      
+      drawCounterText();
+      this._requestUpdateListeners.push(drawCounterText);
     } else {
       requestInfoElement.appendChild(textElement);
     }
@@ -872,28 +903,18 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
 
   var responseTextElement = UIUtils.appendBlock(responseInfoElement, "TextMessage");
   UIUtils.addClass(responseTextElement, "incomingresponse-message");
-
-  if (this._responseId == -1) {
-    if (this._settings.requestClickListener != null) {
-      UIUtils.addClass(responseInfoElement, "incomingresponse-info-activable");
-      UIUtils.setClickListener(responseInfoElement, this._settings.requestClickListener.bind(this, this._requestId))
-
-      UIUtils.get$(responseTextElement).html("And more responses. Click to see them all");
-    } 
-  } else {
-    if (response.status == Backend.Response.STATUS_UNREAD) {
-      UIUtils.addClass(responseInfoElement, "incomingresponse-info-activable");
-      UIUtils.setClickListener(responseInfoElement, function() {
-        AbstractRequestPage._AbstractRequestList.__setResponseStatus(this._requestId, this._responseId, Backend.Response.STATUS_READ, function() {
-        });
-        //We update when the server informs us to update
-        //UIUtils.removeClass(responseHolder, "incomingresponse-info-activable");
-      }.bind(this));
-    }
-      
-    var responseDate = new Date(response.time);
-    UIUtils.get$(responseTextElement).html("<b>A " + Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+  if (response.status == Backend.Response.STATUS_UNREAD) {
+    UIUtils.addClass(responseInfoElement, "incomingresponse-info-activable");
+    UIUtils.setClickListener(responseInfoElement, function() {
+      AbstractRequestPage._AbstractRequestList.__setResponseStatus(this._requestId, this._responseId, Backend.Response.STATUS_READ, function() {
+      });
+      //We update when the server informs us to update
+      //UIUtils.removeClass(responseHolder, "incomingresponse-info-activable");
+    }.bind(this));
   }
+
+  var responseDate = new Date(response.time);
+  UIUtils.get$(responseTextElement).html("<b>A " + Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
 }
 
 AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestList, requestId, responseId, settings) {
@@ -911,17 +932,8 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
     var responseTextElement = UIUtils.appendBlock(responseInfoElement, "TextMessage");
     UIUtils.addClass(responseTextElement, "incomingresponse-message");
 
-    if (this._responseId == -1) {
-      if (this._settings.requestClickListener != null) {
-        UIUtils.addClass(responseInfoElement, "outgoingresponse-info-activable");
-        UIUtils.setClickListener(responseInfoElement, this._settings.requestClickListener.bind(this, this._requestId))
-      }
-
-      UIUtils.get$(responseTextElement).html("And more responses. Click to see them all");
-    } else {
-      var responseDate = new Date(response.time);
-      UIUtils.get$(responseTextElement).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
-    }
+    var responseDate = new Date(response.time);
+    UIUtils.get$(responseTextElement).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
 
     if (response.status == Backend.Response.STATUS_UNREAD) {
       var responseControlPanel = UIUtils.appendBlock(responseHolder, "ControlPanel");
