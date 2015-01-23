@@ -34,6 +34,7 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
     },
     requestEditable: true,
     maxResponses: -1,
+    showResponseCount: true,
     responseAreaMaxHeight: "300px",
     requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE,
     responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED,
