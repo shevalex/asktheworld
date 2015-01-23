@@ -383,13 +383,28 @@ AbstractRequestPage._AbstractRequestList.prototype.__getResponseStatusFromSettin
 }
 
 AbstractRequestPage._AbstractRequestList.prototype.__updateStarted = function() {
-  if (this._settings.updateListener != null) {
+  if (this._settings.updateListener != null && this._settings.updateListener.updateStarted != null) {
     this._settings.updateListener.updateStarted();
   }
 }
 AbstractRequestPage._AbstractRequestList.prototype.__updateFinished = function() {
-  if (this._settings.updateListener != null) {
+  if (this._settings.updateListener != null && this._settings.updateListener.updateFinished != null) {
     this._settings.updateListener.updateFinished();
+  }
+}
+AbstractRequestPage._AbstractRequestList.prototype.__responseCreated = function() {
+  if (this._settings.updateListener != null && this._settings.updateListener.responseCreated != null) {
+    this._settings.updateListener.responseCreated();
+  }
+}
+AbstractRequestPage._AbstractRequestList.prototype.__responseUpdated = function() {
+  if (this._settings.updateListener != null && this._settings.updateListener.responseUpdated != null) {
+    this._settings.updateListener.responseUpdated();
+  }
+}
+AbstractRequestPage._AbstractRequestList.prototype.__requestUpdated = function() {
+  if (this._settings.updateListener != null && this._settings.updateListener.requestUpdated != null) {
+    this._settings.updateListener.requestUpdated();
   }
 }
 
@@ -760,6 +775,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     
     AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
       this._requestList.__updateFinished();
+      this._requestList.__requestUpdated();
       completionCallback();
     }.bind(this));
   }.bind(this));
@@ -771,6 +787,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     request.status = Backend.Request.STATUS_INACTIVE;
     AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
       this._requestList.__updateFinished();
+      this._requestList.__requestUpdated();
       completionCallback();
     }.bind(this));
   }.bind(this));
@@ -868,6 +885,8 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
   var finishEditing = function() {
     UIUtils.get$(createResponsePanel).remove();
     this._requestList.__updateFinished();
+    this._requestList.__responseCreated();
+    
     completionCallback();
   }.bind(this);
   
@@ -975,6 +994,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
     response.text = UIUtils.get$(textArea).val();
     AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, response, function() {
       this._requestList.__updateFinished();
+      this._requestList.__responseUpdated();
       completionCallback();
     }.bind(this));
   }.bind(this));

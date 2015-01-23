@@ -44,6 +44,9 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
       },
       updateFinished: function() {
         Application.hideSpinningWheel();
+      },
+      requestUpdated: function() {
+        Application.showMessage("Request was updated", "fast");
       }
     }
   });
