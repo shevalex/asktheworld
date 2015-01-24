@@ -833,9 +833,11 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
 
     var isEditable = responseIds.length == 0 && this._settings.requestEditable == true && request.status == Backend.Request.STATUS_ACTIVE;
     
-    if (isEditable) { 
+    if (isEditable) {
+      UIUtils.removeClass(requestHolderElement, "incomingrequest-holder");
       UIUtils.addClass(requestHolderElement, "incomingrequest-holder-editable");
     } else {
+      UIUtils.removeClass(requestHolderElement, "incomingrequest-holder-editable");
       UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
     }
 
@@ -942,7 +944,14 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.def
 
 AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appendResponseElement = function(response) {
   var responseHolder = UIUtils.appendBlock(this._rootContainer, "TextHolder");
-  UIUtils.addClass(responseHolder, "outgoingresponse-holder");
+  
+  var isEditable = response.status == Backend.Response.STATUS_UNREAD;
+  
+  if (isEditable) {
+    UIUtils.addClass(responseHolder, "outgoingresponse-holder-editable");
+  } else {
+    UIUtils.addClass(responseHolder, "outgoingresponse-holder");
+  }
   
   var appendResponseText = function() {
     var responseInfoElement = UIUtils.appendBlock(responseHolder, "Info");
@@ -954,7 +963,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
     var responseDate = new Date(response.time);
     UIUtils.get$(responseTextElement).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
 
-    if (response.status == Backend.Response.STATUS_UNREAD) {
+    if (isEditable) {
       var responseControlPanel = UIUtils.appendBlock(responseHolder, "ControlPanel");
       UIUtils.addClass(responseControlPanel, "outgoingresponse-controlpanel");
 

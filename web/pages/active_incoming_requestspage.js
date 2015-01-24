@@ -31,6 +31,9 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
       },
       updateFinished: function() {
         Application.hideSpinningWheel();
+      },
+      responseCreated: function() {
+        Application.showMessage("You response was sent");
       }
     }
   });

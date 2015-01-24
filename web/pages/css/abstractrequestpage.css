@@ -103,6 +103,7 @@
 
 
 .incomingrequest-commentbutton {
+  margin-left: 10px;
 }
 
 
@@ -111,25 +112,34 @@
 }
 
 .outgoingresponse-controlpanel {
-  margin-top: 5px;
+  padding: 5px;
   text-align: right;
 }
 
 .outgoingresponse-editbutton {
+  margin-left: 10px;
 }
 
 .outgoingresponse-submitbutton {
+  margin-left: 10px;
 }
 
 .outgoingresponse-updatebutton {
+  margin-left: 10px;
 }
 
 .outgoingresponse-cancelbutton {
+  margin-left: 10px;
 }
 
 
 .incomingresponse-holder, .outgoingresponse-holder {
   margin-bottom: 5px;  
+}
+
+.incomingresponse-holder-editable, .outgoingresponse-holder-editable {
+  margin-bottom: 5px;
+  background: rgb(230, 210, 180);
 }
 
 .incomingresponse-info, .outgoingresponse-info {
