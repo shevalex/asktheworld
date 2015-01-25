@@ -172,7 +172,7 @@ MenuPage.prototype._getPageForItem = function(itemId) {
 MenuPage.prototype._getPageById = function(pageId) {
   if (pageId == MenuPage.prototype.REQUEST_DETAILS_PAGE_ID) {
     if (this._requestDetailsPage == null) {
-      this._requestDetailsPage = new OutgoingRequestDetailsPage();
+      this._requestDetailsPage = new RequestDetailsPage();
     }
     return this._requestDetailsPage;
   } else {

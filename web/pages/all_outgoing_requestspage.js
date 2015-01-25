@@ -21,6 +21,7 @@ AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
     requestStatus: null,
     selectionObserver: function(requestId) {
       var paramBundle = {
+        incoming: false,
         returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID,
         requestId: requestId,
         otherRequestIds: null

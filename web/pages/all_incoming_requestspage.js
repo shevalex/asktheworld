@@ -20,12 +20,13 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
     requestStatus: null,
     selectionObserver: function(requestId) {
       var paramBundle = {
+        incoming: true,
         returnPageId: MenuPage.prototype.ALL_INQUIRIES_ITEM_ID,
         requestId: requestId,
         otherRequestIds: null
       }
 
-      //Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     }.bind(this),
     updateListener: {
       updateStarted: function() {

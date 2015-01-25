@@ -25,6 +25,7 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
   this._requestList = new AbstractRequestPage.OutgoingRequestList({
     requestClickListener: function(requestId) {
       var paramBundle = {
+        incoming: false,
         returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID,
         requestId: requestId,
         otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE)

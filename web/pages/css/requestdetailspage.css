@@ -1,29 +1,29 @@
-#OutgoingRequestDetailsPage {
+#RequestDetailsPage {
 }
 
-#OutgoingRequestDetailsPage-GeneralPanel {
+#RequestDetailsPage-GeneralPanel {
   height: 40px;
 }
 
-#OutgoingRequestDetailsPage-GeneralPanel-PreviousLink {
+#RequestDetailsPage-GeneralPanel-PreviousLink {
   width: 100%;
   text-align: left;
   font-size: 20px;
 }
 
-#OutgoingRequestDetailsPage-GeneralPanel-NextLink {
+#RequestDetailsPage-GeneralPanel-NextLink {
   width: 100%;
   text-align: right;
   font-size: 20px;
 }
 
-#OutgoingRequestDetailsPage-GeneralPanel-GoBackLink {
+#RequestDetailsPage-GeneralPanel-GoBackLink {
   width: 100%;
   text-align: center;
   font-size: 25px;
 }
 
-#OutgoingRequestDetailsPage-RequestsPanel {
+#RequestDetailsPage-RequestsPanel {
   margin-top: 20px;
   padding-right: 10px;
   height: calc(100% - 40px - 20px);
