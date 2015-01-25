@@ -52,7 +52,7 @@ var Application = {
         }
       } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[5]) {
         if (gender == this.GENDER_PREFERENCE[0]) {
-          return "all senoir people";
+          return "all senior people";
         } else if (gender == this.GENDER_PREFERENCE[1]) {
           return "all senior men";
         } else if (gender == this.GENDER_PREFERENCE[2]) {

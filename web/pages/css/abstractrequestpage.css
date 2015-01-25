@@ -60,6 +60,11 @@
 .outgoingrequest-message, .incomingrequest-message {
 }
 
+.outgoingrequest-message-compact, .incomingrequest-message-compact {
+  height: 35px;
+  overflow: hidden;
+}
+
 .outgoingrequest-responsecounter {
   width: 100%;
   height: 100%;

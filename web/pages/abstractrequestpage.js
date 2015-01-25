@@ -228,6 +228,7 @@ AbstractRequestPage.IncomingRequestsTable.prototype._getRowData = function(reque
  * settings.maxResponses: integer, -1 for unlimited
  * settings.responseAreaMaxHeight: "measure unit", -1 for unlimited
  * settings.showResponseCountsettings.showResponseCount: boolean
+ * settings.showFullContent: boolean
  * settings.updateListener
  */
 AbstractRequestPage._AbstractRequestList = ClassUtils.defineClass(Object, function _AbstractRequestList(settings) {
@@ -677,8 +678,6 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
     }
     
     var textElement = UIUtils.createBlock(UIUtils.createId(requestInfoElement, "RequestText"));
-    UIUtils.addClass(textElement, "outgoingrequest-message");
-        
     if (this._settings.showResponseCount) {
       var responseCounterElement = UIUtils.createBlock(UIUtils.createId(requestInfoElement, "ResponseCounter"));
       var infoTableElement = UIUtils.appendTable(requestInfoElement, "InfoTable", [{element: textElement}, {element: responseCounterElement, width: "50px"}]);
@@ -704,6 +703,11 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
       requestInfoElement.appendChild(textElement);
     }
     
+    if (this._settings.showFullContent) {
+      UIUtils.addClass(textElement, "outgoingrequest-message");
+    } else {
+      UIUtils.addClass(textElement, "outgoingrequest-message-compact");
+    }
     var requestDate = new Date(request.time);
     UIUtils.get$(textElement).html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + request.text);
     
@@ -822,8 +826,14 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
     }
 
     var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
-
     UIUtils.addClass(requestTextElement, "incomingrequest-info");
+    
+    if (this._settings.showFullContent) {
+      UIUtils.addClass(requestTextElement, "incomingrequest-message");
+    } else {
+      UIUtils.addClass(requestTextElement, "incomingrequest-message-compact");
+    }
+    
     if (this._settings.requestClickListener != null) {
       UIUtils.addClass(requestTextElement, "incomingrequest-info-activable");
       UIUtils.setClickListener(requestTextElement, function() {
