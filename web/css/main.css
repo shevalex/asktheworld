@@ -19,7 +19,7 @@ body {
 .popup-message {
   position: fixed;
   left: calc(50% - 150px);
-  top: 30%;
+  top: 95px;
   
   width: 300px;
   max-height: 100px;

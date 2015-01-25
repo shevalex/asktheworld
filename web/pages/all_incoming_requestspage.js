@@ -3,8 +3,6 @@ AllIncomingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function A
   
   this._requestTable = null;
   this._requestTableContainer = null;
-  this._requestsContainer = null;
-  this._requestList = null;
 });
 
 AllIncomingRequestsPage.prototype.definePageContent = function(root) {
@@ -16,52 +14,37 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
   });
 
-
   this._requestTableContainer = UIUtils.appendBlock(root, "TablePanel");
-  this._requestsContainer = UIUtils.appendBlock(root, "RequestPanel");
-}
 
-AllIncomingRequestsPage.prototype.onShow = function(root) {
-  var updateListener = {
-    updateStarted: function() {
-      Application.showSpinningWheel();
-    },
-    updateFinished: function() {
-      Application.hideSpinningWheel();
-    }
-  }
-  
   this._requestTable = new AbstractRequestPage.IncomingRequestsTable({
     requestStatus: null,
     selectionObserver: function(requestId) {
-      if (this._requestList != null) {
-        this._requestList.destroy();
+      var paramBundle = {
+        incoming: true,
+        returnPageId: MenuPage.prototype.ALL_INQUIRIES_ITEM_ID,
+        requestId: requestId,
+        otherRequestIds: null
       }
-      
-      this._requestList = new AbstractRequestPage.IncomingRequestList({
-        requestClickListener: null,
-        requestIds: [requestId],
-        requestEditable: true,
-        maxResponses: 3,
-        responseAreaMaxHeight: -1,
-        unviewedResponsesOnly: false,
-        updateListener: updateListener
-      });
-      
-      this._requestList.append(this._requestsContainer);
+
+      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     }.bind(this),
-    updateListener: updateListener
+    updateListener: {
+      updateStarted: function() {
+        Application.showSpinningWheel();
+      },
+      updateFinished: function() {
+        Application.hideSpinningWheel();
+      }
+    }
   });
   
   this._requestTable.append(this._requestTableContainer);
 }
 
+AllIncomingRequestsPage.prototype.onShow = function(root) {
+}
+
 AllIncomingRequestsPage.prototype.onHide = function() {
-  this._requestTable.remove();
-  
-  if (this._requestList != null) {
-    this._requestList.destroy();
-  }
 }
 
 

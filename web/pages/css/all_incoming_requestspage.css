@@ -8,15 +8,6 @@
 }
 
 #AllIncomingRequestsPage-TablePanel {
-  max-height: 300px;
   margin-top: 30px;
-  overflow: hidden;
-}
-
-#AllIncomingRequestsPage-RequestPanel {
-  margin-top: 30px;
-  padding-right: 10px;
-  max-height: calc(100% - 50px - 30px - 300px - 30px);
-  overflow-y: auto;
 }
 

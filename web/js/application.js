@@ -52,7 +52,7 @@ var Application = {
         }
       } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[5]) {
         if (gender == this.GENDER_PREFERENCE[0]) {
-          return "all senoir people";
+          return "all senior people";
         } else if (gender == this.GENDER_PREFERENCE[1]) {
           return "all senior men";
         } else if (gender == this.GENDER_PREFERENCE[2]) {
@@ -110,7 +110,9 @@ var Application = {
   _messageTimer: null
 };
 
-Application.DEFAULT_MESSAGE_TIMEOUT = 5;
+Application.MESSAGE_TIMEOUT_FAST = 1;
+Application.MESSAGE_TIMEOUT_NORMAL = 5;
+Application.MESSAGE_TIMEOUT_SLOW = 10;
 
 
 Application.start = function() {
@@ -168,9 +170,17 @@ Application.showMessage = function(msg, timeout) {
     clearTimeout(this._messageTimer);
   }
   
+  var timeToShow = Application.MESSAGE_TIMEOUT_NORMAL;
+  if (timeout == "slow") {
+    timeToShow = Application.MESSAGE_TIMEOUT_SLOW;
+  } else if (timeout == "fast") {
+    timeToShow = Application.MESSAGE_TIMEOUT_FAST;
+  } else if (typeof timeout == "number") {
+    timeToShow = timeout;
+  }
   this._messageTimer = setTimeout(function() {
     Application.hideMessage();
-  }, (timeout != null ? timeout : Application.DEFAULT_MESSAGE_TIMEOUT) * 1000);
+  }, timeToShow * 1000);
 }
 
 Application.hideMessage = function() {

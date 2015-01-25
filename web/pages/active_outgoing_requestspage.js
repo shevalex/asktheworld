@@ -25,6 +25,7 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
   this._requestList = new AbstractRequestPage.OutgoingRequestList({
     requestClickListener: function(requestId) {
       var paramBundle = {
+        incoming: false,
         returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID,
         requestId: requestId,
         otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE)
@@ -33,7 +34,8 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
       Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     },
     requestEditable: true,
-    maxResponses: -1,
+    maxResponses: 2,
+    showResponseCount: true,
     responseAreaMaxHeight: "300px",
     requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE,
     responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED,
@@ -43,6 +45,9 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
       },
       updateFinished: function() {
         Application.hideSpinningWheel();
+      },
+      requestUpdated: function() {
+        Application.showMessage("Request was updated", "fast");
       }
     }
   });

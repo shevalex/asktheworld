@@ -19,7 +19,16 @@ ActiveIncomingRequestsPage.prototype.definePageContent = function(root) {
 
 ActiveIncomingRequestsPage.prototype.onShow = function(root) {
   this._requestList = new AbstractRequestPage.IncomingRequestList({
-    requestClickListener: null,
+    requestClickListener: function(requestId) {
+      var paramBundle = {
+        incoming: true,
+        returnPageId: MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID,
+        requestId: requestId,
+        otherRequestIds: Backend.getIncomingRequestIds(Backend.Request.STATUS_ACTIVE)
+      }
+
+      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+    },
     requestEditable: true,
     maxResponses: -1,
     responseAreaMaxHeight: "300px",
@@ -31,6 +40,9 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
       },
       updateFinished: function() {
         Application.hideSpinningWheel();
+      },
+      responseCreated: function() {
+        Application.showMessage("You response was sent");
       }
     }
   });

@@ -1,4 +1,5 @@
 .request-and-responses-container {
+  min-width: 200px;
 }
 
 .responses-container {
@@ -18,7 +19,7 @@
   background: rgb(230, 210, 180);
 }
 
-.outgoingrequest-text-holder, .incomingrequest-text-holder {
+.outgoingrequest-info, .incomingrequest-info {
   padding: 2px 5px 2px 5px;
   
   border-radius: 3px;
@@ -28,38 +29,50 @@
   border-right-style: groove;
   border-right-width: 1px;
   border-right-color: black;
-  
-  color: black;
 }
-.outgoingrequest-text-holder {
+.outgoingrequest-info {
   background: rgb(135, 225, 200);
 }
-.incomingrequest-text-holder {
+.incomingrequest-info {
   background: rgb(125, 200, 225);
 }
 
-.outgoingrequest-text-holder-activable, .incomingrequest-text-holder-activable {
-}
-
-.outgoingrequest-text-holder-activable:hover {
+.outgoingrequest-info-activable:hover {
   color: white;
   background: rgb(5, 110, 75);
 }
 
-.outgoingrequest-text-holder-activable:active {
+.outgoingrequest-info-activable:active {
   color: white;
   background: rgb(95, 115, 110);
 }
 
-.incomingrequest-text-holder-activable:hover {
+.incomingrequest-info-activable:hover {
   color: white;
   background: rgb(25, 120, 135);
 }
 
-.incomingrequest-text-holder-activable:active {
+.incomingrequest-info-activable:active {
   color: white;
   background: rgb(85, 110, 115);
 }
+
+.outgoingrequest-message, .incomingrequest-message {
+}
+
+.outgoingrequest-message-compact, .incomingrequest-message-compact {
+  height: 35px;
+  overflow: hidden;
+}
+
+.outgoingrequest-responsecounter {
+  width: 100%;
+  height: 100%;
+
+  text-align: right;
+}
+
+
 
 .outgoingrequest-editpanel {
   padding: 5px 5px 0 5px;
@@ -72,7 +85,7 @@
   font-size: 15px;
 }
   
-.outgoingrequest-controls, .incomingrequest-controls {
+.outgoingrequest-controlpanel, .incomingrequest-controlpanel {
   padding: 5px;
   text-align: right;
 }
@@ -95,6 +108,7 @@
 
 
 .incomingrequest-commentbutton {
+  margin-left: 10px;
 }
 
 
@@ -102,28 +116,91 @@
   margin-top: 20px;
 }
 
-.outgoingresponse-controls {
-  margin-top: 5px;
+.outgoingresponse-controlpanel {
+  padding: 5px;
   text-align: right;
 }
 
 .outgoingresponse-editbutton {
+  margin-left: 10px;
 }
 
 .outgoingresponse-submitbutton {
+  margin-left: 10px;
 }
 
 .outgoingresponse-updatebutton {
+  margin-left: 10px;
 }
 
 .outgoingresponse-cancelbutton {
+  margin-left: 10px;
 }
 
 
-.incomingresponse-text-holder, .outgoingresponse-text-holder {
+.incomingresponse-holder, .outgoingresponse-holder {
+  margin-bottom: 5px;  
+}
+
+.incomingresponse-holder-editable, .outgoingresponse-holder-editable {
+  margin-bottom: 5px;
+  background: rgb(230, 210, 180);
+}
+
+.incomingresponse-info, .outgoingresponse-info {
   padding: 2px 5px 2px 5px;
   
+  border-radius: 3px;
+  border-bottom-style: groove;
+  border-bottom-width: 1px;
+  border-bottom-color: black;
+  border-right-style: groove;
+  border-right-width: 1px;
+  border-right-color: black;
+}
+.incomingresponse-info {
+  background: rgb(220, 230, 250);
+}
+.outgoingresponse-info {
+  background: rgb(120, 230, 200);
+}
+
+.incomingresponse-info-activable {
+  color: black;
+  background: rgb(125, 200, 255);
+}
+
+.outgoingresponse-info-activable {
+  color: black;
+  background: rgb(125, 200, 255);
+}
+
+.incomingresponse-info-activable:hover {
+  color: white;
+  background: rgb(20, 120, 200);
+}
+
+.outgoingresponse-info-activable:hover {
+  color: white;
+  background: rgb(20, 120, 200);
+}
+
+.incomingresponse-info-activable:active {
+  color: white;
+  background: rgb(60, 25, 255);
+}
+
+.outgoingresponse-info-activable:active {
+  color: white;
+  background: rgb(60, 25, 255);
+}
+
+
+
+.common-moreresponses {
   margin-bottom: 5px;
+  margin-left: 10px;
+  padding: 2px 5px 2px 5px;
   
   border-radius: 3px;
   border-bottom-style: groove;
@@ -133,22 +210,21 @@
   border-right-width: 1px;
   border-right-color: black;
   
+  font-weight: bold;
+
   color: black;
   background: rgb(220, 230, 250);
 }
 
-.incomingresponse-text-holder-activable, .outgoingresponse-text-holder-activable {
+.common-moreresponses-activable {
   color: black;
-  background: rgb(125, 200, 255);
+  background: rgb(25, 200, 255);
 }
-
-.incomingresponse-text-holder-activable:hover, .outgoingresponse-text-holder-activable:hover {
+.common-moreresponses-activable:hover {
   color: white;
   background: rgb(20, 120, 200);
 }
-
-.incomingresponse-text-holder-activable:active, .outgoingresponse-text-holder-activable:active {
+.common-moreresponses-activable:active {
   color: white;
   background: rgb(60, 25, 255);
 }
-
