@@ -190,6 +190,26 @@ Application.hideMessage = function() {
 }
 
 
+Application.showDialog = function(title, contentHtml) {
+  if ($(".modal-dialog").length > 0) {
+    $(".modal-dialog").remove();
+  }
+  $("body").append("<div class='modal-dialog' id='ModalDialog' title='" + title + "'><div class='modal-dialog-content'>" + contentHtml + "</div></div>");
+  $("#ModalDialog").dialog({
+    resizable: false,
+    modal: true,
+    width: "80%",
+    buttons: {
+      Ok: function() {
+        $(this).dialog("close");
+      }
+    }
+  });
+}
+
+
+
+
 Application._showPage = function(page, paramBundle, observer) {
   if (this._currentPage != null) {
     this._currentPage.hideAnimated(function() {

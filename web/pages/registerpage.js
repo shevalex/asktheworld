@@ -3,55 +3,95 @@ RegisterPage = ClassUtils.defineClass(AbstractPage, function RegisterPage() {
 });
 
 RegisterPage.prototype.definePageContent = function(root) {
-  root.appendChild(this._createRegisterPanel());
-  
-  root.appendChild(UIUtils.createBlock("RegisterPage-Description-Left"));
-  $("#RegisterPage-Description-Left").html("By registering you will get an instant access to the secret technology that we provide");
+  var leftSideDescriptionElement = UIUtils.appendBlock(root, "Description-Left");
+  UIUtils.get$(leftSideDescriptionElement).html("By registering you will get an instant access to the secret technology that we provide");
 
-  root.appendChild(UIUtils.createBlock("RegisterPage-Description-Right"));
-  $("#RegisterPage-Description-Right").html("Already have an account?<br>Click <a href='#' id='RegisterPage-Description-Right-SignInLink'>Sign In</a>.");
-  $("#RegisterPage-Description-Right-SignInLink").click(function() {
+  var rightSideDescriptionElement = UIUtils.appendBlock(root, "Description-Right");
+  var signInLinkId = UIUtils.createId(rightSideDescriptionElement, "SignInLink");
+  UIUtils.get$(rightSideDescriptionElement).html("Already have an account?<br>Click <a href='#' id='" + signInLinkId + "'>Sign In</a>.");
+  UIUtils.setClickListener(signInLinkId, function() {
     Application.showLoginPage();
   })
   
+  this._appendContetPanel(root);
+}
 
-  root.appendChild(UIUtils.createBlock("RegisterPage-StatusPanel"));
+
+RegisterPage.prototype._appendContetPanel = function(root) {
+  var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
+  var emailElementId = UIUtils.createId(contentPanel, "Email");
+  contentPanel.appendChild(UIUtils.createLabeledTextInput(emailElementId, "Your Email", "10px"));
+  contentPanel.appendChild(UIUtils.createLineBreak());
+  
+  var nameElementId = UIUtils.createId(contentPanel, "Name");
+  contentPanel.appendChild(UIUtils.createLabeledTextInput(nameElementId, "Your Nick Name", "10px"));
+  contentPanel.appendChild(UIUtils.createLineBreak());
 
-  $("#RegisterPage-Password").on("input", function() {
-    $("#RegisterPage-RetypePassword").val("");
+  var genderElementId = UIUtils.createId(contentPanel, "Gender");
+  contentPanel.appendChild(UIUtils.createLabeledDropList(genderElementId, "Your Gender", Application.Configuration.GENDERS, "10px"));
+  contentPanel.appendChild(UIUtils.createLineBreak());
+  
+  var ageElementId = UIUtils.createId(contentPanel, "AgeCategory");
+  contentPanel.appendChild(UIUtils.createLabeledDropList(ageElementId, "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px"));
+  contentPanel.appendChild(UIUtils.createLineBreak());
+  
+  var languagesElementId = UIUtils.createId(contentPanel, "Languages");
+  contentPanel.appendChild(UIUtils.createLabeledTextInput(languagesElementId, "Languages that you speak", "10px"));
+  contentPanel.appendChild(UIUtils.createLineBreak());
+
+  var passwordElementId = UIUtils.createId(contentPanel, "Password");
+  contentPanel.appendChild(UIUtils.createLabeledPasswordInput(passwordElementId, "Password", "10px"));
+  contentPanel.appendChild(UIUtils.createLineBreak());
+  
+  var retypePasswordElementId = UIUtils.createId(contentPanel, "RetypePassword");
+  contentPanel.appendChild(UIUtils.createLabeledPasswordInput(retypePasswordElementId, "Re-type Password", "10px"));
+  
+  contentPanel.appendChild(UIUtils.createLineBreak());
+  var termsAndCondsPanel = UIUtils.appendBlock(contentPanel, "TermsAndConds");
+  var acceptCheckbox = UIUtils.appendCheckbox(termsAndCondsPanel, "AcceptTerms", "Accept");
+  var licenseAgreementRef = UIUtils.appendLabel(termsAndCondsPanel, "LinkLabel");
+  var licenseLinkId = UIUtils.createId(termsAndCondsPanel, "Link");
+  UIUtils.get$(licenseAgreementRef).html("Please accept <a href='#' id='" + licenseLinkId + "'>Terms And Conditions</a>");
+  UIUtils.setClickListener(licenseLinkId, function() {
+    this._showLicenseAgreement();
+  }.bind(this));
+
+  contentPanel.appendChild(UIUtils.createLineBreak());
+  var registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", "Register");
+  
+  UIUtils.get$(passwordElementId).on("input", function() {
+    UIUtils.get$(retypePasswordElementId).val("");
   });
   
-  
-  $("#RegisterPage-RegisterButton").click(function() {
-    $("#RegisterPage-StatusPanel").text("");
-    
-    var email = $("#RegisterPage-Email").val();
+  UIUtils.setClickListener(registerButton, function() {
+    var email = UIUtils.get$(emailElementId).val();
     if (email == "") {
-      UIUtils.indicateInvalidInput("RegisterPage-Email");
+      UIUtils.indicateInvalidInput(emailElementId);
     }
     
-    var name = $("#RegisterPage-Name").val();
+    var name = UIUtils.get$(nameElementId).val();
     if (name == "") {
-      UIUtils.indicateInvalidInput("RegisterPage-Name");
+      UIUtils.indicateInvalidInput(nameElementId);
     }
     
-    var languages = $("#RegisterPage-Languages").val();
+    var languages = UIUtils.get$(languagesElementId).val();
     if (languages == "") {
-      UIUtils.indicateInvalidInput("RegisterPage-Languages");
+      UIUtils.indicateInvalidInput(languagesElementId);
     }
 
-    var password = $("#RegisterPage-Password").val();
+    var password = UIUtils.get$(passwordElementId).val();
     if (password == "") {
-      UIUtils.indicateInvalidInput("RegisterPage-Password");
+      UIUtils.indicateInvalidInput(passwordElementId);
     }
     
-    var retypePassword = $("#RegisterPage-RetypePassword").val();
+    var retypePassword = UIUtils.get$(retypePasswordElementId).val();
     if (retypePassword == "" || retypePassword != password) {
-      UIUtils.indicateInvalidInput("RegisterPage-RetypePassword");
+      UIUtils.indicateInvalidInput(retypePasswordElementId);
     }
-
-    if (email != "" && name != "" && languages != "" && password != "" && password == retypePassword) {
+    
+    
+    if (acceptCheckbox.checked && email != "" && name != "" && languages != "" && password != "" && password == retypePassword) {
       var backendCallback = {
         success: function() {
           this._onCompletion();
@@ -59,19 +99,19 @@ RegisterPage.prototype.definePageContent = function(root) {
         },
         failure: function() {
           this._onCompletion();
-          $("#RegisterPage-StatusPanel").text("Failed to create an account");
+          Application.showMessage("Failed to create an account");
         },
         conflict : function() {
           this._onCompletion();
-          $("#RegisterPage-StatusPanel").text("This login is already used");
+          Application.showMessage("This login (email) was already used");
         },
         error: function() {
           this._onCompletion();
-          $("#RegisterPage-StatusPanel").text("Server communication error");
+          Application.showMessage("Server communication error");
         },
         
         _onCompletion: function() {
-          UIUtils.setEnabled("RegisterPage-RegisterButton", true);
+          UIUtils.setEnabled(registerButton, true);
           Application.hideSpinningWheel();
         }
       }
@@ -80,43 +120,48 @@ RegisterPage.prototype.definePageContent = function(root) {
         login: email,
         password: password,
         name: name,
-        gender: $("#RegisterPage-Gender").val(),
-        languages: [$("#RegisterPage-Languages").val()],
-        age: $("#RegisterPage-AgeCategory").val(),
+        gender: UIUtils.get$(genderElementId).val(),
+        languages: [UIUtils.get$(languagesElementId).val()],
+        age: UIUtils.get$(ageElementId).val(),
       };
       
-      UIUtils.setEnabled("RegisterPage-RegisterButton", false);
+      UIUtils.setEnabled(registerButton, false);
       Application.showSpinningWheel();
 
       Backend.registerUser(userProfile, backendCallback);
-    } else if (password == retypePassword) {
-      $("#RegisterPage-StatusPanel").text("Some of the fields are not provided. All of them are mandatory.");
+    } else if (password != retypePassword) {
+      Application.showMessage("Passwords do not match. Please retype.");
+    } else if (!acceptCheckbox.checked) {
+      var popupTermsLink = UIUtils.createId(root, "TermsLink"); 
+      Application.showMessage("You must accept<p><a href='#' id='" + popupTermsLink + "'><b>Terms And Conditions<b></a>");
+      UIUtils.setClickListener(popupTermsLink, function() {
+        this._showLicenseAgreement();
+      }.bind(this));
     } else {
-      $("#RegisterPage-StatusPanel").text("Passwords do not match. Please retype.");
+      Application.showMessage("Some of the fields are not provided.<br>All fields are required.");
     }
-  });
-}
-
-
-RegisterPage.prototype._createRegisterPanel = function() {
-  var contentPanel = UIUtils.createBlock("RegisterPage-Panel");
+  }.bind(this));
   
-  contentPanel.appendChild(UIUtils.createLabeledTextInput("RegisterPage-Email", "Your Email", "10px"));
-  contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledTextInput("RegisterPage-Name", "Your Nick Name", "10px"));
-  contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-Gender", "Your Gender", Application.Configuration.GENDERS, "10px"));
-  contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("RegisterPage-AgeCategory", "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px"));
-  contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledTextInput("RegisterPage-Languages", "Languages that you speak", "10px"));
-  contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledPasswordInput("RegisterPage-Password", "Password", "10px"));
-  contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledPasswordInput("RegisterPage-RetypePassword", "Re-type Password", "10px"));
-  
-  contentPanel.appendChild(UIUtils.createLineBreak());  
-  contentPanel.appendChild(UIUtils.createButton("RegisterPage-RegisterButton", "Register"));
   
   return contentPanel;
+}
+
+RegisterPage.prototype._showLicenseAgreement = function() {
+//  var callback = {
+//    success: function(data) {
+//      Application.showDialog("Terms And Conditions", data);
+//    },
+//    error: function() {
+//      Application.showMessage("Failed to retrieve the Terms And Conditions");
+//    }
+//  };
+//  
+//  ResourceUtils.loadResource("terms_and_conditions.html", false, callback);
+  
+  var terms = "<center><h1><b>This Is Terms And Conditions</b></h1></center>";
+  for (var i = 0; i < 100; i++) {
+    terms += "<br>Some bullshit follows";
+  }
+  
+  Application.showDialog("Terms And Conditions", terms);
 }
