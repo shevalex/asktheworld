@@ -197,7 +197,20 @@ Application.showDialog = function(title, contentHtml) {
   
   $("body").append("<div class='modal-dialog' id='ModalDialog'><div class='modal-dialog-content'>" + contentHtml + "</div><hr><div class='modal-dialog-controlpanel'><button class='modal-dialog-okbutton'>OK</button><div></div>");
   $(".modal-dialog-okbutton").click(function() {
-    $(".modal-dialog").remove();
+    $(".modal-dialog").fadeOut("slow", function() {
+      $(this).remove();
+    });
+  });
+  
+  $(document).mouseup(function(event) {
+    var container = $(".modal-dialog");
+
+    if (!container.is(event.target) && container.has(event.target).length == 0) {
+      container.fadeOut("slow", function() {
+        container.remove();
+      });
+      $(document).unbind("mouseup");
+    }
   });
 }
 
