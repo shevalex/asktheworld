@@ -194,16 +194,10 @@ Application.showDialog = function(title, contentHtml) {
   if ($(".modal-dialog").length > 0) {
     $(".modal-dialog").remove();
   }
-  $("body").append("<div class='modal-dialog' id='ModalDialog' title='" + title + "'><div class='modal-dialog-content'>" + contentHtml + "</div></div>");
-  $("#ModalDialog").dialog({
-    resizable: false,
-    modal: true,
-    width: "80%",
-    buttons: {
-      Ok: function() {
-        $(this).dialog("close");
-      }
-    }
+  
+  $("body").append("<div class='modal-dialog' id='ModalDialog'><div class='modal-dialog-content'>" + contentHtml + "</div><hr><div class='modal-dialog-controlpanel'><button class='modal-dialog-okbutton'>OK</button><div></div>");
+  $(".modal-dialog-okbutton").click(function() {
+    $(".modal-dialog").remove();
   });
 }
 
