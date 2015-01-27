@@ -81,7 +81,7 @@ RegisterPage.prototype._appendContetPanel = function(root) {
     }
 
     var password = UIUtils.get$(passwordElementId).val();
-    if (password == "") {
+    if (password == "" || password.length < 5) {
       UIUtils.indicateInvalidInput(passwordElementId);
     }
     
@@ -89,8 +89,8 @@ RegisterPage.prototype._appendContetPanel = function(root) {
     if (retypePassword == "" || retypePassword != password) {
       UIUtils.indicateInvalidInput(retypePasswordElementId);
     }
-    
-    
+
+
     if (acceptCheckbox.checked && email != "" && name != "" && languages != "" && password != "" && password == retypePassword) {
       var backendCallback = {
         success: function() {
@@ -131,6 +131,8 @@ RegisterPage.prototype._appendContetPanel = function(root) {
       Backend.registerUser(userProfile, backendCallback);
     } else if (password != retypePassword) {
       Application.showMessage("Passwords do not match. Please retype.");
+    } else if (password.length < 5) {
+      Application.showMessage("Password should be at least 5 symbols long");
     } else if (!acceptCheckbox.checked) {
       var popupTermsLink = UIUtils.createId(root, "TermsLink"); 
       Application.showMessage("You must accept<p><a href='#' id='" + popupTermsLink + "'><b>Terms And Conditions<b></a>");
