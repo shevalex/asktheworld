@@ -25,7 +25,7 @@ RegisterPage.prototype._appendContetPanel = function(root) {
   contentPanel.appendChild(UIUtils.createLineBreak());
   
   var nameElementId = UIUtils.createId(contentPanel, "Name");
-  contentPanel.appendChild(UIUtils.createLabeledTextInput(nameElementId, "Your Nick Name", "10px"));
+  contentPanel.appendChild(UIUtils.createLabeledTextInput(nameElementId, "Your Nickname", "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
 
   var genderElementId = UIUtils.createId(contentPanel, "Gender");

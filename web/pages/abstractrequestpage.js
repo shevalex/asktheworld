@@ -440,12 +440,16 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.append 
       if (responseIds != null) {
         this._requestList.__updateFinished();
 
-        this._appendRequestElement(request);
+        if (!requestOnlyWithResponses && !requestOnlyWithoutResponses
+            || requestOnlyWithResponses && responseIds.length > 0
+            || requestOnlyWithoutResponses && responseIds.length == 0) {
+          
+          this._appendRequestElement(request);
 
-        if (this._settings.maxResponses != 0) {
-          this.__appendResponses(this._requestId);
+          if (this._settings.maxResponses != 0) {
+            this.__appendResponses(this._requestId);
+          }
         }
-        
         return;
       }
     }
