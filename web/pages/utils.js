@@ -17,6 +17,25 @@ ClassUtils.defineClass = function(superClass, childConstructor) {
   return childClass;
 }
 
+ResourceUtils = {};
+ResourceUtils.loadResource = function(resourceUrl, isJsonResource, callback) {
+  $.ajax({
+    url: resourceUrl,
+    type: "GET",
+    dataType: isJsonResource ? "json" : "text",
+    success: callback.success,
+    error: callback.error
+  });
+}
+
+
+ValidationUtils = {};
+ValidationUtils.isValidEmail = function(email) {
+  //TODO!!!
+  return email != null && email.length > 1
+}
+
+
 
 UIUtils = {};
 
@@ -36,9 +55,9 @@ UIUtils.createLabeledDropList = function(dropListId, labelText, options, margin)
 }
 
 UIUtils.createLabel = function(labelId, labelText) {
-  var labelElement = document.createElement("div");
+  var labelElement = document.createElement("label");
   labelElement.setAttribute("id", labelId);
-  labelElement.style.display = "block";
+  //labelElement.style.display = "block";
   if (labelText != null) {
     labelElement.innerHTML = labelText;
   }
@@ -152,6 +171,24 @@ UIUtils.createLink = function(linkId, text) {
   
   return linkElement;
 }
+
+UIUtils.appendLink = function(root, linkId, text) {
+  return root.appendChild(UIUtils.createLink(UIUtils.createId(root, linkId), text));
+}
+
+
+UIUtils.createCheckbox = function(cbId) {
+  var checkboxElement = document.createElement("input");
+  checkboxElement.setAttribute("id", cbId);
+  checkboxElement.setAttribute("type", "checkbox");
+  
+  return checkboxElement;
+}
+
+UIUtils.appendCheckbox = function(root, cbId, text) {
+  return root.appendChild(UIUtils.createCheckbox(UIUtils.createId(root, cbId)));
+}
+
 
 UIUtils.createLineBreak = function() {
   return document.createElement("br");
@@ -326,6 +363,7 @@ UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, ma
   compoundElement.style.overflow = "hidden";
 
   compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "-Label", labelText));
+  compoundElement.appendChild(UIUtils.createLineBreak());
 
   compoundElement.appendChild(inputElement);
   inputElement.setAttribute("font-size", "inherit");

@@ -1,36 +1,69 @@
 LoginPage = ClassUtils.defineClass(AbstractPage, function LoginPage() {
   AbstractPage.call(this, "LoginPage");
+  
+  this._loginElementId;
+  this._passwordElementId;
 });
 
 LoginPage.prototype.definePageContent = function(root) {
-  root.appendChild(this._createLoginPanel());
-    
-  root.appendChild(UIUtils.createBlock("LoginPage-Description-Left"));
-  $("#LoginPage-Description-Left").html("Here is where we will place our logo as well as the text which will describe what this project is");
+  var leftDescription = UIUtils.appendBlock(root, "Description-Left");
+  UIUtils.get$(leftDescription).html("Here is where we will place our logo as well as the text which will describe what this project is");
 
-  root.appendChild(UIUtils.createBlock("LoginPage-Description-Right"));
-  $("#LoginPage-Description-Right").html("Here is where we will add some extra bullshit");
+  var rightDescription = UIUtils.appendBlock(root, "Description-Right");
+  UIUtils.get$(rightDescription).html("Here is where we will add some extra bullshit");
   
-  root.appendChild(UIUtils.createBlock("LoginPage-StatusPanel"));
+  this._appendLoginPanel(root);
+}
+
+LoginPage.prototype.onShow = function() {
+  //Eventually we may need to read the login info from local storage and initialize the fileds
+  if (window.localStorage.login != null) {
+    UIUtils.get$(this._loginElementId).val(window.localStorage.login);
+  }
+  if (window.localStorage.password != null) {
+    UIUtils.get$(this._passwordElementId).val(window.localStorage.password);
+  }
+}
+
+
+LoginPage.prototype._appendLoginPanel = function(root) {
+  var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
+  this._loginElementId = UIUtils.createId(contentPanel, "Login");
+  contentPanel.appendChild(UIUtils.createLabeledTextInput(this._loginElementId, "Email (login)", "10px"));
+  contentPanel.appendChild(UIUtils.createLineBreak());
   
-  $("#LoginPage-SignInButton").click(function() {
-    $("#LoginPage-StatusPanel").text("");
-    
-    var login = $("#LoginPage-Login").val();
-    if (login == "") {
-      UIUtils.indicateInvalidInput("LoginPage-Login");
+  this._passwordElementId = UIUtils.createId(contentPanel, "Password");
+  contentPanel.appendChild(UIUtils.createLabeledPasswordInput(this._passwordElementId, "Password", "10px"));
+  contentPanel.appendChild(UIUtils.createLineBreak());
+  
+  var signInButton = UIUtils.appendButton(contentPanel, "SignInButton", "Sign In");
+  contentPanel.appendChild(UIUtils.createLineBreak());
+
+  var forgotPasswordLink = UIUtils.appendLink(contentPanel, "ForgotPasswordLink", "Forgot your password?");
+  UIUtils.setClickListener(forgotPasswordLink, this._restorePassword.bind(this));
+  
+  var signUpLink = UIUtils.appendLink(contentPanel, "SignUpLink", "Register!");
+  UIUtils.setClickListener(signUpLink, function() {
+    Application.showRegisterPage();
+  });
+
+  UIUtils.setClickListener(signInButton, function() {
+    var login = UIUtils.get$(this._loginElementId).val();
+    var isEmailValid = ValidationUtils.isValidEmail(login);
+    if (!isEmailValid) {
+      UIUtils.indicateInvalidInput(this._loginElementId);
     } else {
       window.localStorage.login = login;
     }
-    var password = $("#LoginPage-Password").val();
+    var password = UIUtils.get$(this._passwordElementId).val();
     if (password == "") {
-      UIUtils.indicateInvalidInput("LoginPage-Password");
+      UIUtils.indicateInvalidInput(this._passwordElementId);
     } else {
       window.localStorage.password = password;
     }
     
-    if (login != "" && password != "") {
+    if (isEmailValid && password != "") {
       var backendCallback = {
         success: function() {
           this._onCompletion();
@@ -38,59 +71,50 @@ LoginPage.prototype.definePageContent = function(root) {
         },
         failure: function() {
           this._onCompletion();
-          $("#LoginPage-StatusPanel").text("Invalid login/password combination");
+          Application.showMessage("Invalid login/password combination");
         },
         error: function() {
           this._onCompletion();
-          $("#LoginPage-StatusPanel").text("Server communication error");
+          Application.showMessage("Server communication error");
         },
         
         _onCompletion: function() {
-          UIUtils.setEnabled("LoginPage-SignInButton", true);
+          UIUtils.setEnabled(signInButton, true);
           Application.hideSpinningWheel();
         }
       }
       
-      UIUtils.setEnabled("LoginPage-SignInButton", false);
+      UIUtils.setEnabled(signInButton, false);
       Application.showSpinningWheel();
       
       Backend.logIn(login, password, backendCallback);
+    } else if (!isEmailValid) {
+      Application.showMessage("Please provide a valid email for your login");
     } else {
-      $("#LoginPage-StatusPanel").text("Please provide login and password");
+      Application.showMessage("Please provide login and password");
     }
-  });
-  
-  $("#LoginPage-SignUpLink").click(function() {
-    Application.showRegisterPage();
-  });
-
-  $("#LoginPage-ForgotPasswordLink").click(function() {
-    alert("This is not that smart of you to forget your password. What do you want me to do? It is all your fault!");
-  });
+  }.bind(this));
 }
 
-LoginPage.prototype.onShow = function() {
-  //Eventually we may need to read the login info from local storage and initialize the fileds
-  if (window.localStorage.login != null) {
-    $("#LoginPage-Login").val(window.localStorage.login);
-  }
-  if (window.localStorage.password != null) {
-    $("#LoginPage-Password").val(window.localStorage.password);
-  }
-}
-
-
-LoginPage.prototype._createLoginPanel = function() {
-  var contentPanel = UIUtils.createBlock("LoginPage-Panel");
+LoginPage.prototype._restorePassword = function() {
+  var login = UIUtils.get$(this._loginElementId).val();
   
-  contentPanel.appendChild(UIUtils.createLabeledTextInput("LoginPage-Login", "Email (login)", "10px"));
-  contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledPasswordInput("LoginPage-Password", "Password", "10px"));
-  contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createButton("LoginPage-SignInButton", "Sign In"));
-  contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLink("LoginPage-ForgotPasswordLink", "Forgot your password?"));
-  contentPanel.appendChild(UIUtils.createLink("LoginPage-SignUpLink", "Register!"));
-  
-  return contentPanel;
+  if (ValidationUtils.isValidEmail(login)) {
+    callback = {
+      success: function() {
+        Application.hideSpinningWheel();
+        Application.showMessage("You will receive an email shortly with a link to reset the password. You may ignore the email if you do not need to reset your password.", Application.MESSAGE_TIMEOUT_SLOW);
+      },
+      error: function() {
+        Application.hideSpinningWheel();
+        Application.showMessage("Server communication error");
+      }
+    }
+    
+    Application.showMessage("The request is being sent...");
+    Application.showSpinningWheel();
+    Backend.resetUserPassword(login, callback);
+  } else {
+    Application.showMessage("Your login does not look like a valid email");
+  }
 }

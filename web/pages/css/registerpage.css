@@ -3,30 +3,6 @@
   min-width: 900px;
 }
 
-#RegisterPage-Panel {
-  width: 30%;
-  display: inline-block;
-  margin-top: 50px;
-  font-size: 20px;
-}
-
-#RegisterPage-Email, #RegisterPage-Name, #RegisterPage-Gender, #RegisterPage-AgeCategory, #RegisterPage-Languages, #RegisterPage-Password, #RegisterPage-RetypePassword {
-  margin-bottom: 15px;
-  font-size: inherit;
-}
-
-#RegisterPage-Gender, #RegisterPage-AgeCategory {
-  border-color: #999;
-}
-
-
-
-#RegisterPage-RegisterButton {
-  width: 100%;
-  margin-top: 10px;
-  font-size: 20px;
-}
-
 #RegisterPage-Description-Left {
   vertical-align: top;
   float: left;
@@ -49,15 +25,35 @@
   font-size: 25px;
 }
 
-#RegisterPage-StatusPanel {
-  position: fixed;
-  left: 70%;
-  top: 300px;
+#RegisterPage-ContentPanel {
+  width: 30%;
   display: inline-block;
-  width: 20%;
-
+  margin-top: 50px;
   font-size: 20px;
-  color: rgb(255, 100, 100);
+}
+
+#RegisterPage-ContentPanel-Email, #RegisterPage-ContentPanel-Name, #RegisterPage-ContentPanel-Gender, #RegisterPage-ContentPanel-AgeCategory, #RegisterPage-ContentPanel-Languages, #RegisterPage-ContentPanel-Password, #RegisterPage-ContentPanel-RetypePassword {
+  margin-bottom: 20px;
+  font-size: inherit;
+}
+
+#RegisterPage-ContentPanel-Languages {
+  margin-bottom: 30px;
+}
+
+#RegisterPage-ContentPanel-Gender, #RegisterPage-ContentPanel-AgeCategory {
+  border-color: #999;
+}
+
+#RegisterPage-ContentPanel-TermsAndConds-AcceptTerms {
+  margin-right: 20px;
+}
+
+
+#RegisterPage-ContentPanel-RegisterButton {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 20px;
 }
 
 
