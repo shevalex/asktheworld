@@ -29,6 +29,14 @@ ResourceUtils.loadResource = function(resourceUrl, isJsonResource, callback) {
 }
 
 
+ValidationUtils = {};
+ValidationUtils.isValidEmail = function(email) {
+  //TODO!!!
+  return email != null && email.length > 1
+}
+
+
+
 UIUtils = {};
 
 UIUtils.INVALID_INPUT_BACKGROUND = "rgb(255, 100, 100)";

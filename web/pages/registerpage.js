@@ -66,7 +66,8 @@ RegisterPage.prototype._appendContetPanel = function(root) {
   
   UIUtils.setClickListener(registerButton, function() {
     var email = UIUtils.get$(emailElementId).val();
-    if (email == "") {
+    var isValidEmail = ValidationUtils.isValidEmail(email);
+    if (!isValidEmail) {
       UIUtils.indicateInvalidInput(emailElementId);
     }
     
@@ -91,7 +92,7 @@ RegisterPage.prototype._appendContetPanel = function(root) {
     }
 
 
-    if (acceptCheckbox.checked && email != "" && name != "" && languages != "" && password != "" && password == retypePassword) {
+    if (acceptCheckbox.checked && isValidEmail && name != "" && languages != "" && password != "" && password == retypePassword) {
       var backendCallback = {
         success: function() {
           this._onCompletion();
@@ -129,6 +130,8 @@ RegisterPage.prototype._appendContetPanel = function(root) {
       Application.showSpinningWheel();
 
       Backend.registerUser(userProfile, backendCallback);
+    } else if (!isValidEmail) {
+      Application.showMessage("The email you entered does not look like a valid email address");
     } else if (password != retypePassword) {
       Application.showMessage("Passwords do not match. Please retype.");
     } else if (password.length < 5) {
@@ -143,9 +146,6 @@ RegisterPage.prototype._appendContetPanel = function(root) {
       Application.showMessage("Some of the fields are not provided.<br>All fields are required.");
     }
   }.bind(this));
-  
-  
-  return contentPanel;
 }
 
 RegisterPage.prototype._showLicenseAgreement = function() {

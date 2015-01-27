@@ -187,7 +187,12 @@ Backend.updateUserPreferences = function(userPreferences, callback) {
   return true;
 }
 
-
+Backend.resetUserPassword = function(login, callback) {
+  //TODO
+  setTimeout(function() {
+    callback.success();
+  }, 2000);
+}
 
 
 // REQUEST (and Response) management
