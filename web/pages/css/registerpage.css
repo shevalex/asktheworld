@@ -37,10 +37,6 @@
   font-size: inherit;
 }
 
-#RegisterPage-ContentPanel-Languages {
-  margin-bottom: 30px;
-}
-
 #RegisterPage-ContentPanel-Gender, #RegisterPage-ContentPanel-AgeCategory {
   border-color: #999;
 }

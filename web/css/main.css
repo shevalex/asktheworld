@@ -41,10 +41,34 @@ body {
   background: rgba(100, 100, 100, 0.8);
 }
 
+.modal-dialog {
+  position: fixed;
+  left: 20%;
+  top: 80px;
+  width: 60%;
+  height: calc(100% - 150px);
+  
+  padding: 5px;
+  
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 5px;
 
+  color: white;
+  background: rgba(100, 100, 100, 0.9);
+}
 .modal-dialog-content {
-  max-height: 300px;
+  max-height: calc(100% - 60px);
   overflow: auto;
+}
+.modal-dialog-controlpanel {
+  padding: 5px 10px 5px 10px;
+  text-align: right;
+}
+.modal-dialog-okbutton {
+  font-size: 15px;
+  padding: 5px 20px 5px 20px;
 }
 
 
