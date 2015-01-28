@@ -186,7 +186,19 @@ UIUtils.createCheckbox = function(cbId) {
 }
 
 UIUtils.appendCheckbox = function(root, cbId, text) {
-  return root.appendChild(UIUtils.createCheckbox(UIUtils.createId(root, cbId)));
+  var checkboxElement = UIUtils.createCheckbox(UIUtils.createId(root, cbId));
+  
+  if (text != null) {
+    var combo = UIUtils.appendBlock(root, cbId + "-Container");
+    combo.appendChild(checkboxElement);
+    var label = UIUtils.createLabel(cbId + "-Label", text);
+    label.style.marginLeft = "10px";
+    combo.appendChild(label);
+  } else {
+    root.appendChild(checkboxElement);
+  }
+  
+  return checkboxElement;
 }
 
 

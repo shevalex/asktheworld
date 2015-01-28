@@ -37,6 +37,9 @@ LoginPage.prototype._appendLoginPanel = function(root) {
   contentPanel.appendChild(UIUtils.createLabeledPasswordInput(this._passwordElementId, "Password", "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
   
+  var rememberCheckbox = UIUtils.appendCheckbox(contentPanel, "RememberLogin", "Remember You?");
+  rememberCheckbox.checked = true;
+  
   var signInButton = UIUtils.appendButton(contentPanel, "SignInButton", "Sign In");
   contentPanel.appendChild(UIUtils.createLineBreak());
 
@@ -53,13 +56,13 @@ LoginPage.prototype._appendLoginPanel = function(root) {
     var isEmailValid = ValidationUtils.isValidEmail(login);
     if (!isEmailValid) {
       UIUtils.indicateInvalidInput(this._loginElementId);
-    } else {
+    } else if (rememberCheckbox.checked) {
       window.localStorage.login = login;
     }
     var password = UIUtils.get$(this._passwordElementId).val();
     if (password == "") {
       UIUtils.indicateInvalidInput(this._passwordElementId);
-    } else {
+    } else if (rememberCheckbox.checked) {
       window.localStorage.password = password;
     }
     

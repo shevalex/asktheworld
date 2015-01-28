@@ -17,7 +17,7 @@ body {
 }
 
 #Title-Label {
-  font-size: 60px;
+  font-size: 50px;
   font-style: italic;
   font-weight: bold;
   color: rgb(185, 122, 87);
@@ -39,7 +39,6 @@ body {
   margin-right: 20px;
   
   font-size: 15px;
-  font-weight: bold;
   color: rgb(255, 255, 255);
 }
 

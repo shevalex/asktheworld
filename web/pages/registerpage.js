@@ -49,7 +49,7 @@ RegisterPage.prototype._appendContetPanel = function(root) {
   
   contentPanel.appendChild(UIUtils.createLineBreak());
   var termsAndCondsPanel = UIUtils.appendBlock(contentPanel, "TermsAndConds");
-  var acceptCheckbox = UIUtils.appendCheckbox(termsAndCondsPanel, "AcceptTerms", "Accept");
+  var acceptCheckbox = UIUtils.appendCheckbox(termsAndCondsPanel, "AcceptTerms");
   var licenseAgreementRef = UIUtils.appendLabel(termsAndCondsPanel, "LinkLabel");
   var licenseLinkId = UIUtils.createId(termsAndCondsPanel, "Link");
   UIUtils.get$(licenseAgreementRef).html("Please accept <a href='#' id='" + licenseLinkId + "'>Terms And Conditions</a>");
