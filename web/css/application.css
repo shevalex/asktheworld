@@ -1,10 +1,10 @@
 .spinning-wheel {
   position: fixed;
-  left: calc(50% - 25px);
-  top: calc(50% - 25px);
+  left: calc(50% - 15px);
+  top: calc(50% - 15px);
   
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
 }
 
 .popup-message {

@@ -30,11 +30,18 @@ MenuPage.prototype.REQUEST_DETAILS_PAGE_ID = "MenuPage-RequestDetailsPage";
 
 
 MenuPage.prototype.definePageContent = function(root) {
-  root.appendChild(this._createMenuPanel());
+  this._appendMenuPanel(root);
   
-  this._contentPanel = root.appendChild(UIUtils.createBlock("MenuPage-ContentPanel"));
-  
-  this.selectMenuItem("MenuPage-MenuPanel-Home");
+  this._contentPanel = UIUtils.appendBlock(root, "ContentPanel");
+}
+
+MenuPage.prototype.onShow = function(root) {
+  this.selectMenuItem(MenuPage.prototype.HOME_ITEM_ID);
+}
+
+MenuPage.prototype.onHide = function() {
+  this._selectedMenuItemId = null;
+  this._activePage = null;
 }
 
 
@@ -49,7 +56,10 @@ MenuPage.prototype.selectMenuItem = function(itemId) {
   
   // Special processing for log-out
   if (itemId == MenuPage.prototype.LOGOUT_ITEM_ID) {
-    Backend.logOut(Application.showLoginPage.bind(Application));
+    Backend.logOut(function() {
+      Application.reset();
+      Application.showLoginPage();
+    });
     return;
   }
   
@@ -76,8 +86,8 @@ MenuPage.prototype.showPage = function(pageId, paramBundle) {
 }
 
 
-MenuPage.prototype._createMenuPanel = function() {
-  var menuPanel = UIUtils.createBlock("MenuPage-MenuPanel");
+MenuPage.prototype._appendMenuPanel = function(root) {
+  var menuPanel = UIUtils.appendBlock(root, "MenuPanel");
 
   var clickListener = function(itemId) {
     this.selectMenuItem(itemId);
@@ -100,8 +110,6 @@ MenuPage.prototype._createMenuPanel = function() {
   menuPanel.appendChild(this._createMenuSeparator());
 
   menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.LOGOUT_ITEM_ID, "Log Out", null, clickListener));
-  
-  return menuPanel;
 }
 
 MenuPage.prototype._createMenuItem = function(itemId, text, icon, clickCallback) {

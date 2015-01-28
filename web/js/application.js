@@ -124,6 +124,12 @@ Application.start = function() {
   });
 }
 
+Application.reset = function() {
+  this._loginPage = null;
+  this._registerPage = null;
+  this._menuPage = null;
+}
+
 Application.showLoginPage = function(observer) {
   if (this._loginPage == null) {
     this._loginPage = new LoginPage();
@@ -141,14 +147,15 @@ Application.showRegisterPage = function(observer) {
 }
 
 Application.showMenuPage = function(observer) {
-  if (this._menuPage == null) {
-    this._menuPage = new MenuPage();
-  }
   
-  Application._showPage(this._menuPage, null, observer);
+  Application._showPage(this.getMenuPage(), null, observer);
 }
 
 Application.getMenuPage = function() {
+  if (this._menuPage == null) {
+    this._menuPage = new MenuPage();
+  }
+
   return this._menuPage;
 }
 
