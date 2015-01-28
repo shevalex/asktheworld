@@ -24,7 +24,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
 
   var requestParamsPanel = UIUtils.appendBlock(root, "RequestParametersPanel");
   var prefLinkId = UIUtils.createId(root, "PreferencesLink");
-  UIUtils.appendLabel(requestParamsPanel, "2. Choose who will see your question.<br>Note: You can always modify your defaut settings in <a href='#' id='" + prefLinkId + "'>Your Preferences</a>");
+  UIUtils.appendLabel(requestParamsPanel, "Label", "2. Choose who will see your question.<br>Note: You can always modify your defaut settings in <a href='#' id='" + prefLinkId + "'>Your Preferences</a>");
   UIUtils.setClickListener(prefLinkId, function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID);
   });
