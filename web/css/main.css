@@ -6,72 +6,6 @@ body {
   background: rgb(253, 244, 196);
 }
 
-
-.spinning-wheel {
-  position: fixed;
-  left: calc(50% - 25px);
-  top: calc(50% - 25px);
-  
-  width: 50px;
-  height: 50px;
-}
-
-.popup-message {
-  position: fixed;
-  left: calc(50% - 150px);
-  top: 65px;
-  
-  width: 300px;
-  max-height: 100px;
-  overflow-y: hidden;
-  
-  padding: 10px;
-  
-  border: solid;
-  border-color: black;
-  border-width: 1px;
-  border-radius: 5px;
-  
-  vertical-align: middle;
-  text-align: center;
-  
-  display: none;
-  
-  color: white;
-  background: rgba(100, 100, 100, 0.8);
-}
-
-.modal-dialog {
-  position: fixed;
-  left: 20%;
-  top: 80px;
-  width: 60%;
-  height: calc(100% - 150px);
-  
-  padding: 5px;
-  
-  border: solid;
-  border-color: black;
-  border-width: 1px;
-  border-radius: 5px;
-
-  color: white;
-  background: rgba(100, 100, 100, 0.9);
-}
-.modal-dialog-content {
-  max-height: calc(100% - 60px);
-  overflow: auto;
-}
-.modal-dialog-controlpanel {
-  padding: 5px 10px 5px 10px;
-  text-align: right;
-}
-.modal-dialog-okbutton {
-  font-size: 15px;
-  padding: 5px 20px 5px 20px;
-}
-
-
 #Title {
   width: 100%;
   height: 50px;
@@ -91,7 +25,7 @@ body {
 
 #Footer {
   width: 100%;
-  height: 20px;
+  height: 15px;
   position: fixed;
   bottom: 0px;
   padding-top: 5px;
@@ -102,14 +36,27 @@ body {
 }
 
 #Footer-Label {
+  margin-right: 20px;
+  
   font-size: 15px;
   font-weight: bold;
   color: rgb(255, 255, 255);
 }
 
+#Footer-ContactUs {
+  font-size: 15px;
+  color: rgb(255, 255, 255);
+}
+#Footer-ContactUs:hover {
+  color: rgb(255, 0, 0);
+}
+#Footer-ContactUs:active {
+  color: rgb(255, 255, 0);
+}
+
 #RootContainer {
   width: calc(100% - 10px);
-  height: calc(100% - 10px - 60px - 30px);
+  height: calc(100% - 95px);
   overflow: auto;
   padding: 5px;
 }

@@ -10,7 +10,7 @@ LoginPage.prototype.definePageContent = function(root) {
   UIUtils.get$(leftDescription).html("Here is where we will place our logo as well as the text which will describe what this project is");
 
   var rightDescription = UIUtils.appendBlock(root, "Description-Right");
-  UIUtils.get$(rightDescription).html("Here is where we will add some extra bullshit");
+  UIUtils.get$(rightDescription).html("Download the mobile app and stay connected whenever you are!<p><center><a href='' target='_blank'>AskTheWorld for Android</a><p><a href='' target='_blank'>AskTheWorld for iOS</a><center>");
   
   this._appendLoginPanel(root);
 }
