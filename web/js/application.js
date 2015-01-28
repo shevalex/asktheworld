@@ -174,9 +174,8 @@ Application.hideSpinningWheel = function() {
 }
 
 Application.showMessage = function(msg, timeout) {
-  if ($(".popup-message").length > 0) {
-    Application.hideMessage();
-  }
+  Application.hideMessage();
+
   $("body").append("<div class='popup-message'>" + msg + "</div>");
   $(".popup-message").fadeIn("slow");
   
@@ -205,9 +204,7 @@ Application.hideMessage = function() {
 
 
 Application.showDialog = function(title, contentHtml) {
-  if ($(".modal-dialog").length > 0) {
-    $(".modal-dialog").remove();
-  }
+  Application.hideDialog();
   
   $("body").append("<div class='modal-dialog' id='ModalDialog'><div class='modal-dialog-content'>" + contentHtml + "</div><hr><div class='modal-dialog-controlpanel'><button class='modal-dialog-okbutton'>OK</button><div></div>");
   $(".modal-dialog-okbutton").click(function() {
@@ -228,6 +225,9 @@ Application.showDialog = function(title, contentHtml) {
   });
 }
 
+Application.hideDialog = function() {
+  $(".modal-dialog").remove();
+}
 
 
 
