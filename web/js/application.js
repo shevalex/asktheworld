@@ -117,8 +117,11 @@ Application.MESSAGE_TIMEOUT_SLOW = 10;
 
 Application.start = function() {
   this._rootContainer = document.getElementById("RootContainer");
-  
   this.showLoginPage();
+
+  $("#Footer-ContactUs").click(function() {
+    Application.showDialog("About Us", "We will need to find a way to open this page");
+  });
 }
 
 Application.showLoginPage = function(observer) {

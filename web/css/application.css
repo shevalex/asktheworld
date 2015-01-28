@@ -50,7 +50,7 @@
   background: rgba(100, 100, 100, 0.9);
 }
 .modal-dialog-content {
-  max-height: calc(100% - 60px);
+  height: calc(100% - 60px);
   overflow: auto;
 }
 .modal-dialog-controlpanel {
