@@ -33,7 +33,7 @@
   font-size: 20px;
 }
 
-#LoginPage-ContentPanel-Login, #LoginPage-ContentPanel-Password {
+#LoginPage-ContentPanel-Login, #LoginPage-ContentPanel-Password, #LoginPage-ContentPanel-RememberLogin {
   margin-bottom: 15px;
   font-size: inherit;
 }
