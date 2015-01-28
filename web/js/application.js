@@ -128,6 +128,10 @@ Application.reset = function() {
   this._loginPage = null;
   this._registerPage = null;
   this._menuPage = null;
+  
+  this.hideMessage();
+  this.hideSpinningWheel();
+  this.hideDialog();
 }
 
 Application.showLoginPage = function(observer) {

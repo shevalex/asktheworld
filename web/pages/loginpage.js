@@ -17,11 +17,18 @@ LoginPage.prototype.definePageContent = function(root) {
 
 LoginPage.prototype.onShow = function() {
   //Eventually we may need to read the login info from local storage and initialize the fileds
-  if (window.localStorage.login != null) {
+  var remember = window.localStorage.remember == "yes";
+  
+  if (remember && window.localStorage.login != null) {
     UIUtils.get$(this._loginElementId).val(window.localStorage.login);
+  } else {
+    UIUtils.get$(this._loginElementId).val("");
   }
-  if (window.localStorage.password != null) {
+  
+  if (remember && window.localStorage.password != null) {
     UIUtils.get$(this._passwordElementId).val(window.localStorage.password);
+  } else {
+    UIUtils.get$(this._passwordElementId).val("");
   }
 }
 
@@ -61,12 +68,16 @@ LoginPage.prototype._appendLoginPanel = function(root) {
       UIUtils.indicateInvalidInput(this._loginElementId);
     } else if (rememberCheckbox.checked) {
       window.localStorage.login = login;
+    } else {
+      window.localStorage.login = null;
     }
     var password = UIUtils.get$(this._passwordElementId).val();
     if (password == "") {
       UIUtils.indicateInvalidInput(this._passwordElementId);
     } else if (rememberCheckbox.checked) {
       window.localStorage.password = password;
+    } else {
+      window.localStorage.password = null;
     }
     
     if (isEmailValid && password != "") {

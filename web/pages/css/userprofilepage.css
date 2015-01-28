@@ -13,17 +13,17 @@
 #UserProfilePage-ParametersPanel {
   width: 40%;
   display: inline-block;
-  margin-top: 50px;
+  margin-top: 20px;
 
   font-size: 20px;
 }
 
-#UserProfilePage-Name, #UserProfilePage-Gender, #UserProfilePage-AgeCategory, #UserProfilePage-Languages, #UserProfilePage-Password, #UserProfilePage-RetypePassword {
+#UserProfilePage-ParametersPanel-Name, #UserProfilePage-ParametersPanel-Gender, #UserProfilePage-ParametersPanel-AgeCategory, #UserProfilePage-ParametersPanel-Languages, #UserProfilePage-ParametersPanel-Password, #UserProfilePage-ParametersPanel-RetypePassword {
   margin-bottom: 15px;
   font-size: inherit;
 }
 
-#UserProfilePage-Gender, #UserProfilePage-AgeCategory {
+#UserProfilePage-ParametersPanel-Gender, #UserProfilePage-ParametersPanel-AgeCategory {
   border-color: #999;
 }
 
@@ -43,16 +43,5 @@
   font-size: 20px;
 }
 
-
-#UserProfilePage-StatusPanel {
-  position: fixed;
-  left: 75%;
-  top: 50%;
-  display: inline-block;
-  width: 20%;
-
-  font-size: 20px;
-  color: rgb(255, 100, 100);
-}
 
 

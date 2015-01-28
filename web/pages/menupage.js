@@ -72,6 +72,7 @@ MenuPage.prototype.selectMenuItem = function(itemId) {
 MenuPage.prototype.showPage = function(pageId, paramBundle) {
   if (this._activePage != null) {
     this._activePage.hideAnimated();
+    Application.hideSpinningWheel();
   }
 
   this._activePage = this._getPageForItem(pageId);
