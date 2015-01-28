@@ -38,7 +38,10 @@ LoginPage.prototype._appendLoginPanel = function(root) {
   contentPanel.appendChild(UIUtils.createLineBreak());
   
   var rememberCheckbox = UIUtils.appendCheckbox(contentPanel, "RememberLogin", "Remember You?");
-  rememberCheckbox.checked = true;
+  rememberCheckbox.checked = window.localStorage.remember == "yes";
+  UIUtils.get$(rememberCheckbox).change(function() {
+    window.localStorage.remember = rememberCheckbox.checked ? "yes" : "no";
+  });
   
   var signInButton = UIUtils.appendButton(contentPanel, "SignInButton", "Sign In");
   contentPanel.appendChild(UIUtils.createLineBreak());

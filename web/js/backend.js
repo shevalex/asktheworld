@@ -53,6 +53,10 @@ Backend.logOut = function(callback) {
   Backend.UserProfile.name = null;
   Backend.UserProfile.userId = null;
   
+  
+  this._cache = {};
+  this._cacheChangeListeners = [];
+  
   //We may need to inform the server maybe?
   
   callback();
