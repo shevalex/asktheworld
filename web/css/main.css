@@ -36,13 +36,16 @@ body {
 }
 
 #Footer-Label {
-  margin-right: 20px;
+  Xmargin-right: 50px;
   
   font-size: 15px;
   color: rgb(255, 255, 255);
 }
 
 #Footer-ContactUs {
+  position: fixed;
+  margin-left: 100px;
+  
   font-size: 15px;
   color: rgb(255, 255, 255);
 }
