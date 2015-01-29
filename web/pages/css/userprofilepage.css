@@ -18,7 +18,7 @@
   font-size: 20px;
 }
 
-#UserProfilePage-ParametersPanel-Name, #UserProfilePage-ParametersPanel-Gender, #UserProfilePage-ParametersPanel-AgeCategory, #UserProfilePage-ParametersPanel-Languages, #UserProfilePage-ParametersPanel-Password, #UserProfilePage-ParametersPanel-RetypePassword {
+#UserProfilePage-ParametersPanel-Name, #UserProfilePage-ParametersPanel-Gender, #UserProfilePage-ParametersPanel-AgeCategory, #UserProfilePage-ParametersPanel-Languages, #UserProfilePage-ParametersPanel-NewPassword, #UserProfilePage-ParametersPanel-ConfirmNewPassword, #UserProfilePage-ParametersPanel-CurrentPassword {
   margin-bottom: 15px;
   font-size: inherit;
 }

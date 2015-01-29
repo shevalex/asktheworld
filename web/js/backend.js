@@ -85,6 +85,7 @@ Backend.pullUserProfile = function(callback) {
       }
     }
   }
+  
   this._communicate("user/" + Backend.UserProfile.userId, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
@@ -121,16 +122,13 @@ Backend.registerUser = function(userProfile, callback) {
     false, {}, communicationCallback);
 }
 
-Backend.updateUser = function(userProfile, callback) {
+Backend.updateUser = function(userProfile, currentPassword, callback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
-      Backend.UserProfile.password = userProfile.password;
-      Backend.UserProfile.gender = userProfile.gender;
-      Backend.UserProfile.age = userProfile.age;
-      Backend.UserProfile.name = userProfile.name;
-      Backend.UserProfile.languages = userProfile.languages;
-
-      callback.success();
+      if (userProfile.password != null) {
+        Backend.UserProfile.password = userProfile.password;
+      }
+      Backend.pullUserProfile(callback);
     },
     error: function(xhr, status, error) {
       if (xhr.status == 400 || xhr.status == 401) {
@@ -149,7 +147,7 @@ Backend.updateUser = function(userProfile, callback) {
       name: userProfile.name,
       languages: userProfile.languages
     },
-    false, this._getAuthenticationHeader(), communicationCallback);
+    false, this._getAuthenticationHeader(Backend.UserProfile.login, currentPassword), communicationCallback);
 
   return true;
 }
