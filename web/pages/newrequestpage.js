@@ -23,14 +23,16 @@ NewRequestPage.prototype.definePageContent = function(root) {
   requestTextPanel.appendChild(UIUtils.createTextArea(this._requestTextId, 6, "Start typing here..."));
 
   var requestParamsPanel = UIUtils.appendBlock(root, "RequestParametersPanel");
+  UIUtils.appendLabel(requestParamsPanel, "Label", "2. Choose who will see your question");
+
   var prefLinkId = UIUtils.createId(root, "PreferencesLink");
-  UIUtils.appendLabel(requestParamsPanel, "Label", "2. Choose who will see your question.<br>Note: You can always modify your defaut settings in <a href='#' id='" + prefLinkId + "'>Your Preferences</a>");
+  UIUtils.appendLabel(requestParamsPanel, "Note", "Note: You can always modify your defaut settings in <a href='#' id='" + prefLinkId + "'>Your Preferences</a>");
   UIUtils.setClickListener(prefLinkId, function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID);
   });
   
   this._requestGenderId = UIUtils.createId(requestParamsPanel, "Gender");
-  requestParamsPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(this._requestGenderId, "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  requestParamsPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(this._requestGenderId, "Target gender", Application.Configuration.GENDER_PREFERENCE, "10px"));
   
   this._requestAgeId = UIUtils.createId(requestParamsPanel, "AgeCategory");
   requestParamsPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(this._requestAgeId, "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));

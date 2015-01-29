@@ -12,10 +12,11 @@
 
 #HomePage-OutgoingRequestPanel-Status {
   font-size: 20px;
-  height: 30px;
+  height: 20px;
 }
 
 #HomePage-OutgoingRequestPanel-SeeActiveRequests {
+  margin-top: 5px;
   font-size: 15px;
   height: 20px;
 }
@@ -23,7 +24,7 @@
 #HomePage-OutgoingRequestPanel-Requests {
   margin-top: 10px;
   padding-right: 10px;
-  max-height: calc(50% - 90px);
+  max-height: calc(50% - 85px);
   overflow-y: auto;
 }
 
@@ -33,10 +34,11 @@
 
 #HomePage-IncomingRequestPanel-Status {
   font-size: 20px;
-  height: 30px;
+  height: 20px;
 }
 
 #HomePage-IncomingRequestPanel-SeeActiveRequests {
+  margin-top: 5px;
   font-size: 15px;
   height: 20px;
 }
@@ -44,7 +46,7 @@
 #HomePage-IncomingRequestPanel-Requests {
   margin-top: 10px;
   padding-right: 10px;
-  max-height: calc(50% - 90px);
+  max-height: calc(50% - 85px);
   overflow-y: auto;
 }
 
