@@ -105,7 +105,7 @@ UserPreferencesPage.prototype._appendControlPanel = function(root) {
     Application.showSpinningWheel();
     
     this._updateUserPreferences(callback);
-  });
+  }.bind(this));
 }
 
 UserPreferencesPage.prototype._resetParameters = function() {
