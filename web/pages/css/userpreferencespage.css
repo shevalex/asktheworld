@@ -11,6 +11,7 @@
 
 
 #UserPreferencesPage-RequestPreferencesLabel, #UserPreferencesPage-InquiryPreferencesLabel {
+  display: block;
   text-align: left;
   margin-top: 30px;
   margin-bottom: 10px;
@@ -25,7 +26,7 @@
   font-size: 20px;
 }
 
-#UserPreferencesPage-Quantity, #UserProfilePage-Gender, #UserPreferencesPage-AgeCategory, #UserPreferencesPage-WaitTime, #UserPreferencesPage-Gender, #UserPreferencesPage-DailyInquiryLimit, #UserPreferencesPage-InquiryAge, #UserPreferencesPage-InquiryGender {
+#UserPreferencesPage-RequestPreferencesPanel-Quantity, #UserPreferencesPage-RequestPreferencesPanel-Gender, #UserPreferencesPage-RequestPreferencesPanel-AgeCategory, #UserPreferencesPage-RequestPreferencesPanel-WaitTime, #UserPreferencesPage-RequestPreferencesPanel-Gender, #UserPreferencesPage-InquiryPreferencesPanel-DailyInquiryLimit, #UserPreferencesPage-InquiryPreferencesPanel-InquiryAge, #UserPreferencesPage-InquiryPreferencesPanel-InquiryGender {
   margin-bottom: 15px;
 }
 
@@ -34,7 +35,7 @@
 
 #UserPreferencesPage-ControlPanel {
   display: block;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 
@@ -46,17 +47,3 @@
 #UserPreferencesPage-ControlPanel-ResetButton {
   font-size: 20px;
 }
-
-
-#UserPreferencesPage-StatusPanel {
-  position: fixed;
-  left: 80%;
-  top: 50%;
-  display: inline-block;
-  width: 15%;
-
-  font-size: 20px;
-  color: rgb(255, 100, 100);
-}
-
-
