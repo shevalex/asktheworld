@@ -9,7 +9,7 @@
 
 #NewRequestPage-RequestContentPanel {
   display: block;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 #NewRequestPage-RequestContentPanel-Label {
@@ -37,14 +37,22 @@
 #NewRequestPage-RequestParametersPanel-Label {
   display: block;
   text-align: left;
-  margin-bottom: 10px;
 
   font-size: 20px;
 }
 
+#NewRequestPage-RequestParametersPanel-Note {
+  display: block;
+  text-align: left;
+  margin-top: 5px;
+  margin-bottom: 10px;
+
+  font-size: 15px;
+}
+
 #NewRequestPage-RequestControlPanel {
   display: block;
-  margin-top: 50px;
+  margin-top: 30px;
   
   text-align: center;
 }
@@ -61,6 +69,7 @@
 }
 
 #NewRequestPage-RequestControlPanel-ButtonHolder-SendButton {
-  padding: 10px 50px 10px 50px;
+  padding: 0px 50px 0px 50px;
   font-size: 30px;
+  font-style: italic;
 }
