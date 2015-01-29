@@ -10,7 +10,7 @@ UserPreferencesPage = ClassUtils.defineClass(AbstractPage, function UserPreferen
   this._inquiryGenderElementId;
   
   this._updateButtonId;
-  this._resetLinkId;
+  this._resetButtonId;
 });
 
 UserPreferencesPage.prototype.definePageContent = function(root) {
@@ -64,7 +64,7 @@ UserPreferencesPage.prototype._appendInquiryPreferencesPanel = function(root) {
   contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._inquiryGenderElementId = UIUtils.createId(contentPanel, "InquiryGender");
-  contentPanel.appendChild(UIUtils.createLabeledDropList(this._inquiryGenderElementId, "Sex of requesters", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  contentPanel.appendChild(UIUtils.createLabeledDropList(this._inquiryGenderElementId, "Gender of requesters", Application.Configuration.GENDER_PREFERENCE, "10px"));
 }
 
 
@@ -76,10 +76,10 @@ UserPreferencesPage.prototype._appendControlPanel = function(root) {
   this._updateButtonId = UIUtils.createId(controlPanel, "UpdateButton");
   controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(this._updateButtonId, "Update Preferences"));
   
-  this._resetLinkId = UIUtils.createId(controlPanel, "ResetButton");
-  controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createLink(this._resetLinkId, "Reset"));
+  this._resetButtonId = UIUtils.createId(controlPanel, "ResetButton");
+  controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(this._resetButtonId, "Reset"));
   
-  UIUtils.setClickListener(this._resetLinkId, this._resetParameters.bind(this));
+  UIUtils.setClickListener(this._resetButtonId, this._resetParameters.bind(this));
   UIUtils.setClickListener(this._updateButtonId, function() {
     var callback = {
       success: function(requestId) {
