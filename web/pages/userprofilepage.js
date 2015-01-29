@@ -12,7 +12,7 @@ UserProfilePage = ClassUtils.defineClass(AbstractPage, function UserProfilePage(
 
 UserProfilePage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
-  UIUtils.get$(generalPanel).html("Update your profile information. <b>We intentionally keep it very basic and generic to insure your privacy</b>.<br>You may only modify the information which you need to correct. Do not type new password if you do not want to change it.<p>You will have to retype your current password to update.");
+  UIUtils.get$(generalPanel).html("Update your profile information. <b>We intentionally keep it very basic and generic to insure your privacy</b>.<br>You may only modify the information which you need to correct. Do not type new password if you do not want to change it.");
   
   this._appendProfilePanel(root);
   this._appendControlPanel(root);
