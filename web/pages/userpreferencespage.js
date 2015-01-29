@@ -1,24 +1,30 @@
 UserPreferencesPage = ClassUtils.defineClass(AbstractPage, function UserPreferencesPage() {
   AbstractPage.call(this, "UserPreferencesPage");
+  
+  this._quantityElementId;
+  this._waitTimeElementId;
+  this._ageElementId;
+  this._genderElementId;
+  this._inquiryLimitElementId;
+  this._inquiryAgeElementId;
+  this._inquiryGenderElementId;
+  
+  this._updateButtonId;
+  this._resetLinkId;
 });
 
 UserPreferencesPage.prototype.definePageContent = function(root) {
-  root.appendChild(UIUtils.createBlock("UserPreferencesPage-GeneralPanel"));
-  $("#UserPreferencesPage-GeneralPanel").html("Update your request preferences. This is what we will use as your default choice when you are Asking The World.<br>Note, that you can always override these defauls for the specific request.");
+  var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
+  UIUtils.get$(generalPanel).html("Update your request preferences. This is what we will use as your default choice when you are Asking The World.<br>Note, that you can always override these defauls for the specific request.");
   
 
-  root.appendChild(UIUtils.createLabel("UserPreferencesPage-RequestPreferencesLabel", "Tell us whom do you want to send your requests to"));
-  root.appendChild(this._createRequestPreferencesPanel());
+  UIUtils.appendLabel(root, "RequestPreferencesLabel", "Tell us whom do you want to send your requests to");
+  this._appendRequestPreferencesPanel(root);
   
-  root.appendChild(UIUtils.createLabel("UserPreferencesPage-InquiryPreferencesLabel", "Tell us who do you want to receive the inquiries from"));
-  root.appendChild(this._createInquiryPreferencesPanel());
+  UIUtils.appendLabel(root, "InquiryPreferencesLabel", "Tell us who do you want to receive the inquiries from");
+  this._appendInquiryPreferencesPanel(root);
   
-  root.appendChild(this._createControlPanel());
-
-  root.appendChild(UIUtils.createBlock("UserPreferencesPage-StatusPanel"));
-  
-  $("#UserPreferencesPage-ControlPanel-ResetButton").click(this._resetParameters.bind(this));
-  $("#UserPreferencesPage-ControlPanel-UpdateButton").click(this._updateUserPreferences.bind(this));
+  this._appendControlPanel(root);
 }
 
 UserPreferencesPage.prototype.onShow = function() {
@@ -27,87 +33,101 @@ UserPreferencesPage.prototype.onShow = function() {
 
 
 
-UserPreferencesPage.prototype._createRequestPreferencesPanel = function() {
-  var contentPanel = UIUtils.createBlock("UserPreferencesPage-RequestPreferencesPanel");
+UserPreferencesPage.prototype._appendRequestPreferencesPanel = function(root) {
+  var contentPanel = UIUtils.appendBlock(root, "RequestPreferencesPanel");
   
-  contentPanel.appendChild(UIUtils.createLabeledDropList("UserPreferencesPage-Quantity", "Maximum number of responses that you want to see", Application.Configuration.RESPONSE_QUANTITY, "10px"));
+  this._quantityElementId = UIUtils.createId(contentPanel, "Quantity");
+  contentPanel.appendChild(UIUtils.createLabeledDropList(this._quantityElementId, "Maximum number of responses that you want to see", Application.Configuration.RESPONSE_QUANTITY, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("UserPreferencesPage-AgeCategory", "Who do you want to send this request to", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  
+  this._ageElementId = UIUtils.createId(contentPanel, "AgeCategory");
+  contentPanel.appendChild(UIUtils.createLabeledDropList(this._ageElementId, "Who do you want to send this request to", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("UserPreferencesPage-WaitTime", "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
+  
+  this._waitTimeElementId = UIUtils.createId(contentPanel, "WaitTime");
+  contentPanel.appendChild(UIUtils.createLabeledDropList(this._waitTimeElementId, "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("UserPreferencesPage-Gender", "Gender preference", Application.Configuration.GENDER_PREFERENCE, "10px"));
-
-  return contentPanel;
+  
+  this._genderElementId = UIUtils.createId(contentPanel, "Gender");
+  contentPanel.appendChild(UIUtils.createLabeledDropList(this._genderElementId, "Gender preference", Application.Configuration.GENDER_PREFERENCE, "10px"));
 }
 
-UserPreferencesPage.prototype._createInquiryPreferencesPanel = function() {
-  var contentPanel = UIUtils.createBlock("UserPreferencesPage-InquiryPreferencesPanel");
+UserPreferencesPage.prototype._appendInquiryPreferencesPanel = function(root) {
+  var contentPanel = UIUtils.appendBlock(root, "InquiryPreferencesPanel");
   
-  contentPanel.appendChild(UIUtils.createLabeledDropList("UserPreferencesPage-DailyInquiryLimit", "Maximum daily amount of inquiries you want to receive", Application.Configuration.INQUIRY_LIMIT_PREFERENCE, "10px"));
+  this._inquiryLimitElementId = UIUtils.createId(contentPanel, "DailyInquiryLimit");
+  contentPanel.appendChild(UIUtils.createLabeledDropList(this._inquiryLimitElementId, "Maximum daily amount of inquiries you want to receive", Application.Configuration.INQUIRY_LIMIT_PREFERENCE, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("UserPreferencesPage-InquiryAge", "Age of requesters", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  
+  this._inquiryAgeElementId = UIUtils.createId(contentPanel, "InquiryAge");
+  contentPanel.appendChild(UIUtils.createLabeledDropList(this._inquiryAgeElementId, "Age of requesters", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
   contentPanel.appendChild(UIUtils.createLineBreak());
-  contentPanel.appendChild(UIUtils.createLabeledDropList("UserPreferencesPage-InquiryGender", "Sex of requesters", Application.Configuration.GENDER_PREFERENCE, "10px"));
-
-  return contentPanel;
+  
+  this._inquiryGenderElementId = UIUtils.createId(contentPanel, "InquiryGender");
+  contentPanel.appendChild(UIUtils.createLabeledDropList(this._inquiryGenderElementId, "Sex of requesters", Application.Configuration.GENDER_PREFERENCE, "10px"));
 }
 
 
-UserPreferencesPage.prototype._createControlPanel = function() {
-  var controlPanel = UIUtils.createBlock("UserPreferencesPage-ControlPanel");
+UserPreferencesPage.prototype._appendControlPanel = function(root) {
+  var controlPanel = UIUtils.appendBlock(root, "ControlPanel");
   
   controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0"));
-  controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton("UserPreferencesPage-ControlPanel-UpdateButton", "Update Preferences"));
-  controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createLink("UserPreferencesPage-ControlPanel-ResetButton", "Reset"));
   
-  return controlPanel;
+  this._updateButtonId = UIUtils.createId(controlPanel, "UpdateButton");
+  controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(this._updateButtonId, "Update Preferences"));
+  
+  this._resetLinkId = UIUtils.createId(controlPanel, "ResetButton");
+  controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createLink(this._resetLinkId, "Reset"));
+  
+  UIUtils.setClickListener(this._resetLinkId, this._resetParameters.bind(this));
+  UIUtils.setClickListener(this._updateButtonId, function() {
+    var callback = {
+      success: function(requestId) {
+        this._onCompletion();
+        Application.showMessage("Your preferences were successfully updated");
+      },
+      failure: function() {
+        this._onCompletion();
+        Application.showMessage("Failed to update preferences");
+      },
+      error: function() {
+        this._onCompletion();
+        Application.showMessage("Server communication error");
+      },
+
+      _onCompletion: function() {
+        UIUtils.setEnabled(this._updateButtonId, true);
+        Application.hideSpinningWheel();
+      }.bind(this)
+    }
+
+    UIUtils.setEnabled(this._updateButtonId, false);
+    Application.showSpinningWheel();
+    
+    this._updateUserPreferences(callback);
+  });
 }
 
 UserPreferencesPage.prototype._resetParameters = function() {
-  $("#UserPreferencesPage-Quantity").val(Backend.getUserPreferences().responseQuantity);
-  $("#UserPreferencesPage-WaitTime").val(Backend.getUserPreferences().responseWaitTime);
-  $("#UserPreferencesPage-AgeCategory").val(Backend.getUserPreferences().requestTargetAge);
-  $("#UserPreferencesPage-Gender").val(Backend.getUserPreferences().requestTargetGender);
-  $("#UserPreferencesPage-DailyInquiryLimit").val(Backend.getUserPreferences().dailyInquiryLimit);
-  $("#UserPreferencesPage-InquiryAge").val(Backend.getUserPreferences().inquiryAge);
-  $("#UserPreferencesPage-InquiryGender").val(Backend.getUserPreferences().inquiryGender);
+  UIUtils.get$(this._quantityElementId).val(Backend.getUserPreferences().responseQuantity);
+  UIUtils.get$(this._waitTimeElementId).val(Backend.getUserPreferences().responseWaitTime);
+  UIUtils.get$(this._ageElementId).val(Backend.getUserPreferences().requestTargetAge);
+  UIUtils.get$(this._genderElementId).val(Backend.getUserPreferences().requestTargetGender);
+  UIUtils.get$(this._inquiryLimitElementId).val(Backend.getUserPreferences().dailyInquiryLimit);
+  UIUtils.get$(this._inquiryAgeElementId).val(Backend.getUserPreferences().inquiryAge);
+  UIUtils.get$(this._inquiryGenderElementId).val(Backend.getUserPreferences().inquiryGender);
 }
 
 
-UserPreferencesPage.prototype._updateUserPreferences = function() {
-  $("#UserPreferencesPage-StatusPanel").text("");
-  var callback = {
-    success: function(requestId) {
-      this._onCompletion();
-      $("#UserPreferencesPage-StatusPanel").text("");
-    },
-    failure: function() {
-      this._onCompletion();
-      $("#UserPreferencesPage-StatusPanel").text("Cannot update user profile on the server");
-    },
-    error: function() {
-      this._onCompletion();
-      $("#UserPreferencesPage-StatusPanel").text("Server communication error");
-    },
-    
-    _onCompletion: function() {
-      UIUtils.setEnabled("UserPreferencesPage-ControlPanel-UpdateButton", true);
-      Application.hideSpinningWheel();
-    }
-  }
-  
-  UIUtils.setEnabled("UserPreferencesPage-ControlPanel-UpdateButton", false);
-  Application.showSpinningWheel();
-
+UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
   var userPreferences = {
-    responseQuantity: $("#UserPreferencesPage-Quantity").val(),
-    responseWaitTime: $("#UserPreferencesPage-WaitTime").val(),
-    requestTargetAge: $("#UserPreferencesPage-AgeCategory").val(),
-    requestTargetGender: $("#UserPreferencesPage-Gender").val(),
-    dailyInquiryLimit: $("#UserPreferencesPage-DailyInquiryLimit").val(),
-    inquiryAge: $("#UserPreferencesPage-InquiryAge").val(),
-    inquiryGender: $("#UserPreferencesPage-InquiryGender").val()
+    responseQuantity: UIUtils.get$(this._quantityElementId).val(),
+    responseWaitTime: UIUtils.get$(this._waitTimeElementId).val(),
+    requestTargetAge: UIUtils.get$(this._ageElementId).val(),
+    requestTargetGender: UIUtils.get$(this._genderElementId).val(),
+    dailyInquiryLimit: UIUtils.get$(this._inquiryLimitElementId).val(),
+    inquiryAge: UIUtils.get$(this._inquiryAgeElementId).val(),
+    inquiryGender: UIUtils.get$(this._inquiryGenderElementId).val()
   };
   
   Backend.updateUserPreferences(userPreferences, callback);
