@@ -12,7 +12,6 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
 });
 
 AbstractPage.prototype.show = function(container, paramBundle) {
-  this._pageElement.style.display = "block";
   container.appendChild(this._pageElement);
   if (!this._isDefined) {
     this.definePageContent(this._pageElement);
@@ -22,15 +21,14 @@ AbstractPage.prototype.show = function(container, paramBundle) {
 }
 
 AbstractPage.prototype.showAnimated = function(container, paramBundle, completionObserver) {
-  this._pageElement.style.display = "none";
   container.appendChild(this._pageElement);
-  
   if (!this._isDefined) {
     this.definePageContent(this._pageElement);
     this._isDefined = true;
   }
   this.onShow(this._pageElement, paramBundle);
   
+  this._pageElement.style.display = "none";
   $("#" + this._pageId).slideDown("slow", completionObserver);
 }
 

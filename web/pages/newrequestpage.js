@@ -1,7 +1,9 @@
 NewRequestPage = ClassUtils.defineClass(AbstractPage, function NewRequestPage() {
   AbstractPage.call(this, "NewRequestPage");
   
-  this._requestTextId = null;
+  this._requestTextEditorContainer = null;
+  this._requestTextEditor = null;
+  
   this._requestGenderId = null;
   this._requestAgeId = null;
   this._requestWaitTimeId = null;
@@ -15,13 +17,9 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
   UIUtils.get$(generalPanel).html("Asking The World is just that easy. You are only three steps away.");
 
-  var requestTextPanel = UIUtils.appendBlock(root, "RequestContentPanel");
-  UIUtils.appendLabel(requestTextPanel, "Label", "1. Type in the text of your request first...");
+  this._requestTextPanel = UIUtils.appendBlock(root, "RequestContentPanel");
+  UIUtils.appendLabel(this._requestTextPanel, "Label", "1. Type in the text of your request first...");
   
-  
-  this._requestTextId = UIUtils.createId(requestTextPanel, "Text");
-  requestTextPanel.appendChild(UIUtils.createTextArea(this._requestTextId, 6, "Start typing here..."));
-
   var requestParamsPanel = UIUtils.appendBlock(root, "RequestParametersPanel");
   UIUtils.appendLabel(requestParamsPanel, "Label", "2. Choose who will see your question");
 
@@ -51,23 +49,26 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var buttonHolder = UIUtils.appendBlock(controlPanel, "ButtonHolder");
   this._sendButton = UIUtils.appendButton(buttonHolder, "SendButton", "Ask The World!");
   UIUtils.setClickListener(this._sendButton, function() {
-    var textElement = UIUtils.get$(this._requestTextId).get(0);
-    if (textElement.value != "" && textElement.value != textElement.defaultValue) {
+    if (this._requestTextEditor.getValue() != "") {
       this._createRequest();
     } else {
-      UIUtils.indicateInvalidInput(this._requestTextId);
+      this._requestTextEditor.indicateIncorrectInput();
+      Application.showMessage("Please create a message", Application.MESSAGE_TIMEOUT_FAST);
     }
   }.bind(this));
 }
 
 NewRequestPage.prototype.onShow = function() {
-  var textElement = UIUtils.get$(this._requestTextId).get(0);
-  textElement.value = textElement.defaultValue;
+  this._requestTextEditor = UIUtils.appendTextEditor(this._requestTextPanel, "TextEditor");
 
   UIUtils.get$(this._requestGenderId).val(Backend.getUserPreferences().requestTargetGender);
   UIUtils.get$(this._requestAgeId).val(Backend.getUserPreferences().requestTargetAge);
   UIUtils.get$(this._requestQuantityId).val(Backend.getUserPreferences().responseQuantity);
   UIUtils.get$(this._requestWaitTimeId).val(Backend.getUserPreferences().responseWaitTime);
+}
+
+NewRequestPage.prototype.onHide = function() {
+  UIUtils.get$(this._requestTextEditor).remove();
 }
 
 
@@ -94,7 +95,7 @@ NewRequestPage.prototype._createRequest = function() {
   }
   
   var request = {
-    text: UIUtils.get$(this._requestTextId).val(),
+    text: this._requestTextEditor.getValue(),
     pictures: [],
     audios: [],
     response_gender: UIUtils.get$(this._requestGenderId).val(),
