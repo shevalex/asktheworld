@@ -19,8 +19,8 @@
   font-size: 20px;
 }
 
-#NewRequestPage-RequestContentPanel-Text {
-  display: block;
+#NewRequestPage-RequestContentPanel-TextEditor {
+  height: 150px;
   margin-top: 10px;
   
   font-size: 15px;

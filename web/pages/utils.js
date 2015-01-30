@@ -316,6 +316,33 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
   return dataTableObject;
 }
 
+UIUtils.appendTextEditor = function(root, editorId) {
+  var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
+  
+  var textArea = document.createElement("textarea");
+  textArea.setAttribute("id", UIUtils.createId(root, editorId));
+
+  editorArea.getValue = function() {
+    return textArea.value;
+  }
+  
+  editorArea.getEditorElement = function() {
+    return editorArea.firstChild;
+  }
+  
+  editorArea.indicateIncorrectInput = function() {
+  }
+  
+  editorArea.appendChild(textArea);
+  
+  var selector = UIUtils.get$(editorArea);
+  var height = selector.css("height");
+  
+  UIUtils.get$(textArea).cleditor({height: height});
+  
+  return editorArea;
+}
+
 
 UIUtils.animateBackgroundColor = function(element, color, speed, observer) {
   var selector = UIUtils.get$(element);
