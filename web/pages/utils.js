@@ -338,7 +338,18 @@ UIUtils.appendTextEditor = function(root, editorId) {
   var selector = UIUtils.get$(editorArea);
   var height = selector.css("height");
   
-  UIUtils.get$(textArea).cleditor({height: height});
+  UIUtils.get$(textArea).cleditor({
+    height: height,
+    controls:
+             "bold italic underline strikethrough"
+             + " | font size style"
+             + " | color highlight removeformat"
+             + " | bullets numbering"
+             + " | outdent indent"
+             + " | alignleft center alignright justify"
+             + " | undo redo"
+             + " | rule image link unlink"
+             + " | cut copy paste pastetext"});
   
   return editorArea;
 }
