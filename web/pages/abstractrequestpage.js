@@ -762,10 +762,9 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   editPanel.appendChild(UIUtils.createSpan("48%", "20px 0 20px 0")).appendChild(UIUtils.createLabeledDropList(quantityListId, "Maximum # of responses", Application.Configuration.RESPONSE_QUANTITY, "10px"));
   UIUtils.get$(quantityListId).val(request.response_quantity);
   
-  var textArea = editPanel.appendChild(UIUtils.createTextArea(UIUtils.createId(editPanel, "Text"), 6));
-  UIUtils.addClass(textArea, "outgoingrequest-editpanel-text");
-  
-  UIUtils.get$(textArea).val(request.text);
+  var textEditor = UIUtils.appendTextEditor(editPanel, "TextArea", "outgoingrequest-editpanel-text");
+  textEditor.setValue(request.text);
+  textEditor.focus();
 
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
   UIUtils.addClass(controlPanel, "outgoingrequest-controlpanel");
@@ -775,7 +774,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
 
-    request.text = UIUtils.get$(textArea).val();
+    request.text = textEditor.getValue();
     request.response_quantity = UIUtils.get$(quantityListId).val();
     request.response_wait_time = UIUtils.get$(waitTimeListId).val();
     request.response_age_group = UIUtils.get$(ageListId).val();
@@ -890,7 +889,8 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
   var createResponsePanel = UIUtils.appendBlock(root, "CreateResponsePanel");
   UIUtils.addClass(createResponsePanel, "outgoingresponse-createresponsepanel");
 
-  var responseTextElement = createResponsePanel.appendChild(UIUtils.createTextArea(UIUtils.createId(createResponsePanel, "ResponseText"), 5));
+  var textEditor = UIUtils.appendTextEditor(createResponsePanel, "TextArea", "outgoingresponse-createresponsepanel-text");
+  textEditor.focus();
   
   var controlPanel = UIUtils.appendBlock(createResponsePanel, "ControlPanel");
   UIUtils.addClass(controlPanel, "outgoingresponse-controlpanel");
@@ -907,7 +907,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
   }.bind(this);
   
   UIUtils.setClickListener(submitButton, function() {
-    var responseText = UIUtils.get$(responseTextElement).val();
+    var responseText = textEditor.getValue();
     if (responseText != "") {
       response = {
         text: responseText
@@ -915,7 +915,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
       this._requestList.__updateStarted();
       AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, response, finishEditing);
     } else {
-      UIUtils.indicateInvalidInput(responseTextElement);
+      textEditor.indicateInvalidInput();
     }
   }.bind(this));
 
@@ -1003,8 +1003,9 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   var responseDate = new Date(response.time);
   UIUtils.appendLabel(editPanel, "Label", "You responded on <b>" + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() +"</b>");
   
-  var textArea = editPanel.appendChild(UIUtils.createTextArea(UIUtils.createId(editPanel, "Text"), 6));
-  UIUtils.get$(textArea).val(response.text);
+  var textEditor = UIUtils.appendTextEditor(editPanel, "TextArea", "outgoingresponse-controlpanel-text");
+  textEditor.setValue(response.text);
+  textEditor.focus();
 
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
   UIUtils.addClass(controlPanel, "outgoingresponse-controlpanel");
@@ -1014,7 +1015,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
     
-    response.text = UIUtils.get$(textArea).val();
+    response.text = textEditor.getValue();
     AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, response, function() {
       this._requestList.__updateFinished();
       this._requestList.__responseUpdated();

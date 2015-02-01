@@ -316,11 +316,14 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
   return dataTableObject;
 }
 
-UIUtils.appendTextEditor = function(root, editorId, defaultValue) {
+UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
   var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
   
   var textArea = document.createElement("textarea");
   textArea.setAttribute("id", UIUtils.createId(root, editorId));
+  if (cssClass != null) {
+    textArea.setAttribute("class", cssClass);
+  }
 
   editorArea.getValue = function() {
     return textArea.value != defaultValue ? textArea.value : "";
