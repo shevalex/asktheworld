@@ -316,6 +316,7 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
   return dataTableObject;
 }
 
+/*
 UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
   var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
   
@@ -380,6 +381,50 @@ UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
   
   return editorArea;
 }
+*/
+
+
+UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
+  var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
+  
+  var textArea = UIUtils.createTextArea(UIUtils.createId(root, editorId), 6, defaultValue);
+  if (cssClass != null) {
+    textArea.setAttribute("class", cssClass);
+  }
+
+  editorArea.getValue = function() {
+    return textArea.value != defaultValue ? textArea.value : "";
+  }
+  
+  editorArea.setValue = function(value) {
+    textArea.innerHTML = value;
+  }
+  
+  editorArea.refresh = function() {
+    if (defaultValue != null) {
+      this.setValue(defaultValue);
+    } else {
+      this.setValue("");
+    }
+  }
+  
+  editorArea.focus = function() {
+    textArea.focus();
+  }
+  
+  editorArea.getEditorElement = function() {
+    return textArea;
+  }
+  
+  editorArea.indicateIncorrectInput = function() {
+    UIUtils.indicateInvalidInput(textArea);
+  }
+  
+  editorArea.appendChild(textArea);
+  
+  return editorArea;
+}
+
 
 
 UIUtils.animateBackgroundColor = function(element, color, speed, observer) {
