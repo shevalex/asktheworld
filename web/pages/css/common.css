@@ -48,3 +48,38 @@ select {
   color: gray;
 }
 
+
+
+
+.text-editor-container {
+}
+.text-editor-textcomponent {
+}
+.text-editor-attachmentbar {
+  margin-top: 10px;
+  height: 30px;
+}
+.text-editor-attachments {
+  float: left;
+  width: calc(100% - 120px); 
+  height: 30px;
+  padding: 0px 10px 0px 10px; 
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.text-editor-controlpanel {
+  float: right;
+  width: 100px;
+  height: 30px;
+  text-align: right;
+}
+.text-editor-attachbutton {
+  font-size: 15px;
+}
+.text-editor-thumbnail {
+  display:inline-block;
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  background: red;
+}

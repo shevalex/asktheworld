@@ -384,20 +384,71 @@ UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
 */
 
 
-UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
+UIUtils.appendFileChooser = function(root) {
+  var fileChooser = document.createElement("input");
+  fileChooser.setAttribute("type", "file");
+  fileChooser.setAttribute("id", UIUtils.createId(root, "FileChooser"));
+  fileChooser.style.display = "none";
+  root.appendChild(fileChooser);
+
+  fileChooser.addEventListener("change", function() {
+    if (fileChooser.selectionCallback != null) {
+      fileChooser.selectionCallback(fileChooser.files);
+      fileChooser.selectionCallback = null;
+    }
+  });
+  
+  fileChooser.open = function(callback) {
+    fileChooser.selectionCallback = callback;
+    UIUtils.get$(fileChooser).trigger("click");
+  }
+  
+  return fileChooser;
+}
+
+UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) {
   var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
+  UIUtils.addClass(editorArea, "text-editor-container");
   
   var textArea = UIUtils.createTextArea(UIUtils.createId(root, editorId), 6, defaultValue);
-  if (cssClass != null) {
-    textArea.setAttribute("class", cssClass);
+  editorArea.appendChild(textArea);
+  
+  UIUtils.addClass(textArea, "text-editor-textcomponent");
+  if (textCssClass != null) {
+    UIUtils.addClass(textArea, textCssClass);
   }
+  
+  var attachmentBar = UIUtils.appendBlock(editorArea, "AttachmentBar");
+  UIUtils.addClass(attachmentBar, "text-editor-attachmentbar");
+  var fileChooser = UIUtils.appendFileChooser(attachmentBar);
 
+  var attachmentsPanel = UIUtils.appendBlock(attachmentBar, "Attachments");
+  attachmentsPanel.counter = 0;
+  UIUtils.addClass(attachmentsPanel, "text-editor-attachments");
+
+  var controlPanel = UIUtils.appendBlock(attachmentBar, "ControlPanel");
+  UIUtils.addClass(controlPanel, "text-editor-controlpanel");
+  
+  var attachButton = UIUtils.appendButton(controlPanel, "AttachButton", "Attach");
+  UIUtils.addClass(attachButton, "text-editor-attachbutton");
+
+  UIUtils.setClickListener(attachButton, function() {
+    fileChooser.open(function(files) {
+      var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachmentsPanel.counter);
+      UIUtils.addClass(thumbnail, "text-editor-thumbnail");
+      attachmentsPanel.counter++;
+      
+      console.debug(files);
+    });
+  });
+  
+  
   editorArea.getValue = function() {
     return textArea.value != defaultValue ? textArea.value : "";
   }
   
   editorArea.setValue = function(value) {
-    textArea.innerHTML = value;
+    textArea.value = value;
   }
   
   editorArea.refresh = function() {
@@ -412,15 +463,13 @@ UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
     textArea.focus();
   }
   
-  editorArea.getEditorElement = function() {
+  editorArea.getTextElement = function() {
     return textArea;
   }
   
   editorArea.indicateIncorrectInput = function() {
     UIUtils.indicateInvalidInput(textArea);
   }
-  
-  editorArea.appendChild(textArea);
   
   return editorArea;
 }
@@ -516,3 +565,4 @@ UIUtils._getId = function(component) {
   
   return id;
 }
+
