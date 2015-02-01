@@ -1,7 +1,6 @@
 NewRequestPage = ClassUtils.defineClass(AbstractPage, function NewRequestPage() {
   AbstractPage.call(this, "NewRequestPage");
   
-  this._requestTextEditorContainer = null;
   this._requestTextEditor = null;
   
   this._requestGenderId = null;
@@ -17,8 +16,9 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
   UIUtils.get$(generalPanel).html("Asking The World is just that easy. You are only three steps away.");
 
-  this._requestTextPanel = UIUtils.appendBlock(root, "RequestContentPanel");
-  UIUtils.appendLabel(this._requestTextPanel, "Label", "1. Type in the text of your request first...");
+  var requestTextPanel = UIUtils.appendBlock(root, "RequestContentPanel");
+  UIUtils.appendLabel(requestTextPanel, "Label", "1. Type in the text of your request first...");
+  this._requestTextEditor = UIUtils.appendTextEditor(requestTextPanel, "TextEditor");
   
   var requestParamsPanel = UIUtils.appendBlock(root, "RequestParametersPanel");
   UIUtils.appendLabel(requestParamsPanel, "Label", "2. Choose who will see your question");
@@ -59,8 +59,9 @@ NewRequestPage.prototype.definePageContent = function(root) {
 }
 
 NewRequestPage.prototype.onShow = function() {
-  this._requestTextEditor = UIUtils.appendTextEditor(this._requestTextPanel, "TextEditor");
-
+  this._requestTextEditor.refresh();
+  this._requestTextEditor.focus();
+  
   UIUtils.get$(this._requestGenderId).val(Backend.getUserPreferences().requestTargetGender);
   UIUtils.get$(this._requestAgeId).val(Backend.getUserPreferences().requestTargetAge);
   UIUtils.get$(this._requestQuantityId).val(Backend.getUserPreferences().responseQuantity);
@@ -68,7 +69,6 @@ NewRequestPage.prototype.onShow = function() {
 }
 
 NewRequestPage.prototype.onHide = function() {
-  UIUtils.get$(this._requestTextEditor).remove();
 }
 
 
