@@ -316,14 +316,34 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
   return dataTableObject;
 }
 
-UIUtils.appendTextEditor = function(root, editorId) {
+UIUtils.appendTextEditor = function(root, editorId, defaultValue) {
   var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
   
   var textArea = document.createElement("textarea");
   textArea.setAttribute("id", UIUtils.createId(root, editorId));
 
   editorArea.getValue = function() {
-    return textArea.value;
+    return textArea.value != defaultValue ? textArea.value : "";
+  }
+  
+  editorArea.setValue = function(value) {
+    textArea.innerHTML = value;
+    this.getEditor().updateFrame();
+  }
+  
+  editorArea.refresh = function() {
+    if (defaultValue != null) {
+      this.setValue(defaultValue);
+      this.getEditor().select();
+    } else {
+      this.getEditor().clear();
+    }
+    
+    this.getEditor().refresh();
+  }
+  
+  editorArea.focus = function() {
+    this.getEditor().focus();
   }
   
   editorArea.getEditorElement = function() {
@@ -338,7 +358,7 @@ UIUtils.appendTextEditor = function(root, editorId) {
   var selector = UIUtils.get$(editorArea);
   var height = selector.css("height");
   
-  UIUtils.get$(textArea).cleditor({
+  var editorSelector = UIUtils.get$(textArea).cleditor({
     height: height,
     controls:
              "bold italic underline strikethrough"
@@ -350,6 +370,10 @@ UIUtils.appendTextEditor = function(root, editorId) {
              + " | undo redo"
              + " | rule image link unlink"
              + " | cut copy paste pastetext"});
+  
+  editorArea.getEditor = function() {
+    return editorSelector[0];
+  }
   
   return editorArea;
 }
