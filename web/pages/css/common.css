@@ -78,7 +78,7 @@ select {
   position: relative;
   float: left;
   width: calc(100% - 120px); 
-  height: 30px;
+  height: 50px;
   padding: 0px 10px 0px 10px; 
   white-space: nowrap;
   overflow-x: auto;
@@ -96,8 +96,8 @@ select {
 .text-editor-thumbnail {
   display:inline-block;
   position: relative;
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   margin-right: 10px;
   background: red;
 }
@@ -107,8 +107,8 @@ select {
   top: 0px;
   right: 0px;
   
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   background: green;
 }
 .text-editor-thumbnail:hover .text-editor-thumbnail-x {
@@ -124,4 +124,17 @@ select {
   height: 50%;
 
   background: red;
+}
+.text-editor-preview-x {
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  
+  width: 20px;
+  height: 20px;
+  background: green;
+}
+.text-editor-preview:hover .text-editor-preview-x {
+  display: block;
 }
