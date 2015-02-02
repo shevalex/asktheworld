@@ -410,8 +410,11 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
   var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
   UIUtils.addClass(editorArea, "text-editor-container");
   
-  var textArea = UIUtils.createTextArea(UIUtils.createId(root, editorId), 6, defaultValue);
-  editorArea.appendChild(textArea);
+//  var textArea = UIUtils.createTextArea(UIUtils.createId(root, editorId), 6, defaultValue);
+//  editorArea.appendChild(textArea);
+  var textArea = UIUtils.appendBlock(editorArea, editorId);
+  //UIUtils.get$(textArea).wysiwyg();
+  textArea.setAttribute("contenteditable", "true");
   
   UIUtils.addClass(textArea, "text-editor-textcomponent");
   if (textCssClass != null) {
@@ -451,14 +454,7 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
         UIUtils.addClass(previewElement, "text-editor-preview");
         previewElement.innerHTML = selectedFile;
 
-        $(document).mouseup(function(event) {
-          var container = UIUtils.get$(previewElement);
-
-          if (!container.is(event.target) && container.has(event.target).length == 0) {
-            container.remove();
-          };
-          $(document).unbind("mouseup");
-        });
+        UIUtils.removeIfClickedOutside(previewElement);
       });
       
       var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
@@ -478,11 +474,12 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
   
   
   editorArea.getValue = function() {
-    return textArea.value != defaultValue ? textArea.value : "";
+    var value = UIUtils.get$(textArea).html();
+    return value != defaultValue ? value : "";
   }
   
   editorArea.setValue = function(value) {
-    textArea.value = value;
+    UIUtils.get$(textArea).html(value);
   }
   
   editorArea.refresh = function() {
@@ -554,6 +551,17 @@ UIUtils.emptyContainer = function(container) {
 
 UIUtils.setClickListener = function(element, listener) {
   UIUtils.get$(element).click(listener);
+}
+
+UIUtils.removeIfClickedOutside = function(component) {
+  $(document).mouseup(function(event) {
+    var selector = UIUtils.get$(component);
+
+    if (!selector.is(event.target) && selector.has(event.target).length == 0) {
+      selector.remove();
+    };
+    $(document).unbind("mouseup");
+  });
 }
 
 

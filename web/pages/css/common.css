@@ -54,6 +54,21 @@ select {
 .text-editor-container {
 }
 .text-editor-textcomponent {
+  padding: 5px;
+  margin: 5px;
+  
+  width: calc(100% - 20px);
+  height: 200px;
+  
+  overflow: auto;
+
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  
+  background: white;
+  color: black;
 }
 .text-editor-attachmentbar {
   margin-top: 10px;
