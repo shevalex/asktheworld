@@ -452,9 +452,15 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
       UIUtils.setClickListener(thumbnail, function() {
         var previewElement = UIUtils.appendBlock(attachmentBar, "Preview");
         UIUtils.addClass(previewElement, "text-editor-preview");
-        previewElement.innerHTML = selectedFile;
+
+        var previewCloser = UIUtils.appendBlock(previewElement, "X");
+        UIUtils.addClass(previewCloser, "text-editor-preview-x");
 
         UIUtils.removeIfClickedOutside(previewElement);
+        
+        UIUtils.setClickListener(previewCloser, function() {
+          UIUtils.get$(previewElement).remove();
+        });
       });
       
       var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
@@ -559,8 +565,8 @@ UIUtils.removeIfClickedOutside = function(component) {
 
     if (!selector.is(event.target) && selector.has(event.target).length == 0) {
       selector.remove();
+      $(document).unbind("mouseup");
     };
-    $(document).unbind("mouseup");
   });
 }
 
