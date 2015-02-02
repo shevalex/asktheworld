@@ -60,6 +60,7 @@ select {
   height: 30px;
 }
 .text-editor-attachments {
+  position: relative;
   float: left;
   width: calc(100% - 120px); 
   height: 30px;
@@ -68,6 +69,7 @@ select {
   overflow-x: auto;
 }
 .text-editor-controlpanel {
+  position: relative;
   float: right;
   width: 100px;
   height: 30px;
@@ -78,8 +80,33 @@ select {
 }
 .text-editor-thumbnail {
   display:inline-block;
+  position: relative;
   width: 30px;
   height: 30px;
   margin-right: 10px;
+  background: red;
+}
+.text-editor-thumbnail-x {
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  
+  width: 10px;
+  height: 10px;
+  background: green;
+}
+.text-editor-thumbnail:hover .text-editor-thumbnail-x {
+  display: block;
+}
+.text-editor-preview {
+  display: block;
+  position: fixed;
+  left: 25%;
+  top: 25%;
+  
+  width: 50%;
+  height: 50%;
+
   background: red;
 }

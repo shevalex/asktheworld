@@ -420,10 +420,8 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
   
   var attachmentBar = UIUtils.appendBlock(editorArea, "AttachmentBar");
   UIUtils.addClass(attachmentBar, "text-editor-attachmentbar");
-  var fileChooser = UIUtils.appendFileChooser(attachmentBar);
 
   var attachmentsPanel = UIUtils.appendBlock(attachmentBar, "Attachments");
-  attachmentsPanel.counter = 0;
   UIUtils.addClass(attachmentsPanel, "text-editor-attachments");
 
   var controlPanel = UIUtils.appendBlock(attachmentBar, "ControlPanel");
@@ -432,13 +430,49 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
   var attachButton = UIUtils.appendButton(controlPanel, "AttachButton", "Attach");
   UIUtils.addClass(attachButton, "text-editor-attachbutton");
 
+  var attachedFiles = [];
+  
   UIUtils.setClickListener(attachButton, function() {
+    var fileChooser = UIUtils.appendFileChooser(attachmentBar);
+
     fileChooser.open(function(files) {
-      var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachmentsPanel.counter);
-      UIUtils.addClass(thumbnail, "text-editor-thumbnail");
-      attachmentsPanel.counter++;
+      var selectedFile = files[0];
       
-      console.debug(files);
+      UIUtils.get$(fileChooser).remove();
+      
+      attachedFiles.push(selectedFile);
+      
+      var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachedFiles.length);
+      UIUtils.addClass(thumbnail, "text-editor-thumbnail");
+      thumbnail.innerHTML = attachedFiles.length;
+      
+      UIUtils.setClickListener(thumbnail, function() {
+        var previewElement = UIUtils.appendBlock(attachmentBar, "Preview");
+        UIUtils.addClass(previewElement, "text-editor-preview");
+        previewElement.innerHTML = selectedFile;
+
+        $(document).mouseup(function(event) {
+          var container = UIUtils.get$(previewElement);
+
+          if (!container.is(event.target) && container.has(event.target).length == 0) {
+            container.remove();
+          };
+          $(document).unbind("mouseup");
+        });
+      });
+      
+      var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
+      UIUtils.addClass(thumbnailCloser, "text-editor-thumbnail-x");
+      
+      UIUtils.setClickListener(thumbnailCloser, function() {
+        UIUtils.get$(thumbnail).remove();
+        for (var index = 0; index < attachedFiles.length; index++) {
+          if (attachedFiles[index] == selectedFile) {
+            attachedFiles.splice(index, 1);
+            break;
+          }
+        }
+      });
     });
   });
   
@@ -465,6 +499,10 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
   
   editorArea.getTextElement = function() {
     return textArea;
+  }
+  
+  editorArea.getAttachedFiles = function() {
+    return attachedFiles;
   }
   
   editorArea.indicateIncorrectInput = function() {
