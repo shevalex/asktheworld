@@ -109,7 +109,9 @@ select {
   
   width: 15px;
   height: 15px;
-  background: green;
+
+  background-image: url(../../imgs/close.png);
+  background-size: contain;
 }
 .text-editor-thumbnail:hover .text-editor-thumbnail-x {
   display: block;
@@ -133,7 +135,8 @@ select {
   
   width: 20px;
   height: 20px;
-  background: green;
+
+  background-image: url(../../imgs/close.png);
 }
 .text-editor-preview:hover .text-editor-preview-x {
   display: block;
