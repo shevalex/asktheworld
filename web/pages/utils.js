@@ -316,6 +316,7 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
   return dataTableObject;
 }
 
+/*
 UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
   var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
   
@@ -380,6 +381,134 @@ UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
   
   return editorArea;
 }
+*/
+
+
+UIUtils.appendFileChooser = function(root) {
+  var fileChooser = document.createElement("input");
+  fileChooser.setAttribute("type", "file");
+  fileChooser.setAttribute("id", UIUtils.createId(root, "FileChooser"));
+  fileChooser.style.display = "none";
+  root.appendChild(fileChooser);
+
+  fileChooser.addEventListener("change", function() {
+    if (fileChooser.selectionCallback != null) {
+      fileChooser.selectionCallback(fileChooser.files);
+      fileChooser.selectionCallback = null;
+    }
+  });
+  
+  fileChooser.open = function(callback) {
+    fileChooser.selectionCallback = callback;
+    UIUtils.get$(fileChooser).trigger("click");
+  }
+  
+  return fileChooser;
+}
+
+UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) {
+  var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
+  UIUtils.addClass(editorArea, "text-editor-container");
+  
+//  var textArea = UIUtils.createTextArea(UIUtils.createId(root, editorId), 6, defaultValue);
+//  editorArea.appendChild(textArea);
+  var textArea = UIUtils.appendBlock(editorArea, editorId);
+  //UIUtils.get$(textArea).wysiwyg();
+  textArea.setAttribute("contenteditable", "true");
+  
+  UIUtils.addClass(textArea, "text-editor-textcomponent");
+  if (textCssClass != null) {
+    UIUtils.addClass(textArea, textCssClass);
+  }
+  
+  var attachmentBar = UIUtils.appendBlock(editorArea, "AttachmentBar");
+  UIUtils.addClass(attachmentBar, "text-editor-attachmentbar");
+
+  var attachmentsPanel = UIUtils.appendBlock(attachmentBar, "Attachments");
+  UIUtils.addClass(attachmentsPanel, "text-editor-attachments");
+
+  var controlPanel = UIUtils.appendBlock(attachmentBar, "ControlPanel");
+  UIUtils.addClass(controlPanel, "text-editor-controlpanel");
+  
+  var attachButton = UIUtils.appendButton(controlPanel, "AttachButton", "Attach");
+  UIUtils.addClass(attachButton, "text-editor-attachbutton");
+
+  var attachedFiles = [];
+  
+  UIUtils.setClickListener(attachButton, function() {
+    var fileChooser = UIUtils.appendFileChooser(attachmentBar);
+
+    fileChooser.open(function(files) {
+      var selectedFile = files[0];
+      
+      UIUtils.get$(fileChooser).remove();
+      
+      attachedFiles.push(selectedFile);
+      
+      var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachedFiles.length);
+      UIUtils.addClass(thumbnail, "text-editor-thumbnail");
+      thumbnail.innerHTML = attachedFiles.length;
+      
+      UIUtils.setClickListener(thumbnail, function() {
+        var previewElement = UIUtils.appendBlock(attachmentBar, "Preview");
+        UIUtils.addClass(previewElement, "text-editor-preview");
+        previewElement.innerHTML = selectedFile;
+
+        UIUtils.removeIfClickedOutside(previewElement);
+      });
+      
+      var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
+      UIUtils.addClass(thumbnailCloser, "text-editor-thumbnail-x");
+      
+      UIUtils.setClickListener(thumbnailCloser, function() {
+        UIUtils.get$(thumbnail).remove();
+        for (var index = 0; index < attachedFiles.length; index++) {
+          if (attachedFiles[index] == selectedFile) {
+            attachedFiles.splice(index, 1);
+            break;
+          }
+        }
+      });
+    });
+  });
+  
+  
+  editorArea.getValue = function() {
+    var value = UIUtils.get$(textArea).html();
+    return value != defaultValue ? value : "";
+  }
+  
+  editorArea.setValue = function(value) {
+    UIUtils.get$(textArea).html(value);
+  }
+  
+  editorArea.refresh = function() {
+    if (defaultValue != null) {
+      this.setValue(defaultValue);
+    } else {
+      this.setValue("");
+    }
+  }
+  
+  editorArea.focus = function() {
+    textArea.focus();
+  }
+  
+  editorArea.getTextElement = function() {
+    return textArea;
+  }
+  
+  editorArea.getAttachedFiles = function() {
+    return attachedFiles;
+  }
+  
+  editorArea.indicateIncorrectInput = function() {
+    UIUtils.indicateInvalidInput(textArea);
+  }
+  
+  return editorArea;
+}
+
 
 
 UIUtils.animateBackgroundColor = function(element, color, speed, observer) {
@@ -422,6 +551,17 @@ UIUtils.emptyContainer = function(container) {
 
 UIUtils.setClickListener = function(element, listener) {
   UIUtils.get$(element).click(listener);
+}
+
+UIUtils.removeIfClickedOutside = function(component) {
+  $(document).mouseup(function(event) {
+    var selector = UIUtils.get$(component);
+
+    if (!selector.is(event.target) && selector.has(event.target).length == 0) {
+      selector.remove();
+    };
+    $(document).unbind("mouseup");
+  });
 }
 
 
@@ -471,3 +611,4 @@ UIUtils._getId = function(component) {
   
   return id;
 }
+
