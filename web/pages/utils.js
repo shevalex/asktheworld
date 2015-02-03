@@ -156,8 +156,52 @@ UIUtils.createDropList = function(listId, items) {
   
   for (var index in items) {
     var optionElement = document.createElement("option");
-    optionElement.innerHTML = items[index];
+
+    var item = items[index];
+    optionElement.item = item;
+    
+    if (typeof item == "object") {
+      if (item.element != null) {
+        optionElement.appendChild(item.element);
+      } else if (item.display != null) {
+        optionElement.innerHTML = item.display;
+      } else {
+        optionElement.innerHTML = item.data;
+      }
+    } else {
+      optionElement.innerHTML = item;
+    }
     listElement.appendChild(optionElement);
+  }
+  
+  listElement.getSelectedItem = function() {
+    return listElement.options[listElement.selectedIndex].item;
+  }
+  
+  listElement.getSelectedDisplay = function() {
+    return this.getSelectedItem().display;
+  }
+  
+  listElement.getSelectedData = function() {
+    return this.getSelectedItem().data;
+  }
+  
+  listElement.selectData = function(itemData) {
+    for (var index = 0; index < listElement.options; index++) {
+      if (listElement.options[index].item.data == itemData) {
+        listElement.selectedIndex = index;
+        break;
+      }
+    }
+  }
+  
+  listElement.selectDisplay = function(itemDisplay) {
+    for (var index = 0; index < listElement.options; index++) {
+      if (listElement.options[index].item.display == itemDisplay) {
+        listElement.selectedIndex = index;
+        break;
+      }
+    }
   }
   
   return listElement;
@@ -206,6 +250,7 @@ UIUtils.createLineBreak = function() {
   return document.createElement("br");
 }
 
+/*
 UIUtils.createList = function(listId, items) {
   var listElement = document.createElement("ul");
   linkElement.setAttribute("id", listId);
@@ -218,6 +263,7 @@ UIUtils.createList = function(listId, items) {
   
   return listElement;
 }
+*/
 
 UIUtils.createSeparator = function() {
   return document.createElement("hr");
@@ -592,6 +638,10 @@ UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, ma
   inputElement.setAttribute("font-size", "inherit");
   if (margin != null) {
     inputElement.style.marginTop = margin;
+  }
+
+  compoundElement.getInputElement = function() {
+    return inputElement;
   }
 
   return compoundElement;

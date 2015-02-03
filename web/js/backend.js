@@ -10,13 +10,13 @@ Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
 
 Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age: null, name: null, userId: null};
 Backend.UserPreferences = {
-  responseQuantity: Application.Configuration.RESPONSE_QUANTITY[0],
-  responseWaitTime: Application.Configuration.RESPONSE_WAIT_TIME[0],
-  requestTargetAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0],
-  requestTargetGender: Application.Configuration.GENDER_PREFERENCE[0],
-  dailyInquiryLimit: Application.Configuration.INQUIRY_LIMIT_PREFERENCE[0],
-  inquiryAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0], 
-  inquiryGender: Application.Configuration.GENDER_PREFERENCE[0]
+  responseQuantity: Application.Configuration.RESPONSE_QUANTITY[0].data,
+  responseWaitTime: Application.Configuration.RESPONSE_WAIT_TIME[0].data,
+  requestTargetAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
+  requestTargetGender: Application.Configuration.GENDER_PREFERENCE[0].data,
+  dailyInquiryLimit: Application.Configuration.INQUIRY_LIMIT_PREFERENCE[0].data,
+  inquiryAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
+  inquiryGender: Application.Configuration.GENDER_PREFERENCE[0].data
 };
 
 Backend.getUserProfile = function() {
@@ -679,7 +679,7 @@ Backend._notifyCacheUpdateListeners = function(event) {
 
 Backend._createDummyRequest = function(requestId) {
   var quantity = Math.round(Math.random() * 3);
-  var waitTime = Math.round(Math.random() * 4);
+  var waitTime = Math.round(Math.random() * 3);
   var age = Math.round(Math.random() * 5);
   var gender = Math.round(Math.random() * 2);
 
@@ -706,10 +706,10 @@ Backend._createDummyRequest = function(requestId) {
     text: "This is the request with the id " + requestId,
     pictures: [],
     audios: [],
-    response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity],
-    response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime],
-    response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age],
-    response_gender: Application.Configuration.GENDER_PREFERENCE[gender],
+    response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity].data,
+    response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime].data,
+    response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age].data,
+    response_gender: Application.Configuration.GENDER_PREFERENCE[gender].data,
     status: status
   };
     
@@ -739,8 +739,8 @@ Backend._createDummyResponse = function(requestId, responseId) {
     text: "This is the response " + responseId + " to the request " + requestId,
     pictures: [],
     audios: [],
-    age_category: Application.Configuration.AGE_CATEGORIES[age],
-    gender: Application.Configuration.GENDERS[gender],
+    age_category: Application.Configuration.AGE_CATEGORIES[age].data,
+    gender: Application.Configuration.GENDERS[gender].data,
     status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ
   }
 
