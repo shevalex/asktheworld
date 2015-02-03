@@ -47,7 +47,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
     if (this._requestTextEditor.getValue() != "") {
       this._createRequest();
     } else {
-      this._requestTextEditor.indicateIncorrectInput();
+      this._requestTextEditor.indicateInvalidInput();
       Application.showMessage("Please create a message", Application.MESSAGE_TIMEOUT_FAST);
     }
   }.bind(this));

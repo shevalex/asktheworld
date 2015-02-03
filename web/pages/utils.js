@@ -231,6 +231,8 @@ UIUtils.appendLink = function(root, linkId, text) {
 
 UIUtils.createCheckbox = function(cbId) {
   var checkbox = UIUtils._createInputField(cbId, "checkbox");
+  checkbox.style.display = "inline-block";
+  checkbox.style.width = "initial";
   
   checkbox.getValue = function() {
     return checkbox.checked;
@@ -486,7 +488,6 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
       textArea.innerHTML = defaultValue;
     }
   }
-
   
   
   UIUtils.addClass(textArea, "text-editor-textcomponent");
@@ -581,7 +582,7 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
     return attachedFiles;
   }
   
-  editorArea.indicateIncorrectInput = function() {
+  editorArea.indicateInvalidInput = function() {
     UIUtils.indicateInvalidInput(textArea);
   }
   

@@ -134,9 +134,7 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
 UserProfilePage.prototype._resetParameters = function() {
   this._nameElement.setValue(Backend.getUserProfile().name);
   this._genderElement.selectData(Backend.getUserProfile().gender);
-console.debug("Setting age to " +   Backend.getUserProfile().age);
   this._ageElement.selectData(Backend.getUserProfile().age);
-console.debug("done");
   this._languagesElement.setValue(Backend.getUserProfile().languages);
   
   this._newPasswordElement.setValue("");
