@@ -95,7 +95,6 @@ RequestDetailsPage.prototype._updatePage = function() {
     this._requestList.remove();
   }
   
-  
   var requestListParams = {
     requestClickListener: null,
     requestIds: [this._currentRequestId],
@@ -110,6 +109,12 @@ RequestDetailsPage.prototype._updatePage = function() {
       },
       updateFinished: function() {
         Application.hideSpinningWheel();
+      },
+      responseCreated: function() {
+        Application.showMessage("You response was sent");
+      },
+      requestUpdated: function() {
+        Application.showMessage("Request was updated", "fast");
       }
     }
   };

@@ -772,7 +772,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
 
     request.text = textEditor.getValue();
     request.response_quantity = quantityCombo.getInputElement().getSelectedData();
-    request.response_wait_time = waitTimeCombo.getInputElement().getSelectedData()();
+    request.response_wait_time = waitTimeCombo.getInputElement().getSelectedData();
     request.response_age_group = ageCombo.getInputElement().getSelectedData();
     request.response_gender = genderCombo.getInputElement().getSelectedData();
     
@@ -894,14 +894,6 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
   var submitButton = UIUtils.appendButton(controlPanel, "SubmitButton", "Send");
   UIUtils.addClass(submitButton, "outgoingresponse-submitbutton");
   
-  var finishEditing = function() {
-    UIUtils.get$(createResponsePanel).remove();
-    this._requestList.__updateFinished();
-    this._requestList.__responseCreated();
-    
-    completionCallback();
-  }.bind(this);
-  
   UIUtils.setClickListener(submitButton, function() {
     var responseText = textEditor.getValue();
     if (responseText != "") {
@@ -909,7 +901,13 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
         text: responseText
       }
       this._requestList.__updateStarted();
-      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, response, finishEditing);
+      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, response, function() {
+        UIUtils.get$(createResponsePanel).remove();
+        this._requestList.__updateFinished();
+        this._requestList.__responseCreated();
+
+        completionCallback();
+      }.bind(this));
     } else {
       textEditor.indicateInvalidInput();
     }
@@ -917,7 +915,10 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
 
   var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
   UIUtils.addClass(cancelButton, "outgoingresponse-cancelbutton");
-  UIUtils.setClickListener(cancelButton, finishEditing);
+  UIUtils.setClickListener(cancelButton, function() {
+    UIUtils.get$(createResponsePanel).remove();
+    completionCallback();
+  });
 }
 
 
