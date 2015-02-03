@@ -1,13 +1,12 @@
 NewRequestPage = ClassUtils.defineClass(AbstractPage, function NewRequestPage() {
   AbstractPage.call(this, "NewRequestPage");
   
-  this._requestTextEditor = null;
+  this._requestTextEditor;
   
-  this._requestGenderId = null;
-  this._requestAgeId = null;
-  this._requestWaitTimeId = null;
-  this._requestQuantityId = null;
-  this._requestStatusLabelId = null;
+  this._requestGenderElement;
+  this._requestAgeElement;
+  this._requestWaitTimeElement;
+  this._requestQuantityElement;
   
   this._sendButton = null;
 });
@@ -29,19 +28,15 @@ NewRequestPage.prototype.definePageContent = function(root) {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID);
   });
   
-  this._requestGenderId = UIUtils.createId(requestParamsPanel, "Gender");
-  requestParamsPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(this._requestGenderId, "Target gender", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  this._requestGenderElement = requestParamsPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestParamsPanel, "Gender"), "Target gender", Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
   
-  this._requestAgeId = UIUtils.createId(requestParamsPanel, "AgeCategory");
-  requestParamsPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(this._requestAgeId, "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  this._requestAgeElement = requestParamsPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestParamsPanel, "AgeCategory"), "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
   
   requestParamsPanel.appendChild(UIUtils.createLineBreak());
   
-  this._requestWaitTimeId = UIUtils.createId(requestParamsPanel, "WaitTime");
-  requestParamsPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList(this._requestWaitTimeId, "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
+  this._requestWaitTimeElement = requestParamsPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestParamsPanel, "WaitTime"), "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
   
-  this._requestQuantityId = UIUtils.createId(requestParamsPanel, "Quantity");
-  requestParamsPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList(this._requestQuantityId, "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px"));
+  this._requestQuantityElement = requestParamsPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestParamsPanel, "Quantity"), "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
   
   var controlPanel = UIUtils.appendBlock(root, "RequestControlPanel");
   UIUtils.appendLabel(controlPanel, "Label", "3. And finally send it out!");
@@ -62,10 +57,10 @@ NewRequestPage.prototype.onShow = function() {
   this._requestTextEditor.refresh();
   this._requestTextEditor.focus();
   
-  UIUtils.get$(this._requestGenderId).val(Backend.getUserPreferences().requestTargetGender);
-  UIUtils.get$(this._requestAgeId).val(Backend.getUserPreferences().requestTargetAge);
-  UIUtils.get$(this._requestQuantityId).val(Backend.getUserPreferences().responseQuantity);
-  UIUtils.get$(this._requestWaitTimeId).val(Backend.getUserPreferences().responseWaitTime);
+  this._requestGenderElement.selectData(Backend.getUserPreferences().requestTargetGender);
+  this._requestAgeElement.selectData(Backend.getUserPreferences().requestTargetAge);
+  this._requestQuantityElement.selectData(Backend.getUserPreferences().responseQuantity);
+  this._requestWaitTimeElement.selectData(Backend.getUserPreferences().responseWaitTime);
 }
 
 NewRequestPage.prototype.onHide = function() {
@@ -93,15 +88,15 @@ NewRequestPage.prototype._createRequest = function() {
       Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
     }.bind(this)
   }
-  
+
   var request = {
     text: this._requestTextEditor.getValue(),
     pictures: [],
     audios: [],
-    response_gender: UIUtils.get$(this._requestGenderId).val(),
-    response_quantity: UIUtils.get$(this._requestQuantityId).val(),
-    response_wait_time: UIUtils.get$(this._requestWaitTimeId).val(),
-    response_age_group: UIUtils.get$(this._requestAgeId).val()
+    response_gender: this._requestGenderElement.getSelectedData(),
+    response_quantity: this._requestQuantityElement.getSelectedData(),
+    response_wait_time: this._requestWaitTimeElement.getSelectedData(),
+    response_age_group: this._requestAgeElement.getSelectedData()
   }
   
   UIUtils.setEnabled(this._sendButton, false);

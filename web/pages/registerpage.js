@@ -20,32 +20,25 @@ RegisterPage.prototype.definePageContent = function(root) {
 RegisterPage.prototype._appendContetPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
-  var emailElementId = UIUtils.createId(contentPanel, "Email");
-  contentPanel.appendChild(UIUtils.createLabeledTextInput(emailElementId, "Your Email", "10px"));
+  var emailElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Email"), "Your Email", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  var nameElementId = UIUtils.createId(contentPanel, "Name");
-  contentPanel.appendChild(UIUtils.createLabeledTextInput(nameElementId, "Your Nickname", "10px"));
+  var nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), "Your Nickname", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
 
-  var genderElementId = UIUtils.createId(contentPanel, "Gender");
-  contentPanel.appendChild(UIUtils.createLabeledDropList(genderElementId, "Your Gender", Application.Configuration.GENDERS, "10px"));
+  var genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), "Your Gender", Application.Configuration.GENDERS, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  var ageElementId = UIUtils.createId(contentPanel, "AgeCategory");
-  contentPanel.appendChild(UIUtils.createLabeledDropList(ageElementId, "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px"));
+  var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  var languagesElementId = UIUtils.createId(contentPanel, "Languages");
-  contentPanel.appendChild(UIUtils.createLabeledTextInput(languagesElementId, "Languages that you speak", "10px"));
+  var languagesElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
 
-  var passwordElementId = UIUtils.createId(contentPanel, "Password");
-  contentPanel.appendChild(UIUtils.createLabeledPasswordInput(passwordElementId, "Password", "10px"));
+  var passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), "Password", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  var retypePasswordElementId = UIUtils.createId(contentPanel, "RetypePassword");
-  contentPanel.appendChild(UIUtils.createLabeledPasswordInput(retypePasswordElementId, "Re-type Password", "10px"));
+  var retypePasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "RetypePassword"), "Re-type Password", "10px")).getInputElement();
   
   contentPanel.appendChild(UIUtils.createLineBreak());
   var termsAndCondsPanel = UIUtils.appendBlock(contentPanel, "TermsAndConds");
@@ -60,35 +53,35 @@ RegisterPage.prototype._appendContetPanel = function(root) {
   contentPanel.appendChild(UIUtils.createLineBreak());
   var registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", "Register");
   
-  UIUtils.get$(passwordElementId).on("input", function() {
-    UIUtils.get$(retypePasswordElementId).val("");
+  UIUtils.get$(passwordElement).on("input", function() {
+    retypePasswordElement.setValue("");
   });
   
   UIUtils.setClickListener(registerButton, function() {
-    var email = UIUtils.get$(emailElementId).val();
+    var email = emailElement.getValue();
     var isValidEmail = ValidationUtils.isValidEmail(email);
     if (!isValidEmail) {
-      UIUtils.indicateInvalidInput(emailElementId);
+      UIUtils.indicateInvalidInput(emailElement);
     }
     
-    var name = UIUtils.get$(nameElementId).val();
+    var name = nameElement.getValue();
     if (name == "") {
-      UIUtils.indicateInvalidInput(nameElementId);
+      UIUtils.indicateInvalidInput(nameElement);
     }
     
-    var languages = UIUtils.get$(languagesElementId).val();
+    var languages = languagesElement.getValue();
     if (languages == "") {
-      UIUtils.indicateInvalidInput(languagesElementId);
+      UIUtils.indicateInvalidInput(languagesElement);
     }
 
-    var password = UIUtils.get$(passwordElementId).val();
+    var password = passwordElement.getValue();
     if (password == "" || password.length < 5) {
-      UIUtils.indicateInvalidInput(passwordElementId);
+      UIUtils.indicateInvalidInput(passwordElement);
     }
     
-    var retypePassword = UIUtils.get$(retypePasswordElementId).val();
+    var retypePassword = retypePasswordElement.getValue();
     if (retypePassword == "" || retypePassword != password) {
-      UIUtils.indicateInvalidInput(retypePasswordElementId);
+      UIUtils.indicateInvalidInput(retypePasswordElement);
     }
 
 
@@ -121,9 +114,9 @@ RegisterPage.prototype._appendContetPanel = function(root) {
         login: email,
         password: password,
         name: name,
-        gender: UIUtils.get$(genderElementId).val(),
-        languages: [UIUtils.get$(languagesElementId).val()],
-        age: UIUtils.get$(ageElementId).val(),
+        gender: genderElement.getSelectedData(),
+        languages: [languagesElement.getValue()],
+        age: ageElement.getSelectedData(),
       };
       
       UIUtils.setEnabled(registerButton, false);

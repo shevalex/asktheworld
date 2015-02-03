@@ -1,61 +1,61 @@
 
 var Application = {
   Configuration: {
-    AGE_CATEGORIES: ["Child", "Teenager", "Young", "Adult", "Senior"],
-    RESPONSE_WAIT_TIME: ["1 week", "1 day", "half-day", "1 hours", "30 mins"],
-    RESPONSE_QUANTITY: ["As many as arrive", "Ten", "Three", "Just the first one"],
-    GENDERS: ["Male", "Female"],
-    AGE_CATEGORY_PREFERENCE: ["All", "Children", "Teenagers", "Youngs", "Adults", "Seniors"],
-    GENDER_PREFERENCE: ["Any", "Male", "Female"],
-    INQUIRY_LIMIT_PREFERENCE: ["As many as possible", "No more than ten", "No more than five", "I don't want to get any inquiries"],
+    AGE_CATEGORIES: [{data: "child", diusplay: "Child"}, {data: "teenager", display: "Teenager"}, {data: "young", display: "Young Adult"}, {data: "adult", display: "Adult"}, {data: "senior", display: "Senior"}],
+    RESPONSE_WAIT_TIME: [{data: 148, disoplay: "1 week"}, {data: 24, display: "1 day"}, {data: 12, display: "half-day"}, {data: 1, display: "1 hours"}],
+    RESPONSE_QUANTITY: [{data: -1, display: "As many as arrive"}, {data: 10, display: "Ten"}, {data: 3, display: "Three"}, {data: 1, display: "Just the first one"}],
+    GENDERS: [{data: "male", display: "Male"}, {data: "female", display: "Female"}],
+    AGE_CATEGORY_PREFERENCE: [{data: "all", display: "All"}, {data: "children", display: "Children"}, {data: "teenagers", display: "Teenagers"}, {data: "young", display: "Youngs"}, {data: "adults", display: "Adults"}, {data: "seniors", display: "Seniors"}],
+    GENDER_PREFERENCE: [{data: "any", display: "Any"}, {data: "male", display: "Male"}, {data: "female", display: "Female"}],
+    INQUIRY_LIMIT_PREFERENCE: [{data: -1, display: "As many as possible"}, {data: 10, display: "No more than ten"}, {data: 5, display: "No more than five"}, {data: 0, display: "I don't want to get any inquiries"}],
     
     toTargetGroupString: function (ageCategory, gender) {
-      if (ageCategory == this.AGE_CATEGORY_PREFERENCE[0]) {
-        if (gender == this.GENDER_PREFERENCE[0]) {
+      if (ageCategory == this.AGE_CATEGORY_PREFERENCE[0].data) {
+        if (gender == this.GENDER_PREFERENCE[0].data) {
           return "all people";
-        } else if (gender == this.GENDER_PREFERENCE[1]) {
+        } else if (gender == this.GENDER_PREFERENCE[1].data) {
           return "all men";
-        } else if (gender == this.GENDER_PREFERENCE[2]) {
+        } else if (gender == this.GENDER_PREFERENCE[2].data) {
           return "all women";
         }
-      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[1]) {
-        if (gender == this.GENDER_PREFERENCE[0]) {
+      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[1].data) {
+        if (gender == this.GENDER_PREFERENCE[0].data) {
           return "all children";
-        } else if (gender == this.GENDER_PREFERENCE[1]) {
+        } else if (gender == this.GENDER_PREFERENCE[1].data) {
           return "all boys";
-        } else if (gender == this.GENDER_PREFERENCE[2]) {
+        } else if (gender == this.GENDER_PREFERENCE[2].data) {
           return "all girls";
         }
-      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[2]) {
-        if (gender == this.GENDER_PREFERENCE[0]) {
+      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[2].data) {
+        if (gender == this.GENDER_PREFERENCE[0].data) {
           return "all teenagers";
-        } else if (gender == this.GENDER_PREFERENCE[1]) {
+        } else if (gender == this.GENDER_PREFERENCE[1].data) {
           return "all teen guys";
-        } else if (gender == this.GENDER_PREFERENCE[2]) {
+        } else if (gender == this.GENDER_PREFERENCE[2].data) {
           return "all teen girls";
         }
-      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[3]) {
-        if (gender == this.GENDER_PREFERENCE[0]) {
+      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[3].data) {
+        if (gender == this.GENDER_PREFERENCE[0].data) {
           return "all young people";
-        } else if (gender == this.GENDER_PREFERENCE[1]) {
+        } else if (gender == this.GENDER_PREFERENCE[1].data) {
           return "all young men";
-        } else if (gender == this.GENDER_PREFERENCE[2]) {
+        } else if (gender == this.GENDER_PREFERENCE[2].data) {
           return "all young women";
         }
-      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[4]) {
-        if (gender == this.GENDER_PREFERENCE[0]) {
+      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[4].data) {
+        if (gender == this.GENDER_PREFERENCE[0].data) {
           return "all adult people";
-        } else if (gender == this.GENDER_PREFERENCE[1]) {
+        } else if (gender == this.GENDER_PREFERENCE[1].data) {
           return "all adult men";
-        } else if (gender == this.GENDER_PREFERENCE[2]) {
+        } else if (gender == this.GENDER_PREFERENCE[2].data) {
           return "all adult women";
         }
-      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[5]) {
-        if (gender == this.GENDER_PREFERENCE[0]) {
+      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[5].data) {
+        if (gender == this.GENDER_PREFERENCE[0].data) {
           return "all senior people";
-        } else if (gender == this.GENDER_PREFERENCE[1]) {
+        } else if (gender == this.GENDER_PREFERENCE[1].data) {
           return "all senior men";
-        } else if (gender == this.GENDER_PREFERENCE[2]) {
+        } else if (gender == this.GENDER_PREFERENCE[2].data) {
           return "all senior women";
         }
       }
@@ -64,34 +64,34 @@ var Application = {
     },
     
     toUserIdentityString: function (ageCategory, gender) {
-      if (ageCategory == this.AGE_CATEGORIES[0]) {
-        if (gender == this.GENDERS[0]) {
+      if (ageCategory == this.AGE_CATEGORIES[0].data) {
+        if (gender == this.GENDERS[0].data) {
           return "boy";
-        } else if (gender == this.GENDERS[1]) {
+        } else if (gender == this.GENDERS[1].data) {
           return "girl";
         }
-      } else if (ageCategory == this.AGE_CATEGORIES[1]) {
-        if (gender == this.GENDERS[0]) {
+      } else if (ageCategory == this.AGE_CATEGORIES[1].data) {
+        if (gender == this.GENDERS[0].data) {
           return "teen boy";
-        } else if (gender == this.GENDERS[1]) {
+        } else if (gender == this.GENDERS[1].data) {
           return "teen girl";
         }
-      } else if (ageCategory == this.AGE_CATEGORIES[2]) {
-        if (gender == this.GENDERS[0]) {
+      } else if (ageCategory == this.AGE_CATEGORIES[2].data) {
+        if (gender == this.GENDERS[0].data) {
           return "young man";
-        } else if (gender == this.GENDERS[1]) {
+        } else if (gender == this.GENDERS[1].data) {
           return "young woman";
         }
-      } else if (ageCategory == this.AGE_CATEGORIES[3]) {
-        if (gender == this.GENDERS[0]) {
+      } else if (ageCategory == this.AGE_CATEGORIES[3].data) {
+        if (gender == this.GENDERS[0].data) {
           return "man";
-        } else if (gender == this.GENDERS[1]) {
+        } else if (gender == this.GENDERS[1].data) {
           return "woman";
         }
-      } else if (ageCategory == this.AGE_CATEGORIES[4]) {
-        if (gender == this.GENDERS[0]) {
+      } else if (ageCategory == this.AGE_CATEGORIES[4].data) {
+        if (gender == this.GENDERS[0].data) {
           return "senior man";
-        } else if (gender == this.GENDERS[1]) {
+        } else if (gender == this.GENDERS[1].data) {
           return "senior woman";
         }
       }

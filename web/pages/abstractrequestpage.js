@@ -744,23 +744,19 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.appendLabel(editPanel, "Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>");
   editPanel.appendChild(UIUtils.createLineBreak());
   
-  var genderListId = UIUtils.createId(editPanel, "Gender");
-  editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(genderListId, "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
-  UIUtils.get$(genderListId).val(request.response_gender);
+  var genderCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Gender"), "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  genderCombo.getInputElement().selectData(request.response_gender);
   
-  var ageListId = UIUtils.createId(editPanel, "AgeCategory");
-  editPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(ageListId, "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
-  UIUtils.get$(ageListId).val(request.response_age_group);
+  var ageCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "AgeCategory"), "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  ageCombo.getInputElement().selectData(request.response_age_group);
   
   editPanel.appendChild(UIUtils.createLineBreak());
   
-  var waitTimeListId = UIUtils.createId(editPanel, "WaitTime");
-  editPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 20px 0")).appendChild(UIUtils.createLabeledDropList(waitTimeListId, "Wait time for responses", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
-  UIUtils.get$(waitTimeListId).val(request.response_wait_time);
+  var waitTimeCombo = editPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "WaitTime"), "Wait time for responses", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
+  waitTimeCombo.getInputElement().selectData(request.response_wait_time);
   
-  var quantityListId = UIUtils.createId(editPanel, "Quantity");
-  editPanel.appendChild(UIUtils.createSpan("48%", "20px 0 20px 0")).appendChild(UIUtils.createLabeledDropList(quantityListId, "Maximum # of responses", Application.Configuration.RESPONSE_QUANTITY, "10px"));
-  UIUtils.get$(quantityListId).val(request.response_quantity);
+  var quantityCombo = editPanel.appendChild(UIUtils.createSpan("48%", "20px 0 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Quantity"), "Maximum # of responses", Application.Configuration.RESPONSE_QUANTITY, "10px"));
+  quantityCombo.getInputElement().selectData(request.response_quantity);
   
   var textEditor = UIUtils.appendTextEditor(editPanel, "TextArea", "outgoingrequest-editpanel-text");
   textEditor.setValue(request.text);
@@ -775,10 +771,10 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     this._requestList.__updateStarted();
 
     request.text = textEditor.getValue();
-    request.response_quantity = UIUtils.get$(quantityListId).val();
-    request.response_wait_time = UIUtils.get$(waitTimeListId).val();
-    request.response_age_group = UIUtils.get$(ageListId).val();
-    request.response_gender = UIUtils.get$(genderListId).val();
+    request.response_quantity = quantityCombo.getInputElement().getSelectedData();
+    request.response_wait_time = waitTimeCombo.getInputElement().getSelectedData()();
+    request.response_age_group = ageCombo.getInputElement().getSelectedData();
+    request.response_gender = genderCombo.getInputElement().getSelectedData();
     
     AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
       this._requestList.__updateFinished();

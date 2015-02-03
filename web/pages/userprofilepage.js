@@ -1,13 +1,13 @@
 UserProfilePage = ClassUtils.defineClass(AbstractPage, function UserProfilePage() {
   AbstractPage.call(this, "UserProfilePage");
   
-  this._nameElementId;
-  this._genderElementId;
-  this._ageElementId;
-  this._languagesElementId;
-  this._newPasswordElementId;
-  this._confirmNewPasswordElementId;
-  this._currentPasswordElementId;
+  this._nameElement;
+  this._genderElement;
+  this._ageElement;
+  this._languagesElement;
+  this._newPasswordElement;
+  this._confirmNewPasswordElement;
+  this._currentPasswordElement;
 });
 
 UserProfilePage.prototype.definePageContent = function(root) {
@@ -26,34 +26,27 @@ UserProfilePage.prototype.onShow = function() {
 UserProfilePage.prototype._appendProfilePanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ParametersPanel");
   
-  this._nameElementId = UIUtils.createId(contentPanel, "Name");
-  contentPanel.appendChild(UIUtils.createLabeledTextInput(this._nameElementId, "Your Nickname", "10px"));
+  this._nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), "Your Nickname", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  this._genderElementId = UIUtils.createId(contentPanel, "Gender");
-  contentPanel.appendChild(UIUtils.createLabeledDropList(this._genderElementId, "Your Gender", Application.Configuration.GENDERS, "10px"));
+  this._genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), "Your Gender", Application.Configuration.GENDERS, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  this._ageElementId = UIUtils.createId(contentPanel, "AgeCategory");
-  contentPanel.appendChild(UIUtils.createLabeledDropList(this._ageElementId, "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px"));
+  this._ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  this._languagesElementId = UIUtils.createId(contentPanel, "Languages");
-  contentPanel.appendChild(UIUtils.createLabeledTextInput(this._languagesElementId, "Languages that you speak", "10px"));
+  this._languagesElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  this._newPasswordElementId = UIUtils.createId(contentPanel, "NewPassword");
-  contentPanel.appendChild(UIUtils.createLabeledPasswordInput(this._newPasswordElementId, "New Password", "10px"));
+  this._newPasswordElement =contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "NewPassword"), "New Password", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  this._confirmNewPasswordElementId = UIUtils.createId(contentPanel, "ConfirmNewPassword");
-  contentPanel.appendChild(UIUtils.createLabeledPasswordInput(this._confirmNewPasswordElementId, "Confirm New Password", "10px"));
+  this._confirmNewPasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "ConfirmNewPassword"), "Confirm New Password", "10px")).getInputElement();
 
-  this._currentPasswordElementId = UIUtils.createId(contentPanel, "CurrentPassword");
-  contentPanel.appendChild(UIUtils.createLabeledPasswordInput(this._currentPasswordElementId, "Your Current Password", "10px"));
+  this._currentPasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "CurrentPassword"), "Your Current Password", "10px")).getInputElement();
 
-  UIUtils.get$(this._newPasswordElementId).on("input", function() {
-    UIUtils.get$(this._confirmNewPasswordElementId).val("");
+  UIUtils.get$(this._newPasswordElement).on("input", function() {
+    this._confirmNewPasswordElement.setValue("");
   }.bind(this));
 }
 
@@ -62,38 +55,36 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
 
   controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0"));
   
-  var updateButtonId = UIUtils.createId(controlPanel, "UpdateButton");
-  controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(updateButtonId , "Update Profile"));
+  var updateButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "UpdateButton"), "Update Profile"));
   
-  var resetButtonId = UIUtils.createId(controlPanel, "ResetButton");
-  controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(resetButtonId, "Reset"));
+  var resetButton = controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "ResetButton"), "Reset"));
   
-  UIUtils.setClickListener(resetButtonId, this._resetParameters.bind(this));
+  UIUtils.setClickListener(resetButton, this._resetParameters.bind(this));
   
-  UIUtils.setClickListener(updateButtonId, function() {
-    var currentPassword = UIUtils.get$(this._currentPasswordElementId).val();
+  UIUtils.setClickListener(updateButton, function() {
+    var currentPassword = this._currentPasswordElement.getValue();
     if (currentPassword == "") {
-      UIUtils.indicateInvalidInput(this._currentPasswordElementId);
+      UIUtils.indicateInvalidInput(this._currentPasswordElement);
       Application.showMessage("You must enter current password to update your profile");
       return;
     }
     
     
-    var name = UIUtils.get$(this._nameElementId).val();
+    var name = this._nameElement.getValue();
     if (name == "") {
-      UIUtils.indicateInvalidInput(this._nameElementId);
+      UIUtils.indicateInvalidInput(this._nameElement);
       Application.showMessage("Name should be set");
       return;
     }
     
-    var languages = UIUtils.get$(this._languagesElementId).val();
+    var languages = this._languagesElement.getValue();
     if (languages == "") {
-      UIUtils.indicateInvalidInput(this._languagesElementId);
+      UIUtils.indicateInvalidInput(this._languagesElement);
       Application.showMessage("Languages should be set");
     }
 
-    var newPassword = UIUtils.get$(this._newPasswordElementId).val();
-    var confirmNewPassword = UIUtils.get$(this._confirmNewPasswordElementId).val();
+    var newPassword = this._newPasswordElement.getValue();
+    var confirmNewPassword = this._confirmNewPasswordElement.getValue();
     
     if (newPassword.length > 0) {
       if (newPassword != confirmNewPassword) {
@@ -103,8 +94,8 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
       }
 
       if (newPassword != confirmNewPassword || newPassword.length < 5) {
-        UIUtils.indicateInvalidInput(this._newPasswordElementId);
-        UIUtils.indicateInvalidInput(this._confirmNewPasswordElementId);
+        UIUtils.indicateInvalidInput(this._newPasswordElement);
+        UIUtils.indicateInvalidInput(this._confirmNewPasswordElement);
         return;
       }
     }
@@ -114,8 +105,8 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
         callback._onCompletion();
         Application.showMessage("Your profile was successfully updated");
 
-        UIUtils.get$(this._newPasswordElementId).val("");
-        UIUtils.get$(this._confirmNewPasswordElementId).val("");
+        this._newPasswordElement.setValue("");
+        this._confirmNewPasswordElement.setValue("");
       }.bind(this),
       failure: function() {
         this._onCompletion();
@@ -127,13 +118,13 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
       },
 
       _onCompletion: function() {
-        UIUtils.setEnabled(updateButtonId, true);
-        UIUtils.get$(this._currentPasswordElementId).val("");
+        UIUtils.setEnabled(updateButton, true);
+        this._currentPasswordElement.setValue("");
         Application.hideSpinningWheel();
       }.bind(this)
     }
 
-    UIUtils.setEnabled(updateButtonId, false);
+    UIUtils.setEnabled(updateButton, false);
     Application.showSpinningWheel();
     this._updateUserProfile(callback);
   }.bind(this));
@@ -141,30 +132,32 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
 
 
 UserProfilePage.prototype._resetParameters = function() {
-  UIUtils.get$(this._nameElementId).val(Backend.getUserProfile().name);
-  UIUtils.get$(this._genderElementId).val(Backend.getUserProfile().gender);
-  UIUtils.get$(this._ageElementId).val(Backend.getUserProfile().age);
-  UIUtils.get$(this._languagesElementId).val(Backend.getUserProfile().languages);
+  this._nameElement.setValue(Backend.getUserProfile().name);
+  this._genderElement.selectData(Backend.getUserProfile().gender);
+console.debug("Setting age to " +   Backend.getUserProfile().age);
+  this._ageElement.selectData(Backend.getUserProfile().age);
+console.debug("done");
+  this._languagesElement.setValue(Backend.getUserProfile().languages);
   
-  UIUtils.get$(this._newPasswordElementId).val("");
-  UIUtils.get$(this._confirmNewPasswordElementId).val("");
-  UIUtils.get$(this._currentPasswordElementId).val("");
+  this._newPasswordElement.setValue("");
+  this._confirmNewPasswordElement.setValue("");
+  this._currentPasswordElement.setValue("");
 }
 
 UserProfilePage.prototype._updateUserProfile = function(callback) {
   var userProfile = {
-    name: UIUtils.get$(this._nameElementId).val(),
-    gender: UIUtils.get$(this._genderElementId).val(),
-    languages: [UIUtils.get$(this._languagesElementId).val()],
-    age: UIUtils.get$(this._ageElementId).val(),
+    name: this._nameElement.getValue(),
+    gender: this._genderElement.getSelectedData(),
+    languages: [this._languagesElement.getValue()],
+    age: this._ageElement.getSelectedData()
   };
 
-  var newPassword = UIUtils.get$(this._newPasswordElementId).val();
+  var newPassword = this._newPasswordElement.getValue();
   if (newPassword.length > 0) {
     userProfile.password = newPassword;
   }
   
-  var currentPassword = UIUtils.get$(this._currentPasswordElementId).val();
+  var currentPassword = this._currentPasswordElement.getValue();
   
   Backend.updateUser(userProfile, currentPassword, callback);
 }
