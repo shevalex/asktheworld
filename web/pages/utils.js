@@ -186,8 +186,12 @@ UIUtils.createDropList = function(listId, items) {
     return this.getSelectedItem().data;
   }
   
+  listElement.getValue = function() {
+    return this.getSelectedData();
+  }
+  
   listElement.selectData = function(itemData) {
-    for (var index = 0; index < listElement.options; index++) {
+    for (var index = 0; index < listElement.options.length; index++) {
       if (listElement.options[index].item.data == itemData) {
         listElement.selectedIndex = index;
         break;
@@ -196,12 +200,16 @@ UIUtils.createDropList = function(listId, items) {
   }
   
   listElement.selectDisplay = function(itemDisplay) {
-    for (var index = 0; index < listElement.options; index++) {
+    for (var index = 0; index < listElement.options.length; index++) {
       if (listElement.options[index].item.display == itemDisplay) {
         listElement.selectedIndex = index;
         break;
       }
     }
+  }
+  
+  listElement.setValue = function(value) {
+    return this.selectData(value);
   }
   
   return listElement;
@@ -222,11 +230,17 @@ UIUtils.appendLink = function(root, linkId, text) {
 
 
 UIUtils.createCheckbox = function(cbId) {
-  var checkboxElement = document.createElement("input");
-  checkboxElement.setAttribute("id", cbId);
-  checkboxElement.setAttribute("type", "checkbox");
+  var checkbox = UIUtils._createInputField(cbId, "checkbox");
   
-  return checkboxElement;
+  checkbox.getValue = function() {
+    return checkbox.checked;
+  };
+  
+  checkbox.setValue = function(checked) {
+    checkbox.checked = checked;
+  };
+  
+  return checkbox;
 }
 
 UIUtils.appendCheckbox = function(root, cbId, text) {
@@ -431,9 +445,7 @@ UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
 
 
 UIUtils.appendFileChooser = function(root) {
-  var fileChooser = document.createElement("input");
-  fileChooser.setAttribute("type", "file");
-  fileChooser.setAttribute("id", UIUtils.createId(root, "FileChooser"));
+  var fileChooser = UIUtils._createInputField(UIUtils.createId(root, "FileChooser"), "file");
   fileChooser.style.display = "none";
   root.appendChild(fileChooser);
 
@@ -461,6 +473,21 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
   var textArea = UIUtils.appendBlock(editorArea, editorId);
   //UIUtils.get$(textArea).wysiwyg();
   textArea.setAttribute("contenteditable", "true");
+  
+  var defaultValue = defaultValue || "";
+  
+  textArea.onfocus = function() {
+    if (textArea.innerHTML == defaultValue) {
+      textArea.innerHTML = "";
+    }
+  }
+  textArea.onblur = function() {
+    if (textArea.innerHTML == "") {
+      textArea.innerHTML = defaultValue;
+    }
+  }
+
+  
   
   UIUtils.addClass(textArea, "text-editor-textcomponent");
   if (textCssClass != null) {
@@ -653,6 +680,14 @@ UIUtils._createInputField = function(inputFieldId, inputType) {
   inputFieldElement.setAttribute("id", inputFieldId);
   inputFieldElement.style.display = "block";
   inputFieldElement.style.width = "100%";
+  
+  inputFieldElement.getValue = function() {
+    return inputFieldElement.value;
+  };
+  
+  inputFieldElement.setValue = function(value) {
+    inputFieldElement.value = value;
+  };
   
   return inputFieldElement;
 }

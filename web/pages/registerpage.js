@@ -54,32 +54,32 @@ RegisterPage.prototype._appendContetPanel = function(root) {
   var registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", "Register");
   
   UIUtils.get$(passwordElement).on("input", function() {
-    UIUtils.get$(retypePasswordElement).val("");
+    retypePasswordElement.setValue("");
   });
   
   UIUtils.setClickListener(registerButton, function() {
-    var email = UIUtils.get$(emailElement).val();
+    var email = emailElement.getValue();
     var isValidEmail = ValidationUtils.isValidEmail(email);
     if (!isValidEmail) {
       UIUtils.indicateInvalidInput(emailElement);
     }
     
-    var name = UIUtils.get$(nameElement).val();
+    var name = nameElement.getValue();
     if (name == "") {
       UIUtils.indicateInvalidInput(nameElement);
     }
     
-    var languages = UIUtils.get$(languagesElement).val();
+    var languages = languagesElement.getValue();
     if (languages == "") {
       UIUtils.indicateInvalidInput(languagesElement);
     }
 
-    var password = UIUtils.get$(passwordElement).val();
+    var password = passwordElement.getValue();
     if (password == "" || password.length < 5) {
       UIUtils.indicateInvalidInput(passwordElement);
     }
     
-    var retypePassword = UIUtils.get$(retypePasswordElement).val();
+    var retypePassword = retypePasswordElement.getValue();
     if (retypePassword == "" || retypePassword != password) {
       UIUtils.indicateInvalidInput(retypePasswordElement);
     }
@@ -115,7 +115,7 @@ RegisterPage.prototype._appendContetPanel = function(root) {
         password: password,
         name: name,
         gender: genderElement.getSelectedData(),
-        languages: [UIUtils.get$(languagesElement).val()],
+        languages: [languagesElement.getValue()],
         age: ageElement.getSelectedData(),
       };
       

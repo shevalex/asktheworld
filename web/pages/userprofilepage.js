@@ -43,10 +43,10 @@ UserProfilePage.prototype._appendProfilePanel = function(root) {
   
   this._confirmNewPasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "ConfirmNewPassword"), "Confirm New Password", "10px")).getInputElement();
 
-  this._currentPasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "CurrentPassword"), "Your Current Password", "10px"));
+  this._currentPasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "CurrentPassword"), "Your Current Password", "10px")).getInputElement();
 
   UIUtils.get$(this._newPasswordElement).on("input", function() {
-    UIUtils.get$(this._confirmNewPasswordElement).val("");
+    this._confirmNewPasswordElement.setValue("");
   }.bind(this));
 }
 
@@ -62,7 +62,7 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
   UIUtils.setClickListener(resetButton, this._resetParameters.bind(this));
   
   UIUtils.setClickListener(updateButton, function() {
-    var currentPassword = UIUtils.get$(this._currentPasswordElement).val();
+    var currentPassword = this._currentPasswordElement.getValue();
     if (currentPassword == "") {
       UIUtils.indicateInvalidInput(this._currentPasswordElement);
       Application.showMessage("You must enter current password to update your profile");
@@ -70,21 +70,21 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
     }
     
     
-    var name = UIUtils.get$(this._nameElement).val();
+    var name = this._nameElement.getValue();
     if (name == "") {
       UIUtils.indicateInvalidInput(this._nameElement);
       Application.showMessage("Name should be set");
       return;
     }
     
-    var languages = UIUtils.get$(this._languagesElement).val();
+    var languages = this._languagesElement.getValue();
     if (languages == "") {
       UIUtils.indicateInvalidInput(this._languagesElement);
       Application.showMessage("Languages should be set");
     }
 
-    var newPassword = UIUtils.get$(this._newPasswordElement).val();
-    var confirmNewPassword = UIUtils.get$(this._confirmNewPasswordElement).val();
+    var newPassword = this._newPasswordElement.getValue();
+    var confirmNewPassword = this._confirmNewPasswordElement.getValue();
     
     if (newPassword.length > 0) {
       if (newPassword != confirmNewPassword) {
@@ -105,8 +105,8 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
         callback._onCompletion();
         Application.showMessage("Your profile was successfully updated");
 
-        UIUtils.get$(this._newPasswordElement).val("");
-        UIUtils.get$(this._confirmNewPasswordElement).val("");
+        this._newPasswordElement.setValue("");
+        this._confirmNewPasswordElement.setValue("");
       }.bind(this),
       failure: function() {
         this._onCompletion();
@@ -119,7 +119,7 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
 
       _onCompletion: function() {
         UIUtils.setEnabled(updateButton, true);
-        UIUtils.get$(this._currentPasswordElement).val("");
+        this._currentPasswordElement.setValue("");
         Application.hideSpinningWheel();
       }.bind(this)
     }
@@ -132,30 +132,32 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
 
 
 UserProfilePage.prototype._resetParameters = function() {
-  UIUtils.get$(this._nameElement).val(Backend.getUserProfile().name);
+  this._nameElement.setValue(Backend.getUserProfile().name);
   this._genderElement.selectData(Backend.getUserProfile().gender);
+console.debug("Setting age to " +   Backend.getUserProfile().age);
   this._ageElement.selectData(Backend.getUserProfile().age);
-  UIUtils.get$(this._languagesElement).val(Backend.getUserProfile().languages);
+console.debug("done");
+  this._languagesElement.setValue(Backend.getUserProfile().languages);
   
-  UIUtils.get$(this._newPasswordElement).val("");
-  UIUtils.get$(this._confirmNewPasswordElement).val("");
-  UIUtils.get$(this._currentPasswordElement).val("");
+  this._newPasswordElement.setValue("");
+  this._confirmNewPasswordElement.setValue("");
+  this._currentPasswordElement.setValue("");
 }
 
 UserProfilePage.prototype._updateUserProfile = function(callback) {
   var userProfile = {
-    name: UIUtils.get$(this._nameElement).val(),
+    name: this._nameElement.getValue(),
     gender: this._genderElement.getSelectedData(),
-    languages: [UIUtils.get$(this._languagesElement).val()],
+    languages: [this._languagesElement.getValue()],
     age: this._ageElement.getSelectedData()
   };
 
-  var newPassword = UIUtils.get$(this._newPasswordElement).val();
+  var newPassword = this._newPasswordElement.getValue();
   if (newPassword.length > 0) {
     userProfile.password = newPassword;
   }
   
-  var currentPassword = UIUtils.get$(this._currentPasswordElement).val();
+  var currentPassword = this._currentPasswordElement.getValue();
   
   Backend.updateUser(userProfile, currentPassword, callback);
 }

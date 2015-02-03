@@ -1,8 +1,8 @@
 LoginPage = ClassUtils.defineClass(AbstractPage, function LoginPage() {
   AbstractPage.call(this, "LoginPage");
   
-  this._loginElementId;
-  this._passwordElementId;
+  this._loginElement;
+  this._passwordElement;
 });
 
 LoginPage.prototype.definePageContent = function(root) {
@@ -20,15 +20,15 @@ LoginPage.prototype.onShow = function() {
   var remember = window.localStorage.remember == "yes";
   
   if (remember && window.localStorage.login != null) {
-    UIUtils.get$(this._loginElementId).val(window.localStorage.login);
+    this._loginElement.setValue(window.localStorage.login);
   } else {
-    UIUtils.get$(this._loginElementId).val("");
+    this._loginElement.setValue("");
   }
   
   if (remember && window.localStorage.password != null) {
-    UIUtils.get$(this._passwordElementId).val(window.localStorage.password);
+    this._passwordElement.setValue(window.localStorage.password);
   } else {
-    UIUtils.get$(this._passwordElementId).val("");
+    this._passwordElement.setValue("");
   }
 }
 
@@ -36,18 +36,16 @@ LoginPage.prototype.onShow = function() {
 LoginPage.prototype._appendLoginPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
-  this._loginElementId = UIUtils.createId(contentPanel, "Login");
-  contentPanel.appendChild(UIUtils.createLabeledTextInput(this._loginElementId, "Email (login)", "10px"));
+  this._loginElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Login"), "Email (login)", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  this._passwordElementId = UIUtils.createId(contentPanel, "Password");
-  contentPanel.appendChild(UIUtils.createLabeledPasswordInput(this._passwordElementId, "Password", "10px"));
+  this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), "Password", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
   var rememberCheckbox = UIUtils.appendCheckbox(contentPanel, "RememberLogin", "Remember You?");
-  rememberCheckbox.checked = window.localStorage.remember == "yes";
+  rememberCheckbox.setValue(window.localStorage.remember == "yes");
   UIUtils.get$(rememberCheckbox).change(function() {
-    window.localStorage.remember = rememberCheckbox.checked ? "yes" : "no";
+    window.localStorage.remember = rememberCheckbox.getValue() ? "yes" : "no";
   });
   
   var signInButton = UIUtils.appendButton(contentPanel, "SignInButton", "Sign In");
@@ -62,19 +60,19 @@ LoginPage.prototype._appendLoginPanel = function(root) {
   });
 
   UIUtils.setClickListener(signInButton, function() {
-    var login = UIUtils.get$(this._loginElementId).val();
+    var login = this._loginElement.getValue();
     var isEmailValid = ValidationUtils.isValidEmail(login);
     if (!isEmailValid) {
-      UIUtils.indicateInvalidInput(this._loginElementId);
-    } else if (rememberCheckbox.checked) {
+      UIUtils.indicateInvalidInput(this._loginElement);
+    } else if (rememberCheckbox.getValue()) {
       window.localStorage.login = login;
     } else {
       window.localStorage.login = null;
     }
-    var password = UIUtils.get$(this._passwordElementId).val();
+    var password = this._passwordElement.getValue();
     if (password == "") {
-      UIUtils.indicateInvalidInput(this._passwordElementId);
-    } else if (rememberCheckbox.checked) {
+      UIUtils.indicateInvalidInput(this._passwordElement);
+    } else if (rememberCheckbox.getValue()) {
       window.localStorage.password = password;
     } else {
       window.localStorage.password = null;
@@ -114,7 +112,7 @@ LoginPage.prototype._appendLoginPanel = function(root) {
 }
 
 LoginPage.prototype._restorePassword = function() {
-  var login = UIUtils.get$(this._loginElementId).val();
+  var login = this._loginElement.getValue();
   
   if (ValidationUtils.isValidEmail(login)) {
     callback = {
