@@ -334,7 +334,7 @@ UIUtils.appendTable = function(root, tableId, columns) {
 }
 
 
-UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener) {
+UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener, clickListener) {
   var tableElement = document.createElement("table");
   tableElement.setAttribute("class", "display");
   
@@ -372,6 +372,10 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
 
     if (selectionListener != null) {
       selectionListener(tableRowObjectData.rowId);
+    }
+    
+    if (clickListener != null) {
+      clickListener(tableRowObjectData.rowId);
     }
   });
   

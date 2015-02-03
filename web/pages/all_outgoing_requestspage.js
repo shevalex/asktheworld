@@ -19,7 +19,7 @@ AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
 
   this._requestTable = new AbstractRequestPage.OutgoingRequestsTable({
     requestStatus: null,
-    selectionObserver: function(requestId) {
+    clickObserver: function(requestId) {
       var paramBundle = {
         incoming: false,
         returnPageId: MenuPage.prototype.ALL_REQUESTS_ITEM_ID,
