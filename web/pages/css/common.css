@@ -101,17 +101,24 @@ select {
   margin-right: 10px;
   background: red;
 }
-.text-editor-thumbnail-x {
+.text-editor-thumbnail-x, .text-editor-preview-x {
   display: none;
   position: absolute;
   top: 0px;
   right: 0px;
   
-  width: 15px;
-  height: 15px;
-
   background-image: url(../../imgs/close.png);
   background-size: contain;
+}
+.text-editor-thumbnail-x:hover, .text-editor-preview-x:hover {
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-width: 1px;
+  border-color: black;
+}
+.text-editor-thumbnail-x {
+  width: 15px;
+  height: 15px;
 }
 .text-editor-thumbnail:hover .text-editor-thumbnail-x {
   display: block;
@@ -128,16 +135,8 @@ select {
   background: red;
 }
 .text-editor-preview-x {
-  display: none;
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  
   width: 20px;
   height: 20px;
-
-  background-image: url(../../imgs/close.png);
-  background-size: contain;
 }
 .text-editor-preview:hover .text-editor-preview-x {
   display: block;
