@@ -96,10 +96,19 @@ select {
 .text-editor-thumbnail {
   display:inline-block;
   position: relative;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   margin-right: 10px;
-  background: red;
+  
+  border-style: solid;
+  border-radius: 3px;
+  border-width: 1px;
+  border-color: black;
+  
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 .text-editor-thumbnail-x, .text-editor-preview-x {
   display: none;
@@ -131,8 +140,18 @@ select {
   
   width: 50%;
   height: 50%;
+  
+  padding: 5px;
 
-  background: red;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 3px;
+  border-color: black;
+  
+  background-color: rgba(100, 100, 100, 0.8);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 .text-editor-preview-x {
   width: 20px;

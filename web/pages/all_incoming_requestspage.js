@@ -18,7 +18,7 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
 
   this._requestTable = new AbstractRequestPage.IncomingRequestsTable({
     requestStatus: null,
-    selectionObserver: function(requestId) {
+    clickObserver: function(requestId) {
       var paramBundle = {
         incoming: true,
         returnPageId: MenuPage.prototype.ALL_INQUIRIES_ITEM_ID,

@@ -8,6 +8,7 @@ AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequ
 /*
  * settings.requestStatus
  * settings.selectionObserver
+ * settings.clickObserver
  * settings.updateListener
  */
 AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, function _AbstractRequestsTable(settings) {
@@ -139,9 +140,7 @@ AbstractRequestPage._AbstractRequestsTable.prototype.__appendTableElement = func
     }.bind(this)
   }
   
-  return UIUtils.appendFeaturedTable("Table", this._rootContainer, this._getColumns(), rowDataProvider, function(rowId) {
-    this._settings.selectionObserver(rowId);
-  }.bind(this));
+  return UIUtils.appendFeaturedTable("Table", this._rootContainer, this._getColumns(), rowDataProvider, this._settings.selectionObserver, this._settings.clickObserver);
 }
 
 
