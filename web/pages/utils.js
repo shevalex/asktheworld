@@ -36,6 +36,23 @@ ValidationUtils.isValidEmail = function(email) {
 }
 
 
+FileUtils = {};
+FileUtils.IMAGE_FILE_TYPE = "image";
+
+FileUtils.loadFile = function(file, fileType, loadObserver) {
+  if (!file.type.match(fileType + ".*")) {
+    return;
+  }
+
+  var reader = new FileReader();
+
+  reader.onload = function() {
+    loadObserver(file, reader.result);
+  };
+
+  reader.readAsDataURL(file);
+}
+
 
 UIUtils = {};
 
@@ -298,6 +315,10 @@ UIUtils.createImage = function(imageId, src) {
   return imageElement;
 }
 
+UIUtils.appendImage = function(root, imageId, src) {
+  return root.appendChild(UIUtils.createImage(UIUtils.createId(root, imageId), src));
+}
+
 UIUtils.createTable = function(tableId, columns) {
   var tableElement = document.createElement("table");
   tableElement.setAttribute("id", tableId);
@@ -525,7 +546,6 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
       
       var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachedFiles.length);
       UIUtils.addClass(thumbnail, "text-editor-thumbnail");
-      thumbnail.innerHTML = attachedFiles.length;
       
       UIUtils.setClickListener(thumbnail, function() {
         var previewElement = UIUtils.appendBlock(attachmentBar, "Preview");
@@ -539,6 +559,8 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
         UIUtils.setClickListener(previewCloser, function() {
           UIUtils.get$(previewElement).remove();
         });
+        
+        previewElement.style.backgroundImage = "url(" + thumbnail.dataUrl + ")";
       });
       
       var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
@@ -552,6 +574,12 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
             break;
           }
         }
+      });
+
+      
+      FileUtils.loadFile(selectedFile, FileUtils.IMAGE_FILE_TYPE, function(file, dataUrl) {
+        thumbnail.dataUrl = dataUrl;
+        thumbnail.style.backgroundImage = "url(" + dataUrl + ")";
       });
     });
   });
