@@ -704,6 +704,27 @@ UIUtils.createId = function(container, elementId) {
 }
 
 
+UIUtils.getOneLine = function(text) {
+  if (text == null || text == "") {
+    return "";
+  }
+
+  var block = UIUtils.createBlock();
+  block.innerHTML = text;
+  
+  var firstLine = block.firstChild;
+  if (firstLine instanceof Text) {
+//    var breakIndex = text.indexOf("\n");
+//    return breakIndex == -1 ? text : text.substr(0, breakIndex);  
+    return firstLine.nodeValue;
+  } else if (firstLine instanceof HTMLElement) {
+    return firstLine.innerHTML;
+  } else {
+    console.error("Unexpected!!!");
+    return text;
+  }
+}
+
 
 UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, margin) {
   var compoundElement = document.createElement("div");

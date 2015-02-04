@@ -706,13 +706,11 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
       requestInfoElement.appendChild(textElement);
     }
     
-    if (this._settings.showFullContent) {
-      UIUtils.addClass(textElement, "outgoingrequest-message");
-    } else {
-      UIUtils.addClass(textElement, "outgoingrequest-message-compact");
-    }
+    UIUtils.addClass(textElement, "outgoingrequest-message");
+
+    var text = this._settings.showFullContent ? request.text : UIUtils.getOneLine(request.text);
     var requestDate = new Date(request.time);
-    UIUtils.get$(textElement).html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + request.text);
+    UIUtils.get$(textElement).html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + text);
     
     
     if (isEditable) {
@@ -830,12 +828,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
 
     var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
     UIUtils.addClass(requestTextElement, "incomingrequest-info");
-    
-    if (this._settings.showFullContent) {
-      UIUtils.addClass(requestTextElement, "incomingrequest-message");
-    } else {
-      UIUtils.addClass(requestTextElement, "incomingrequest-message-compact");
-    }
+    UIUtils.addClass(requestTextElement, "incomingrequest-message");
     
     if (this._settings.requestClickListener != null) {
       UIUtils.addClass(requestTextElement, "incomingrequest-info-activable");
@@ -854,8 +847,9 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
     }
 
+    var text = this._settings.showFullContent ? request.text : UIUtils.getOneLine(request.text);
     var requestDate = new Date(request.time);
-    UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + request.text);
+    UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + text);
 
     if (isEditable) {
       var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
@@ -954,8 +948,9 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
     }.bind(this));
   }
 
+  var text = this._settings.showFullContent ? response.text : UIUtils.getOneLine(response.text);
   var responseDate = new Date(response.time);
-  UIUtils.get$(responseTextElement).html("<b>A " + Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+  UIUtils.get$(responseTextElement).html("<b>A " + Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
 }
 
 AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestList, requestId, responseId, settings) {
@@ -980,8 +975,9 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
     var responseTextElement = UIUtils.appendBlock(responseInfoElement, "TextMessage");
     UIUtils.addClass(responseTextElement, "incomingresponse-message");
 
+    var text = this._settings.showFullContent ? response.text : UIUtils.getOneLine(response.text);
     var responseDate = new Date(response.time);
-    UIUtils.get$(responseTextElement).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + response.text);
+    UIUtils.get$(responseTextElement).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
 
     if (isEditable) {
       var responseControlPanel = UIUtils.appendBlock(responseHolder, "ControlPanel");
