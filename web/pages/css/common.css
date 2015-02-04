@@ -122,6 +122,15 @@ select {
   background-image: url(../../imgs/close.png);
   background-size: contain;
 }
+.text-editor-thumbnail-title, .text-editor-preview-title {
+  display: none;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+
+  background-color: rgba(100, 100, 100, 0.8);
+  color: white;
+}
 .text-editor-thumbnail-x:hover, .text-editor-preview-x:hover {
   background-color: rgb(200, 240, 240);
 }
@@ -130,6 +139,9 @@ select {
   height: 15px;
 }
 .text-editor-thumbnail:hover .text-editor-thumbnail-x {
+  display: block;
+}
+.text-editor-thumbnail:hover .text-editor-thumbnail-title {
   display: block;
 }
 .text-editor-preview {
@@ -158,5 +170,8 @@ select {
   height: 20px;
 }
 .text-editor-preview:hover .text-editor-preview-x {
+  display: block;
+}
+.text-editor-preview:hover .text-editor-preview-title {
   display: block;
 }

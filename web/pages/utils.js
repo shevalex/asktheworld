@@ -561,6 +561,10 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
         });
         
         previewElement.style.backgroundImage = "url(" + thumbnail.dataUrl + ")";
+        
+        var previewTitle = UIUtils.appendBlock(previewElement, "Ttile");
+        UIUtils.addClass(previewTitle, "text-editor-preview-title");
+        previewTitle.innerHTML = selectedFile.name;
       });
       
       var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
@@ -576,6 +580,10 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
         }
       });
 
+      var thumbnailTitle = UIUtils.appendBlock(thumbnail, "Ttile");
+      UIUtils.addClass(thumbnailTitle, "text-editor-thumbnail-title");
+      thumbnailTitle.innerHTML = selectedFile.name;
+      
       
       FileUtils.loadFile(selectedFile, FileUtils.IMAGE_FILE_TYPE, function(file, dataUrl) {
         thumbnail.dataUrl = dataUrl;
