@@ -36,7 +36,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
     
     @IBAction func Language_Type_2(sender: AnyObject) {
         
-            self.performSegueWithIdentifier("Lang_seg", sender: self)
+            //self.performSegueWithIdentifier("Lang_seg", sender: self)
     }
     @IBAction func RegisterButton_Reg(sender: AnyObject) {        
         var username:NSString = UserNameField_Reg.text

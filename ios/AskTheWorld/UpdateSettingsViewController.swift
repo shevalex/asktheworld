@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UpdateSettingsViewController: UIViewController {
+class UpdateSettingsViewController: UIViewController, UIPickerViewDelegate, UITextFieldDelegate {
 
     var activityIndicator:UIActivityIndicatorView = UIActivityIndicatorView()
     
@@ -28,11 +28,17 @@ class UpdateSettingsViewController: UIViewController {
     
     @IBOutlet weak var NicknameField_USVC: UITextField!
     
+    @IBOutlet weak var GenderField_USVC: UITextField!
+    
+    @IBOutlet weak var AgeCategory_USVC: UITextField!
+    
     @IBAction func UpdateUserSettings_USVC(sender: AnyObject) {
         var current_password:NSString = CurrentPasswordField_USVC.text
         var new_password:NSString = NewPasswordField_USVC.text
         var confirm_new_password:NSString = ConfirmNewPasswordField_USVC.text
         var nickname:NSString = NicknameField_USVC.text
+        var gender:NSString = GenderField_USVC.text
+        var ageCategory:NSString = AgeCategory_USVC.text
         
         if ( current_password.isEqualToString("") ){
             displayAlert("Update Failed!", alertError: "Please enter the valid current password")
@@ -76,7 +82,18 @@ class UpdateSettingsViewController: UIViewController {
                         var request = NSMutableURLRequest(URL: NSURL(string: "https://hidden-taiga-8809.herokuapp.com/user/\(userId!)")!)
                         var session = NSURLSession.sharedSession()
                         request.HTTPMethod = "PUT"
-                        var params = ["password":"\(new_password)","name":"\(nickname)"] as Dictionary
+                        
+                        var params = Dictionary<String,String>()
+                        if new_password != "" {
+                            params["password"] = "\(new_password)"
+                        } else if nickname != "" {
+                            params["name"] = "\(nickname)"
+                        } else if gender != "" {
+                            params["gender"] = "\(gender)"
+                        } else if ageCategory != "" {
+                            params["age_category"] = "\(ageCategory)"
+                        }
+                        //var params = ["password":"\(new_password)","name":"\(nickname)","gender":"\(gender)","age_category":"\(ageCategory)"] as Dictionary
                         
                         var err: NSError?
                         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &err)
@@ -94,6 +111,7 @@ class UpdateSettingsViewController: UIViewController {
                                 println("Update Success!");
                                 self.activityIndicator.stopAnimating()
                                 UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                                //self.displayAlert("Update Successful", alertError: "Update successful!")
                                 self.dismissViewControllerAnimated(true, completion: nil)
                             }
                             else if (res.statusCode == 400) {
@@ -123,10 +141,79 @@ class UpdateSettingsViewController: UIViewController {
         }
     }
     
+    let gender_array = ["Please Select", "Male", "Female"]
+    let age_category = ["Please Select", "Child", "Teenager", "Young", "Adult", "Senior"]
+    
+    @IBOutlet var getGender: UIPickerView!
+    @IBOutlet var getAgeCategory: UIPickerView!
+    @IBOutlet weak var Gender_toolBar: UIToolbar!
+    @IBOutlet weak var AgeCategory_toolBar: UIToolbar!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        super.viewDidLoad()
+        getGender = UIPickerView()
+        getAgeCategory = UIPickerView()
+        
+        getGender.delegate = self
+        getAgeCategory.delegate = self
+        
+        self.GenderField_USVC.inputView = self.getGender;
+        self.AgeCategory_USVC.inputView = self.getAgeCategory;
+        
+        var gender_toolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.bounds.size.width, 44))
+        var gender_item = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneGenderAction")
+        gender_toolbar.setItems([gender_item], animated: true)
+        self.GenderField_USVC.inputAccessoryView = gender_toolbar
+        self.Gender_toolBar = gender_toolbar
+        
+        var ageCategory_toolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.bounds.size.width, 44))
+        var ageCategory_item = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneAgeCategoryAction")
+        ageCategory_toolbar.setItems([ageCategory_item], animated: true)
+        self.AgeCategory_USVC.inputAccessoryView = ageCategory_toolbar
+        self.AgeCategory_toolBar = ageCategory_toolbar
 
         // Do any additional setup after loading the view.
+    }
+    
+    func doneGenderAction() {
+        self.GenderField_USVC.resignFirstResponder()
+    }
+    
+    func doneAgeCategoryAction() {
+        self.AgeCategory_USVC.resignFirstResponder()
+    }
+    
+    func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int{
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int{
+        if pickerView == getGender {
+            return gender_array.count
+        } else if pickerView == getAgeCategory {
+            return age_category.count
+        }
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView!, titleForRow row: Int, forComponent component: Int) -> String! {
+        if pickerView == getGender {
+            return gender_array[row]
+        } else if pickerView == getAgeCategory {
+            return age_category[row]
+        }
+        return ""
+    }
+    
+    func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
+    {
+        if pickerView == getGender {
+            GenderField_USVC.text = gender_array[row]
+        } else if pickerView == getAgeCategory {
+            AgeCategory_USVC.text = age_category[row]
+        }
     }
 
     override func didReceiveMemoryWarning() {
