@@ -36,7 +36,7 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
     
     @IBAction func Language_Type_2(sender: AnyObject) {
         
-            self.performSegueWithIdentifier("Lang_seg", sender: self)
+            //self.performSegueWithIdentifier("Lang_seg", sender: self)
     }
     @IBAction func RegisterButton_Reg(sender: AnyObject) {        
         var username:NSString = UserNameField_Reg.text
@@ -48,6 +48,8 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
         
         if ( username.isEqualToString("") || password.isEqualToString("") ){
             displayAlert("Register Failed!", alertError: "Please enter User Name and Password")
+        } else if (username.length < 4 || password.length < 4) {
+           displayAlert("Register Failed!", alertError: "User name and password should have more than 3 symbols")
         } else if ( !password.isEqual(confirm_password) ) {
             displayAlert("Register Failed!", alertError: "Passwords doesn't Match")
         } else if (nickname.isEqualToString("")) {
