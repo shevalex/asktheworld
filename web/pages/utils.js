@@ -497,10 +497,10 @@ UIUtils.appendFileChooser = function(root) {
  settings.fileTooBigListener
  */
 UIUtils.appendTextEditor = function(root, editorId, settings) {
-  var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
+  var editorArea = UIUtils.appendBlock(root, editorId);
   UIUtils.addClass(editorArea, "text-editor-container");
   
-  var textArea = UIUtils.appendBlock(editorArea, editorId);
+  var textArea = UIUtils.appendBlock(editorArea, editorId + "EdittingArea");
   textArea.setAttribute("contenteditable", "true");
   
   var defaultValue = settings != null && settings.defaultValue != null ? settings.defaultValue : "";
