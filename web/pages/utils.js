@@ -39,11 +39,11 @@ ValidationUtils.isValidEmail = function(email) {
 FileUtils = {};
 FileUtils.IMAGE_FILE_TYPE = "image";
 
-FileUtils.loadFile = function(file, fileType, loadObserver) {
-  if (!file.type.match(fileType + ".*")) {
-    return;
-  }
+FileUtils.isImage = function(file) {
+  return file.type.match(FileUtils.IMAGE_FILE_TYPE + ".*");
+}
 
+FileUtils.loadFile = function(file, loadObserver) {
   var reader = new FileReader();
 
   reader.onload = function() {
@@ -491,17 +491,19 @@ UIUtils.appendFileChooser = function(root) {
   return fileChooser;
 }
 
-UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) {
+/*
+ settings.textCssClass
+ settings.defaultValue
+ settings.fileTooBigListener
+ */
+UIUtils.appendTextEditor = function(root, editorId, settings) {
   var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
   UIUtils.addClass(editorArea, "text-editor-container");
   
-//  var textArea = UIUtils.createTextArea(UIUtils.createId(root, editorId), 6, defaultValue);
-//  editorArea.appendChild(textArea);
   var textArea = UIUtils.appendBlock(editorArea, editorId);
-  //UIUtils.get$(textArea).wysiwyg();
   textArea.setAttribute("contenteditable", "true");
   
-  var defaultValue = defaultValue || "";
+  var defaultValue = settings != null && settings.defaultValue != null ? settings.defaultValue : "";
   
   textArea.onfocus = function() {
     if (textArea.innerHTML == defaultValue) {
@@ -516,8 +518,8 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
   
   
   UIUtils.addClass(textArea, "text-editor-textcomponent");
-  if (textCssClass != null) {
-    UIUtils.addClass(textArea, textCssClass);
+  if (settings != null && settings.textCssClass != null) {
+    UIUtils.addClass(textArea, settings.textCssClass);
   }
   
   var attachmentBar = UIUtils.appendBlock(editorArea, "AttachmentBar");
@@ -539,55 +541,65 @@ UIUtils.appendTextEditor = function(root, editorId, textCssClass, defaultValue) 
 
     fileChooser.open(function(files) {
       var selectedFile = files[0];
-      
       UIUtils.get$(fileChooser).remove();
       
-      attachedFiles.push(selectedFile);
-      
-      var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachedFiles.length);
-      UIUtils.addClass(thumbnail, "text-editor-thumbnail");
-      
-      UIUtils.setClickListener(thumbnail, function() {
-        var previewElement = UIUtils.appendBlock(attachmentBar, "Preview");
-        UIUtils.addClass(previewElement, "text-editor-preview");
-
-        var previewCloser = UIUtils.appendBlock(previewElement, "X");
-        UIUtils.addClass(previewCloser, "text-editor-preview-x");
-
-        UIUtils.removeIfClickedOutside(previewElement);
-        
-        UIUtils.setClickListener(previewCloser, function() {
-          UIUtils.get$(previewElement).remove();
-        });
-        
-        previewElement.style.backgroundImage = "url(" + thumbnail.dataUrl + ")";
-        
-        var previewTitle = UIUtils.appendBlock(previewElement, "Ttile");
-        UIUtils.addClass(previewTitle, "text-editor-preview-title");
-        previewTitle.innerHTML = selectedFile.name;
-      });
-      
-      var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
-      UIUtils.addClass(thumbnailCloser, "text-editor-thumbnail-x");
-      
-      UIUtils.setClickListener(thumbnailCloser, function() {
-        UIUtils.get$(thumbnail).remove();
-        for (var index = 0; index < attachedFiles.length; index++) {
-          if (attachedFiles[index] == selectedFile) {
-            attachedFiles.splice(index, 1);
-            break;
-          }
+      if (selectedFile.size > 1024000) {
+        if (settings != null && settings.fileTooBigListener != null) {
+          settings.fileTooBigListener(selectedFile);
         }
-      });
+        return;
+      }
 
-      var thumbnailTitle = UIUtils.appendBlock(thumbnail, "Ttile");
-      UIUtils.addClass(thumbnailTitle, "text-editor-thumbnail-title");
-      thumbnailTitle.innerHTML = selectedFile.name;
-      
-      
-      FileUtils.loadFile(selectedFile, FileUtils.IMAGE_FILE_TYPE, function(file, dataUrl) {
-        thumbnail.dataUrl = dataUrl;
-        thumbnail.style.backgroundImage = "url(" + dataUrl + ")";
+      FileUtils.loadFile(selectedFile, function(file, dataUrl) {
+        selectedFile.data = dataUrl;
+
+        attachedFiles.push(selectedFile);
+        
+        var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachedFiles.length);
+        UIUtils.addClass(thumbnail, "text-editor-thumbnail");
+
+        if (FileUtils.isImage(selectedFile)) {
+          thumbnail.style.backgroundImage = "url(" + dataUrl + ")";
+
+          UIUtils.setClickListener(thumbnail, function() {
+            var previewElement = UIUtils.appendBlock(attachmentBar, "Preview");
+            UIUtils.addClass(previewElement, "text-editor-preview");
+
+            var previewCloser = UIUtils.appendBlock(previewElement, "X");
+            UIUtils.addClass(previewCloser, "text-editor-preview-x");
+
+            UIUtils.removeIfClickedOutside(previewElement);
+
+            UIUtils.setClickListener(previewCloser, function() {
+              UIUtils.get$(previewElement).remove();
+            });
+
+            previewElement.style.backgroundImage = "url(" + selectedFile.data + ")";
+
+            var previewTitle = UIUtils.appendBlock(previewElement, "Title");
+            UIUtils.addClass(previewTitle, "text-editor-preview-title");
+            previewTitle.innerHTML = selectedFile.name;
+          });
+        } else {
+          // TBD provide special icons for other file types
+        }
+        
+        var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
+        UIUtils.addClass(thumbnailCloser, "text-editor-thumbnail-x");
+
+        UIUtils.setClickListener(thumbnailCloser, function() {
+          UIUtils.get$(thumbnail).remove();
+          for (var index = 0; index < attachedFiles.length; index++) {
+            if (attachedFiles[index] == selectedFile) {
+              attachedFiles.splice(index, 1);
+              break;
+            }
+          }
+        });
+
+        var thumbnailTitle = UIUtils.appendBlock(thumbnail, "Title");
+        UIUtils.addClass(thumbnailTitle, "text-editor-thumbnail-title");
+        thumbnailTitle.innerHTML = selectedFile.name;
       });
     });
   });

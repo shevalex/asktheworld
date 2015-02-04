@@ -17,7 +17,11 @@ NewRequestPage.prototype.definePageContent = function(root) {
 
   var requestTextPanel = UIUtils.appendBlock(root, "RequestContentPanel");
   UIUtils.appendLabel(requestTextPanel, "Label", "1. Type in the text of your request first...");
-  this._requestTextEditor = UIUtils.appendTextEditor(requestTextPanel, "TextEditor");
+  this._requestTextEditor = UIUtils.appendTextEditor(requestTextPanel, "TextEditor", {
+    fileTooBigListener: function(file) {
+      Application.showMessage("File is too big");
+    }
+  });
   
   var requestParamsPanel = UIUtils.appendBlock(root, "RequestParametersPanel");
   UIUtils.appendLabel(requestParamsPanel, "Label", "2. Choose who will see your question");

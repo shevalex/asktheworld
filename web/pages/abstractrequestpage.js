@@ -757,7 +757,12 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   var quantityCombo = editPanel.appendChild(UIUtils.createSpan("48%", "20px 0 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Quantity"), "Maximum # of responses", Application.Configuration.RESPONSE_QUANTITY, "10px"));
   quantityCombo.getInputElement().selectData(request.response_quantity);
   
-  var textEditor = UIUtils.appendTextEditor(editPanel, "TextArea", "outgoingrequest-editpanel-text");
+  var textEditor = UIUtils.appendTextEditor(editPanel, "TextArea", {
+    textCssClass: "outgoingrequest-editpanel-text",
+    fileTooBigListener: function(file) {
+      Application.showMessage("File is too big");
+    }
+  });
   textEditor.setValue(request.text);
   textEditor.focus();
 
@@ -884,7 +889,12 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
   var createResponsePanel = UIUtils.appendBlock(root, "CreateResponsePanel");
   UIUtils.addClass(createResponsePanel, "outgoingresponse-createresponsepanel");
 
-  var textEditor = UIUtils.appendTextEditor(createResponsePanel, "TextArea", "outgoingresponse-createresponsepanel-text");
+  var textEditor = UIUtils.appendTextEditor(createResponsePanel, "TextArea", {
+    textCssClass: "outgoingresponse-createresponsepanel-text",
+    fileTooBigListener: function(file) {
+      Application.showMessage("File is too big");
+    }
+  });
   textEditor.focus();
   
   var controlPanel = UIUtils.appendBlock(createResponsePanel, "ControlPanel");
@@ -999,7 +1009,12 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   var responseDate = new Date(response.time);
   UIUtils.appendLabel(editPanel, "Label", "You responded on <b>" + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() +"</b>");
   
-  var textEditor = UIUtils.appendTextEditor(editPanel, "TextArea", "outgoingresponse-controlpanel-text");
+  var textEditor = UIUtils.appendTextEditor(editPanel, "TextArea", {
+    textCssClass: "outgoingresponse-controlpanel-text",
+    fileTooBigListener: function(file) {
+      Application.showMessage("File is too big");
+    }
+  });
   textEditor.setValue(response.text);
   textEditor.focus();
 
