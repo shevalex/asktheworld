@@ -680,10 +680,11 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
       }.bind(this));
     }
     
-    var textElement = UIUtils.createBlock(UIUtils.createId(requestInfoElement, "RequestText"));
+    var textElement = UIUtils.appendBlock(requestInfoElement, "RequestText");
     if (this._settings.showResponseCount) {
-      var responseCounterElement = UIUtils.createBlock(UIUtils.createId(requestInfoElement, "ResponseCounter"));
-      var infoTableElement = UIUtils.appendTable(requestInfoElement, "InfoTable", [{element: textElement}, {element: responseCounterElement, width: "50px"}]);
+      UIUtils.addClass(textElement, "outgoingrequest-message-withcounter");
+      
+      var responseCounterElement = UIUtils.appendBlock(requestInfoElement, "ResponseCounter");
       UIUtils.addClass(responseCounterElement, "outgoingrequest-responsecounter");
       
       var drawCounterText = function() {
@@ -702,13 +703,18 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
       
       drawCounterText();
       this._requestUpdateListeners.push(drawCounterText);
-    } else {
-      requestInfoElement.appendChild(textElement);
     }
     
-    UIUtils.addClass(textElement, "outgoingrequest-message");
 
-    var text = this._settings.showFullContent ? request.text : UIUtils.getOneLine(request.text);
+    var text;
+    if (this._settings.showFullContent) {
+      UIUtils.addClass(textElement, "outgoingrequest-message-full");
+      text = request.text;
+    } else {
+      UIUtils.addClass(textElement, "outgoingrequest-message-short");
+      text = UIUtils.getOneLine(request.text);
+    }
+    
     var requestDate = new Date(request.time);
     UIUtils.get$(textElement).html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + text);
     
@@ -828,7 +834,6 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
 
     var requestTextElement = UIUtils.appendBlock(requestHolderElement, "RequestText");
     UIUtils.addClass(requestTextElement, "incomingrequest-info");
-    UIUtils.addClass(requestTextElement, "incomingrequest-message");
     
     if (this._settings.requestClickListener != null) {
       UIUtils.addClass(requestTextElement, "incomingrequest-info-activable");
@@ -847,7 +852,16 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
     }
 
-    var text = this._settings.showFullContent ? request.text : UIUtils.getOneLine(request.text);
+    
+    var text;
+    if (this._settings.showFullContent) {
+      UIUtils.addClass(requestTextElement, "incomingrequest-message-full");
+      text = request.text;
+    } else {
+      UIUtils.addClass(requestTextElement, "incomingrequest-message-short");
+      text = UIUtils.getOneLine(request.text);
+    }
+
     var requestDate = new Date(request.time);
     UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + text);
 
@@ -937,7 +951,6 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
   UIUtils.addClass(responseInfoElement, "incomingresponse-info");
 
   var responseTextElement = UIUtils.appendBlock(responseInfoElement, "TextMessage");
-  UIUtils.addClass(responseTextElement, "incomingresponse-message");
   if (response.status == Backend.Response.STATUS_UNREAD) {
     UIUtils.addClass(responseInfoElement, "incomingresponse-info-activable");
     UIUtils.setClickListener(responseInfoElement, function() {
@@ -948,7 +961,15 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
     }.bind(this));
   }
 
-  var text = this._settings.showFullContent ? response.text : UIUtils.getOneLine(response.text);
+  var text;
+  if (this._settings.showFullContent) {
+    UIUtils.addClass(responseTextElement, "incomingresponse-message-full");
+    text = response.text;
+  } else {
+    UIUtils.addClass(responseTextElement, "incomingresponse-message-short");
+    text = UIUtils.getOneLine(response.text);
+  }
+  
   var responseDate = new Date(response.time);
   UIUtils.get$(responseTextElement).html("<b>A " + Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
 }
@@ -970,12 +991,19 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
   
   var appendResponseText = function() {
     var responseInfoElement = UIUtils.appendBlock(responseHolder, "Info");
-    UIUtils.addClass(responseInfoElement, "incomingresponse-info");
+    UIUtils.addClass(responseInfoElement, "outgoingresponse-info");
 
     var responseTextElement = UIUtils.appendBlock(responseInfoElement, "TextMessage");
-    UIUtils.addClass(responseTextElement, "incomingresponse-message");
 
-    var text = this._settings.showFullContent ? response.text : UIUtils.getOneLine(response.text);
+    var text;
+    if (this._settings.showFullContent) {
+      UIUtils.addClass(responseTextElement, "outgoingresponse-message-full");
+      text = response.text;
+    } else {
+      UIUtils.addClass(responseTextElement, "outgoingresponse-message-short");
+      text = UIUtils.getOneLine(response.text);
+    }
+
     var responseDate = new Date(response.time);
     UIUtils.get$(responseTextElement).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
 

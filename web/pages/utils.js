@@ -383,16 +383,14 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
     if (tableRowObjectData == null || tableRowObjectData.temporary) {
       return;
     }
-    
-    if (dataTableObject.$("tr.selected").get(0) == $(this).get(0)) {
-      return;
-    }
-    
-    dataTableObject.$("tr.selected").removeClass("selected");
-    $(this).addClass("selected");
 
-    if (selectionListener != null) {
-      selectionListener(tableRowObjectData.rowId);
+    if (dataTableObject.$("tr.selected").get(0) != $(this).get(0)) {
+      dataTableObject.$("tr.selected").removeClass("selected");
+      $(this).addClass("selected");
+
+      if (selectionListener != null) {
+        selectionListener(tableRowObjectData.rowId);
+      }
     }
     
     if (clickListener != null) {
