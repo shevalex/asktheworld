@@ -45,8 +45,13 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var controlPanel = UIUtils.appendBlock(root, "RequestControlPanel");
   UIUtils.appendLabel(controlPanel, "Label", "3. And finally send it out!");
   
-  var buttonHolder = UIUtils.appendBlock(controlPanel, "ButtonHolder");
-  this._sendButton = UIUtils.appendButton(buttonHolder, "SendButton", "Ask The World!");
+//  var buttonHolder = UIUtils.appendBlock(controlPanel, "ButtonHolder");
+  
+  controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0"));
+  this._sendButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "SendButton"), "Ask The World!"));
+  var resetButton = controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "ResetButton"), "Reset"));
+  
+  
   UIUtils.setClickListener(this._sendButton, function() {
     if (this._requestTextEditor.getValue() != "") {
       this._createRequest();
@@ -55,16 +60,20 @@ NewRequestPage.prototype.definePageContent = function(root) {
       Application.showMessage("Please create a message", Application.MESSAGE_TIMEOUT_FAST);
     }
   }.bind(this));
+  
+  UIUtils.setClickListener(resetButton, function() {
+    this._requestTextEditor.refresh();
+    this._requestTextEditor.focus();
+
+    this._requestGenderElement.selectData(Backend.getUserPreferences().requestTargetGender);
+    this._requestAgeElement.selectData(Backend.getUserPreferences().requestTargetAge);
+    this._requestQuantityElement.selectData(Backend.getUserPreferences().responseQuantity);
+    this._requestWaitTimeElement.selectData(Backend.getUserPreferences().responseWaitTime);
+  }.bind(this));
 }
 
 NewRequestPage.prototype.onShow = function() {
-  this._requestTextEditor.refresh();
   this._requestTextEditor.focus();
-  
-  this._requestGenderElement.selectData(Backend.getUserPreferences().requestTargetGender);
-  this._requestAgeElement.selectData(Backend.getUserPreferences().requestTargetAge);
-  this._requestQuantityElement.selectData(Backend.getUserPreferences().responseQuantity);
-  this._requestWaitTimeElement.selectData(Backend.getUserPreferences().responseWaitTime);
 }
 
 NewRequestPage.prototype.onHide = function() {
