@@ -535,6 +535,7 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
   UIUtils.addClass(attachButton, "text-editor-attachbutton");
 
   var attachedFiles = [];
+  var attachmentCounter = 0;
   
   UIUtils.setClickListener(attachButton, function() {
     var fileChooser = UIUtils.appendFileChooser(attachmentBar);
@@ -543,7 +544,7 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
       var selectedFile = files[0];
       UIUtils.get$(fileChooser).remove();
       
-      if (selectedFile.size > 1024000) {
+      if (selectedFile.size > 5 * 1024000) {
         if (settings != null && settings.fileTooBigListener != null) {
           settings.fileTooBigListener(selectedFile);
         }
@@ -555,7 +556,8 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
 
         attachedFiles.push(selectedFile);
         
-        var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachedFiles.length);
+        attachmentCounter++;
+        var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachmentCounter);
         UIUtils.addClass(thumbnail, "text-editor-thumbnail");
 
         if (FileUtils.isImage(selectedFile)) {
