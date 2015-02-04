@@ -313,6 +313,7 @@
                         <outlet property="GenderField_USVC" destination="5g1-C1-5uf" id="AMw-8p-dXy"/>
                         <outlet property="NewPasswordField_USVC" destination="GBu-14-gMs" id="oG0-mh-jTK"/>
                         <outlet property="NicknameField_USVC" destination="gE3-Q2-NKe" id="CgS-WU-9bf"/>
+                        <segue destination="lQo-s9-z0r" kind="show" identifier="BackToSettings" id="7nM-bc-7dy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yZe-vV-Ovf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -624,4 +625,7 @@
             <point key="canvasLocation" x="949" y="1210"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="7nM-bc-7dy"/>
+    </inferredMetricsTieBreakers>
 </document>

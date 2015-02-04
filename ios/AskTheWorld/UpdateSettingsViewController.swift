@@ -107,12 +107,17 @@ class UpdateSettingsViewController: UIViewController, UIPickerViewDelegate, UITe
                             println("Response: \(response)")
                             let res = response as NSHTTPURLResponse!
                             println(res.statusCode)
+                            dispatch_async(dispatch_get_main_queue()) {
                             if (res.statusCode == 200) {
                                 println("Update Success!");
                                 self.activityIndicator.stopAnimating()
                                 UIApplication.sharedApplication().endIgnoringInteractionEvents()
-                                //self.displayAlert("Update Successful", alertError: "Update successful!")
-                                self.dismissViewControllerAnimated(true, completion: nil)
+                                var alert = UIAlertController(title: "Update successful", message: "Update Successful", preferredStyle: UIAlertControllerStyle.Alert)
+                                alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { (action) -> Void in
+                                    self.performSegueWithIdentifier("BackToSettings", sender: self)
+                                }))
+                                self.presentViewController(alert, animated: true, completion: nil)
+
                             }
                             else if (res.statusCode == 400) {
                                 self.activityIndicator.stopAnimating()
@@ -123,6 +128,7 @@ class UpdateSettingsViewController: UIViewController, UIPickerViewDelegate, UITe
                                 self.activityIndicator.stopAnimating()
                                 UIApplication.sharedApplication().endIgnoringInteractionEvents()
                                 self.displayAlert("Update Failed!", alertError: "Error happened!")
+                            }
                             }
                         })
                         
