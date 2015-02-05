@@ -75,7 +75,7 @@ NewRequestPage.prototype.onHide = function() {
 
 
 NewRequestPage.prototype._resetPage = function() {
-  this._requestTextEditor.refresh();
+  this._requestTextEditor.reset();
   this._requestTextEditor.focus();
 
   this._requestGenderElement.selectData(Backend.getUserPreferences().requestTargetGender);

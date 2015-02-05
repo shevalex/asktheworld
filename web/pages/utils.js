@@ -614,12 +614,16 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
     UIUtils.get$(textArea).html(value);
   }
   
-  editorArea.refresh = function() {
+  editorArea.reset = function() {
     if (defaultValue != null) {
       this.setValue(defaultValue);
     } else {
       this.setValue("");
     }
+    
+    UIUtils.get$(attachmentsPanel).empty();
+    attachedFiles = [];
+    attachmentCounter = 0;
   }
   
   editorArea.focus = function() {
