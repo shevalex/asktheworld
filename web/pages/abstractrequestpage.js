@@ -1136,29 +1136,15 @@ AbstractRequestPage._AbstractRequestStatistics = ClassUtils.defineClass(Object, 
   this._statistics = {};
   
   this._cacheChangeListener = function(event) {
-    if (event.type == this._getRequestIdsChangeEventType()) {
-      var requestIds = this._getRequestIds(this._requestStatus);
-
-      for (var index in requestIds) {
-        var requestId = requestIds[index];
-        
-        if (!this._statistics.hasOwnProperty(requestId)) {
-          var responseIds = this._getResponseIds(requestId, this._responseStatus);
-          if (responseIds != null) {
-            this._statistics[requestId] = responseIds.length;
-          } else {
-            this._statistics[requestId] = null;
-          }
-        }
-      }
-
-      this._updateListener();
-      //TODO: remove obsolete records from statistics if needed
-    } else if (event.type == this._getResponseIdsChangeEventType()
-               && this._statistics.hasOwnProperty(event.requestId)) {
+    if (event.type == this._getRequestIdsChangeEventType()
+        || (this._requestStatus != null
+            && event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED
+            && this._statistics.hasOwnProperty(event.requestId))) {
+      this.__rebuildStatistics();
+    } else if ((event.type == this._getResponseIdsChangeEventType() || event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED)
+                && this._statistics.hasOwnProperty(event.requestId)) {
 
       this._statistics[event.requestId] = this._getResponseIds(event.requestId, this._responseStatus).length;
-
       this._updateListener();
     }
   }.bind(this);
@@ -1167,21 +1153,7 @@ AbstractRequestPage._AbstractRequestStatistics = ClassUtils.defineClass(Object, 
 AbstractRequestPage._AbstractRequestStatistics.prototype.start = function() {
   Backend.addCacheChangeListener(this._cacheChangeListener);
   
-  var requestIds = this._getRequestIds(this._requestStatus);
-  if (requestIds != null) {
-    for (var index in requestIds) {
-      var requestId = requestIds[index];
-
-      this._statistics[requestId] = null;
-      
-      var responseIds = this._getResponseIds(requestId, this._responseStatus);
-      if (responseIds != null) {
-        this._statistics[requestId] = responseIds.length;
-      }
-    }
-  }
-  
-  this._updateListener();
+  this.__rebuildStatistics();
 }
 
 AbstractRequestPage._AbstractRequestStatistics.prototype.stop = function() {
@@ -1210,6 +1182,30 @@ AbstractRequestPage._AbstractRequestStatistics.prototype._getResponseIds = funct
 //abstract
 AbstractRequestPage._AbstractRequestStatistics.prototype._getResponseIdsChangeEventType = function() {
   throw "Not implemented";
+}
+
+
+AbstractRequestPage._AbstractRequestStatistics.prototype.__rebuildStatistics = function() {
+  this._statistics = {};
+  
+  var requestIds = this._getRequestIds(this._requestStatus);
+  
+  if (requestIds != null) {
+    for (var index in requestIds) {
+      var requestId = requestIds[index];
+
+      if (!this._statistics.hasOwnProperty(requestId)) {
+        var responseIds = this._getResponseIds(requestId, this._responseStatus);
+        if (responseIds != null) {
+          this._statistics[requestId] = responseIds.length;
+        } else {
+          this._statistics[requestId] = null;
+        }
+      }
+    }
+
+    this._updateListener();
+  }
 }
 
 

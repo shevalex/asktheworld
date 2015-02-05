@@ -62,13 +62,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
   }.bind(this));
   
   UIUtils.setClickListener(resetButton, function() {
-    this._requestTextEditor.refresh();
-    this._requestTextEditor.focus();
-
-    this._requestGenderElement.selectData(Backend.getUserPreferences().requestTargetGender);
-    this._requestAgeElement.selectData(Backend.getUserPreferences().requestTargetAge);
-    this._requestQuantityElement.selectData(Backend.getUserPreferences().responseQuantity);
-    this._requestWaitTimeElement.selectData(Backend.getUserPreferences().responseWaitTime);
+    this._resetPage();
   }.bind(this));
 }
 
@@ -80,10 +74,23 @@ NewRequestPage.prototype.onHide = function() {
 }
 
 
+NewRequestPage.prototype._resetPage = function() {
+  this._requestTextEditor.refresh();
+  this._requestTextEditor.focus();
+
+  this._requestGenderElement.selectData(Backend.getUserPreferences().requestTargetGender);
+  this._requestAgeElement.selectData(Backend.getUserPreferences().requestTargetAge);
+  this._requestQuantityElement.selectData(Backend.getUserPreferences().responseQuantity);
+  this._requestWaitTimeElement.selectData(Backend.getUserPreferences().responseWaitTime);
+}
+
 NewRequestPage.prototype._createRequest = function() {
+  var page = this;
+  
   var callback = {
     success: function(requestId) {
       Application.showMessage("New request was successfully sent");
+      page._resetPage();
       this._onCompletion();
     },
     failure: function() {
