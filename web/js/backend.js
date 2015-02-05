@@ -260,13 +260,12 @@ Backend.createRequest = function(request, transactionCallback) {
 Backend.updateRequest = function(requestId, request, transactionCallback) {
   setTimeout(function() {
     var existingRequest = this._cache.requests[requestId];
-    
     for (var key in request) {
       if (key == "status" && existingRequest[key] != request[key] && request.status == Backend.Request.STATUS_INACTIVE) {
         for (var index in this._cache.outgoingRequestIds.active) {
           if (this._cache.outgoingRequestIds.active[index] == requestId) {
             this._cache.outgoingRequestIds.active.splice(index, 1);
-            this._cache.outgoingRequestIds.inactive.push(responseId);
+            this._cache.outgoingRequestIds.inactive.push(requestId);
             break;
           }
         }

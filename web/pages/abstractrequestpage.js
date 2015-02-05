@@ -296,6 +296,7 @@ AbstractRequestPage._AbstractRequestList.prototype.append = function(root) {
     
     var appendRequestPanels = function() {
       var requestIds = this._getRequestIds(status);
+
       if (requestIds != null) {
         this.__updateFinished();
         
@@ -367,7 +368,7 @@ AbstractRequestPage._AbstractRequestList.prototype.__getRequestStatusFromSetting
   if ((this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE) != 0) {
     status = Backend.Request.STATUS_ACTIVE;
   } else if ((this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_INACTIVE) != 0) {
-    status = Backend.Request.REQUEST_INCLUSION_POLICY_STATUS_INACTIVE;
+    status = Backend.Request.STATUS_INACTIVE;
   }
   return status;
 }
@@ -429,8 +430,10 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype._append
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.append = function(container) {
   this._rootContainer = UIUtils.appendBlock(container, this._requestId);
 
-    var requestOnlyWithResponses = (this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITH_RESPONSES) != 0;
-    var requestOnlyWithoutResponses = (this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES) != 0;
+  var requestOnlyWithResponses = (this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITH_RESPONSES) != 0;
+  var requestOnlyWithoutResponses = (this._settings.requestInclusionPolicy & AbstractRequestPage._AbstractRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES) != 0;
+
+  var status = this._requestList.__getRequestStatusFromSettings();
   
   var appendRequestElement = function() {
     var request = Backend.getRequest(this._requestId);
@@ -439,9 +442,10 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.append 
       if (responseIds != null) {
         this._requestList.__updateFinished();
 
-        if (!requestOnlyWithResponses && !requestOnlyWithoutResponses
-            || requestOnlyWithResponses && responseIds.length > 0
-            || requestOnlyWithoutResponses && responseIds.length == 0) {
+        if ((!requestOnlyWithResponses && !requestOnlyWithoutResponses
+             || requestOnlyWithResponses && responseIds.length > 0
+             || requestOnlyWithoutResponses && responseIds.length == 0)
+            && (status == null || status == request.status)) {
           
           this._appendRequestElement(request);
 
@@ -777,8 +781,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.addClass(deactivateButton, "outgoingrequest-deactivatebutton");
   UIUtils.setClickListener(deactivateButton, function() {
     this._requestList.__updateStarted();
-    request.status = Backend.Request.STATUS_INACTIVE;
-    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
+    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, {status: Backend.Request.STATUS_INACTIVE}, function() {
       this._requestList.__updateFinished();
       this._requestList.__requestUpdated();
       completionCallback();
@@ -790,13 +793,13 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
 
-    request.text = textEditor.getValue();
-    request.response_quantity = quantityCombo.getInputElement().getSelectedData();
-    request.response_wait_time = waitTimeCombo.getInputElement().getSelectedData();
-    request.response_age_group = ageCombo.getInputElement().getSelectedData();
-    request.response_gender = genderCombo.getInputElement().getSelectedData();
-    
-    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
+    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, {
+      text: textEditor.getValue(),
+      response_quantity: quantityCombo.getInputElement().getSelectedData(),
+      response_wait_time: waitTimeCombo.getInputElement().getSelectedData(),
+      response_age_group: ageCombo.getInputElement().getSelectedData(),
+      response_gender: genderCombo.getInputElement().getSelectedData()
+    }, function() {
       this._requestList.__updateFinished();
       this._requestList.__requestUpdated();
       completionCallback();
@@ -914,11 +917,8 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
   UIUtils.setClickListener(submitButton, function() {
     var responseText = textEditor.getValue();
     if (responseText != "") {
-      response = {
-        text: responseText
-      }
       this._requestList.__updateStarted();
-      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, response, function() {
+      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, {text: responseText}, function() {
         UIUtils.get$(createResponsePanel).remove();
         this._requestList.__updateFinished();
         this._requestList.__responseCreated();
@@ -1050,8 +1050,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
     
-    response.text = textEditor.getValue();
-    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, response, function() {
+    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, {text: textEditor.getValue()}, function() {
       this._requestList.__updateFinished();
       this._requestList.__responseUpdated();
       completionCallback();
