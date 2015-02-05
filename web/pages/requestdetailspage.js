@@ -103,6 +103,7 @@ RequestDetailsPage.prototype._updatePage = function() {
     responseAreaMaxHeight: -1,
     responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_ALL,
     showFullContent: true,
+    showResponseCount: true,
     updateListener: {
       updateStarted: function() {
         Application.showSpinningWheel();

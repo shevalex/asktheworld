@@ -226,7 +226,7 @@ AbstractRequestPage.IncomingRequestsTable.prototype._getRowData = function(reque
  * settings.responseInclusionPolicy: mask
  * settings.maxResponses: integer, -1 for unlimited
  * settings.responseAreaMaxHeight: "measure unit", -1 for unlimited
- * settings.showResponseCountsettings.showResponseCount: boolean
+ * settings.showResponseCount: boolean
  * settings.showFullContent: boolean
  * settings.updateListener
  */
