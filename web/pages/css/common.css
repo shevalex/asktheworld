@@ -92,6 +92,7 @@ select {
 }
 .text-editor-attachbutton {
   font-size: 15px;
+  margin-right: 5px;
 }
 .text-editor-thumbnail {
   display:inline-block;
@@ -183,6 +184,7 @@ select {
 
   width: calc(100% - 10px);
   text-align: center;
+  overflow: hidden;
 
   font-size: 20px;
   

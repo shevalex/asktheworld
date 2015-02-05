@@ -773,6 +773,18 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
   UIUtils.addClass(controlPanel, "outgoingrequest-controlpanel");
   
+  var deactivateButton = UIUtils.appendButton(controlPanel, "DeactivateButton", "Deactivate");
+  UIUtils.addClass(deactivateButton, "outgoingrequest-deactivatebutton");
+  UIUtils.setClickListener(deactivateButton, function() {
+    this._requestList.__updateStarted();
+    request.status = Backend.Request.STATUS_INACTIVE;
+    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
+      this._requestList.__updateFinished();
+      this._requestList.__requestUpdated();
+      completionCallback();
+    }.bind(this));
+  }.bind(this));
+  
   var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", "Update");
   UIUtils.addClass(updateButton, "outgoingrequest-updatebutton");
   UIUtils.setClickListener(updateButton, function() {
@@ -784,18 +796,6 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     request.response_age_group = ageCombo.getInputElement().getSelectedData();
     request.response_gender = genderCombo.getInputElement().getSelectedData();
     
-    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
-      this._requestList.__updateFinished();
-      this._requestList.__requestUpdated();
-      completionCallback();
-    }.bind(this));
-  }.bind(this));
-  
-  var deactivateButton = UIUtils.appendButton(controlPanel, "DeactivateButton", "Deactivate");
-  UIUtils.addClass(deactivateButton, "outgoingrequest-deactivatebutton");
-  UIUtils.setClickListener(deactivateButton, function() {
-    this._requestList.__updateStarted();
-    request.status = Backend.Request.STATUS_INACTIVE;
     AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, request, function() {
       this._requestList.__updateFinished();
       this._requestList.__requestUpdated();
