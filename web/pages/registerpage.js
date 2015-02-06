@@ -62,82 +62,85 @@ RegisterPage.prototype._appendContetPanel = function(root) {
     var isValidEmail = ValidationUtils.isValidEmail(email);
     if (!isValidEmail) {
       UIUtils.indicateInvalidInput(emailElement);
+      Application.showMessage("The email is not provided or does not look like a valid email address");
+      return;
     }
     
     var name = nameElement.getValue();
     if (name == "") {
       UIUtils.indicateInvalidInput(nameElement);
+      Application.showMessage("You must provide a nickname");
+      return;
     }
     
     var languages = languagesElement.getValue();
     if (languages == "") {
       UIUtils.indicateInvalidInput(languagesElement);
+      Application.showMessage("One or more languages must be set");
+      return;
     }
 
     var password = passwordElement.getValue();
     if (password == "" || password.length < 5) {
       UIUtils.indicateInvalidInput(passwordElement);
+      Application.showMessage("Password should be at least 5 symbols long");
+      return;
     }
     
     var retypePassword = retypePasswordElement.getValue();
     if (retypePassword == "" || retypePassword != password) {
       UIUtils.indicateInvalidInput(retypePasswordElement);
+      Application.showMessage("Passwords do not match. Please retype.");
+      return;
     }
 
-
-    if (acceptCheckbox.checked && isValidEmail && name != "" && languages != "" && password != "" && password == retypePassword) {
-      var backendCallback = {
-        success: function() {
-          this._onCompletion();
-          Application.showMenuPage();
-        },
-        failure: function() {
-          this._onCompletion();
-          Application.showMessage("Failed to create an account");
-        },
-        conflict : function() {
-          this._onCompletion();
-          Application.showMessage("This login (email) was already used");
-        },
-        error: function() {
-          this._onCompletion();
-          Application.showMessage("Server communication error");
-        },
-        
-        _onCompletion: function() {
-          UIUtils.setEnabled(registerButton, true);
-          Application.hideSpinningWheel();
-        }
-      }
-      
-      var userProfile = {
-        login: email,
-        password: password,
-        name: name,
-        gender: genderElement.getSelectedData(),
-        languages: [languagesElement.getValue()],
-        age: ageElement.getSelectedData(),
-      };
-      
-      UIUtils.setEnabled(registerButton, false);
-      Application.showSpinningWheel();
-
-      Backend.registerUser(userProfile, backendCallback);
-    } else if (!isValidEmail) {
-      Application.showMessage("The email you entered does not look like a valid email address");
-    } else if (password != retypePassword) {
-      Application.showMessage("Passwords do not match. Please retype.");
-    } else if (password.length < 5) {
-      Application.showMessage("Password should be at least 5 symbols long");
-    } else if (!acceptCheckbox.checked) {
-      var popupTermsLink = UIUtils.createId(root, "TermsLink"); 
+    if (!acceptCheckbox.checked) {
+      var popupTermsLink = UIUtils.createId(root, "TermsLink");
       Application.showMessage("You must accept<p><a href='#' id='" + popupTermsLink + "'><b>Terms And Conditions<b></a>");
       UIUtils.setClickListener(popupTermsLink, function() {
         this._showLicenseAgreement();
       }.bind(this));
-    } else {
-      Application.showMessage("Some of the fields are not provided.<br>All fields are required.");
+      
+      return;
     }
+
+    var backendCallback = {
+      success: function() {
+        this._onCompletion();
+        Application.showMenuPage();
+      },
+      failure: function() {
+        this._onCompletion();
+        Application.showMessage("Failed to create an account");
+      },
+      conflict : function() {
+        this._onCompletion();
+        Application.showMessage("This login (email) was already used");
+      },
+      error: function() {
+        this._onCompletion();
+        Application.showMessage("Server communication error");
+      },
+
+      _onCompletion: function() {
+        UIUtils.setEnabled(registerButton, true);
+        Application.hideSpinningWheel();
+      }
+    }
+
+    var userProfile = {
+      login: email,
+      password: password,
+      name: name,
+      gender: genderElement.getSelectedData(),
+      languages: [languagesElement.getValue()],
+      age: ageElement.getSelectedData(),
+    };
+
+    UIUtils.setEnabled(registerButton, false);
+    Application.showSpinningWheel();
+
+    Backend.registerUser(userProfile, backendCallback);
   }.bind(this));
 }
 

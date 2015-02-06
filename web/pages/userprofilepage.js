@@ -81,6 +81,7 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
     if (languages == "") {
       UIUtils.indicateInvalidInput(this._languagesElement);
       Application.showMessage("Languages should be set");
+      return;
     }
 
     var newPassword = this._newPasswordElement.getValue();
