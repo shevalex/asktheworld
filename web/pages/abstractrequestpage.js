@@ -901,7 +901,6 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       UIUtils.removeClass(requestHolderElement, "incomingrequest-holder-editable");
       UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
     }
-
     
     var text;
     if (this._settings.showFullContent) {
@@ -914,6 +913,8 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
 
     var requestDate = new Date(request.time);
     UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + text);
+    
+    AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(requestHolderElement, request.attachments);
 
     if (isEditable) {
       var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
@@ -1019,6 +1020,8 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
   
   var responseDate = new Date(response.time);
   UIUtils.get$(responseTextElement).html("<b>A " + Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
+  
+  AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(responseInfoElement, response.attachments);
 }
 
 AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestList, requestId, responseId, settings) {
@@ -1054,6 +1057,8 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
     var responseDate = new Date(response.time);
     UIUtils.get$(responseTextElement).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
 
+    AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(responseHolder, response.attachments);
+    
     if (isEditable) {
       var responseControlPanel = UIUtils.appendBlock(responseHolder, "ControlPanel");
       UIUtils.addClass(responseControlPanel, "outgoingresponse-controlpanel");
