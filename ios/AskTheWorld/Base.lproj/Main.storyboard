@@ -134,6 +134,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="f4j-QD-v54" kind="show" id="CVd-BU-wPE"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="TellFriend" textLabel="X4I-G5-w8c" style="IBUITableViewCellStyleDefault" id="Zyc-ps-EdQ">
                                         <autoresizingMask key="autoresizingMask"/>
@@ -204,7 +207,27 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UUf-Dp-ih4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1872" y="1210"/>
+            <point key="canvasLocation" x="1839" y="1210"/>
+        </scene>
+        <!--Update Settings-->
+        <scene sceneID="kBs-E3-wpv">
+            <objects>
+                <viewController id="f4j-QD-v54" customClass="UpdatePrefsViewController" customModule="AskTheWorld" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="iVx-V1-AJk"/>
+                        <viewControllerLayoutGuide type="bottom" id="hwH-Tn-RF4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="D8c-fR-IV4">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Update Settings" id="2NF-7W-1dU"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jh8-pM-ygh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1267" y="1883"/>
         </scene>
         <!--Update Profile-->
         <scene sceneID="53j-I7-olf">

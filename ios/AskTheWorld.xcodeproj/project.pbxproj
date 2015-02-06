@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F70124101A8425EF0064D09C /* UpdatePrefsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F701240F1A8425EF0064D09C /* UpdatePrefsViewController.swift */; };
 		F76214C41A38B554001BD37D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76214C31A38B554001BD37D /* AppDelegate.swift */; };
 		F76214C61A38B554001BD37D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76214C51A38B554001BD37D /* ViewController.swift */; };
 		F76214C91A38B555001BD37D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F76214C71A38B555001BD37D /* Main.storyboard */; };
@@ -30,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F701240F1A8425EF0064D09C /* UpdatePrefsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatePrefsViewController.swift; sourceTree = "<group>"; };
 		F76214BE1A38B554001BD37D /* AskTheWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AskTheWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F76214C21A38B554001BD37D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F76214C31A38B554001BD37D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				F76214C31A38B554001BD37D /* AppDelegate.swift */,
 				F76214C51A38B554001BD37D /* ViewController.swift */,
 				F76214C71A38B555001BD37D /* Main.storyboard */,
+				F701240F1A8425EF0064D09C /* UpdatePrefsViewController.swift */,
 				F7B3E0691A6626C000DA156F /* UpdateSettingsViewController.swift */,
 				F7B49AD01A5F8D9A00C13D4D /* SettingsScreenController.swift */,
 				F76214CA1A38B555001BD37D /* Images.xcassets */,
@@ -228,6 +231,7 @@
 				F76214E41A38C13F001BD37D /* LoginViewController.swift in Sources */,
 				F76214C61A38B554001BD37D /* ViewController.swift in Sources */,
 				F76214C41A38B554001BD37D /* AppDelegate.swift in Sources */,
+				F70124101A8425EF0064D09C /* UpdatePrefsViewController.swift in Sources */,
 				F76214E61A38C349001BD37D /* RegisterViewController.swift in Sources */,
 				F7B49AD11A5F8D9A00C13D4D /* SettingsScreenController.swift in Sources */,
 			);
