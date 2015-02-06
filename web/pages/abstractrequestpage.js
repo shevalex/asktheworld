@@ -772,6 +772,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     }
   });
   textEditor.setValue(request.text);
+  textEditor.addAttachments(request.attachments);
   textEditor.focus();
 
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
@@ -795,6 +796,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
 
     AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, {
       text: textEditor.getValue(),
+      attachments: textEditor.getAttachments(),
       response_quantity: quantityCombo.getInputElement().getSelectedData(),
       response_wait_time: waitTimeCombo.getInputElement().getSelectedData(),
       response_age_group: ageCombo.getInputElement().getSelectedData(),
@@ -918,7 +920,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
     var responseText = textEditor.getValue();
     if (responseText != "") {
       this._requestList.__updateStarted();
-      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, {text: responseText}, function() {
+      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, {text: responseText, attachments: textEditor.getAttachments()}, function() {
         UIUtils.get$(createResponsePanel).remove();
         this._requestList.__updateFinished();
         this._requestList.__responseCreated();
@@ -1040,6 +1042,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
     }
   });
   textEditor.setValue(response.text);
+  textEditor.addAttachments(response.attachments);
   textEditor.focus();
 
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
@@ -1050,7 +1053,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
     
-    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, {text: textEditor.getValue()}, function() {
+    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, {text: textEditor.getValue(), attachments: textEditor.getAttachments()}, function() {
       this._requestList.__updateFinished();
       this._requestList.__responseUpdated();
       completionCallback();
