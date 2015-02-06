@@ -90,6 +90,11 @@
   background: rgb(200, 240, 210);
 }
 
+.outgoingrequest-editpanel-label {
+  display: block;
+  margin-bottom: 10px;
+}
+
 .outgoingrequest-editpanel-text {
   height: 150px;
   margin-bottom: 10px;

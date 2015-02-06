@@ -793,8 +793,8 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.addClass(editPanel, "outgoingrequest-editpanel");
 
   var requestDate = new Date(request.time);
-  UIUtils.appendLabel(editPanel, "Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>");
-  editPanel.appendChild(UIUtils.createLineBreak());
+  var label = UIUtils.appendLabel(editPanel, "Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>");
+  UIUtils.addClass(label, "outgoingrequest-editpanel-label");
   
   var genderCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Gender"), "Target gender", Application.Configuration.GENDER_PREFERENCE, "10px"));
   genderCombo.getInputElement().selectData(request.response_gender);
