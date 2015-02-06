@@ -111,8 +111,7 @@ NewRequestPage.prototype._createRequest = function() {
 
   var request = {
     text: this._requestTextEditor.getValue(),
-    pictures: [],
-    audios: [],
+    attachments: this._requestTextEditor.getAttachments(),
     response_gender: this._requestGenderElement.getSelectedData(),
     response_quantity: this._requestQuantityElement.getSelectedData(),
     response_wait_time: this._requestWaitTimeElement.getSelectedData(),

@@ -656,6 +656,51 @@ AbstractRequestPage._AbstractRequestList.__updateResponse = function(requestId, 
   Backend.updateResponse(requestId, responseId, response, callback);
 }
 
+AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel = function(root, attachments) {
+  if (attachments == null || attachments.length == 0) {
+    return;
+  }
+  
+  var attachmentsPanel = UIUtils.appendBlock(root, "Attachments");
+  UIUtils.addClass(attachmentsPanel, "common-attachments");
+
+  for (var index in attachments) {
+    var attachment = attachments[index];
+    
+    var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + index);
+    UIUtils.addClass(thumbnail, "common-attachment-thumbnail");
+
+    var thumbnailTitle = UIUtils.appendBlock(thumbnail, "Title");
+    UIUtils.addClass(thumbnailTitle, "common-attachment-thumbnail-title");
+    thumbnailTitle.innerHTML = attachment.name;
+    
+    if (FileUtils.isImage(attachment)) {
+      thumbnail.style.backgroundImage = "url(" + attachment.data + ")";
+
+      UIUtils.setClickListener(thumbnail, function() {
+        var previewElement = UIUtils.appendBlock(attachmentsPanel, "Preview");
+        UIUtils.addClass(previewElement, "common-attachment-preview");
+
+        var previewCloser = UIUtils.appendBlock(previewElement, "X");
+        UIUtils.addClass(previewCloser, "common-attachment-preview-x");
+
+        UIUtils.removeIfClickedOutside(previewElement);
+
+        UIUtils.setClickListener(previewCloser, function() {
+          UIUtils.get$(previewElement).remove();
+        });
+
+        previewElement.style.backgroundImage = "url(" + attachment.data + ")";
+
+        var previewTitle = UIUtils.appendBlock(previewElement, "Title");
+        UIUtils.addClass(previewTitle, "common-attachment-preview-title");
+        previewTitle.innerHTML = attachment.name;
+      });
+    } else {
+      // TBD provide special icons for other file types
+    }
+  }
+}
 
 
 AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractRequestPanel, function _OutgoingRequestPanel(requestList, requestId, settings) {
@@ -708,7 +753,6 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
       drawCounterText();
       this._requestUpdateListeners.push(drawCounterText);
     }
-    
 
     var text;
     if (this._settings.showFullContent) {
@@ -722,6 +766,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
     var requestDate = new Date(request.time);
     UIUtils.get$(textElement).html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + text);
     
+    AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(requestHolderElement, request.attachments);
     
     if (isEditable) {
       var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
@@ -751,7 +796,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.appendLabel(editPanel, "Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>");
   editPanel.appendChild(UIUtils.createLineBreak());
   
-  var genderCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Gender"), "Target sex", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  var genderCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Gender"), "Target gender", Application.Configuration.GENDER_PREFERENCE, "10px"));
   genderCombo.getInputElement().selectData(request.response_gender);
   
   var ageCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "AgeCategory"), "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
@@ -772,6 +817,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     }
   });
   textEditor.setValue(request.text);
+  textEditor.addAttachments(request.attachments);
   textEditor.focus();
 
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
@@ -795,6 +841,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
 
     AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, {
       text: textEditor.getValue(),
+      attachments: textEditor.getAttachments(),
       response_quantity: quantityCombo.getInputElement().getSelectedData(),
       response_wait_time: waitTimeCombo.getInputElement().getSelectedData(),
       response_age_group: ageCombo.getInputElement().getSelectedData(),
@@ -854,7 +901,6 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       UIUtils.removeClass(requestHolderElement, "incomingrequest-holder-editable");
       UIUtils.addClass(requestHolderElement, "incomingrequest-holder");
     }
-
     
     var text;
     if (this._settings.showFullContent) {
@@ -867,6 +913,8 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
 
     var requestDate = new Date(request.time);
     UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + text);
+    
+    AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(requestHolderElement, request.attachments);
 
     if (isEditable) {
       var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
@@ -918,7 +966,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
     var responseText = textEditor.getValue();
     if (responseText != "") {
       this._requestList.__updateStarted();
-      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, {text: responseText}, function() {
+      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, {text: responseText, attachments: textEditor.getAttachments()}, function() {
         UIUtils.get$(createResponsePanel).remove();
         this._requestList.__updateFinished();
         this._requestList.__responseCreated();
@@ -972,6 +1020,8 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
   
   var responseDate = new Date(response.time);
   UIUtils.get$(responseTextElement).html("<b>A " + Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
+  
+  AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(responseInfoElement, response.attachments);
 }
 
 AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractResponsePanel, function _OutgoingResponsePanel(requestList, requestId, responseId, settings) {
@@ -1007,6 +1057,8 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
     var responseDate = new Date(response.time);
     UIUtils.get$(responseTextElement).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
 
+    AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(responseHolder, response.attachments);
+    
     if (isEditable) {
       var responseControlPanel = UIUtils.appendBlock(responseHolder, "ControlPanel");
       UIUtils.addClass(responseControlPanel, "outgoingresponse-controlpanel");
@@ -1040,6 +1092,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
     }
   });
   textEditor.setValue(response.text);
+  textEditor.addAttachments(response.attachments);
   textEditor.focus();
 
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
@@ -1050,7 +1103,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
     
-    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, {text: textEditor.getValue()}, function() {
+    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, {text: textEditor.getValue(), attachments: textEditor.getAttachments()}, function() {
       this._requestList.__updateFinished();
       this._requestList.__responseUpdated();
       completionCallback();

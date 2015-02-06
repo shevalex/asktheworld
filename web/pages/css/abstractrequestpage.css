@@ -247,3 +247,109 @@
   color: white;
   background: rgb(60, 25, 255);
 }
+
+.common-attachments {
+  padding: 5px;
+  height: 50px;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.common-attachment-thumbnail {
+  display:inline-block;
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin-right: 10px;
+  
+  border-style: solid;
+  border-radius: 3px;
+  border-width: 1px;
+  border-color: black;
+  
+  background-image: url(../../imgs/default_thumbnail.png);
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+.common-attachment-thumbnail-title {
+  display: none;
+  position: absolute;
+  bottom: -5px;
+  left: 10px;
+  padding: 5px;
+  z-index: 100;
+  
+  white-space: nowrap;
+
+  font-size: 10px;
+
+  border-radius: 3px;
+  
+  background-color: rgb(100, 100, 100);
+  color: white;
+}
+.common-attachment-thumbnail:hover .common-attachment-thumbnail-title {
+  display: block;
+}
+.common-attachment-preview {
+  display: block;
+  position: fixed;
+  left: 25%;
+  top: 25%;
+  
+  width: 50%;
+  height: 50%;
+  
+  padding: 5px;
+
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 3px;
+  border-color: black;
+  
+  background-color: rgba(100, 100, 100, 0.8);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+.common-attachment-preview-x {
+  width: 20px;
+  height: 20px;
+  
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  
+  border-radius: 5px;
+  
+  background-color: white;
+  background-image: url(../../imgs/close.png);
+  background-size: contain;
+}
+.common-attachment-preview-x:hover {
+  background-color: rgb(200, 240, 240);
+}
+.common-attachment-preview:hover .common-attachment-preview-x {
+  display: block;
+}
+.common-attachment-preview-title {
+  display: none;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  padding: 5px;
+
+  width: calc(100% - 10px);
+  text-align: center;
+  overflow: hidden;
+
+  font-size: 20px;
+  
+  background-color: rgb(100, 100, 100);
+  color: white;
+}
+.common-attachment-preview:hover .common-attachment-preview-title {
+  display: block;
+}
