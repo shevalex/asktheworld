@@ -677,7 +677,7 @@ AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel = function(root
     if (FileUtils.isImage(attachment)) {
       thumbnail.style.backgroundImage = "url(" + attachment.data + ")";
 
-      UIUtils.setClickListener(thumbnail, function() {
+      UIUtils.setClickListener(thumbnail, function(attachment) {
         var previewElement = UIUtils.appendBlock(attachmentsPanel, "Preview");
         UIUtils.addClass(previewElement, "common-attachment-preview");
 
@@ -695,7 +695,7 @@ AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel = function(root
         var previewTitle = UIUtils.appendBlock(previewElement, "Title");
         UIUtils.addClass(previewTitle, "common-attachment-preview-title");
         previewTitle.innerHTML = attachment.name;
-      });
+      }.bind(this, attachment));
     } else {
       // TBD provide special icons for other file types
     }
