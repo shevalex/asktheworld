@@ -37,11 +37,11 @@ RegisterPage.prototype._appendContentPanel = function(root) {
   contentPanel.appendChild(UIUtils.createLineBreak());
 
   var genderElement = contentPanel.appendChild(UIUtils.createLabeledSingleChoiceList(UIUtils.createId(contentPanel, "Gender"), "Your Gender", Application.Configuration.GENDERS, "10px")).getInputElement();
-  genderElement.selectChoices(Application.Configuration.GENDERS[0]);
+  genderElement.selectData(Application.Configuration.GENDERS[0].data);
   contentPanel.appendChild(UIUtils.createLineBreak());
   
   var ageElement = contentPanel.appendChild(UIUtils.createLabeledSingleChoiceList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
-  ageElement.selectChoices(Application.Configuration.AGE_CATEGORIES[0]);
+  ageElement.selectData(Application.Configuration.AGE_CATEGORIES[0].data);
   contentPanel.appendChild(UIUtils.createLineBreak());
   
   var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", Application.Configuration.LANGUAGES, "10px")).getInputElement();
@@ -149,16 +149,13 @@ RegisterPage.prototype._appendContentPanel = function(root) {
     }
 
     
-    var chosenGenders = genderElement.getSelectedData();
-    var chosenAges = ageElement.getSelectedData();
-    
     var userProfile = {
       login: email,
       password: password,
       name: name,
-      gender: chosenGenders.length > 0 ? chosenGenders[0] : "",
+      gender: genderElement.getSelectedData(),
       languages: languagesElement.getSelectedData(),
-      age: chosenAges.length > 0 ? chosenAges[0] : "",
+      age: ageElement.getSelectedData(),
     };
 
     UIUtils.setEnabled(registerButton, false);

@@ -479,18 +479,30 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
   }
   
   mChoiceList.getSelectedData = function() {
-    var result = [];
-    
-    var choices = this.getSelectedChoices();
-    for (var index in choices) {
-      result.push(choices[index].data);
-    }
+    if (exclusive) {
+      var choices = this.getSelectedChoices();
+      return choices.length > 0 ? choices[0] : "";
+    } else {
+      var result = [];
 
-    return result;
+      var choices = this.getSelectedChoices();
+      for (var index in choices) {
+        result.push(choices[index].data);
+      }
+
+      return result;
+    }
   }
   
   mChoiceList.getValue = function() {
     return this.getSelectedData();
+  }
+  
+  mChoiceList.selectData = function(data) {
+    for (var index in choices) {
+      choiceElements[index].check.setValue(choices[index].data == data);
+    }
+    refreshLabel();
   }
   
   mChoiceList.selectChoices = function(items) {
