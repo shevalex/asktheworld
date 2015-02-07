@@ -30,6 +30,7 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
       Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     },
     requestEditable: true,
+    showFullContent: false,
     maxResponses: -1,
     responseAreaMaxHeight: "300px",
     requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE | AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES,

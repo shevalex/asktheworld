@@ -42,6 +42,7 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
       Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
     },
     requestEditable: false,
+    showFullContent: false,
     maxResponses: 0,
     responseAreaMaxHeight: -1,
     requestInclusionPolicy: AbstractRequestPage.IncomingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE | AbstractRequestPage.IncomingRequestList.prototype.REQUEST_INCLUSION_POLICY_ONLY_WITHOUT_RESPONSES,
