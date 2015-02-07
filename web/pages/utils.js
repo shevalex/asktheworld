@@ -274,7 +274,7 @@ UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
     combo.appendChild(checkboxElement);
     
     var label = UIUtils.createLabel(cbId + "-Container-Label", text);
-    label.style.paddingLeft = "10px";
+    label.style.padding = "5px 5px 5px 10px";
     label.style.textAlign = "left";
     label.style.display = "inline-block";
     combo.appendChild(label);
@@ -401,9 +401,15 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
   var mChoiceList = UIUtils.createBlock(listId);
   mChoiceList.setAttribute("class", "multichoicelist");
 
-  var selector = UIUtils.appendBlock(mChoiceList, "Label");
+  var selector = UIUtils.appendBlock(mChoiceList, "Selector");
   selector.setAttribute("class", "multichoicelist-selector notselectable");
-  selector.innerHTML = "<br>";
+  
+  var selectorText = UIUtils.appendBlock(selector, "Text");
+  selectorText.setAttribute("class", "multichoicelist-selector-text");
+  selectorText.innerHTML = "<br>";
+
+  var selectorIcon = UIUtils.appendBlock(selector, "Icon");
+  selectorIcon.setAttribute("class", "multichoicelist-selector-icon");
   
   var refreshLabel = function() {
     var selectedItems = mChoiceList.getSelectedChoices();
@@ -416,7 +422,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
       value += selectedItems[index].display;
     }
 
-    selector.innerHTML = value != "" ? value : "<br>";
+    selectorText.innerHTML = value != "" ? value : "<br>";
   };
   
   
@@ -441,7 +447,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     
     
     checkbox.setAttribute("name", "choices");
-    itemElement.selector = checkbox;
+    itemElement.check = checkbox;
     choiceElements.push(itemElement);
     form.appendChild(itemElement);
     
@@ -464,7 +470,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     var result = [];
     
     for (var index in choiceElements) {
-      if (choiceElements[index].selector.checked) {
+      if (choiceElements[index].check.checked) {
         result.push(choices[index]);
       }
     }
@@ -499,7 +505,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
         }
       }
     
-      choiceElements[index].selector.setValue(found);
+      choiceElements[index].check.setValue(found);
     }
     
     refreshLabel();

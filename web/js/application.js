@@ -1,7 +1,7 @@
 
 var Application = {
   Configuration: {
-    LANGUAGES: [{data: "rus", display: "Russian"}, {data: "eng", display: "English"}],
+    LANGUAGES: [{data: "rus", display: "Russian"}, {data: "eng", display: "English"}, {data: "ger", display: "German"}, {data: "esp", display: "Spanish"}, {data: "fra", display: "French"}, {data: "por", display: "Portugeese"}, {data: "grc", display: "Greece"}, {data: "gon", display: "Gondurasee"}],
     
     AGE_CATEGORIES: [{data: "child", display: "Child"}, {data: "teenager", display: "Teenager"}, {data: "young", display: "Young Adult"}, {data: "adult", display: "Adult"}, {data: "senior", display: "Senior"}],
     RESPONSE_WAIT_TIME: [{data: 148, display: "1 week"}, {data: 24, display: "1 day"}, {data: 12, display: "half-day"}, {data: 1, display: "1 hour"}],
