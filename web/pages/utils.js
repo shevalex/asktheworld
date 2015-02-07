@@ -385,24 +385,44 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
   var mChoiceList = UIUtils.createBlock(listId);
   mChoiceList.setAttribute("class", "multichoicelist");
 
+  var selector = UIUtils.appendBlock(mChoiceList, "Label");
+  selector.setAttribute("class", "multichoicelist-selector notselectable");
+  
+  var refreshLanel = function() {
+    var selectedItems = mChoiceList.getSelectedChoices();
+    
+    var value = "";
+    for (var index in selectedItems) {
+      if (value != "") {
+        value += ", ";
+      }
+      value += selectedItems[index].display;
+    }
+    
+    selector.innerHTML = value;
+  };
+    
   var choiceItems = [];
   for (var index in choices) {
+    var choice = choices[index];
+    
     var itemElement = UIUtils.createBlock(listId + "-" + index);
+    itemElement.choice = choice;
     itemElement.setAttribute("class", "multichoicelist-dropdown-item notselectable");
-    UIUtils.appendCheckbox(itemElement, listId + "-" + index + "-cb", choices[index].display);
+    var checkbox = UIUtils.appendCheckbox(itemElement, listId + "-" + index + "-cb", choice.display);
+    itemElement.selector = checkbox;
     choiceItems.push({element: itemElement});
+    
+    itemElement.onclick = refreshLanel;
   }
   var dropDownListElement = UIUtils.createList(listId + "-dropdown", choiceItems);
   dropDownListElement.setAttribute("class", "multichoicelist-dropdown");
   dropDownListElement.style.display = "none";
 
-  var label = UIUtils.appendBlock(mChoiceList, "Label");
-  label.setAttribute("class", "multichoicelist-selector notselectable");
-  
   mChoiceList.appendChild(dropDownListElement);
   
   
-  label.onclick = function() {
+  selector.onclick = function() {
     if (dropDownListElement.style.display == "none") {
       dropDownListElement.style.display = "block";
       UIUtils.listenOutsideClicks(dropDownListElement, function() {
@@ -412,6 +432,65 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
       dropDownListElement.style.display = "none";
     }
   };
+  
+  
+    
+  mChoiceList.getSelectedChoices = function() {
+    var result = [];
+    
+    for (var index in choiceItems) {
+      if (choiceItems[index].element.selector.checked) {
+        result.push(choices[index]);
+      }
+    }
+    
+    return result;
+  }
+  
+  mChoiceList.getSelectedData = function() {
+    var result = [];
+    
+    var choices = this.getSelectedChoices();
+
+    for (var index in choices) {
+      result.push(choices.data);
+    }
+    
+    return result;
+  }
+  
+  mChoiceList.getValue = function() {
+    return this.getSelectedData();
+  }
+  
+  mChoiceList.selectChoices = function(items) {
+    for (var index in choices) {
+      var found = false;
+      for (var i in items) {
+        if (typeof items[i] == "object" && choices[index].data == items[i].data
+            || choices[index].data == items[i]) {
+
+          found = true;
+          break;
+        }
+      }
+    
+      choiceItems[index].element.selector.setValue(found);
+    }
+  }
+  
+  mChoiceList.clearChoices = function() {
+    this.selectChoices([]);
+  }
+  
+  mChoiceList.setValue = function(items) {
+    return this.selectChoices(items);
+  }
+  
+  mChoiceList.indicateInvalidInput = function() {
+    UIUtils.indicateInvalidInput(selector);
+  }
+
   
   return mChoiceList;
 }
@@ -760,7 +839,7 @@ UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, ma
   compoundElement.style.textAlign = "left";
   compoundElement.style.whiteSpace = "nowrap";
 
-  compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "-Label", labelText));
+  compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "Compound-Label", labelText));
   compoundElement.appendChild(UIUtils.createLineBreak());
 
   compoundElement.appendChild(inputElement);
