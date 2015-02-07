@@ -32,15 +32,17 @@ NewRequestPage.prototype.definePageContent = function(root) {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID);
   });
   
-  this._requestGenderElement = requestParamsPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestParamsPanel, "Gender"), "Target gender", Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
+  var targetSelectorPanel = UIUtils.appendBlock(requestParamsPanel, "TargetSelectors");
+
+  this._requestGenderElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "Gender"), "Target gender", Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
   
-  this._requestAgeElement = requestParamsPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestParamsPanel, "AgeCategory"), "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
+  this._requestAgeElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "AgeCategory"), "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
   
   requestParamsPanel.appendChild(UIUtils.createLineBreak());
   
-  this._requestWaitTimeElement = requestParamsPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestParamsPanel, "WaitTime"), "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
+  this._requestWaitTimeElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "WaitTime"), "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
   
-  this._requestQuantityElement = requestParamsPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestParamsPanel, "Quantity"), "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
+  this._requestQuantityElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "Quantity"), "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
   
   var controlPanel = UIUtils.appendBlock(root, "RequestControlPanel");
   UIUtils.appendLabel(controlPanel, "Label", "3. And finally send it out!");

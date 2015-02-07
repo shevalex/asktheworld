@@ -30,7 +30,7 @@
   display: block;
   margin-top: 10px;
   
-  font-size: 15px;
+  font-size: 20px;
 }
 
 #NewRequestPage-RequestParametersPanel-Label {
@@ -47,6 +47,10 @@
   margin-bottom: 10px;
 
   font-size: 15px;
+}
+
+#NewRequestPage-RequestParametersPanel-TargetSelectors {
+  padding: 0px 5px 0px 5px;
 }
 
 #NewRequestPage-RequestControlPanel {

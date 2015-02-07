@@ -885,8 +885,6 @@ UIUtils.getOneLine = function(text) {
 
 UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, margin) {
   var compoundElement = document.createElement("div");
-  compoundElement.style.display = "inline-block";
-  compoundElement.style.width = "100%";
   compoundElement.style.textAlign = "left";
   compoundElement.style.whiteSpace = "nowrap";
 
@@ -894,7 +892,6 @@ UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, ma
   compoundElement.appendChild(UIUtils.createLineBreak());
 
   compoundElement.appendChild(inputElement);
-  inputElement.setAttribute("font-size", "inherit");
   if (margin != null) {
     inputElement.style.marginTop = margin;
   }
