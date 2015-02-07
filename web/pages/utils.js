@@ -451,7 +451,12 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     choiceElements.push(itemElement);
     form.appendChild(itemElement);
     
-    itemElement.onclick = refreshLabel;
+    itemElement.onclick = function() {
+      refreshLabel();
+      if (exclusive) {
+        dropDownListElement.style.display = "none";
+      }
+    };
   }
   
   selector.onclick = function() {
