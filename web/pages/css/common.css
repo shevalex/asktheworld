@@ -12,7 +12,10 @@ textarea {
 
 select {
   font-size: inherit;
-  border-color: #999;
+  Xborder-color: #999;
+  
+  background-color: rgb(248, 248, 248);
+  border-color: rgb(166, 166, 166);
 }
 
 .application-page {
@@ -211,7 +214,6 @@ select {
 }
 .multichoicelist-selector {
   padding: 5px;
-  min-height: 20px;
   overflow: hidden;
   
   background-color: rgb(248, 248, 248);

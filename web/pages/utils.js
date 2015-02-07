@@ -387,6 +387,7 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
 
   var selector = UIUtils.appendBlock(mChoiceList, "Label");
   selector.setAttribute("class", "multichoicelist-selector notselectable");
+  selector.innerHTML = "<br>";
   
   var refreshLabel = function() {
     var selectedItems = mChoiceList.getSelectedChoices();
@@ -398,8 +399,8 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
       }
       value += selectedItems[index].display;
     }
-    
-    selector.innerHTML = value;
+
+    selector.innerHTML = value != "" ? value : "<br>";
   };
     
   var choiceItems = [];
@@ -432,7 +433,7 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
       dropDownListElement.style.display = "none";
     }
   };
-  
+
     
   mChoiceList.getSelectedChoices = function() {
     var result = [];
