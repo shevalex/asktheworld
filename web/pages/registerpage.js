@@ -125,7 +125,7 @@ RegisterPage.prototype._appendContentPanel = function(root) {
         page._passwordElement.setValue("");
         page._retypePasswordElement.setValue("");
         
-        Application.showMenuPage();
+        Application.showWelcomePage();
       },
       failure: function() {
         this._onCompletion();

@@ -107,6 +107,7 @@ var Application = {
   
   _loginPage: null,
   _registerPage: null,
+  _welcomePage: null,
   _menuPage: null,
   
   _messageTimer: null
@@ -129,6 +130,7 @@ Application.start = function() {
 Application.reset = function() {
   this._loginPage = null;
   this._registerPage = null;
+  this._welcomePage = null;
   this._menuPage = null;
   
   this.hideMessage();
@@ -152,7 +154,16 @@ Application.showRegisterPage = function(observer) {
   Application._showPage(this._registerPage, null, observer);
 }
 
+Application.showWelcomePage = function(observer) {
+  if (this._welcomePage == null) {
+    this._welcomePage = new WelcomePage();
+  }
+  
+  Application._showPage(this._welcomePage, null, observer);
+}
+
 Application.showMenuPage = function(observer) {
+  console.debug(this);
   
   Application._showPage(this.getMenuPage(), null, observer);
 }

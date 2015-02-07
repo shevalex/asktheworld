@@ -56,7 +56,6 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
       }.bind(this)
     }
   });
-  
 });
 
 HomePage.prototype.definePageContent = function(root) {
