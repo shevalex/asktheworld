@@ -148,7 +148,6 @@ RegisterPage.prototype._appendContentPanel = function(root) {
       }
     }
 
-    
     var userProfile = {
       login: email,
       password: password,

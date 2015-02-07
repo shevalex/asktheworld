@@ -430,10 +430,6 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
   dropDownListElement.setAttribute("class", "multichoicelist-dropdown");
   dropDownListElement.style.display = "none";
 
-//  var form = document.createElement("form");
-//  form.style.margin = 0;
-//  dropDownListElement.appendChild(form);
-  
   var choiceElements = [];
   for (var index in choices) {
     var choice = choices[index];
@@ -446,7 +442,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     checkbox.getLabel().style.width = "calc(100% - 40px)";
     
     
-    checkbox.setAttribute("name", "choices");
+    checkbox.setAttribute("name", listId);
     itemElement.check = checkbox;
     choiceElements.push(itemElement);
     dropDownListElement.appendChild(itemElement);
@@ -485,14 +481,14 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
   
   mChoiceList.getSelectedData = function() {
     if (exclusive) {
-      var choices = this.getSelectedChoices();
-      return choices.length > 0 ? choices[0] : "";
+      var selectedChoices = this.getSelectedChoices();
+      return selectedChoices.length > 0 ? selectedChoices[0].data : "";
     } else {
       var result = [];
 
-      var choices = this.getSelectedChoices();
-      for (var index in choices) {
-        result.push(choices[index].data);
+      var selectedChoices = this.getSelectedChoices();
+      for (var index in selectedChoices) {
+        result.push(selectedChoices[index].data);
       }
 
       return result;
