@@ -21,6 +21,7 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
       Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     },
     requestEditable: false,
+    showFullContent: false,
     showResponseCount: true,
     maxResponses: 0,
     responseAreaMaxHeight: -1,

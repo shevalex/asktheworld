@@ -34,6 +34,7 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
       Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     },
     requestEditable: true,
+    showFullContent: true,
     maxResponses: 2,
     showResponseCount: true,
     responseAreaMaxHeight: "300px",
