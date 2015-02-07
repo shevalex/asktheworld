@@ -246,8 +246,8 @@ UIUtils.appendLink = function(root, linkId, text) {
 }
 
 
-UIUtils.createCheckbox = function(cbId) {
-  var checkbox = UIUtils._createInputField(cbId, "checkbox");
+UIUtils.createCheckbox = function(cbId, exclusive) {
+  var checkbox = UIUtils._createInputField(cbId, exclusive ? "radio" : "checkbox");
   checkbox.style.display = "inline-block";
   checkbox.style.width = "initial";
   
@@ -262,17 +262,17 @@ UIUtils.createCheckbox = function(cbId) {
   return checkbox;
 }
 
-UIUtils.appendCheckbox = function(root, cbId, text) {
-  var checkboxElement = UIUtils.createCheckbox(UIUtils.createId(root, cbId));
+UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
+  var checkboxElement = UIUtils.createCheckbox(UIUtils.createId(root, cbId), exclusive);
   
   if (text != null) {
     var combo = UIUtils.appendBlock(root, cbId + "-Container");
     combo.appendChild(checkboxElement);
-    var label = UIUtils.createLabel(cbId + "-Label", text);
-    label.style.marginLeft = "10px";
+    var label = UIUtils.createLabel(cbId + "-Container-Label", text);
+    label.style.paddingLeft = "10px";
     combo.appendChild(label);
     
-    combo.onclick = function() {
+    label.onclick = function() {
       checkboxElement.setValue(!checkboxElement.getValue());
     }
   } else {
@@ -381,7 +381,7 @@ UIUtils.appendTable = function(root, tableId, columns) {
 }
 
 
-UIUtils.createMultiChoiceList = function(listId, choices) {
+UIUtils.createMultiChoiceList = function(listId, choices, exclusive) {
   var mChoiceList = UIUtils.createBlock(listId);
   mChoiceList.setAttribute("class", "multichoicelist");
 
@@ -410,7 +410,7 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
     var itemElement = UIUtils.createBlock(listId + "-" + index);
     itemElement.choice = choice;
     itemElement.setAttribute("class", "multichoicelist-dropdown-item notselectable");
-    var checkbox = UIUtils.appendCheckbox(itemElement, listId + "-" + index + "-cb", choice.display);
+    var checkbox = UIUtils.appendCheckbox(itemElement, listId + "-" + index + "-cb", choice.display, exclusive);
     itemElement.selector = checkbox;
     choiceItems.push({element: itemElement});
     

@@ -51,15 +51,13 @@ RegisterPage.prototype._appendContentPanel = function(root) {
   this._retypePasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "RetypePassword"), "Re-type Password", "10px")).getInputElement();
   
   contentPanel.appendChild(UIUtils.createLineBreak());
-  var termsAndCondsPanel = UIUtils.appendBlock(contentPanel, "TermsAndConds");
-  this._acceptCheckbox = UIUtils.appendCheckbox(termsAndCondsPanel, "AcceptTerms");
-  var licenseAgreementRef = UIUtils.appendLabel(termsAndCondsPanel, "LinkLabel");
-  var licenseLinkId = UIUtils.createId(termsAndCondsPanel, "Link");
-  UIUtils.get$(licenseAgreementRef).html("Please accept <a href='#' id='" + licenseLinkId + "'>Terms And Conditions</a>");
+  var licenseLinkId = UIUtils.createId(contentPanel, "TermsAndConds-Link");
+  this._acceptCheckbox = UIUtils.appendCheckbox(contentPanel, "TermsAndConds", "Please accept <a href='#' id='" + licenseLinkId + "'>Terms And Conditions</a>");
   UIUtils.setClickListener(licenseLinkId, function() {
     this._showLicenseAgreement();
+    setTimeout(this._acceptCheckbox.setValue.bind(this, false), 0);
   }.bind(this));
-
+  
   contentPanel.appendChild(UIUtils.createLineBreak());
   var registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", "Register");
   
