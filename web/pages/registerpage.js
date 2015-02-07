@@ -36,10 +36,12 @@ RegisterPage.prototype._appendContentPanel = function(root) {
   var nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), "Your Nickname", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
 
-  var genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), "Your Gender", Application.Configuration.GENDERS, "10px")).getInputElement();
+  var genderElement = contentPanel.appendChild(UIUtils.createLabeledSingleChoiceList(UIUtils.createId(contentPanel, "Gender"), "Your Gender", Application.Configuration.GENDERS, "10px")).getInputElement();
+  genderElement.selectChoices(Application.Configuration.GENDERS[0]);
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
+  var ageElement = contentPanel.appendChild(UIUtils.createLabeledSingleChoiceList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
+  ageElement.selectChoices(Application.Configuration.AGE_CATEGORIES[0]);
   contentPanel.appendChild(UIUtils.createLineBreak());
   
   var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", Application.Configuration.LANGUAGES, "10px")).getInputElement();
@@ -119,8 +121,8 @@ RegisterPage.prototype._appendContentPanel = function(root) {
 
         emailElement.setValue("");
         nameElement.setValue("");
-        genderElement.selectData(Application.Configuration.GENDERS[0].data);
-        ageElement.selectData(Application.Configuration.AGE_CATEGORIES[0].data);
+        genderElement.clearChoices();
+        ageElement.clearChoices();
         languagesElement.clearChoices();
         page._passwordElement.setValue("");
         page._retypePasswordElement.setValue("");
@@ -146,13 +148,17 @@ RegisterPage.prototype._appendContentPanel = function(root) {
       }
     }
 
+    
+    var chosenGenders = genderElement.getSelectedData();
+    var chosenAges = ageElement.getSelectedData();
+    
     var userProfile = {
       login: email,
       password: password,
       name: name,
-      gender: genderElement.getSelectedData(),
+      gender: chosenGenders.length > 0 ? chosenGenders[0] : "",
       languages: languagesElement.getSelectedData(),
-      age: ageElement.getSelectedData(),
+      age: chosenAges.length > 0 ? chosenAges[0] : "",
     };
 
     UIUtils.setEnabled(registerButton, false);

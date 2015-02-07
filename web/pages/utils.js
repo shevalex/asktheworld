@@ -272,8 +272,11 @@ UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
   if (text != null) {
     var combo = UIUtils.appendBlock(root, cbId + "-Container");
     combo.appendChild(checkboxElement);
+    
     var label = UIUtils.createLabel(cbId + "-Container-Label", text);
     label.style.paddingLeft = "10px";
+    label.style.textAlign = "left";
+    label.style.display = "inline-block";
     combo.appendChild(label);
     
     label.onclick = function() {
@@ -285,6 +288,11 @@ UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
     }
   } else {
     root.appendChild(checkboxElement);
+  }
+  
+  
+  checkboxElement.getLabel = function() {
+    return label;
   }
   
   return checkboxElement;
@@ -428,6 +436,10 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     itemElement.choice = choice;
     itemElement.setAttribute("class", "multichoicelist-dropdown-item notselectable");
     var checkbox = UIUtils.appendCheckbox(itemElement, listId + "-" + index + "-cb", choice.display, exclusive);
+    checkbox.style.width = "20px";
+    checkbox.getLabel().style.width = "calc(100% - 40px)";
+    
+    
     checkbox.setAttribute("name", "choices");
     itemElement.selector = checkbox;
     choiceElements.push(itemElement);
