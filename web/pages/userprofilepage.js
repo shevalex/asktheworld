@@ -35,7 +35,7 @@ UserProfilePage.prototype._appendProfilePanel = function(root) {
   this._ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  this._languagesElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", "10px")).getInputElement();
+  this._languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", Application.Configuration.LANGUAGES, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._newPasswordElement =contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "NewPassword"), "New Password", "10px")).getInputElement();
@@ -77,9 +77,9 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
       return;
     }
     
-    var languages = this._languagesElement.getValue();
+    var languages = this._languagesElement.getSelectedChoices();
     if (languages == "") {
-      UIUtils.indicateInvalidInput(this._languagesElement);
+      this._languagesElement.indicateInvalidInput();
       Application.showMessage("Languages should be set");
       return;
     }
@@ -136,7 +136,7 @@ UserProfilePage.prototype._resetParameters = function() {
   this._nameElement.setValue(Backend.getUserProfile().name);
   this._genderElement.selectData(Backend.getUserProfile().gender);
   this._ageElement.selectData(Backend.getUserProfile().age);
-  this._languagesElement.setValue(Backend.getUserProfile().languages);
+  this._languagesElement.selectChoices(Backend.getUserProfile().languages);
   
   this._newPasswordElement.setValue("");
   this._confirmNewPasswordElement.setValue("");
@@ -147,7 +147,7 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
   var userProfile = {
     name: this._nameElement.getValue(),
     gender: this._genderElement.getSelectedData(),
-    languages: [this._languagesElement.getValue()],
+    languages: this._languagesElement.getSelectedData(),
     age: this._ageElement.getSelectedData()
   };
 

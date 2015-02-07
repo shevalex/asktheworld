@@ -298,7 +298,7 @@ UIUtils.createList = function(listId, items) {
     var itemElement = listElement.appendChild(document.createElement("li"));
     itemElement.setAttribute("id", listId + "-Item" + index);
     
-    if (typeof item == "object") {
+    if (item != null && typeof item == "object") {
       if (item.element != null) {
         itemElement.appendChild(item.element);
       } else {
@@ -388,7 +388,7 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
   var selector = UIUtils.appendBlock(mChoiceList, "Label");
   selector.setAttribute("class", "multichoicelist-selector notselectable");
   
-  var refreshLanel = function() {
+  var refreshLabel = function() {
     var selectedItems = mChoiceList.getSelectedChoices();
     
     var value = "";
@@ -413,7 +413,7 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
     itemElement.selector = checkbox;
     choiceItems.push({element: itemElement});
     
-    itemElement.onclick = refreshLanel;
+    itemElement.onclick = refreshLabel;
   }
   var dropDownListElement = UIUtils.createList(listId + "-dropdown", choiceItems);
   dropDownListElement.setAttribute("class", "multichoicelist-dropdown");
@@ -433,7 +433,6 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
     }
   };
   
-  
     
   mChoiceList.getSelectedChoices = function() {
     var result = [];
@@ -451,11 +450,10 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
     var result = [];
     
     var choices = this.getSelectedChoices();
-
     for (var index in choices) {
-      result.push(choices.data);
+      result.push(choices[index].data);
     }
-    
+
     return result;
   }
   
@@ -467,7 +465,7 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
     for (var index in choices) {
       var found = false;
       for (var i in items) {
-        if (typeof items[i] == "object" && choices[index].data == items[i].data
+        if (items[i] != null && typeof items[i] == "object" && choices[index].data == items[i].data
             || choices[index].data == items[i]) {
 
           found = true;
@@ -477,6 +475,8 @@ UIUtils.createMultiChoiceList = function(listId, choices) {
     
       choiceItems[index].element.selector.setValue(found);
     }
+    
+    refreshLabel();
   }
   
   mChoiceList.clearChoices = function() {
