@@ -1,6 +1,18 @@
 button {
   border-radius: 5px;
+  border-color: rgb(166, 166, 166);
+  
+  background-color: rgb(248, 248, 248);
+  color: black;
 }
+button:hover {
+  background-color: rgb(200, 200, 200);
+}
+button:active {
+  background-color: rgb(150, 150, 150);
+  color: white;
+}
+
 
 input {
   border-radius: 5px;
