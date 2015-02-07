@@ -68,7 +68,13 @@ UIUtils.createLabeledPasswordInput = function(inputFieldId, labelText, margin) {
 }
 
 UIUtils.createLabeledDropList = function(dropListId, labelText, options, margin) {
-  return UIUtils._createLabeledCombo(dropListId, labelText, UIUtils.createDropList(dropListId, options), margin);
+  //return UIUtils._createLabeledCombo(dropListId, labelText, UIUtils.createDropList(dropListId, options), margin);
+  var list = UIUtils.createLabeledSingleChoiceList(dropListId, labelText, options, margin);
+  if (options.length > 0) {
+    list.getInputElement().selectChoices([options[0]]);
+  }
+  
+  return list;
 }
 
 UIUtils.createLabeledMultiChoiceList = function(listId, labelText, options, margin) {

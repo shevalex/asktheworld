@@ -36,12 +36,10 @@ RegisterPage.prototype._appendContentPanel = function(root) {
   var nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), "Your Nickname", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
 
-  var genderElement = contentPanel.appendChild(UIUtils.createLabeledSingleChoiceList(UIUtils.createId(contentPanel, "Gender"), "Your Gender", Application.Configuration.GENDERS, "10px")).getInputElement();
-  genderElement.selectData(Application.Configuration.GENDERS[0].data);
+  var genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), "Your Gender", Application.Configuration.GENDERS, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  var ageElement = contentPanel.appendChild(UIUtils.createLabeledSingleChoiceList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
-  ageElement.selectData(Application.Configuration.AGE_CATEGORIES[0].data);
+  var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
   var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", Application.Configuration.LANGUAGES, "10px")).getInputElement();
