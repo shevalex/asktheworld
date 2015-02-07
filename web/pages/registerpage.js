@@ -32,9 +32,9 @@ RegisterPage.prototype._appendContetPanel = function(root) {
   var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   
-  var languagesElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", "10px")).getInputElement();
+  var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", Application.Configuration.LANGUAGES, "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
-
+  
   var passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), "Password", "10px")).getInputElement();
   contentPanel.appendChild(UIUtils.createLineBreak());
   

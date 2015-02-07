@@ -71,6 +71,11 @@ UIUtils.createLabeledDropList = function(dropListId, labelText, options, margin)
   return UIUtils._createLabeledCombo(dropListId, labelText, UIUtils.createDropList(dropListId, options), margin);
 }
 
+UIUtils.createLabeledMultiChoiceList = function(listId, labelText, options, margin) {
+  return UIUtils._createLabeledCombo(listId, labelText, UIUtils.createMultiChoiceList(listId, options), margin);
+}
+
+
 UIUtils.createLabel = function(labelId, labelText) {
   var labelElement = document.createElement("label");
   labelElement.setAttribute("id", labelId);
@@ -232,13 +237,8 @@ UIUtils.createDropList = function(listId, items) {
   return listElement;
 }
 
-UIUtils.createLink = function(linkId, text) {
-  var linkElement = document.createElement("button");
-  linkElement.setAttribute("id", linkId);
-  linkElement.setAttribute("class", "link-button");
-  linkElement.innerHTML = text;
-  
-  return linkElement;
+UIUtils.appendDropList = function(root, listId, items) {
+  return root.appendChild(UIUtils.createDropList(UIUtils.createId(root, listId), items));
 }
 
 UIUtils.appendLink = function(root, linkId, text) {
@@ -271,6 +271,10 @@ UIUtils.appendCheckbox = function(root, cbId, text) {
     var label = UIUtils.createLabel(cbId + "-Label", text);
     label.style.marginLeft = "10px";
     combo.appendChild(label);
+    
+    combo.onclick = function() {
+      checkboxElement.setValue(!checkboxElement.getValue());
+    }
   } else {
     root.appendChild(checkboxElement);
   }
@@ -283,20 +287,42 @@ UIUtils.createLineBreak = function() {
   return document.createElement("br");
 }
 
-/*
 UIUtils.createList = function(listId, items) {
   var listElement = document.createElement("ul");
-  linkElement.setAttribute("id", listId);
+  listElement.setAttribute("id", listId);
+  listElement.style.listStyleType = "none";
   
   for (var index in items) {
+    var item = items[index];
+    
     var itemElement = listElement.appendChild(document.createElement("li"));
     itemElement.setAttribute("id", listId + "-Item" + index);
-    itemElement.innerHTML = items[index];
+    
+    if (typeof item == "object") {
+      if (item.element != null) {
+        itemElement.appendChild(item.element);
+      } else {
+        itemElement.innerHTML = item.display;
+      }
+    } else {
+      itemElement.innerHTML = item;
+    }
   }
   
   return listElement;
 }
-*/
+
+
+UIUtils.createLink = function(linkId, text) {
+  var linkElement = document.createElement("button");
+  linkElement.setAttribute("id", linkId);
+  linkElement.setAttribute("class", "link-button");
+  linkElement.innerHTML = text;
+  
+  return linkElement;
+}
+
+
 
 UIUtils.createSeparator = function() {
   return document.createElement("hr");
@@ -355,6 +381,45 @@ UIUtils.appendTable = function(root, tableId, columns) {
 }
 
 
+UIUtils.createMultiChoiceList = function(listId, choices) {
+  var mChoiceList = UIUtils.createBlock(listId);
+  mChoiceList.setAttribute("class", "multichoicelist");
+
+  var choiceItems = [];
+  for (var index in choices) {
+    var itemElement = UIUtils.createBlock(listId + "-" + index);
+    itemElement.setAttribute("class", "multichoicelist-dropdown-item notselectable");
+    UIUtils.appendCheckbox(itemElement, listId + "-" + index + "-cb", choices[index].display);
+    choiceItems.push({element: itemElement});
+  }
+  var dropDownListElement = UIUtils.createList(listId + "-dropdown", choiceItems);
+  dropDownListElement.setAttribute("class", "multichoicelist-dropdown");
+  dropDownListElement.style.display = "none";
+
+  var label = UIUtils.appendBlock(mChoiceList, "Label");
+  label.setAttribute("class", "multichoicelist-selector notselectable");
+  
+  mChoiceList.appendChild(dropDownListElement);
+  
+  
+  label.onclick = function() {
+    if (dropDownListElement.style.display == "none") {
+      dropDownListElement.style.display = "block";
+      UIUtils.listenOutsideClicks(dropDownListElement, function() {
+        dropDownListElement.style.display = "none";
+      });
+    } else {
+      dropDownListElement.style.display = "none";
+    }
+  };
+  
+  return mChoiceList;
+}
+
+
+
+
+
 UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener, clickListener) {
   var tableElement = document.createElement("table");
   tableElement.setAttribute("class", "display");
@@ -400,73 +465,6 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
   
   return dataTableObject;
 }
-
-/*
-UIUtils.appendTextEditor = function(root, editorId, cssClass, defaultValue) {
-  var editorArea = UIUtils.appendBlock(root, editorId + "-Area");
-  
-  var textArea = document.createElement("textarea");
-  textArea.setAttribute("id", UIUtils.createId(root, editorId));
-  if (cssClass != null) {
-    textArea.setAttribute("class", cssClass);
-  }
-
-  editorArea.getValue = function() {
-    return textArea.value != defaultValue ? textArea.value : "";
-  }
-  
-  editorArea.setValue = function(value) {
-    textArea.innerHTML = value;
-    this.getEditor().updateFrame();
-  }
-  
-  editorArea.refresh = function() {
-    if (defaultValue != null) {
-      this.setValue(defaultValue);
-      this.getEditor().select();
-    } else {
-      this.getEditor().clear();
-    }
-    
-    this.getEditor().refresh();
-  }
-  
-  editorArea.focus = function() {
-    this.getEditor().focus();
-  }
-  
-  editorArea.getEditorElement = function() {
-    return editorArea.firstChild;
-  }
-  
-  editorArea.indicateIncorrectInput = function() {
-  }
-  
-  editorArea.appendChild(textArea);
-  
-  var selector = UIUtils.get$(editorArea);
-  var height = selector.css("height");
-  
-  var editorSelector = UIUtils.get$(textArea).cleditor({
-    height: height,
-    controls:
-             "bold italic underline strikethrough"
-             + " | font size style"
-             + " | color highlight removeformat"
-             + " | bullets numbering"
-             + " | outdent indent"
-             + " | alignleft center alignright justify"
-             + " | undo redo"
-             + " | rule image link unlink"
-             + " | cut copy paste pastetext"});
-  
-  editorArea.getEditor = function() {
-    return editorSelector[0];
-  }
-  
-  return editorArea;
-}
-*/
 
 
 UIUtils.appendFileChooser = function(root) {
@@ -711,12 +709,18 @@ UIUtils.setClickListener = function(element, listener) {
 }
 
 UIUtils.removeIfClickedOutside = function(component) {
+  UIUtils.listenOutsideClicks(component, function() {
+    UIUtils.get$(component).remove();
+  });
+}
+
+UIUtils.listenOutsideClicks = function(component, observer) {
   $(document).mouseup(function(event) {
     var selector = UIUtils.get$(component);
 
     if (!selector.is(event.target) && selector.has(event.target).length == 0) {
-      selector.remove();
       $(document).unbind("mouseup");
+      observer();
     };
   });
 }
@@ -755,7 +759,6 @@ UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, ma
   compoundElement.style.width = "100%";
   compoundElement.style.textAlign = "left";
   compoundElement.style.whiteSpace = "nowrap";
-  compoundElement.style.overflow = "hidden";
 
   compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "-Label", labelText));
   compoundElement.appendChild(UIUtils.createLineBreak());

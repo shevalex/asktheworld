@@ -1,6 +1,8 @@
 
 var Application = {
   Configuration: {
+    LANGUAGES: [{data: "rus", display: "Russian"}, {data: "eng", display: "English"}],
+    
     AGE_CATEGORIES: [{data: "child", display: "Child"}, {data: "teenager", display: "Teenager"}, {data: "young", display: "Young Adult"}, {data: "adult", display: "Adult"}, {data: "senior", display: "Senior"}],
     RESPONSE_WAIT_TIME: [{data: 148, display: "1 week"}, {data: 24, display: "1 day"}, {data: 12, display: "half-day"}, {data: 1, display: "1 hour"}],
     RESPONSE_QUANTITY: [{data: -1, display: "As many as arrive"}, {data: 10, display: "Ten"}, {data: 3, display: "Three"}, {data: 1, display: "Just the first one"}],
