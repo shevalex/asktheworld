@@ -430,9 +430,9 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
   dropDownListElement.setAttribute("class", "multichoicelist-dropdown");
   dropDownListElement.style.display = "none";
 
-  var form = document.createElement("form");
-  form.style.margin = 0;
-  dropDownListElement.appendChild(form);
+//  var form = document.createElement("form");
+//  form.style.margin = 0;
+//  dropDownListElement.appendChild(form);
   
   var choiceElements = [];
   for (var index in choices) {
@@ -449,7 +449,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     checkbox.setAttribute("name", "choices");
     itemElement.check = checkbox;
     choiceElements.push(itemElement);
-    form.appendChild(itemElement);
+    dropDownListElement.appendChild(itemElement);
     
     itemElement.onclick = function() {
       refreshLabel();

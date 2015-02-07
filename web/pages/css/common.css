@@ -243,7 +243,7 @@ select {
 }
 .multichoicelist-dropdown {
   position: absolute;
-  top: 5px;
+  top: 15px;
   left: -5px;
   padding: 5px;
   width: calc(100% - 12px);
