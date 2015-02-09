@@ -54,11 +54,13 @@ select {
 
 .link-button:hover {
   text-decoration: underline;
+  background: transparent;
   color: blue;
 }
 
 .link-button:active {
   text-decoration: underline;
+  background: transparent;
   color: red;
 }
 
