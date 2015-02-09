@@ -41,13 +41,10 @@ UserPreferencesPage.prototype._appendRequestPreferencesPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "RequestPreferencesPanel");
   
   this._quantityElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Quantity"), "Maximum number of responses that you want to see", Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Who do you want to send this request to", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._waitTimeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "WaitTime"), "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), "Gender preference", Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
 }
@@ -56,10 +53,8 @@ UserPreferencesPage.prototype._appendInquiryPreferencesPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "InquiryPreferencesPanel");
   
   this._inquiryLimitElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "DailyInquiryLimit"), "Maximum daily amount of inquiries you want to receive", Application.Configuration.INQUIRY_LIMIT_PREFERENCE, "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._inquiryAgeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryAge"), "Age of requesters", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._inquiryGenderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryGender"), "Gender of requesters", Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
 }

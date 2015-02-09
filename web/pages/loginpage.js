@@ -37,10 +37,8 @@ LoginPage.prototype._appendLoginPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
   this._loginElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Login"), "Email (login)", "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), "Password", "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   var rememberCheckbox = UIUtils.appendCheckbox(contentPanel, "RememberLogin", "Remember You?");
   rememberCheckbox.setValue(window.localStorage.remember == "yes");
@@ -49,7 +47,6 @@ LoginPage.prototype._appendLoginPanel = function(root) {
   });
   
   var signInButton = UIUtils.appendButton(contentPanel, "SignInButton", "Sign In");
-  contentPanel.appendChild(UIUtils.createLineBreak());
 
   var forgotPasswordLink = UIUtils.appendLink(contentPanel, "ForgotPasswordLink", "Forgot your password?");
   UIUtils.setClickListener(forgotPasswordLink, this._restorePassword.bind(this));

@@ -66,6 +66,7 @@ select {
 
 .link-button:disabled {
   text-decoration: none;
+  background: transparent;
   color: gray;
 }
 
