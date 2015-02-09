@@ -44,7 +44,6 @@ RegisterPage.prototype._appendContentPanel = function(root) {
   
   this._retypePasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "RetypePassword"), "Re-type Password", "10px")).getInputElement();
   
-  contentPanel.appendChild(UIUtils.createLineBreak());
   var licenseLinkId = UIUtils.createId(contentPanel, "TermsAndConds-Link");
   this._acceptCheckbox = UIUtils.appendCheckbox(contentPanel, "TermsAndConds", "Please accept <a href='#' id='" + licenseLinkId + "'>Terms And Conditions</a>");
   UIUtils.setClickListener(licenseLinkId, function() {
