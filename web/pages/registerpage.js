@@ -31,22 +31,16 @@ RegisterPage.prototype._appendContentPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
   var emailElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Email"), "Your Email", "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   var nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), "Your Nickname", "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
 
   var genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), "Your Gender", Application.Configuration.GENDERS, "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", Application.Configuration.LANGUAGES, "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), "Password", "10px")).getInputElement();
-  contentPanel.appendChild(UIUtils.createLineBreak());
   
   this._retypePasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "RetypePassword"), "Re-type Password", "10px")).getInputElement();
   
@@ -58,7 +52,6 @@ RegisterPage.prototype._appendContentPanel = function(root) {
     setTimeout(this._acceptCheckbox.setValue.bind(this, false), 0);
   }.bind(this));
   
-  contentPanel.appendChild(UIUtils.createLineBreak());
   var registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", "Register");
   
   UIUtils.get$(this._passwordElement).on("input", function() {
