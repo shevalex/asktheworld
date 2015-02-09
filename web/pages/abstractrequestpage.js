@@ -393,6 +393,11 @@ AbstractRequestPage._AbstractRequestList.prototype.__updateFinished = function()
     this._settings.updateListener.updateFinished();
   }
 }
+AbstractRequestPage._AbstractRequestList.prototype.__updateFailed = function() {
+  if (this._settings.updateListener != null && this._settings.updateListener.updateFailed != null) {
+    this._settings.updateListener.updateFailed();
+  }
+}
 AbstractRequestPage._AbstractRequestList.prototype.__responseCreated = function() {
   if (this._settings.updateListener != null && this._settings.updateListener.responseCreated != null) {
     this._settings.updateListener.responseCreated();
@@ -408,6 +413,59 @@ AbstractRequestPage._AbstractRequestList.prototype.__requestUpdated = function()
     this._settings.updateListener.requestUpdated();
   }
 }
+
+AbstractRequestPage._AbstractRequestList.__setResponseStatus = function(requestId, responseId, status, completionCallback) {
+  this.__updateResponse(requestId, responseId, {status: Backend.Response.STATUS_READ}, completionCallback);
+}
+
+AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel = function(root, attachments) {
+  if (attachments == null || attachments.length == 0) {
+    return;
+  }
+  
+  var attachmentsPanel = UIUtils.appendBlock(root, "Attachments");
+  UIUtils.addClass(attachmentsPanel, "common-attachments");
+
+  for (var index in attachments) {
+    var attachment = attachments[index];
+    
+    var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + index);
+    UIUtils.addClass(thumbnail, "common-attachment-thumbnail");
+
+    var thumbnailTitle = UIUtils.appendBlock(thumbnail, "Title");
+    UIUtils.addClass(thumbnailTitle, "common-attachment-thumbnail-title");
+    thumbnailTitle.innerHTML = attachment.name;
+    
+    if (FileUtils.isImage(attachment)) {
+      thumbnail.style.backgroundImage = "url(" + attachment.data + ")";
+
+      UIUtils.setClickListener(thumbnail, function(attachment) {
+        var previewElement = UIUtils.appendBlock(attachmentsPanel, "Preview");
+        UIUtils.addClass(previewElement, "common-attachment-preview");
+
+        var previewCloser = UIUtils.appendBlock(previewElement, "X");
+        UIUtils.addClass(previewCloser, "common-attachment-preview-x");
+
+        UIUtils.removeIfClickedOutside(previewElement);
+
+        UIUtils.setClickListener(previewCloser, function() {
+          UIUtils.get$(previewElement).remove();
+        });
+
+        previewElement.style.backgroundImage = "url(" + attachment.data + ")";
+
+        var previewTitle = UIUtils.appendBlock(previewElement, "Title");
+        UIUtils.addClass(previewTitle, "common-attachment-preview-title");
+        previewTitle.innerHTML = attachment.name;
+      }.bind(this, attachment));
+    } else {
+      // TBD provide special icons for other file types
+    }
+  }
+}
+
+
+
 
 
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel = ClassUtils.defineClass(Object, function _AbstractRequestPanel(requestList, requestId, settings) {
@@ -610,98 +668,6 @@ AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype._appen
   }
 }
 
-AbstractRequestPage._AbstractRequestList.__updateRequest = function(requestId, request, completionCallback) {
-  var callback = {
-    success: function(requestId) {
-      completionCallback();
-    },
-    failure: function() {
-    },
-    error: function() {
-    }
-  }
-  
-  Backend.updateRequest(requestId, request, callback);
-}
-
-AbstractRequestPage._AbstractRequestList.__createResponse = function(requestId, response, completionCallback) {
-  var callback = {
-    success: function(requestId) {
-      completionCallback();
-    },
-    failure: function() {
-    },
-    error: function() {
-    }
-  }
-
-  Backend.createResponse(requestId, response, callback);
-}
-
-AbstractRequestPage._AbstractRequestList.__setResponseStatus = function(requestId, responseId, status, completionCallback) {
-  this.__updateResponse(requestId, responseId, {status: Backend.Response.STATUS_READ}, completionCallback);
-}
-
-AbstractRequestPage._AbstractRequestList.__updateResponse = function(requestId, responseId, response, completionCallback) {
-  var callback = {
-    success: function() {
-      completionCallback();
-    },
-    failure: function() {
-    },
-    error: function() {
-    }
-  }
-
-  Backend.updateResponse(requestId, responseId, response, callback);
-}
-
-AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel = function(root, attachments) {
-  if (attachments == null || attachments.length == 0) {
-    return;
-  }
-  
-  var attachmentsPanel = UIUtils.appendBlock(root, "Attachments");
-  UIUtils.addClass(attachmentsPanel, "common-attachments");
-
-  for (var index in attachments) {
-    var attachment = attachments[index];
-    
-    var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + index);
-    UIUtils.addClass(thumbnail, "common-attachment-thumbnail");
-
-    var thumbnailTitle = UIUtils.appendBlock(thumbnail, "Title");
-    UIUtils.addClass(thumbnailTitle, "common-attachment-thumbnail-title");
-    thumbnailTitle.innerHTML = attachment.name;
-    
-    if (FileUtils.isImage(attachment)) {
-      thumbnail.style.backgroundImage = "url(" + attachment.data + ")";
-
-      UIUtils.setClickListener(thumbnail, function(attachment) {
-        var previewElement = UIUtils.appendBlock(attachmentsPanel, "Preview");
-        UIUtils.addClass(previewElement, "common-attachment-preview");
-
-        var previewCloser = UIUtils.appendBlock(previewElement, "X");
-        UIUtils.addClass(previewCloser, "common-attachment-preview-x");
-
-        UIUtils.removeIfClickedOutside(previewElement);
-
-        UIUtils.setClickListener(previewCloser, function() {
-          UIUtils.get$(previewElement).remove();
-        });
-
-        previewElement.style.backgroundImage = "url(" + attachment.data + ")";
-
-        var previewTitle = UIUtils.appendBlock(previewElement, "Title");
-        UIUtils.addClass(previewTitle, "common-attachment-preview-title");
-        previewTitle.innerHTML = attachment.name;
-      }.bind(this, attachment));
-    } else {
-      // TBD provide special icons for other file types
-    }
-  }
-}
-
 
 AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestList._AbstractRequestPanel, function _OutgoingRequestPanel(requestList, requestId, settings) {
   AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.call(this, requestList, requestId, settings);
@@ -827,11 +793,20 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.addClass(deactivateButton, "outgoingrequest-deactivatebutton");
   UIUtils.setClickListener(deactivateButton, function() {
     this._requestList.__updateStarted();
-    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, {status: Backend.Request.STATUS_INACTIVE}, function() {
-      this._requestList.__updateFinished();
-      this._requestList.__requestUpdated();
-      completionCallback();
-    }.bind(this));
+    
+    Backend.updateRequest(this._requestId, {status: Backend.Request.STATUS_INACTIVE}, {
+      success: function() {
+        this._requestList.__updateFinished();
+        this._requestList.__requestUpdated();
+        completionCallback();
+      }.bind(this),
+      failure: function() {
+        this._requestList.__updateFailed();
+      }.bind(this),
+      error: function() {
+        this._requestList.__updateFailed();
+      }.bind(this)
+    });
   }.bind(this));
   
   var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", "Update");
@@ -839,18 +814,26 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
 
-    AbstractRequestPage._AbstractRequestList.__updateRequest(this._requestId, {
-      text: textEditor.getValue(),
-      attachments: textEditor.getAttachments(),
-      response_quantity: quantityCombo.getInputElement().getSelectedData(),
-      response_wait_time: waitTimeCombo.getInputElement().getSelectedData(),
-      response_age_group: ageCombo.getInputElement().getSelectedData(),
-      response_gender: genderCombo.getInputElement().getSelectedData()
-    }, function() {
-      this._requestList.__updateFinished();
-      this._requestList.__requestUpdated();
-      completionCallback();
-    }.bind(this));
+    Backend.updateRequest(this._requestId, {
+        text: textEditor.getValue(),
+        attachments: textEditor.getAttachments(),
+        response_quantity: quantityCombo.getInputElement().getSelectedData(),
+        response_wait_time: waitTimeCombo.getInputElement().getSelectedData(),
+        response_age_group: ageCombo.getInputElement().getSelectedData(),
+        response_gender: genderCombo.getInputElement().getSelectedData()
+      }, {
+        success: function() {
+          this._requestList.__updateFinished();
+          this._requestList.__requestUpdated();
+          completionCallback();
+        }.bind(this),
+        failure: function() {
+          this._requestList.__updateFailed();
+        }.bind(this),
+        error: function() {
+          this._requestList.__updateFailed();
+        }.bind(this)
+    });
   }.bind(this));
   
   var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
@@ -920,6 +903,12 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
       UIUtils.addClass(controlPanel, "incomingrequest-controlpanel");
 
+      var ignoreButton = UIUtils.appendButton(controlPanel, "IgnoreButton", "Ignore/Remove");
+      UIUtils.addClass(ignoreButton, "incomingrequest-ignorebutton");
+      UIUtils.setClickListener(ignoreButton, function() {
+        this.__appendCreateResponsePanel(requestHolderElement, request, appendTextElement);
+      }.bind(this));
+
       var commentButton = UIUtils.appendButton(controlPanel, "CommentButton", "Comment");
       UIUtils.addClass(commentButton, "incomingrequest-commentbutton");
       UIUtils.setClickListener(commentButton, function() {
@@ -966,13 +955,22 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
     var responseText = textEditor.getValue();
     if (responseText != "") {
       this._requestList.__updateStarted();
-      AbstractRequestPage._AbstractRequestList.__createResponse(this._requestId, {text: responseText, attachments: textEditor.getAttachments()}, function() {
-        UIUtils.get$(createResponsePanel).remove();
-        this._requestList.__updateFinished();
-        this._requestList.__responseCreated();
+      
+      Backend.createResponse(this._requestId, {text: responseText, attachments: textEditor.getAttachments()}, {
+        success: function() {
+          UIUtils.get$(createResponsePanel).remove();
+          this._requestList.__updateFinished();
+          this._requestList.__responseCreated();
 
-        completionCallback();
-      }.bind(this));
+          completionCallback();
+        }.bind(this),
+        failure: function() {
+          this._requestList.__updateFailed();
+        }.bind(this),
+        error: function() {
+          this._requestList.__updateFailed();
+        }.bind(this)
+      });
     } else {
       textEditor.indicateInvalidInput();
     }
@@ -1002,10 +1000,18 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
   if (response.status == Backend.Response.STATUS_UNREAD) {
     UIUtils.addClass(responseInfoElement, "incomingresponse-info-activable");
     UIUtils.setClickListener(responseInfoElement, function() {
-      AbstractRequestPage._AbstractRequestList.__setResponseStatus(this._requestId, this._responseId, Backend.Response.STATUS_READ, function() {
+      Backend.updateResponse(this._requestId, this._responseId, {status: Backend.Response.STATUS_READ}, {
+        success: function() {
+          //We update when the server informs us to update
+          //UIUtils.removeClass(responseHolder, "incomingresponse-info-activable");
+        }.bind(this),
+        failure: function() {
+          this._requestList.__updateFailed();
+        }.bind(this),
+        error: function() {
+          this._requestList.__updateFailed();
+        }.bind(this)
       });
-      //We update when the server informs us to update
-      //UIUtils.removeClass(responseHolder, "incomingresponse-info-activable");
     }.bind(this));
   }
 
@@ -1103,11 +1109,19 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
     
-    AbstractRequestPage._AbstractRequestList.__updateResponse(this._requestId, this._responseId, {text: textEditor.getValue(), attachments: textEditor.getAttachments()}, function() {
-      this._requestList.__updateFinished();
-      this._requestList.__responseUpdated();
-      completionCallback();
-    }.bind(this));
+    Backend.updateResponse(this._requestId, this._responseId, {text: textEditor.getValue(), attachments: textEditor.getAttachments()}, {
+      success: function() {
+        this._requestList.__updateFinished();
+        this._requestList.__responseUpdated();
+        completionCallback();
+      }.bind(this),
+      failure: function() {
+        this._requestList.__updateFailed();
+      }.bind(this),
+      error: function() {
+        this._requestList.__updateFailed();
+      }.bind(this)
+    });
   }.bind(this));
   
   var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
