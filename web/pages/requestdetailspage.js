@@ -112,7 +112,7 @@ RequestDetailsPage.prototype._updatePage = function() {
         Application.hideSpinningWheel();
       },
       responseCreated: function() {
-        Application.showMessage("You response was sent");
+        Application.showMessage("Your response was sent");
       },
       requestUpdated: function() {
         Application.showMessage("Request was updated", "fast");

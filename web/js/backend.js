@@ -34,7 +34,7 @@ Backend.logIn = function(login, password, callback) {
       Backend.UserProfile.password = password;
       Backend.UserProfile.userId = data.userId;
 
-      Backend.pullUserProfile(callback);
+      Backend._pullUserSettings(callback);
     },
     error: function(xhr, status, error) {
       if (xhr.status == 401 || xhr.status == 404) {
@@ -97,7 +97,7 @@ Backend.registerUser = function(userProfile, callback) {
         Backend.UserProfile.password = userProfile.password;
         Backend.UserProfile.userId = xhr.getResponseHeader("Location");
         
-        Backend.pullUserProfile(callback);
+        Backend._pullUserSettings(callback);
       } else {
         callback.error();
       }
@@ -152,6 +152,35 @@ Backend.updateUser = function(userProfile, currentPassword, callback) {
   return true;
 }
 
+Backend.pullUserPreferences = function(callback) {
+  if (Backend.UserProfile.userId == null) {
+    throw "Must login or register first";
+  }
+  
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      Backend.UserPreferences.requestTargetAge = data.default_response_age_group_preference;
+      Backend.UserPreferences.requestTargetGender = data.default_gender_preference;
+      Backend.UserPreferences.responseQuantity = data.default_response_quantity;
+      Backend.UserPreferences.responseWaitTime = data.default_response_wait_time;
+      Backend.UserPreferences.dailyInquiryLimit = data.inquiry_quantity_per_day;
+      Backend.UserPreferences.inquiryAge = data.inquiry_age_group_preference;
+      Backend.UserPreferences.inquiryGender = data.inquiry_gender_preference;
+
+      callback.success();
+    },
+    error: function(xhr, status, error) {
+      if (xhr.status == 401 || xhr.status == 404) {
+        callback.failure();
+      } else {
+        callback.error();
+      }
+    }
+  }
+  
+  this._communicate("user/" + Backend.UserProfile.userId + "/settings", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+}
+
 Backend.updateUserPreferences = function(userPreferences, callback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -195,6 +224,25 @@ Backend.resetUserPassword = function(login, callback) {
     callback.success();
   }, 2000);
 }
+
+
+Backend._pullUserSettings = function(callback) {
+  var callbackAdapter = {
+    success: function() {
+      Backend.pullUserPreferences(callback);
+    },
+    failure: function() {
+      callback.failure();
+    },
+    error: function() {
+      callback.error();
+    }
+  }
+  
+  Backend.pullUserProfile(callbackAdapter);
+}
+
+
 
 
 // REQUEST (and Response) management

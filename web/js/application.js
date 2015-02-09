@@ -163,8 +163,6 @@ Application.showWelcomePage = function(observer) {
 }
 
 Application.showMenuPage = function(observer) {
-  console.debug(this);
-  
   Application._showPage(this.getMenuPage(), null, observer);
 }
 
