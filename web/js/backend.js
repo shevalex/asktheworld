@@ -159,13 +159,13 @@ Backend.pullUserPreferences = function(callback) {
   
   var communicationCallback = {
     success: function(data, status, xhr) {
-      Backend.UserPreferences.requestTargetAge = data.default_response_age_group_preference;
-      Backend.UserPreferences.requestTargetGender = data.default_gender_preference;
-      Backend.UserPreferences.responseQuantity = data.default_response_quantity;
-      Backend.UserPreferences.responseWaitTime = data.default_response_wait_time;
-      Backend.UserPreferences.dailyInquiryLimit = data.inquiry_quantity_per_day;
-      Backend.UserPreferences.inquiryAge = data.inquiry_age_group_preference;
-      Backend.UserPreferences.inquiryGender = data.inquiry_gender_preference;
+      Backend.UserPreferences.requestTargetAge = data.default_response_age_group_preference || Backend.UserPreferences.requestTargetAge;
+      Backend.UserPreferences.requestTargetGender = data.default_gender_preference || Backend.UserPreferences.requestTargetGender;
+      Backend.UserPreferences.responseQuantity = data.default_response_quantity || Backend.UserPreferences.responseQuantity;
+      Backend.UserPreferences.responseWaitTime = data.default_response_wait_time || Backend.UserPreferences.responseWaitTime;
+      Backend.UserPreferences.dailyInquiryLimit = data.inquiry_quantity_per_day || Backend.UserPreferences.dailyInquiryLimit;
+      Backend.UserPreferences.inquiryAge = data.inquiry_age_group_preference || Backend.UserPreferences.inquiryAge;
+      Backend.UserPreferences.inquiryGender = data.inquiry_gender_preference || Backend.UserPreferences.inquiryGender;
 
       callback.success();
     },
