@@ -8,6 +8,8 @@ UserProfilePage = ClassUtils.defineClass(AbstractPage, function UserProfilePage(
   this._newPasswordElement;
   this._confirmNewPasswordElement;
   this._currentPasswordElement;
+  
+  this._updateButton;
 });
 
 UserProfilePage.prototype.definePageContent = function(root) {
@@ -20,6 +22,10 @@ UserProfilePage.prototype.definePageContent = function(root) {
 
 UserProfilePage.prototype.onShow = function() {
   this._resetParameters();
+}
+
+UserProfilePage.prototype.onHide = function() {
+  UIUtils.setEnabled(this._updateButton, true);
 }
 
 
@@ -55,13 +61,13 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
 
   controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0"));
   
-  var updateButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "UpdateButton"), "Update Profile"));
+  this._updateButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "UpdateButton"), "Update Profile"));
   
   var resetButton = controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "ResetButton"), "Reset"));
   
   UIUtils.setClickListener(resetButton, this._resetParameters.bind(this));
   
-  UIUtils.setClickListener(updateButton, function() {
+  UIUtils.setClickListener(this._updateButton, function() {
     var currentPassword = this._currentPasswordElement.getValue();
     if (currentPassword == "") {
       UIUtils.indicateInvalidInput(this._currentPasswordElement);
@@ -119,13 +125,13 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
       },
 
       _onCompletion: function() {
-        UIUtils.setEnabled(updateButton, true);
+        UIUtils.setEnabled(this._updateButton, true);
         this._currentPasswordElement.setValue("");
         Application.hideSpinningWheel();
       }.bind(this)
     }
 
-    UIUtils.setEnabled(updateButton, false);
+    UIUtils.setEnabled(this._updateButton, false);
     Application.showSpinningWheel();
     this._updateUserProfile(callback);
   }.bind(this));

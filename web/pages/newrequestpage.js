@@ -73,6 +73,7 @@ NewRequestPage.prototype.onShow = function() {
 }
 
 NewRequestPage.prototype.onHide = function() {
+  UIUtils.setEnabled(this._sendButton, true);
 }
 
 

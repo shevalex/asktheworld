@@ -31,6 +31,10 @@ UserPreferencesPage.prototype.onShow = function() {
   this._resetParameters();
 }
 
+UserPreferencesPage.prototype.onHide = function() {
+  UIUtils.setEnabled(this._updateButton, true);
+}
+
 
 
 UserPreferencesPage.prototype._appendRequestPreferencesPanel = function(root) {
