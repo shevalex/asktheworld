@@ -127,6 +127,10 @@
   margin-left: 10px;
 }
 
+.incomingrequest-ignorebutton {
+  float: left;
+}
+
 
 .outgoingresponse-createresponsepanel {
   margin-top: 20px;

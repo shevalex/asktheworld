@@ -906,7 +906,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       var ignoreButton = UIUtils.appendButton(controlPanel, "IgnoreButton", "Ignore/Remove");
       UIUtils.addClass(ignoreButton, "incomingrequest-ignorebutton");
       UIUtils.setClickListener(ignoreButton, function() {
-        this.__appendCreateResponsePanel(requestHolderElement, request, appendTextElement);
+        Backend.removeIncomingRequest(this._requestId);
       }.bind(this));
 
       var commentButton = UIUtils.appendButton(controlPanel, "CommentButton", "Comment");

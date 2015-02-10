@@ -388,9 +388,6 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
 
 
 
-
-
-
 Backend.getOutgoingRequestIds = function(requestStatus) {
   if (this._cache.outgoingRequestIds != null) {
     var requestIds = [];
@@ -434,6 +431,22 @@ Backend.getIncomingRequestIds = function(requestStatus) {
     return null;
   }
 }
+
+Backend.removeIncomingRequest = function(requestId) {
+  setTimeout(function() {
+    for (var index in this._cache.incomingRequestIds.active) {
+      if (this._cache.incomingRequestIds.active[index] == requestId) {
+        this._cache.incomingRequestIds.active.splice(index, 1);
+        this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED});
+        
+        break;
+      }
+    }
+  }.bind(this), 1000);
+}
+
+
+
 
 Backend.getRequest = function(requestId) {
   if (this._cache.requests != null) {
