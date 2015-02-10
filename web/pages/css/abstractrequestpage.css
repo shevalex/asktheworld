@@ -59,10 +59,33 @@
   background: rgb(85, 110, 115);
 }
 
-.outgoingrequest-message-full, .incomingrequest-message-full, .incomingresponse-message-full, .outgoingresponse-message-full {
+.outgoingrequest-message-full, .outgoingresponse-message-full, .incomingrequest-message-full, .incomingresponse-message-full {
   display: block;
   overflow: hidden;
   word-wrap: break-word;
+}
+.incomingresponse-message-full {
+  display: inline-block;
+  width: calc(100% - 20px);
+}
+.incomingresponse-x {
+  width: 20px;
+  height: 20px;
+  float: right;
+
+  background-image: url(../../imgs/close.png);
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  
+  border-radius: 5px;
+}
+.incomingresponse-x:hover {
+  background-color: red;
+}
+.incomingresponse-x:active {
+  background-color: magenta;
 }
 
 .outgoingrequest-message-short, .incomingrequest-message-short, .incomingresponse-message-short, .outgoingresponse-message-short {

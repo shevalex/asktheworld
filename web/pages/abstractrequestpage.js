@@ -584,7 +584,7 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.__appen
 
   this._cacheResponsesChangeListener = function(event) {
     if (event.type == this._requestList._getResponseIdsChangeEventType()
-        && (event.requestId == this._requestId)) {
+        && event.requestId == this._requestId) {
 
       for (var index in this._responsePanels) {
         this._responsePanels[index].remove();
@@ -999,7 +999,7 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
   var responseTextElement = UIUtils.appendBlock(responseInfoElement, "TextMessage");
   if (response.status == Backend.Response.STATUS_UNREAD) {
     UIUtils.addClass(responseInfoElement, "incomingresponse-info-activable");
-    UIUtils.setClickListener(responseInfoElement, function() {
+    UIUtils.setClickListener(responseTextElement, function() {
       Backend.updateResponse(this._requestId, this._responseId, {status: Backend.Response.STATUS_READ}, {
         success: function() {
           //We update when the server informs us to update
@@ -1014,11 +1014,18 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
       });
     }.bind(this));
   }
+  
 
   var text;
   if (this._settings.showFullContent) {
     UIUtils.addClass(responseTextElement, "incomingresponse-message-full");
     text = response.text;
+    
+    var removeResponseElement = UIUtils.appendBlock(responseInfoElement, "Remover");
+    UIUtils.addClass(removeResponseElement, "incomingresponse-x");
+    UIUtils.setClickListener(removeResponseElement, function() {
+      Backend.removeIncomingResponse(this._requestId, this._responseId);
+    }.bind(this));
   } else {
     UIUtils.addClass(responseTextElement, "incomingresponse-message-short");
     text = UIUtils.getOneLine(response.text);

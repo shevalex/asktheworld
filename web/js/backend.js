@@ -518,6 +518,32 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   }
 }
 
+Backend.removeIncomingResponse = function(requestId, responseId) {
+  setTimeout(function() {
+    var response = Backend.getResponse(requestId, responseId);
+    if (response != null) {
+      var responseList;
+      if (response.status == Backend.Response.STATUS_READ) {
+        responseList = this._cache.incomingResponseIds[requestId].viewed;
+      } else if (response.status == Backend.Response.STATUS_UNREAD) {
+        responseList = this._cache.incomingResponseIds[requestId].unviewed;
+      } else {
+        throw "Incorrect situation";
+      }
+      
+      for (var index in responseList) {
+        if (responseList[index] == responseId) {
+          responseList.splice(index, 1);
+          this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
+          break;
+        }
+      }
+    }
+  }.bind(this), 1000);
+}
+
+
+
 Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
   if (this._cache.outgoingResponseIds != null && this._cache.outgoingResponseIds[requestId] != null) {
     var responseIds = [];
