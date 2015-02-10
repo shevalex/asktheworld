@@ -10,6 +10,8 @@
 
 .outgoingrequest-holder, .incomingrequest-holder {
   margin-bottom: 5px;
+  
+  rgb(230, 210, 180);
 }
 
 .outgoingrequest-holder-editable, .incomingrequest-holder-editable {
