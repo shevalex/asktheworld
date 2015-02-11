@@ -2,9 +2,14 @@
 }
 
 #AllOutgoingRequestsPage-GeneralPanel {
-  height: 50px;
-  
+}
+
+#AllOutgoingRequestsPage-GeneralPanel-Text {
   font-size: 20px;
+}
+
+#AllOutgoingRequestsPage-GeneralPanel-SeeActiveLink {
+  font-size: 15px;
 }
 
 #AllOutgoingRequestsPage-TablePanel {

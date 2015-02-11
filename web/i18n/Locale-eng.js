@@ -80,8 +80,11 @@ var Locale_eng = {
     },
     "ActiveOutgoingRequestsPage": {
       "ActiveOutgoingRequestsLabel": "This is what you recently Asked The World about and still waiting for more responses.",
-      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older requests in the <a href='#' id='" + linkId + "'>All Requests</a> section."; },
-      
+      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older requests in the <a href='#' id='" + linkId + "'>All Requests</a> section."; }
+    },
+    "AllOutgoingRequestsPage": {
+      AllOutgoingRequestsLabel: "This is the complete list of requests that you Asked The World about.",
+      ActiveOutgoingRequestsLinkProvider: function(linkId) { return "You can find your most recent active requests in the <a href='#' id='" + linkId + "'>Active Requests</a> section."; },
     }
   }
 }
