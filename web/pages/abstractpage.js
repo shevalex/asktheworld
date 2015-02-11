@@ -62,3 +62,8 @@ AbstractPage.prototype.onShow = function(root) {
 
 AbstractPage.prototype.onHide = function() {
 }
+
+
+AbstractPage.prototype.getLocale = function(lang) {
+  return I18n.getPageLocale(this._pageId, lang);
+}
