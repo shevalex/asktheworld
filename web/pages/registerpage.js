@@ -8,11 +8,11 @@ RegisterPage = ClassUtils.defineClass(AbstractPage, function RegisterPage() {
 
 RegisterPage.prototype.definePageContent = function(root) {
   var leftSideDescriptionElement = UIUtils.appendBlock(root, "Description-Left");
-  UIUtils.get$(leftSideDescriptionElement).html("By registering you will get an instant access to the secret technology that we provide");
+  leftSideDescriptionElement.innerHTML = this.getLocale().ProjectDescriptionHtml;
 
   var rightSideDescriptionElement = UIUtils.appendBlock(root, "Description-Right");
   var signInLinkId = UIUtils.createId(rightSideDescriptionElement, "SignInLink");
-  UIUtils.get$(rightSideDescriptionElement).html("Already have an account?<br>Click <a href='#' id='" + signInLinkId + "'>Sign In</a>.");
+  rightSideDescriptionElement.innerHTML = this.getLocale().SignInProvider(signInLinkId);
   UIUtils.setClickListener(signInLinkId, function() {
     Application.showLoginPage();
   })
@@ -30,28 +30,28 @@ RegisterPage.prototype.onShow = function(root) {
 RegisterPage.prototype._appendContentPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
-  var emailElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Email"), "Your Email", "10px")).getInputElement();
+  var emailElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Email"), this.getLocale().YourEmailLabel, "10px")).getInputElement();
   
-  var nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), "Your Nickname", "10px")).getInputElement();
+  var nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), this.getLocale().YourNicknameLabel, "10px")).getInputElement();
 
-  var genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), "Your Gender", Application.Configuration.GENDERS, "10px")).getInputElement();
+  var genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), this.getLocale().YourGenderLabel, Application.Configuration.GENDERS, "10px")).getInputElement();
   
-  var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Your Age Category", Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
+  var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), this.getLocale().YourAgeCategoryLabel, Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
   
-  var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), "Languages that you speak", Application.Configuration.LANGUAGES, "10px")).getInputElement();
+  var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), this.getLocale().YourLanguagesLabel, Application.Configuration.LANGUAGES, "10px")).getInputElement();
   
-  this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), "Password", "10px")).getInputElement();
+  this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), this.getLocale().PasswordLabel, "10px")).getInputElement();
   
-  this._retypePasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "RetypePassword"), "Re-type Password", "10px")).getInputElement();
+  this._retypePasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "RetypePassword"), this.getLocale().RetypePasswordLabel, "10px")).getInputElement();
   
   var licenseLinkId = UIUtils.createId(contentPanel, "TermsAndConds-Link");
-  this._acceptCheckbox = UIUtils.appendCheckbox(contentPanel, "TermsAndConds", "Please accept <a href='#' id='" + licenseLinkId + "'>Terms And Conditions</a>");
+  this._acceptCheckbox = UIUtils.appendCheckbox(contentPanel, "TermsAndConds", this.getLocale().AcceptTermsProvider(licenseLinkId));
   UIUtils.setClickListener(licenseLinkId, function() {
     this._showLicenseAgreement();
     setTimeout(this._acceptCheckbox.setValue.bind(this, false), 0);
   }.bind(this));
   
-  var registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", "Register");
+  var registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", this.getLocale().RegisterButton);
   
   UIUtils.get$(this._passwordElement).on("input", function() {
     this._retypePasswordElement.setValue("");
@@ -62,41 +62,41 @@ RegisterPage.prototype._appendContentPanel = function(root) {
     var isValidEmail = ValidationUtils.isValidEmail(email);
     if (!isValidEmail) {
       UIUtils.indicateInvalidInput(emailElement);
-      Application.showMessage("The email is not provided or does not look like a valid email address");
+      Application.showMessage(this.getLocale().ProvideLoginMessage);
       return;
     }
     
     var name = nameElement.getValue();
     if (name == "") {
       UIUtils.indicateInvalidInput(nameElement);
-      Application.showMessage("You must provide a nickname");
+      Application.showMessage(this.getLocale().ProvideNicknameMessage);
       return;
     }
     
     var languages = languagesElement.getSelectedChoices();
     if (languages.length == 0) {
       languagesElement.indicateInvalidInput();
-      Application.showMessage("One or more languages must be set");
+      Application.showMessage(this.getLocale().ProvideLanguageMessage);
       return;
     }
 
     var password = this._passwordElement.getValue();
     if (password == "" || password.length < 5) {
       UIUtils.indicateInvalidInput(this._passwordElement);
-      Application.showMessage("Password should be at least 5 symbols long");
+      Application.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
       return;
     }
     
     var retypePassword = this._retypePasswordElement.getValue();
     if (retypePassword == "" || retypePassword != password) {
       UIUtils.indicateInvalidInput(this._retypePasswordElement);
-      Application.showMessage("Passwords do not match. Please retype.");
+      Application.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
       return;
     }
 
     if (!this._acceptCheckbox.getValue()) {
       var popupTermsLink = UIUtils.createId(root, "TermsLink");
-      Application.showMessage("You must accept<p><a href='#' id='" + popupTermsLink + "'><b>Terms And Conditions<b></a>");
+      Application.showMessage(this.getLocale().MustAcceptTermsMessageProvider(popupTermsLink));
       UIUtils.setClickListener(popupTermsLink, function() {
         this._showLicenseAgreement();
       }.bind(this));
@@ -121,15 +121,15 @@ RegisterPage.prototype._appendContentPanel = function(root) {
       },
       failure: function() {
         this._onCompletion();
-        Application.showMessage("Failed to create an account");
+        Application.showMessage(this.getLocale().AccountCreationFailedMessage);
       },
       conflict : function() {
         this._onCompletion();
-        Application.showMessage("This login (email) was already used");
+        Application.showMessage(this.getLocale().AccountAlreadyExistsMessage);
       },
       error: function() {
         this._onCompletion();
-        Application.showMessage("Server communication error");
+        Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       },
 
       _onCompletion: function() {
