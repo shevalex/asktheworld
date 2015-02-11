@@ -2,8 +2,7 @@
 //  RegisterViewController.swift
 //  AskTheWorld
 //
-//  Created by Oleg Burakov on 10/12/14.
-//  Copyright (c) 2014 Oleg Burakov. All rights reserved.
+// PiSoft Corporation, 2014-2015. All Rights Reserved.
 //
 
 import UIKit
@@ -20,6 +19,9 @@ class RegisterViewController: UIViewController, UIPickerViewDelegate, UITextFiel
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
+    @IBAction func LanguagesEdit(sender: UITextField) {
+        self.performSegueWithIdentifier("LanguageScreen_seg", sender: self)
+    }
     @IBOutlet weak var UserNameField_Reg: UITextField!
     
     @IBOutlet weak var PasswordField_Reg: UITextField!

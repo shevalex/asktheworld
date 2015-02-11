@@ -1,14 +1,18 @@
 //
-//  UpdatePrefsViewController.swift
+//  LanguagesViewController.swift
 //  AskTheWorld
 //
-// PiSoft Corporation, 2014-2015. All Rights Reserved. 
+// PiSoft Corporation, 2014-2015. All Rights Reserved.
 //
 
 import UIKit
 
-class UpdatePrefsViewController: UIViewController {
+class LanguagesViewController: UIViewController {
 
+    @IBAction func LanguagesSaveButton(sender: UIBarButtonItem) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 

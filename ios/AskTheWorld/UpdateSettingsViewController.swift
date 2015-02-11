@@ -2,8 +2,7 @@
 //  UpdateSettingsViewController.swift
 //  AskTheWorld
 //
-//  Created by Oleg Burakov on 13/01/15.
-//  Copyright (c) 2015 Oleg Burakov. All rights reserved.
+// PiSoft Corporation, 2014-2015. All Rights Reserved. 
 //
 
 import UIKit
