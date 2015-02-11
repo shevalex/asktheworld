@@ -13,45 +13,43 @@ NewRequestPage = ClassUtils.defineClass(AbstractPage, function NewRequestPage() 
 
 NewRequestPage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
-  UIUtils.get$(generalPanel).html("Asking The World is just that easy. You are only three steps away.");
+  generalPanel.innerHTML = this.getLocale().OutlineText;
 
   var requestTextPanel = UIUtils.appendBlock(root, "RequestContentPanel");
-  UIUtils.appendLabel(requestTextPanel, "Label", "1. Type in the text of your request first...");
+  UIUtils.appendLabel(requestTextPanel, "Label", this.getLocale().StepOneLabel);
   this._requestTextEditor = UIUtils.appendTextEditor(requestTextPanel, "TextEditor", {
     fileTooBigListener: function(file) {
-      Application.showMessage("File is too big");
+      Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
     }
   });
   
   var requestParamsPanel = UIUtils.appendBlock(root, "RequestParametersPanel");
-  UIUtils.appendLabel(requestParamsPanel, "Label", "2. Choose who will see your question");
+  UIUtils.appendLabel(requestParamsPanel, "Label", this.getLocale().StepTwoLabel);
 
   var prefLinkId = UIUtils.createId(root, "PreferencesLink");
-  UIUtils.appendLabel(requestParamsPanel, "Note", "Note: You can always modify your defaut settings in <a href='#' id='" + prefLinkId + "'>Your Preferences</a>");
+  UIUtils.appendLabel(requestParamsPanel, "Note", this.getLocale().ModifySettingsLinkProvider(prefLinkId));
   UIUtils.setClickListener(prefLinkId, function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID);
   });
   
   var targetSelectorPanel = UIUtils.appendBlock(requestParamsPanel, "TargetSelectors");
 
-  this._requestGenderElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "Gender"), "Target gender", Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
+  this._requestGenderElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "Gender"), I18n.getLocale().literals.TargetGenderLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
   
-  this._requestAgeElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "AgeCategory"), "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
+  this._requestAgeElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "AgeCategory"), I18n.getLocale().literals.TargetAgeGroupLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
   
   requestParamsPanel.appendChild(UIUtils.createLineBreak());
   
-  this._requestWaitTimeElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "WaitTime"), "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
+  this._requestWaitTimeElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "WaitTime"), I18n.getLocale().literals.WaitTimeLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
   
-  this._requestQuantityElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "Quantity"), "Maximum # of responses you want", Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
+  this._requestQuantityElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "Quantity"), I18n.getLocale().literals.NumOfResponsesLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
   
   var controlPanel = UIUtils.appendBlock(root, "RequestControlPanel");
-  UIUtils.appendLabel(controlPanel, "Label", "3. And finally send it out!");
-  
-//  var buttonHolder = UIUtils.appendBlock(controlPanel, "ButtonHolder");
+  UIUtils.appendLabel(controlPanel, "Label", this.getLocale().StepThreeLabel);
   
   controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0"));
-  this._sendButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "SendButton"), "Ask The World!"));
-  var resetButton = controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "ResetButton"), "Reset"));
+  this._sendButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "SendButton"), this.getLocale().SendButton));
+  var resetButton = controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "ResetButton"), this.getLocale().ResetButton));
   
   
   UIUtils.setClickListener(this._sendButton, function() {
@@ -59,7 +57,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
       this._createRequest();
     } else {
       this._requestTextEditor.indicateInvalidInput();
-      Application.showMessage("Please create a message", Application.MESSAGE_TIMEOUT_FAST);
+      Application.showMessage(this.getLocale().RequestEmptyMessage, Application.MESSAGE_TIMEOUT_FAST);
     }
   }.bind(this));
   
@@ -92,16 +90,16 @@ NewRequestPage.prototype._createRequest = function() {
   
   var callback = {
     success: function(requestId) {
-      Application.showMessage("New request was successfully sent");
+      Application.showMessage(this.getLocale().RequestSentMessage);
       page._resetPage();
       this._onCompletion();
     },
     failure: function() {
-      Application.showMessage("Failed to send a request. Try again later");
+      Application.showMessage(this.getLocale().RequestFailedMessage);
       this._onCompletion();
     },
     error: function() {
-      Application.showMessage("Error: cannot reach the server");
+      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       this._onCompletion();
     },
     

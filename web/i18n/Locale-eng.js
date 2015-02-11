@@ -3,6 +3,14 @@ var Locale_eng = {
   },
   "literals": {
     "ServerErrorMessage": "Server communication error",
+    "FileTooBigMessage": "File is too big",
+    
+    
+    "TargetGenderLabel": "Target gender",
+    "TargetAgeGroupLabel": "Target age group",
+    "WaitTimeLabel": "How long do you want to wait",
+    "NumOfResponsesLabel": "Maximum # of responses you want"
+    
   },
   "pages": {
     "LoginPage": {
@@ -55,6 +63,18 @@ var Locale_eng = {
       "OutgoingRequestsStatisticProvider": function(numOfRequests, numOfResponses) { return "You have " + numOfResponses + " unviewed responses for " + numOfRequests + " your requests"},
       "ActiveIncomingRequestsLinkProvider": function(linkId) { return "See all incoming inquiries in <a href='#' id='" + linkId + "'>Active Inquiries</a> section."; },
       "IncomingRequestsStatisticProvider": function(numOfRequests) { return "You have " + numOfRequests + " unanswered requests"; }
+    },
+    "NewRequestPage": {
+      "OutlineText": "Asking The World is just that easy. You are only three steps away.",
+      "StepOneLabel": "1. Type in the text of your request first...",
+      "StepTwoLabel": "2. Choose who will see your question",
+      "ModifySettingsLinkProvider": function(linkId) { return "Note: You can always modify your defaut settings in <a href='#' id='" + linkId + "'>Your Preferences</a>"; },
+      "StepThreeLabel": "3. And finally send it out!",
+      "SendButton": "Ask The World!",
+      "ResetButton": "Reset",
+      "RequestEmptyMessage": "Please create a message",
+      "RequestSentMessage": "New request was successfully sent",
+      "RequestFailedMessage": "Failed to send a request. Try again later",
     }
   }
 }
