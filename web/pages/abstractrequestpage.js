@@ -688,13 +688,6 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
     var requestInfoElement = UIUtils.appendBlock(requestHolderElement, "RequestInfo");
     UIUtils.addClass(requestInfoElement, "outgoingrequest-info");
     
-    if (this._settings.requestClickListener != null) {
-      UIUtils.addClass(requestInfoElement, "outgoingrequest-info-activable");
-      UIUtils.setClickListener(requestInfoElement, function() {
-        this._settings.requestClickListener(this._requestId);
-      }.bind(this));
-    }
-    
     var textElement = UIUtils.appendBlock(requestInfoElement, "RequestText");
     if (this._settings.showResponseCount) {
       UIUtils.addClass(textElement, "outgoingrequest-message-withcounter");
@@ -720,6 +713,14 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
       this._requestUpdateListeners.push(drawCounterText);
     }
 
+    if (this._settings.requestClickListener != null) {
+      UIUtils.addClass(textElement, "outgoingrequest-message-activable");
+      UIUtils.setClickListener(textElement, function() {
+        this._settings.requestClickListener(this._requestId);
+      }.bind(this));
+    }
+    
+    
     var text;
     if (this._settings.showFullContent) {
       UIUtils.addClass(textElement, "outgoingrequest-message-full");
@@ -869,7 +870,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
     UIUtils.addClass(requestTextElement, "incomingrequest-info");
     
     if (this._settings.requestClickListener != null) {
-      UIUtils.addClass(requestTextElement, "incomingrequest-info-activable");
+      UIUtils.addClass(requestTextElement, "incomingrequest-message-activable");
       UIUtils.setClickListener(requestTextElement, function() {
         this._settings.requestClickListener(this._requestId);
       }.bind(this));
@@ -998,12 +999,12 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
 
   var responseTextElement = UIUtils.appendBlock(responseInfoElement, "TextMessage");
   if (response.status == Backend.Response.STATUS_UNREAD) {
-    UIUtils.addClass(responseInfoElement, "incomingresponse-info-activable");
+    UIUtils.addClass(responseTextElement, "incomingresponse-message-activable");
     UIUtils.setClickListener(responseTextElement, function() {
       Backend.updateResponse(this._requestId, this._responseId, {status: Backend.Response.STATUS_READ}, {
         success: function() {
           //We update when the server informs us to update
-          //UIUtils.removeClass(responseHolder, "incomingresponse-info-activable");
+          //UIUtils.removeClass(responseTextElement, "incomingresponse-message-activable");
         }.bind(this),
         failure: function() {
           this._requestList.__updateFailed();
