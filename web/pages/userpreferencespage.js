@@ -15,13 +15,12 @@ UserPreferencesPage = ClassUtils.defineClass(AbstractPage, function UserPreferen
 
 UserPreferencesPage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
-  UIUtils.get$(generalPanel).html("Update your request preferences. This is what we will use as your default choice when you are Asking The World.<br>Note, that you can always override these defauls for the specific request.");
-  
+  generalPanel.innerHTML = this.getLocale().UpdatePreferencesText;
 
-  UIUtils.appendLabel(root, "RequestPreferencesLabel", "Tell us whom do you want to send your requests to");
+  UIUtils.appendLabel(root, "RequestPreferencesLabel", this.getLocale().RequestPreferencesLabel);
   this._appendRequestPreferencesPanel(root);
   
-  UIUtils.appendLabel(root, "InquiryPreferencesLabel", "Tell us who do you want to receive the inquiries from");
+  UIUtils.appendLabel(root, "InquiryPreferencesLabel", this.getLocale().InquiryPreferencesLabel);
   this._appendInquiryPreferencesPanel(root);
   
   this._appendControlPanel(root);
@@ -40,23 +39,23 @@ UserPreferencesPage.prototype.onHide = function() {
 UserPreferencesPage.prototype._appendRequestPreferencesPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "RequestPreferencesPanel");
   
-  this._quantityElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Quantity"), "Maximum number of responses that you want to see", Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
+  this._quantityElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Quantity"), this.getLocale().NumOfResponsesPreferenceLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
   
-  this._ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), "Who do you want to send this request to", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
+  this._ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), this.getLocale().AgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
   
-  this._waitTimeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "WaitTime"), "How long do you want to wait", Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
+  this._waitTimeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "WaitTime"), this.getLocale().WaitPreferenceLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
   
-  this._genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), "Gender preference", Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
+  this._genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), this.getLocale().GenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
 }
 
 UserPreferencesPage.prototype._appendInquiryPreferencesPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "InquiryPreferencesPanel");
   
-  this._inquiryLimitElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "DailyInquiryLimit"), "Maximum daily amount of inquiries you want to receive", Application.Configuration.INQUIRY_LIMIT_PREFERENCE, "10px")).getInputElement();
+  this._inquiryLimitElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "DailyInquiryLimit"), this.getLocale().NumOfInquiriesPreferenceLabel, Application.Configuration.INQUIRY_LIMIT_PREFERENCE, "10px")).getInputElement();
   
-  this._inquiryAgeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryAge"), "Age of requesters", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
+  this._inquiryAgeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryAge"), this.getLocale().RequestersAgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
   
-  this._inquiryGenderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryGender"), "Gender of requesters", Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
+  this._inquiryGenderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryGender"), this.getLocale().RequestersGenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
 }
 
 
@@ -65,24 +64,24 @@ UserPreferencesPage.prototype._appendControlPanel = function(root) {
   
   controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0"));
   
-  this._updateButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "UpdateButton"), "Update Preferences"));
+  this._updateButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "UpdateButton"), this.getLocale().UpdateButton));
   
-  this._resetButton = controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "ResetButton"), "Reset"));
+  this._resetButton = controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "ResetButton"), this.getLocale().ResetButton));
   
   UIUtils.setClickListener(this._resetButton, this._resetParameters.bind(this));
   UIUtils.setClickListener(this._updateButton, function() {
     var callback = {
       success: function(requestId) {
         this._onCompletion();
-        Application.showMessage("Your preferences were successfully updated");
+        Application.showMessage(this.getLocale().PreferencesUpdatedMessage);
       },
       failure: function() {
         this._onCompletion();
-        Application.showMessage("Failed to update preferences");
+        Application.showMessage(this.getLocale().UpdateFailedMessage);
       },
       error: function() {
         this._onCompletion();
-        Application.showMessage("Server communication error");
+        Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       },
 
       _onCompletion: function() {

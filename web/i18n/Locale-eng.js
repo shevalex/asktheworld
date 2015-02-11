@@ -109,6 +109,26 @@ var Locale_eng = {
       "PasswordsDoNotMatchMessage": "Passwords do not match. Please retype.",
       "ProfileUpdatedMessage": "Your profile was successfully updated",
       "UpdateFailedMessage": "Cannot update user profile.<br>Please make sure your current password is correct."
+    },
+    "UserPreferencesPage": {
+      "UpdatePreferencesText": "Update your preferences. This is what we will use as your default choice when you are Asking The World.<br>Note, that you can always override these defauls for the specific request.",
+      "RequestPreferencesLabel": "Tell us whom do you want to send your requests to",
+      "InquiryPreferencesLabel": "Tell us who do you want to receive the inquiries from",
+      
+      "NumOfResponsesPreferenceLabel": "Maximum number of responses that you want to see",
+      "AgePreferenceLabel": "Who do you want to send this request to",
+      "WaitPreferenceLabel": "How long do you want to wait",
+      "GenderPreferenceLabel": "Gender preference",
+      "NumOfInquiriesPreferenceLabel": "Maximum daily amount of inquiries you want to receive",
+      "RequestersAgePreferenceLabel": "Age of requesters",
+      "RequestersGenderPreferenceLabel": "Gender of requesters",
+      
+      "UpdateButton": "Update Preferences",
+      "ResetButton": "Reset",
+      
+      "PreferencesUpdatedMessage": "Your preferences were successfully updated",
+      "UpdateFailedMessage": "Failed to update preferences"
+      
     }
   }
 }
