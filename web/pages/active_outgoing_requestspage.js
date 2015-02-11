@@ -9,11 +9,11 @@ ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
   
   var textPanel = UIUtils.appendBlock(generalPanel, "Text");
-  UIUtils.get$(textPanel).html("This is what you recently Asked The World about and still waiting for more responses.");
+  textPanel.innerHTML = this.getLocale().ActiveOutgoingRequestsLabel;
 
   var seeAllLinkId = UIUtils.createId(generalPanel, "Link");
   var seeAllElement = UIUtils.appendBlock(generalPanel, "SeeAll");
-  UIUtils.get$(seeAllElement).html("You can always see your older requests in the <a href='#' id='" + seeAllLinkId + "'>All Requests</a> section.");
+  seeAllElement.innerHTML = this.getLocale().AllRequestsLinkProvider(seeAllLinkId);
   UIUtils.setClickListener(seeAllLinkId, function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID);
   });
@@ -48,7 +48,7 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
         Application.hideSpinningWheel();
       },
       requestUpdated: function() {
-        Application.showMessage("Request was updated", "fast");
+        Application.showMessage(I18n.getLocale().literals.RequestUpdatedMessage, "fast");
       }
     }
   });

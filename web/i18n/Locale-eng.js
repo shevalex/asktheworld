@@ -5,6 +5,8 @@ var Locale_eng = {
     "ServerErrorMessage": "Server communication error",
     "FileTooBigMessage": "File is too big",
     
+    "RequestUpdatedMessage": "Request was updated",
+    
     
     "TargetGenderLabel": "Target gender",
     "TargetAgeGroupLabel": "Target age group",
@@ -75,6 +77,11 @@ var Locale_eng = {
       "RequestEmptyMessage": "Please create a message",
       "RequestSentMessage": "New request was successfully sent",
       "RequestFailedMessage": "Failed to send a request. Try again later",
+    },
+    "ActiveOutgoingRequestsPage": {
+      "ActiveOutgoingRequestsLabel": "This is what you recently Asked The World about and still waiting for more responses.",
+      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older requests in the <a href='#' id='" + linkId + "'>All Requests</a> section."; },
+      
     }
   }
 }
