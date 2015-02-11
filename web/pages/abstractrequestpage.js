@@ -999,11 +999,11 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
   var responseTextElement = UIUtils.appendBlock(responseInfoElement, "TextMessage");
   if (response.status == Backend.Response.STATUS_UNREAD) {
     UIUtils.addClass(responseInfoElement, "incomingresponse-info-activable");
-    UIUtils.setClickListener(responseTextElement, function() {
+    UIUtils.setClickListener(responseInfoElement, function() {
       Backend.updateResponse(this._requestId, this._responseId, {status: Backend.Response.STATUS_READ}, {
         success: function() {
           //We update when the server informs us to update
-          //UIUtils.removeClass(responseHolder, "incomingresponse-info-activable");
+          //UIUtils.removeClass(responseInfoElement, "incomingresponse-info-activable");
         }.bind(this),
         failure: function() {
           this._requestList.__updateFailed();
@@ -1023,8 +1023,10 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
     
     var removeResponseElement = UIUtils.appendBlock(responseInfoElement, "Remover");
     UIUtils.addClass(removeResponseElement, "incomingresponse-x");
-    UIUtils.setClickListener(removeResponseElement, function() {
+    UIUtils.setClickListener(removeResponseElement, function(event) {
       Backend.removeIncomingResponse(this._requestId, this._responseId);
+      
+      return false;
     }.bind(this));
   } else {
     UIUtils.addClass(responseTextElement, "incomingresponse-message-short");

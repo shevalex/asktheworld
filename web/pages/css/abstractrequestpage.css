@@ -21,7 +21,7 @@
   background: rgb(230, 210, 180);
 }
 
-.outgoingrequest-info, .incomingrequest-info {
+.outgoingrequest-info, .incomingrequest-info, .incomingresponse-info, .outgoingresponse-info {
   padding: 5px;
   
   border-radius: 3px;
@@ -69,6 +69,8 @@
   width: calc(100% - 20px);
 }
 .incomingresponse-x {
+  display: none;
+  
   width: 20px;
   height: 20px;
   float: right;
@@ -81,12 +83,56 @@
   
   border-radius: 5px;
 }
+.incomingresponse-info:hover .incomingresponse-x {
+  display: inline-block;
+}
 .incomingresponse-x:hover {
-  background-color: red;
+  background-color: rgb(225, 90, 80);
 }
 .incomingresponse-x:active {
-  background-color: magenta;
+  background-color: rgb(225, 60, 50);
 }
+
+
+.incomingresponse-info {
+  background: rgb(220, 230, 250);
+}
+.outgoingresponse-info {
+  background: rgb(120, 230, 200);
+}
+
+.incomingresponse-info-activable {
+  color: black;
+  background: rgb(125, 200, 255);
+}
+
+.outgoingresponse-info-activable {
+  color: black;
+  background: rgb(125, 200, 255);
+}
+
+.incomingresponse-info-activable:hover {
+  color: white;
+  background: rgb(20, 120, 200);
+}
+
+.outgoingresponse-info-activable:hover {
+  color: white;
+  background: rgb(20, 120, 200);
+}
+
+.incomingresponse-info-activable:active {
+  color: white;
+  background: rgb(60, 25, 255);
+}
+
+.outgoingresponse-info-activable:active {
+  color: white;
+  background: rgb(60, 25, 255);
+}
+
+
+
 
 .outgoingrequest-message-short, .incomingrequest-message-short, .incomingresponse-message-short, .outgoingresponse-message-short {
   display: block;
@@ -199,55 +245,6 @@
   margin-bottom: 5px;
   background: rgb(230, 210, 180);
 }
-
-.incomingresponse-info, .outgoingresponse-info {
-  padding: 2px 5px 2px 5px;
-  
-  border-radius: 3px;
-  border-bottom-style: groove;
-  border-bottom-width: 1px;
-  border-bottom-color: black;
-  border-right-style: groove;
-  border-right-width: 1px;
-  border-right-color: black;
-}
-.incomingresponse-info {
-  background: rgb(220, 230, 250);
-}
-.outgoingresponse-info {
-  background: rgb(120, 230, 200);
-}
-
-.incomingresponse-info-activable {
-  color: black;
-  background: rgb(125, 200, 255);
-}
-
-.outgoingresponse-info-activable {
-  color: black;
-  background: rgb(125, 200, 255);
-}
-
-.incomingresponse-info-activable:hover {
-  color: white;
-  background: rgb(20, 120, 200);
-}
-
-.outgoingresponse-info-activable:hover {
-  color: white;
-  background: rgb(20, 120, 200);
-}
-
-.incomingresponse-info-activable:active {
-  color: white;
-  background: rgb(60, 25, 255);
-}
-
-.outgoingresponse-info-activable:active {
-  color: white;
-  background: rgb(60, 25, 255);
-}
-
 
 
 .common-moreresponses {

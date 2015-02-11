@@ -156,7 +156,10 @@ select {
   background-size: contain;
 }
 .text-editor-thumbnail-x:hover, .text-editor-preview-x:hover {
-  background-color: rgb(200, 240, 240);
+  background-color: rgb(225, 90, 80);
+}
+.text-editor-thumbnail-x:active, .text-editor-preview-x:active {
+  background-color: rgb(225, 60, 50);
 }
 .text-editor-thumbnail-x {
   width: 15px;
