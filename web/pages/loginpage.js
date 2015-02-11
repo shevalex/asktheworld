@@ -7,10 +7,10 @@ LoginPage = ClassUtils.defineClass(AbstractPage, function LoginPage() {
 
 LoginPage.prototype.definePageContent = function(root) {
   var leftDescription = UIUtils.appendBlock(root, "Description-Left");
-  UIUtils.get$(leftDescription).html("Here is where we will place our logo as well as the text which will describe what this project is");
+  leftDescription.innerHTML = this.getLocale().ProjectDescriptionHtml;
 
   var rightDescription = UIUtils.appendBlock(root, "Description-Right");
-  UIUtils.get$(rightDescription).html("Download the mobile app and stay connected whenever you are!<p><center><a href='https://play.google.com/store' target='_blank'>AskTheWorld for Android</a><p><a href='http://store.apple.com/us' target='_blank'>AskTheWorld for iOS</a><center>");
+  rightDescription.innerHTML = this.getLocale().DownloadMobileAppsHtml;
   
   this._appendLoginPanel(root);
 }
@@ -36,22 +36,22 @@ LoginPage.prototype.onShow = function() {
 LoginPage.prototype._appendLoginPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
-  this._loginElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Login"), "Email (login)", "10px")).getInputElement();
+  this._loginElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Login"), this.getLocale().EmailLoginLabel, "10px")).getInputElement();
   
-  this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), "Password", "10px")).getInputElement();
+  this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), this.getLocale().PasswordLabel, "10px")).getInputElement();
   
-  var rememberCheckbox = UIUtils.appendCheckbox(contentPanel, "RememberLogin", "Remember You?");
+  var rememberCheckbox = UIUtils.appendCheckbox(contentPanel, "RememberLogin", this.getLocale().RememberLoginLabel);
   rememberCheckbox.setValue(window.localStorage.remember == "yes");
   UIUtils.get$(rememberCheckbox).change(function() {
     window.localStorage.remember = rememberCheckbox.getValue() ? "yes" : "no";
   });
   
-  var signInButton = UIUtils.appendButton(contentPanel, "SignInButton", "Sign In");
+  var signInButton = UIUtils.appendButton(contentPanel, "SignInButton", this.getLocale().SignInButton);
 
-  var forgotPasswordLink = UIUtils.appendLink(contentPanel, "ForgotPasswordLink", "Forgot your password?");
+  var forgotPasswordLink = UIUtils.appendLink(contentPanel, "ForgotPasswordLink", this.getLocale().ForgotPassowrdLink);
   UIUtils.setClickListener(forgotPasswordLink, this._restorePassword.bind(this));
   
-  var signUpLink = UIUtils.appendLink(contentPanel, "SignUpLink", "Register!");
+  var signUpLink = UIUtils.appendLink(contentPanel, "SignUpLink", this.getLocale().RegisterLink);
   UIUtils.setClickListener(signUpLink, function() {
     Application.showRegisterPage();
   });
@@ -83,11 +83,11 @@ LoginPage.prototype._appendLoginPanel = function(root) {
         },
         failure: function() {
           this._onCompletion();
-          Application.showMessage("Invalid login/password combination");
+          Application.showMessage(this.getLocale().InvalidCredentialsMessage);
         },
         error: function() {
           this._onCompletion();
-          Application.showMessage("Server communication error");
+          Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
         },
         
         _onCompletion: function() {
@@ -101,9 +101,9 @@ LoginPage.prototype._appendLoginPanel = function(root) {
       
       Backend.logIn(login, password, backendCallback);
     } else if (!isEmailValid) {
-      Application.showMessage("Please provide a valid email for your login");
+      Application.showMessage(this.getLocale().InvalidLoginMessage);
     } else {
-      Application.showMessage("Please provide login and password");
+      Application.showMessage(this.getLocale().ProvideLoginPasswordMessage);
     }
   }.bind(this));
 }
@@ -115,18 +115,18 @@ LoginPage.prototype._restorePassword = function() {
     callback = {
       success: function() {
         Application.hideSpinningWheel();
-        Application.showMessage("You will receive an email shortly with a link to reset the password. You may ignore the email if you do not need to reset your password.", Application.MESSAGE_TIMEOUT_SLOW);
+        Application.showMessage(this.getLocale().PasswordResetMessage, Application.MESSAGE_TIMEOUT_SLOW);
       },
       error: function() {
         Application.hideSpinningWheel();
-        Application.showMessage("Server communication error");
+        Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       }
     }
     
-    Application.showMessage("The request is being sent...");
+    Application.showMessage(this.getLocale().PasswordResetRequestMessage);
     Application.showSpinningWheel();
     Backend.resetUserPassword(login, callback);
   } else {
-    Application.showMessage("Your login does not look like a valid email");
+    Application.showMessage(this.getLocale().IncorectEmailMessage);
   }
 }
