@@ -4,11 +4,11 @@ WelcomePage = ClassUtils.defineClass(AbstractPage, function WelcomePage() {
 
 WelcomePage.prototype.definePageContent = function(root) {
   var descriptionPanel = UIUtils.appendBlock(root, "Description");
-  descriptionPanel.innerHTML = "Welcome, " + Backend.getUserProfile().name + "<p> We are gald to see you in here. This super site gives you access to an absolutely unique abilities and experiences. Here is how you should use it";
+  descriptionPanel.innerHTML = this.getLocale().WelcomeProvider(Backend.getUserProfile().name);
   
   var goBackPanel = UIUtils.appendBlock(root, "GoHome");
   var linkId = UIUtils.createId(goBackPanel, "HomePageLink");
-  goBackPanel.innerHTML = "Click <a href='#' id='" + linkId + "'>Home</a> to start!";
+  goBackPanel.innerHTML = this.getLocale().GoBackLinkProvider(linkId);
   
   UIUtils.setClickListener(linkId, function() {
     Application.showMenuPage();

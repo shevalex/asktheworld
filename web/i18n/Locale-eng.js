@@ -2,8 +2,6 @@ var Locale_eng = {
   "images": {
   },
   "literals": {
-    "Welcome": "Welcome",
-    
     "ServerErrorMessage": "Server communication error",
   },
   "pages": {
@@ -46,6 +44,17 @@ var Locale_eng = {
       "MustAcceptTermsMessageProvider": function(linkId) { return "You must accept<p><a href='#' id='" + linkId + "'><b>Terms And Conditions<b></a>"; },
       "AccountCreationFailedMessage": "Failed to create an account",
       "AccountAlreadyExistsMessage": "This login (email) was already used"
+    },
+    "WelcomePage": {
+      "WelcomeProvider": function(name) { return "Welcome, " + name + "<p> We are gald to see you in here. This super site gives you access to an absolutely unique abilities and experiences. Here is how you should use it"; },
+      "GoBackLinkProvider": function(linkId) { return "Click <a href='#' id='" + linkId + "'>Home</a> to start!"; }
+    },
+    "HomePage": {
+      "WelcomeProvider": function(name) { return "Welcome, " + name + "."; },
+      "ActiveOutgoingRequestsLinkProvider": function(linkId) { return "You can always find all your active requests in the <a href='#' id='" + linkId + "'>Active Requests</a> section."; },
+      "OutgoingRequestsStatisticProvider": function(numOfRequests, numOfResponses) { return "You have " + numOfResponses + " unviewed responses for " + numOfRequests + " your requests"},
+      "ActiveIncomingRequestsLinkProvider": function(linkId) { return "See all incoming inquiries in <a href='#' id='" + linkId + "'>Active Inquiries</a> section."; },
+      "IncomingRequestsStatisticProvider": function(numOfRequests) { return "You have " + numOfRequests + " unanswered requests"; }
     }
   }
 }

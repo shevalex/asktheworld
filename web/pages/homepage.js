@@ -60,14 +60,14 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
 
 HomePage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
-  UIUtils.get$(generalPanel).html("Welcome, " + Backend.getUserProfile().name + ".");
+  generalPanel.innerHTML = this.getLocale().WelcomeProvider(Backend.getUserProfile().name);
 
   var outgoingRequestsPanel = UIUtils.appendBlock(root, "OutgoingRequestPanel");
   this._outgoingRequestsStatusElement = UIUtils.appendBlock(outgoingRequestsPanel, "Status");
   
   var seeActiveOutgoingRequestsElement = UIUtils.appendBlock(outgoingRequestsPanel, "SeeActiveRequests");
   var activeOutgoingRequestsLinkId = UIUtils.createId(seeActiveOutgoingRequestsElement, "Link");
-  UIUtils.get$(seeActiveOutgoingRequestsElement).html("You can always find all your active requests in the <a href='#' id='" + activeOutgoingRequestsLinkId + "'>Active Requests</a> section.");
+  seeActiveOutgoingRequestsElement.innerHTML = this.getLocale().ActiveOutgoingRequestsLinkProvider(activeOutgoingRequestsLinkId);
   UIUtils.setClickListener(activeOutgoingRequestsLinkId, function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
   });
@@ -86,7 +86,7 @@ HomePage.prototype.definePageContent = function(root) {
       }
     }
     
-    UIUtils.get$(this._outgoingRequestsStatusElement).html("You have " + countResponses + " unviewed responses for " + countRequests + " your requests");
+    this._outgoingRequestsStatusElement.innerHTML = this.getLocale().OutgoingRequestsStatisticProvider(countRequests, countResponses);
   }.bind(this));
   
   
@@ -96,7 +96,7 @@ HomePage.prototype.definePageContent = function(root) {
   
   var seeActiveIncomingRequestsElement = UIUtils.appendBlock(incomingRequestsPanel, "SeeActiveRequests");
   var activeIncomingRequestsLinkId = UIUtils.createId(seeActiveIncomingRequestsElement, "Link");
-  UIUtils.get$(seeActiveIncomingRequestsElement).html("See all incoming inquiries in <a href='#' id='" + activeIncomingRequestsLinkId + "'>Active Inquiries</a> section.");
+  seeActiveIncomingRequestsElement.innerHTML = this.getLocale().ActiveIncomingRequestsLinkProvider(activeIncomingRequestsLinkId);
   UIUtils.setClickListener(activeIncomingRequestsLinkId, function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
   });
@@ -113,7 +113,7 @@ HomePage.prototype.definePageContent = function(root) {
       }
     }
     
-    UIUtils.get$(this._incomingRequestsStatusElement).html("You have " + countRequests + " unanswered requests");
+    this._incomingRequestsStatusElement.innerHTML = this.getLocale().IncomingRequestsStatisticProvider(countRequests);
   }.bind(this));
 }
 
