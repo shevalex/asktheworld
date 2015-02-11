@@ -685,6 +685,8 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
 
         UIUtils.setClickListener(previewCloser, function() {
           UIUtils.get$(previewElement).remove();
+          
+          return false;
         });
 
         previewElement.style.backgroundImage = "url(" + attachment.data + ")";
@@ -708,6 +710,8 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
           break;
         }
       }
+      
+      return false;
     });
 
     var thumbnailTitle = UIUtils.appendBlock(thumbnail, "Title");
