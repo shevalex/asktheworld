@@ -8,8 +8,12 @@ ActiveIncomingRequestsPage = ClassUtils.defineClass(AbstractPage, function Activ
 ActiveIncomingRequestsPage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
   
+  var textPanel = UIUtils.appendBlock(generalPanel, "Text");
+  textPanel.innerHTML = this.getLocale().ActiveIncomingRequestsLabel;
+
   var linkId = UIUtils.createId(generalPanel, "AllInquiriesLink");
-  UIUtils.get$(generalPanel).html("This is what the World is asking you to comment and is awaiting your opinion about<br>You can always see your older inquiries in the <a href='#' id='" + linkId + "'>All Inquiries</a> section.");
+  var seeAllElement = UIUtils.appendBlock(generalPanel, "SeeAll");
+  seeAllElement.innerHTML = this.getLocale().AllRequestsLinkProvider(linkId);
   UIUtils.setClickListener(linkId, function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ALL_INQUIRIES_ITEM_ID);
   });
@@ -43,7 +47,7 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
         Application.hideSpinningWheel();
       },
       responseCreated: function() {
-        Application.showMessage("Your response was sent");
+        Application.showMessage(this.getLocale().ResponseSentMessage);
       }
     }
   });

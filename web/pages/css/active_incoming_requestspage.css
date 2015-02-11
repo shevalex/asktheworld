@@ -2,16 +2,21 @@
 }
 
 #ActiveIncomingRequestsPage-GeneralPanel {
-  height: 50px;
-  
+}
+
+#ActiveIncomingRequestsPage-GeneralPanel-Text {
+  height: 30px;
   font-size: 20px;
+}
+#ActiveIncomingRequestsPage-GeneralPanel-SeeAll {
+  height: 20px;
+  font-size: 15px;
 }
 
 #ActiveIncomingRequestsPage-RequestsPanel {
   margin-top: 20px;
   padding-right: 10px;
   height: calc(100% - 50px - 20px);
-  width: calc(100% - 10px);
   overflow: auto;
 }
 

@@ -85,6 +85,11 @@ var Locale_eng = {
     "AllOutgoingRequestsPage": {
       AllOutgoingRequestsLabel: "This is the complete list of requests that you Asked The World about.",
       ActiveOutgoingRequestsLinkProvider: function(linkId) { return "You can find your most recent active requests in the <a href='#' id='" + linkId + "'>Active Requests</a> section."; },
+    },
+    "ActiveIncomingRequestsPage": {
+      "ActiveIncomingRequestsLabel": "This is what the World is asking you to comment and is awaiting your opinion about.",
+      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older inquiries in the <a href='#' id='" + linkId + "'>All Inquiries</a> section"; },
+      "ResponseSentMessage": "Your response was sent",
     }
   }
 }
