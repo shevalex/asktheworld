@@ -2,8 +2,7 @@
 //  ViewController.swift
 //  AskTheWorld
 //
-//  Created by Oleg Burakov on 10/12/14.
-//  Copyright (c) 2014 Oleg Burakov. All rights reserved.
+// PiSoft Corporation, 2014-2015. All Rights Reserved. 
 //
 
 import UIKit
