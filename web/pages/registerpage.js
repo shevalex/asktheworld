@@ -30,15 +30,15 @@ RegisterPage.prototype.onShow = function(root) {
 RegisterPage.prototype._appendContentPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
-  var emailElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Email"), this.getLocale().YourEmailLabel, "10px")).getInputElement();
+  var emailElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Email"), I18n.getLocale().literals.YourEmailLabel, "10px")).getInputElement();
   
-  var nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), this.getLocale().YourNicknameLabel, "10px")).getInputElement();
+  var nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), I18n.getLocale().literals.YourNicknameLabel, "10px")).getInputElement();
 
-  var genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), this.getLocale().YourGenderLabel, Application.Configuration.GENDERS, "10px")).getInputElement();
+  var genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), I18n.getLocale().literals.YourGenderLabel, Application.Configuration.GENDERS, "10px")).getInputElement();
   
-  var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), this.getLocale().YourAgeCategoryLabel, Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
+  var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), I18n.getLocale().literals.YourAgeCategoryLabel, Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
   
-  var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), this.getLocale().YourLanguagesLabel, Application.Configuration.LANGUAGES, "10px")).getInputElement();
+  var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), I18n.getLocale().literals.YourLanguagesLabel, Application.Configuration.LANGUAGES, "10px")).getInputElement();
   
   this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), this.getLocale().PasswordLabel, "10px")).getInputElement();
   

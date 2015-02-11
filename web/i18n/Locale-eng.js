@@ -11,8 +11,13 @@ var Locale_eng = {
     "TargetGenderLabel": "Target gender",
     "TargetAgeGroupLabel": "Target age group",
     "WaitTimeLabel": "How long do you want to wait",
-    "NumOfResponsesLabel": "Maximum # of responses you want"
+    "NumOfResponsesLabel": "Maximum # of responses you want",
     
+    "YourEmailLabel": "Your Email",
+    "YourNicknameLabel": "Your Nickname",
+    "YourGenderLabel": "Your Gender",
+    "YourAgeCategoryLabel": "Your Age Category",
+    "YourLanguagesLabel": "Languages that you speak"
   },
   "pages": {
     "LoginPage": {
@@ -36,11 +41,6 @@ var Locale_eng = {
     "RegisterPage": {
       "ProjectDescriptionHtml": "By registering you will get an instant access to the secret technology that we provide",
       "SignInProvider": function(signInLinkId) { return "Already have an account?<br>Click <a href='#' id='" + signInLinkId + "'>Sign In</a>."; },
-      "YourEmailLabel": "Your Email",
-      "YourNicknameLabel": "Your Nickname",
-      "YourGenderLabel": "Your Gender",
-      "YourAgeCategoryLabel": "Your Age Category",
-      "YourLanguagesLabel": "Languages that you speak",
       "PasswordLabel": "Password",
       "RetypePasswordLabel": "Re-type Password",
       "AcceptTermsProvider": function(linkId) { return "Please accept <a href='#' id='" + linkId + "'>Terms And Conditions</a>"; },
@@ -95,5 +95,20 @@ var Locale_eng = {
       "AllIncomingRequestsLabel": "This is the complete list of requests that The World asked you about.",
       "ActiveRequestsLinkProvider": function(linkId) { return "You can find the most recent inquiries in the <a href='#' id='" + linkId + "'>Active Inquiries</a> section."; }
     },
+    "UserProfilePage": {
+      "UpdateProfileText": "Update your profile information. <b>We intentionally keep it very basic and generic to insure your privacy</b>.<br>You may only modify the information which you need to correct. Do not type new password if you do not want to change it.",
+      "NewPasswordLabel": "New Password",
+      "ConfirmPasswordLabel": "Confirm New Password",
+      "CurrentPasswordLabel": "Your Current Password",
+      "UpdateButton": "Update Profile",
+      "ResetButton": "Reset",
+      "EnterPasswordMessage": "You must enter current password to update your profile",
+      "NameNotSetMessage": "Name should be set",
+      "LanguageNotSetMessage": "Languages should be set",
+      "ProvideCorrectPasswordMessage": "Password should be at least 5 symbols long",
+      "PasswordsDoNotMatchMessage": "Passwords do not match. Please retype.",
+      "ProfileUpdatedMessage": "Your profile was successfully updated",
+      "UpdateFailedMessage": "Cannot update user profile.<br>Please make sure your current password is correct."
+    }
   }
 }
