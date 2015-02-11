@@ -59,6 +59,17 @@ var Locale_eng = {
       "WelcomeProvider": function(name) { return "Welcome, " + name + "<p> We are gald to see you in here. This super site gives you access to an absolutely unique abilities and experiences. Here is how you should use it"; },
       "GoBackLinkProvider": function(linkId) { return "Click <a href='#' id='" + linkId + "'>Home</a> to start!"; }
     },
+    "MenuPage": {
+      "HomeMenuItem": "Home",
+      "CreateNewRequestItem": "Create New Request",
+      "ActiveOutgoingRequestsItem": "Active Requests",
+      "AllOutgoingRequestsItem": "All Requests",
+      "ActiveIncomingRequestsItem": "Active Inquiries",
+      "AllIncomingRequestsItem": "All Inquiries",
+      "ProfileItem": "Your Profile",
+      "PreferencesItem": "Your Preferences",
+      "LogOutItem": "Log Out"
+    },
     "HomePage": {
       "WelcomeProvider": function(name) { return "Welcome, " + name + "."; },
       "ActiveOutgoingRequestsLinkProvider": function(linkId) { return "You can always find all your active requests in the <a href='#' id='" + linkId + "'>Active Requests</a> section."; },
@@ -128,7 +139,6 @@ var Locale_eng = {
       
       "PreferencesUpdatedMessage": "Your preferences were successfully updated",
       "UpdateFailedMessage": "Failed to update preferences"
-      
     }
   }
 }

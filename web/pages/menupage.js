@@ -94,23 +94,23 @@ MenuPage.prototype._appendMenuPanel = function(root) {
     this.selectMenuItem(itemId);
   };
   
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.HOME_ITEM_ID, "Home", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.HOME_ITEM_ID, this.getLocale().HomeMenuItem, null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
 
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.NEW_REQUEST_ITEM_ID, "Create New Request", null, clickListener));
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID, "Active Requests", null, clickListener));
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID, "All Requests", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.NEW_REQUEST_ITEM_ID, this.getLocale().CreateNewRequestItem, null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID, this.getLocale().ActiveOutgoingRequestsItem, null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID, this.getLocale().AllOutgoingRequestsItem, null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
   
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID, "Active Inquiries", null, clickListener));
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ALL_INQUIRIES_ITEM_ID, "All Inquiries", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID, this.getLocale().ActiveIncomingRequestsItem, null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ALL_INQUIRIES_ITEM_ID, this.getLocale().AllIncomingRequestsItem, null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
   
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.USER_PROFILE_ITEM_ID, "Your Profile", null, clickListener));
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID, "Your Preferences", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.USER_PROFILE_ITEM_ID, this.getLocale().ProfileItem, null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID, this.getLocale().PreferencesItem, null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
 
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.LOGOUT_ITEM_ID, "Log Out", null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.LOGOUT_ITEM_ID, this.getLocale().LogOutItem, null, clickListener));
 }
 
 MenuPage.prototype._createMenuItem = function(itemId, text, icon, clickCallback) {
