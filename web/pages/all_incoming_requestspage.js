@@ -8,8 +8,12 @@ AllIncomingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function A
 AllIncomingRequestsPage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
   
-  var linkId = UIUtils.createId(generalPanel, "ActiveRequestsLink");
-  UIUtils.get$(generalPanel).html("This is the complete list of requests that The World asked you about.<br>You can find the most recent requests in the <a href='#' id='" + linkId + "'>Active Inquiries</a> section.");
+  var textPanel = UIUtils.appendBlock(generalPanel, "Text");
+  textPanel.innerHTML = this.getLocale().AllIncomingRequestsLabel;
+
+  var linkId = UIUtils.createId(generalPanel, "ActiveInquiriesLink");
+  var seeActiveElement = UIUtils.appendBlock(generalPanel, "SeeActive");
+  seeActiveElement.innerHTML = this.getLocale().ActiveRequestsLinkProvider(linkId);
   UIUtils.setClickListener(linkId, function() {
     Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
   });

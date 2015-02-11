@@ -2,9 +2,15 @@
 }
 
 #AllIncomingRequestsPage-GeneralPanel {
-  height: 50px;
-  
   font-size: 20px;
+}
+
+#AllIncomingRequestsPage-GeneralPanel-Text {
+  font-size: 20px;
+}
+
+#AllIncomingRequestsPage-GeneralPanel-SeeActive {
+  font-size: 15px;
 }
 
 #AllIncomingRequestsPage-TablePanel {

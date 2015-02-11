@@ -90,6 +90,10 @@ var Locale_eng = {
       "ActiveIncomingRequestsLabel": "This is what the World is asking you to comment and is awaiting your opinion about.",
       "AllRequestsLinkProvider": function(linkId) { return "You can always see your older inquiries in the <a href='#' id='" + linkId + "'>All Inquiries</a> section"; },
       "ResponseSentMessage": "Your response was sent",
-    }
+    },
+    "AllIncomingRequestsPage": {
+      "AllIncomingRequestsLabel": "This is the complete list of requests that The World asked you about.",
+      "ActiveRequestsLinkProvider": function(linkId) { return "You can find the most recent inquiries in the <a href='#' id='" + linkId + "'>Active Inquiries</a> section."; }
+    },
   }
 }
