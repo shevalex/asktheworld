@@ -564,6 +564,7 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
     data: rowDataProvider.getRows(),
     createdRow: function(row, rowData, index) {
       var table = this.api();
+      
       rowDataProvider.getRowDetails(rowData.rowId, function(rowDetailedData) {
         rowDetailedData.rowId = rowData.rowId;
         table.row(index).data(rowDetailedData);  //we may need to add .draw()
@@ -592,6 +593,23 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
       clickListener(tableRowObjectData.rowId);
     }
   });
+  
+  dataTableObject.getSelectedRow = function() {
+    var selectedRow = dataTableObject.row(".selected");
+    if (selectedRow.length > 0) {
+      return selectedRow.index();
+    } else {
+      return -1;
+    }
+  }
+  
+  dataTableObject.setSelectedRow = function(rowIndex) {
+    dataTableObject.$("tr.selected").removeClass("selected");
+
+    if (rowIndex >= 0) {
+      dataTableObject.row(rowIndex).nodes().to$().addClass("selected");
+    }
+  }
   
   return dataTableObject;
 }

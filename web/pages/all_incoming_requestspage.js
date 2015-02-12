@@ -42,13 +42,19 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
     }
   });
   
-  this._requestTable.append(this._requestTableContainer);
 }
 
 AllIncomingRequestsPage.prototype.onShow = function(root) {
+  this._requestTable.append(this._requestTableContainer);
+  
+  if (this._selectedRow >= 0) {
+    this._requestTable.setSelectedRow(this._selectedRow);
+  }
 }
 
 AllIncomingRequestsPage.prototype.onHide = function() {
+  this._selectedRow = this._requestTable.getSelectedRow();
+  this._requestTable.destroy();
 }
 
 

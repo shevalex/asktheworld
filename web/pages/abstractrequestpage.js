@@ -16,6 +16,7 @@ AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, func
   this._cacheChangeListener = null;
   this._cacheRowListeners = {};
   this._rootContainer = null;
+  this._dataTable = null;
 });
 
 //abstract
@@ -57,7 +58,7 @@ AbstractRequestPage._AbstractRequestsTable.prototype.append = function(container
       if (this._settings.updateListener != null) {
         this._settings.updateListener.updateFinished();
       }
-      this.__appendTableElement();
+      this._dataTable = this.__appendTableElement();
     } else {
       if (this._settings.updateListener != null) {
         this._settings.updateListener.updateStarted();
@@ -86,14 +87,25 @@ AbstractRequestPage._AbstractRequestsTable.prototype.append = function(container
   appendTableElement();
 }
 
+AbstractRequestPage._AbstractRequestsTable.prototype.getSelectedRow = function() {
+  return this._dataTable != null ? this._dataTable.getSelectedRow() : null;
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.setSelectedRow = function(row) {
+  if (this._dataTable != null) {
+    this._dataTable.setSelectedRow(row);
+  }
+}
+
 AbstractRequestPage._AbstractRequestsTable.prototype.remove = function() {
   this._cacheRowListeners = {};
   Backend.removeCacheChangeListener(this._cacheChangeListener);
+  this._dataTable = null;
   UIUtils.get$(this._rootContainer).remove();
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype.destroy = function() {
-  this.destroy();
+  this.remove();
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype.__appendTableElement = function() {
