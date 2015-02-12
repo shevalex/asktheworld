@@ -550,15 +550,15 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
 
 
 
-UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener, clickListener) {
+UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, startIndex, selectionListener, clickListener) {
   var tableElement = document.createElement("table");
   tableElement.setAttribute("class", "display");
-  
+
   var tableElementId = UIUtils.createId(root, tableId);
   tableElement.setAttribute("id", tableElementId);
   
   root.appendChild(tableElement);
-  
+
   var dataTableObject = $("#" + tableElementId).DataTable({
     columns: columns,
     data: rowDataProvider.getRows(),
@@ -567,11 +567,12 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
       
       rowDataProvider.getRowDetails(rowData.rowId, function(rowDetailedData) {
         rowDetailedData.rowId = rowData.rowId;
-        table.row(index).data(rowDetailedData);  //we may need to add .draw()
+        table.row(index).data(rowDetailedData);
       });
     },
     aLengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-    iDisplayLength: 5
+    iDisplayLength: 5,
+    iDisplayStart: startIndex
   });
   
   dataTableObject.on("click", "tr", function() {
@@ -595,6 +596,25 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
   });
   
   dataTableObject.getSelectedRow = function() {
+    var selectedRow = dataTableObject.row(".selected");
+    
+    if (selectedRow.length > 0) {
+      return selectedRow.index();
+    } else {
+      return -1;
+    }
+  }
+  
+  dataTableObject.setSelectedRow = function(rowIndex) {
+    dataTableObject.$("tr.selected").removeClass("selected");
+
+    if (rowIndex >= 0) {
+      dataTableObject.row(rowIndex).nodes().to$().addClass("selected");
+    }
+  }
+
+
+  dataTableObject.getSelectedPage = function() {
     var selectedRow = dataTableObject.row(".selected");
     if (selectedRow.length > 0) {
       return selectedRow.index();

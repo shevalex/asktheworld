@@ -17,6 +17,8 @@ AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, func
   this._cacheRowListeners = {};
   this._rootContainer = null;
   this._dataTable = null;
+  
+  this._startIndex = null;
 });
 
 //abstract
@@ -87,6 +89,27 @@ AbstractRequestPage._AbstractRequestsTable.prototype.append = function(container
   appendTableElement();
 }
 
+AbstractRequestPage._AbstractRequestsTable.prototype.refresh = function() {
+  if (!this.isAppended()) {
+    return;
+  }
+  
+  this._startIndex = this._dataTable.page.info().start;
+  var parent = this._rootContainer.parentElement;
+  var selectedIndex = this._dataTable.getSelectedRow();
+
+  this.remove();
+  this.append(parent);
+  
+  this._startIndex = null;
+  
+  this.setSelectedRow(selectedIndex);
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.isAppended = function() {
+  return this._rootContainer != null;
+}
+
 AbstractRequestPage._AbstractRequestsTable.prototype.getSelectedRow = function() {
   return this._dataTable != null ? this._dataTable.getSelectedRow() : null;
 }
@@ -152,7 +175,9 @@ AbstractRequestPage._AbstractRequestsTable.prototype.__appendTableElement = func
     }.bind(this)
   }
   
-  return UIUtils.appendFeaturedTable("Table", this._rootContainer, this._getColumns(), rowDataProvider, this._settings.selectionObserver, this._settings.clickObserver);
+  var startIndex = this._startIndex || 0;
+
+  return UIUtils.appendFeaturedTable("Table", this._rootContainer, this._getColumns(), rowDataProvider, startIndex, this._settings.selectionObserver, this._settings.clickObserver);
 }
 
 

@@ -45,16 +45,14 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
 }
 
 AllIncomingRequestsPage.prototype.onShow = function(root) {
-  this._requestTable.append(this._requestTableContainer);
-  
-  if (this._selectedRow >= 0) {
-    this._requestTable.setSelectedRow(this._selectedRow);
+  if (this._requestTable.isAppended()) {
+    this._requestTable.refresh();
+  } else {
+    this._requestTable.append(this._requestTableContainer);
   }
 }
 
 AllIncomingRequestsPage.prototype.onHide = function() {
-  this._selectedRow = this._requestTable.getSelectedRow();
-  this._requestTable.destroy();
 }
 
 
