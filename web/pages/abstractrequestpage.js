@@ -94,7 +94,7 @@ AbstractRequestPage._AbstractRequestsTable.prototype.refresh = function() {
     return;
   }
   
-  this._startIndex = this._dataTable.page.info().start;
+  this._startIndex = this._dataTable.page.info() != null ? this._dataTable.page.info().start : 0;
   var parent = this._rootContainer.parentElement;
   var selectedIndex = this._dataTable.getSelectedRow();
 

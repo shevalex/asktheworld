@@ -41,11 +41,14 @@ AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
       }
     }
   });
-  
-  this._requestTable.append(this._requestTableContainer);
 }
 
 AllOutgoingRequestsPage.prototype.onShow = function(root) {
+  if (this._requestTable.isAppended()) {
+    this._requestTable.refresh();
+  } else {
+    this._requestTable.append(this._requestTableContainer);
+  }
 }
 
 AllOutgoingRequestsPage.prototype.onHide = function() {
