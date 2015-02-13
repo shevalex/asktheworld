@@ -110,34 +110,6 @@ AbstractRequestPage._AbstractRequestsTable.prototype.restore = function() {
   this._dataTable.draw(false);
 }
 
-AbstractRequestPage._AbstractRequestsTable.prototype.refresh = function() {
-  if (!this.isAppended()) {
-    return;
-  }
-//  
-//  var parent = this._rootContainer.parentElement;
-//
-//  var selectedIndex = this._dataTable.getSelectedRow();
-//  var search = this._dataTable.search();
-//  var order = this._dataTable.order();
-//  var page = this._dataTable.page();
-//  
-//
-//  this.remove();
-//  this.append(parent);
-//
-//  this._dataTable.search(search);
-//  this._dataTable.order(order);
-//  this._dataTable.page(page);
-//  this._dataTable.setSelectedRow(selectedIndex);
-  
-  this._dataTable.draw(false);
-}
-
-AbstractRequestPage._AbstractRequestsTable.prototype.isAppended = function() {
-  return this._rootContainer != null;
-}
-
 AbstractRequestPage._AbstractRequestsTable.prototype.getSelectedRow = function() {
   return this._dataTable != null ? this._dataTable.getSelectedRow() : null;
 }

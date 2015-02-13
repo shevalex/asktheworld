@@ -44,14 +44,13 @@ AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
 }
 
 AllOutgoingRequestsPage.prototype.onShow = function(root) {
-  if (this._requestTable.isAppended()) {
-    this._requestTable.refresh();
-  } else {
-    this._requestTable.append(this._requestTableContainer);
-  }
+  this._requestTable.append(this._requestTableContainer);
+  this._requestTable.restore();
 }
 
 AllOutgoingRequestsPage.prototype.onHide = function() {
+  this._requestTable.save();
+  this._requestTable.remove();
 }
 
 
