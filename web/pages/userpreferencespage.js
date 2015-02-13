@@ -70,14 +70,16 @@ UserPreferencesPage.prototype._appendControlPanel = function(root) {
   
   UIUtils.setClickListener(this._resetButton, this._resetParameters.bind(this));
   UIUtils.setClickListener(this._updateButton, function() {
+    var page = this;
+    
     var callback = {
       success: function(requestId) {
         this._onCompletion();
-        Application.showMessage(this.getLocale().PreferencesUpdatedMessage);
+        Application.showMessage(page.getLocale().PreferencesUpdatedMessage);
       },
       failure: function() {
         this._onCompletion();
-        Application.showMessage(this.getLocale().UpdateFailedMessage);
+        Application.showMessage(page.getLocale().UpdateFailedMessage);
       },
       error: function() {
         this._onCompletion();
