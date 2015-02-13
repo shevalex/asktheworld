@@ -550,7 +550,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
 
 
 
-UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, startIndex, selectionListener, clickListener) {
+UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, startIndex, displayLength, selectionListener, clickListener) {
   var tableElement = document.createElement("table");
   tableElement.setAttribute("class", "display");
 
@@ -571,8 +571,8 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
       });
     },
     aLengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-    iDisplayLength: 5,
-    iDisplayStart: startIndex
+    iDisplayLength: displayLength != null ? displayLength : 5,
+    iDisplayStart: startIndex != null ? startIndex : 0
   });
   
   dataTableObject.on("click", "tr", function() {
@@ -590,6 +590,7 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
       }
     }
     
+    
     if (clickListener != null) {
       clickListener(tableRowObjectData.rowId);
     }
@@ -599,20 +600,19 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
     var selectedRow = dataTableObject.row(".selected");
     
     if (selectedRow.length > 0) {
-      return selectedRow.index();
+      return selectedRow;
     } else {
-      return -1;
+      return null;
     }
   }
   
   dataTableObject.setSelectedRow = function(rowIndex) {
     dataTableObject.$("tr.selected").removeClass("selected");
 
-    if (rowIndex >= 0) {
+    if (rowIndex != null) {
       dataTableObject.row(rowIndex).nodes().to$().addClass("selected");
     }
   }
-
 
   dataTableObject.getSelectedPage = function() {
     var selectedRow = dataTableObject.row(".selected");
@@ -623,13 +623,6 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
     }
   }
   
-  dataTableObject.setSelectedRow = function(rowIndex) {
-    dataTableObject.$("tr.selected").removeClass("selected");
-
-    if (rowIndex >= 0) {
-      dataTableObject.row(rowIndex).nodes().to$().addClass("selected");
-    }
-  }
   
   return dataTableObject;
 }

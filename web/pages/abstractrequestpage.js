@@ -19,6 +19,7 @@ AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, func
   this._dataTable = null;
   
   this._startIndex = null;
+  this._displayLength = null;
 });
 
 //abstract
@@ -94,16 +95,25 @@ AbstractRequestPage._AbstractRequestsTable.prototype.refresh = function() {
     return;
   }
   
-  this._startIndex = this._dataTable.page.info() != null ? this._dataTable.page.info().start : 0;
+  
+  var info = this._dataTable.page.info();
+  if (info != null) {
+    this._startIndex = info.start;
+    this._displayLength = info.length;
+  }
   var parent = this._rootContainer.parentElement;
   var selectedIndex = this._dataTable.getSelectedRow();
+  var search = this._dataTable.search();
 
   this.remove();
   this.append(parent);
-  
+
   this._startIndex = null;
+  this._displayLength = null;
+
+  this._dataTable.search(search).draw();
   
-  this.setSelectedRow(selectedIndex);
+  this._dataTable.setSelectedRow(selectedIndex);
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype.isAppended = function() {
@@ -175,9 +185,7 @@ AbstractRequestPage._AbstractRequestsTable.prototype.__appendTableElement = func
     }.bind(this)
   }
   
-  var startIndex = this._startIndex || 0;
-
-  return UIUtils.appendFeaturedTable("Table", this._rootContainer, this._getColumns(), rowDataProvider, startIndex, this._settings.selectionObserver, this._settings.clickObserver);
+  return UIUtils.appendFeaturedTable("Table", this._rootContainer, this._getColumns(), rowDataProvider, this._startIndex, this._displayLength, this._settings.selectionObserver, this._settings.clickObserver);
 }
 
 
