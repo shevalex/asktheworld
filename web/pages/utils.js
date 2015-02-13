@@ -567,7 +567,7 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
       
       rowDataProvider.getRowDetails(rowData.rowId, function(rowDetailedData) {
         rowDetailedData.rowId = rowData.rowId;
-        table.row(index).data(rowDetailedData);
+        table.row(index).data(rowDetailedData).draw(false);
       });
     },
     aLengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
