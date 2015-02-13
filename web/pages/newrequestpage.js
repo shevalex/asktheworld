@@ -90,12 +90,12 @@ NewRequestPage.prototype._createRequest = function() {
   
   var callback = {
     success: function(requestId) {
-      Application.showMessage(this.getLocale().RequestSentMessage);
+      Application.showMessage(page.getLocale().RequestSentMessage);
       page._resetPage();
       this._onCompletion();
     },
     failure: function() {
-      Application.showMessage(this.getLocale().RequestFailedMessage);
+      Application.showMessage(page.getLocale().RequestFailedMessage);
       this._onCompletion();
     },
     error: function() {

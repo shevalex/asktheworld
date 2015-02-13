@@ -9,6 +9,8 @@ RequestDetailsPage = ClassUtils.defineClass(AbstractPage, function RequestDetail
   this._requestList = null;
   this._requestsPanel = null;
   this._isIncomingList = false;
+  
+  this._cacheChangeListener;
 });
 
 RequestDetailsPage.prototype.definePageContent = function(root) {
@@ -44,9 +46,32 @@ RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
 
   this._updatePage();
+  
+  this._cacheChangeListener = function(event) {
+    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
+      var requestList;
+      if (this._isIncomingList) {
+        requestList = Backend.getIncomingRequestIds();
+      } else {
+        requestList = Backend.getOutgoingRequestIds();
+      }
+      
+      for (var index in requestList) {
+        if (requestList[index] == this._currentRequestId) {
+          return;
+        }
+      }
+      
+      Application.getMenuPage().showPage(this._returnPageId);
+    }
+  }.bind(this);
+
+  
+  Backend.addCacheChangeListener(this._cacheChangeListener);
 }
 
 RequestDetailsPage.prototype.onHide = function() {
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
   this._requestList.remove();
 }
 
@@ -116,6 +141,9 @@ RequestDetailsPage.prototype._updatePage = function() {
       },
       requestUpdated: function() {
         Application.showMessage("Request was updated", "fast");
+      },
+      requestDeleted: function() {
+        Application.showMessage("Request was removed", "fast");
       }
     }
   };

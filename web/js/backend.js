@@ -379,7 +379,7 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     }
     this._cache.responses[newResponseId] = response;
     
-    transactionCallback.success();
+    transactionCallback.success(newResponseId);
     
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId});
   }.bind(this), 1000);
@@ -432,11 +432,14 @@ Backend.getIncomingRequestIds = function(requestStatus) {
   }
 }
 
-Backend.removeIncomingRequest = function(requestId) {
+Backend.removeIncomingRequest = function(requestId, callback) {
   setTimeout(function() {
     for (var index in this._cache.incomingRequestIds.active) {
       if (this._cache.incomingRequestIds.active[index] == requestId) {
         this._cache.incomingRequestIds.active.splice(index, 1);
+        
+        callback.success();
+        
         this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED});
         
         break;
@@ -518,7 +521,7 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   }
 }
 
-Backend.removeIncomingResponse = function(requestId, responseId) {
+Backend.removeIncomingResponse = function(requestId, responseId, callback) {
   setTimeout(function() {
     var response = Backend.getResponse(requestId, responseId);
     if (response != null) {
@@ -534,6 +537,9 @@ Backend.removeIncomingResponse = function(requestId, responseId) {
       for (var index in responseList) {
         if (responseList[index] == responseId) {
           responseList.splice(index, 1);
+          
+          callback.success();
+          
           this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
           break;
         }

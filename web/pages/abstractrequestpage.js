@@ -429,19 +429,29 @@ AbstractRequestPage._AbstractRequestList.prototype.__updateFailed = function() {
     this._settings.updateListener.updateFailed();
   }
 }
-AbstractRequestPage._AbstractRequestList.prototype.__responseCreated = function() {
+AbstractRequestPage._AbstractRequestList.prototype.__responseCreated = function(requestId, responseId) {
   if (this._settings.updateListener != null && this._settings.updateListener.responseCreated != null) {
-    this._settings.updateListener.responseCreated();
+    this._settings.updateListener.responseCreated(requestId, responseId);
   }
 }
-AbstractRequestPage._AbstractRequestList.prototype.__responseUpdated = function() {
+AbstractRequestPage._AbstractRequestList.prototype.__responseUpdated = function(requestId, responseId) {
   if (this._settings.updateListener != null && this._settings.updateListener.responseUpdated != null) {
-    this._settings.updateListener.responseUpdated();
+    this._settings.updateListener.responseUpdated(requestId, responseId);
   }
 }
-AbstractRequestPage._AbstractRequestList.prototype.__requestUpdated = function() {
+AbstractRequestPage._AbstractRequestList.prototype.__requestUpdated = function(requestId) {
   if (this._settings.updateListener != null && this._settings.updateListener.requestUpdated != null) {
-    this._settings.updateListener.requestUpdated();
+    this._settings.updateListener.requestUpdated(requestId);
+  }
+}
+AbstractRequestPage._AbstractRequestList.prototype.__requestDeleted = function(requestId) {
+  if (this._settings.updateListener != null && this._settings.updateListener.requestDeleted != null) {
+    this._settings.updateListener.requestDeleted(requestId);
+  }
+}
+AbstractRequestPage._AbstractRequestList.prototype.__responseDeleted = function(requestId, responseId) {
+  if (this._settings.updateListener != null && this._settings.updateListener.responseDeleted != null) {
+    this._settings.updateListener.responseDeleted(requestId, responseId);
   }
 }
 
@@ -828,7 +838,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     Backend.updateRequest(this._requestId, {status: Backend.Request.STATUS_INACTIVE}, {
       success: function() {
         this._requestList.__updateFinished();
-        this._requestList.__requestUpdated();
+        this._requestList.__requestUpdated(this._requestId);
         completionCallback();
       }.bind(this),
       failure: function() {
@@ -855,7 +865,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
       }, {
         success: function() {
           this._requestList.__updateFinished();
-          this._requestList.__requestUpdated();
+          this._requestList.__requestUpdated(this._requestId);
           completionCallback();
         }.bind(this),
         failure: function() {
@@ -937,7 +947,20 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       var ignoreButton = UIUtils.appendButton(controlPanel, "IgnoreButton", "Ignore/Remove");
       UIUtils.addClass(ignoreButton, "incomingrequest-ignorebutton");
       UIUtils.setClickListener(ignoreButton, function() {
-        Backend.removeIncomingRequest(this._requestId);
+        this._requestList.__updateStarted();
+        
+        Backend.removeIncomingRequest(this._requestId, {
+          success: function() {
+            this._requestList.__updateFinished();
+            this._requestList.__requestDeleted(this._requestId);
+          }.bind(this),
+          failure: function() {
+            this._requestList.__updateFailed();
+          }.bind(this),
+          error: function() {
+            this._requestList.__updateFailed();
+          }.bind(this)
+        });
       }.bind(this));
 
       var commentButton = UIUtils.appendButton(controlPanel, "CommentButton", "Comment");
@@ -988,10 +1011,10 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
       this._requestList.__updateStarted();
       
       Backend.createResponse(this._requestId, {text: responseText, attachments: textEditor.getAttachments()}, {
-        success: function() {
+        success: function(responseId) {
           UIUtils.get$(createResponsePanel).remove();
           this._requestList.__updateFinished();
-          this._requestList.__responseCreated();
+          this._requestList.__responseCreated(this._requestId, responseId);
 
           completionCallback();
         }.bind(this),
@@ -1055,7 +1078,20 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
     var removeResponseElement = UIUtils.appendBlock(responseInfoElement, "Remover");
     UIUtils.addClass(removeResponseElement, "incomingresponse-x");
     UIUtils.setClickListener(removeResponseElement, function(event) {
-      Backend.removeIncomingResponse(this._requestId, this._responseId);
+      this._requestList.__updateStarted();
+        
+      Backend.removeIncomingResponse(this._requestId, this._responseId, {
+        success: function(responseId) {
+          this._requestList.__updateFinished();
+          this._requestList.__responseRemoved(this._requestId, this._responseId);
+        }.bind(this),
+        failure: function() {
+          this._requestList.__updateFailed();
+        }.bind(this),
+        error: function() {
+          this._requestList.__updateFailed();
+        }.bind(this)
+      });
       
       return false;
     }.bind(this));
@@ -1152,7 +1188,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
     Backend.updateResponse(this._requestId, this._responseId, {text: textEditor.getValue(), attachments: textEditor.getAttachments()}, {
       success: function() {
         this._requestList.__updateFinished();
-        this._requestList.__responseUpdated();
+        this._requestList.__responseUpdated(this._requestId, this._responseId);
         completionCallback();
       }.bind(this),
       failure: function() {
