@@ -41,18 +41,16 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
       }
     }
   });
-  
 }
 
 AllIncomingRequestsPage.prototype.onShow = function(root) {
-  if (this._requestTable.isAppended()) {
-    this._requestTable.refresh();
-  } else {
-    this._requestTable.append(this._requestTableContainer);
-  }
+  this._requestTable.append(this._requestTableContainer);
+  this._requestTable.restore();
 }
 
 AllIncomingRequestsPage.prototype.onHide = function() {
+  this._requestTable.save();
+  this._requestTable.remove();
 }
 
 

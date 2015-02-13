@@ -17,6 +17,7 @@ AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, func
   this._cacheRowListeners = {};
   this._rootContainer = null;
   this._dataTable = null;
+  this._state = null;
 });
 
 //abstract
@@ -87,25 +88,48 @@ AbstractRequestPage._AbstractRequestsTable.prototype.append = function(container
   appendTableElement();
 }
 
+AbstractRequestPage._AbstractRequestsTable.prototype.save = function() {
+  this._state = {};
+  
+  this._state.selectedIndex = this._dataTable.getSelectedRow();
+  this._state.search = this._dataTable.search();
+  this._state.order = this._dataTable.order();
+  this._state.page = this._dataTable.page();
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.restore = function() {
+  if (this._state == null) {
+    return;
+  }
+  
+  this._dataTable.search(this._state.search);
+  this._dataTable.order(this._state.order);
+  this._dataTable.page(this._state.page);
+  this._dataTable.setSelectedRow(this._state.selectedIndex);
+  
+  this._dataTable.draw(false);
+}
+
 AbstractRequestPage._AbstractRequestsTable.prototype.refresh = function() {
   if (!this.isAppended()) {
     return;
   }
-  
-  var parent = this._rootContainer.parentElement;
-
-  var selectedIndex = this._dataTable.getSelectedRow();
-  var search = this._dataTable.search();
-  var order = this._dataTable.order();
-  var page = this._dataTable.page();
-
-  this.remove();
-  this.append(parent);
-
-  this._dataTable.search(search);
-  this._dataTable.order(order);
-  this._dataTable.page(page);
-  this._dataTable.setSelectedRow(selectedIndex);
+//  
+//  var parent = this._rootContainer.parentElement;
+//
+//  var selectedIndex = this._dataTable.getSelectedRow();
+//  var search = this._dataTable.search();
+//  var order = this._dataTable.order();
+//  var page = this._dataTable.page();
+//  
+//
+//  this.remove();
+//  this.append(parent);
+//
+//  this._dataTable.search(search);
+//  this._dataTable.order(order);
+//  this._dataTable.page(page);
+//  this._dataTable.setSelectedRow(selectedIndex);
   
   this._dataTable.draw(false);
 }
@@ -179,7 +203,7 @@ AbstractRequestPage._AbstractRequestsTable.prototype.__appendTableElement = func
     }.bind(this)
   }
   
-  return UIUtils.appendFeaturedTable("Table", this._rootContainer, this._getColumns(), rowDataProvider, this._startIndex, this._displayLength, this._settings.selectionObserver, this._settings.clickObserver);
+  return UIUtils.appendFeaturedTable("Table", this._rootContainer, this._getColumns(), rowDataProvider, this._settings.selectionObserver, this._settings.clickObserver);
 }
 
 
