@@ -48,7 +48,7 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
       },
       responseCreated: function() {
         Application.showMessage(this.getLocale().ResponseSentMessage);
-      }
+      }.bind(this)
     }
   });
   

@@ -550,7 +550,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
 
 
 
-UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, startIndex, displayLength, selectionListener, clickListener) {
+UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener, clickListener) {
   var tableElement = document.createElement("table");
   tableElement.setAttribute("class", "display");
 
@@ -571,8 +571,8 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
       });
     },
     aLengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-    iDisplayLength: displayLength != null ? displayLength : 5,
-    iDisplayStart: startIndex != null ? startIndex : 0
+    iDisplayLength: 5,
+    iDisplayStart: 0
   });
   
   dataTableObject.on("click", "tr", function() {

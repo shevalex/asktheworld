@@ -17,9 +17,6 @@ AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, func
   this._cacheRowListeners = {};
   this._rootContainer = null;
   this._dataTable = null;
-  
-  this._startIndex = null;
-  this._displayLength = null;
 });
 
 //abstract
@@ -95,25 +92,22 @@ AbstractRequestPage._AbstractRequestsTable.prototype.refresh = function() {
     return;
   }
   
-  
-  var info = this._dataTable.page.info();
-  if (info != null) {
-    this._startIndex = info.start;
-    this._displayLength = info.length;
-  }
   var parent = this._rootContainer.parentElement;
+
   var selectedIndex = this._dataTable.getSelectedRow();
   var search = this._dataTable.search();
+  var order = this._dataTable.order();
+  var page = this._dataTable.page();
 
   this.remove();
   this.append(parent);
 
-  this._startIndex = null;
-  this._displayLength = null;
-
-  this._dataTable.search(search).draw();
-  
+  this._dataTable.search(search);
+  this._dataTable.order(order);
+  this._dataTable.page(page);
   this._dataTable.setSelectedRow(selectedIndex);
+  
+  this._dataTable.draw(false);
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype.isAppended = function() {
