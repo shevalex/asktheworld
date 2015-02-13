@@ -48,7 +48,7 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
         Application.hideSpinningWheel();
       },
       requestUpdated: function() {
-        Application.showMessage(I18n.getLocale().literals.RequestUpdatedMessage, "fast");
+        Application.showMessage(I18n.getLocale().literals.RequestUpdatedMessage, Application.MESSAGE_TIMEOUT_FAST);
       }
     }
   });

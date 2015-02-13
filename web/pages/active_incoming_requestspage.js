@@ -47,10 +47,10 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
         Application.hideSpinningWheel();
       },
       responseCreated: function() {
-        Application.showMessage(this.getLocale().ResponseSentMessage);
+        Application.showMessage(I18n.getLocale().literals.ResponseSentMessage, Application.MESSAGE_TIMEOUT_FAST);
       }.bind(this),
       requestDeleted: function() {
-        Application.showMessage(this.getLocale().RequestRemovedMessage);
+        Application.showMessage(I18n.getLocale().literals.RequestRemovedMessage, Application.MESSAGE_TIMEOUT_FAST);
       }.bind(this)
     }
   });

@@ -17,20 +17,20 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
   
   this._previousLinkId = UIUtils.createId(generalPanel, "PreviousLink");
-  generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink(this._previousLinkId, "Previous"));
+  generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink(this._previousLinkId, this.getLocale().PreviousLink));
   UIUtils.setClickListener(this._previousLinkId, function() {
     this._currentRequestId = this._getPreviousRequestId();
     this._updatePage();
   }.bind(this));
 
   var goBackLinkId = UIUtils.createId(generalPanel, "GoBackLink");
-  generalPanel.appendChild(UIUtils.createSpan("56%", "0 2% 2% 0")).appendChild(UIUtils.createLink(goBackLinkId, "Take me back"));
+  generalPanel.appendChild(UIUtils.createSpan("56%", "0 2% 2% 0")).appendChild(UIUtils.createLink(goBackLinkId, this.getLocale().GoBackLink));
   UIUtils.setClickListener(goBackLinkId, function() {
     Application.getMenuPage().showPage(this._returnPageId);
   }.bind(this));
 
   this._nextLinkId = UIUtils.createId(generalPanel, "NextLink");
-  generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink(this._nextLinkId, "Next"));
+  generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink(this._nextLinkId, this.getLocale().NextLink));
   UIUtils.setClickListener(this._nextLinkId, function() {
     this._currentRequestId = this._getNextRequestId();
     this._updatePage();
@@ -137,13 +137,13 @@ RequestDetailsPage.prototype._updatePage = function() {
         Application.hideSpinningWheel();
       },
       responseCreated: function() {
-        Application.showMessage("Your response was sent");
+        Application.showMessage(I18n.getLocale().literals.ResponseSentMessage, Application.MESSAGE_TIMEOUT_FAST);
       },
       requestUpdated: function() {
-        Application.showMessage("Request was updated", "fast");
+        Application.showMessage(I18n.getLocale().literals.RequestUpdatedMessage, Application.MESSAGE_TIMEOUT_FAST);
       },
       requestDeleted: function() {
-        Application.showMessage("Request was removed", "fast");
+        Application.showMessage(I18n.getLocale().literals.RequestRemovedMessage, Application.MESSAGE_TIMEOUT_FAST);
       }
     }
   };

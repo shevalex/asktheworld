@@ -6,6 +6,8 @@ var Locale_eng = {
     "FileTooBigMessage": "File is too big",
     
     "RequestUpdatedMessage": "Request was updated",
+    "ResponseSentMessage": "Your response was sent",
+    "RequestRemovedMessage": "Inquiry removed",
     
     
     "TargetGenderLabel": "Target gender",
@@ -99,9 +101,7 @@ var Locale_eng = {
     },
     "ActiveIncomingRequestsPage": {
       "ActiveIncomingRequestsLabel": "This is what the World is asking you to comment and is awaiting your opinion about.",
-      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older inquiries in the <a href='#' id='" + linkId + "'>All Inquiries</a> section"; },
-      "ResponseSentMessage": "Your response was sent",
-      "RequestRemovedMessage": "Inquiry removed"
+      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older inquiries in the <a href='#' id='" + linkId + "'>All Inquiries</a> section"; }
     },
     "AllIncomingRequestsPage": {
       "AllIncomingRequestsLabel": "This is the complete list of requests that The World asked you about.",
@@ -140,6 +140,11 @@ var Locale_eng = {
       
       "PreferencesUpdatedMessage": "Your preferences were successfully updated",
       "UpdateFailedMessage": "Failed to update preferences"
+    },
+    "RequestDetailsPage": {
+      "PreviousLink": "Previous",
+      "GoBackLink": "Take me back",
+      "NextLink": "Next"
     }
   }
 }
