@@ -559,20 +559,27 @@ UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, 
   
   root.appendChild(tableElement);
 
+  
+  var defaultSortingRule = [];
+  for (var index in columns) {
+    defaultSortingRule.push([index, "desc"]);
+  }
+  
   var dataTableObject = $("#" + tableElementId).DataTable({
     columns: columns,
     data: rowDataProvider.getRows(),
     createdRow: function(row, rowData, index) {
       var table = this.api();
       
-      rowDataProvider.getRowDetails(rowData.rowId, function(rowDetailedData) {
+      rowDataProvider.getRowData(rowData.rowId, function(rowDetailedData) {
         rowDetailedData.rowId = rowData.rowId;
         table.row(index).data(rowDetailedData).draw(false);
       });
     },
     aLengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
     iDisplayLength: 5,
-    iDisplayStart: 0
+    iDisplayStart: 0,
+    aaSorting: defaultSortingRule
   });
   
   dataTableObject.on("click", "tr", function() {

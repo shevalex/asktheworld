@@ -149,11 +149,7 @@ AbstractRequestPage._AbstractRequestsTable.prototype.__appendTableElement = func
       return rowData;
     }.bind(this),
     
-    getRowDetails: function(rowId, callback) {
-      function convertRequestToRowData(request) {
-        return {time: new Date(request.time).toDateString(), text: request.text, numOfResponses: Backend.getIncomingResponseIds(rowId).length};
-      }
-
+    getRowData: function(rowId, callback) {
       var reportRowDataReady = function() {
         var request = Backend.getRequest(rowId);
         var responseIds = this._getResponses(rowId);
