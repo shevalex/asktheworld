@@ -23,6 +23,8 @@ var Locale_eng = {
     
     "CancelOperationButton": "Cancel",
     "OkButton": "OK",
+    "AttachButton": "Attach",
+    
     
     "LanguageRussian": "Russian",
     "LanguageEnglish": "English",

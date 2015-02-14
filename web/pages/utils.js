@@ -695,7 +695,7 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
   var controlPanel = UIUtils.appendBlock(attachmentBar, "ControlPanel");
   UIUtils.addClass(controlPanel, "text-editor-controlpanel");
   
-  var attachButton = UIUtils.appendButton(controlPanel, "AttachButton", "Attach");
+  var attachButton = UIUtils.appendButton(controlPanel, "AttachButton", I18n.getLocale().literals.AttachButton);
   UIUtils.addClass(attachButton, "text-editor-attachbutton");
 
   var attachments = [];
