@@ -19,7 +19,9 @@ var Locale_eng = {
     "YourNicknameLabel": "Your Nickname",
     "YourGenderLabel": "Your Gender",
     "YourAgeCategoryLabel": "Your Age Category",
-    "YourLanguagesLabel": "Languages that you speak"
+    "YourLanguagesLabel": "Languages that you speak",
+    
+    "CancelOperationButton": "Cancel"
   },
   "pages": {
     "LoginPage": {
@@ -145,6 +147,27 @@ var Locale_eng = {
       "PreviousLink": "Previous",
       "GoBackLink": "Take me back",
       "NextLink": "Next"
+    },
+    "AbstractRequestPage": {
+      "TableColumnDate": "Date",
+      "TableColumnNumOfResponses": "Responses",
+      "TableColumnOutgoingRequest": "Your Request",
+      "TableColumnIncomingRequest": "Inquiry",
+      "SeeMoreResponses": "And more responses. Click to see them all",
+      "MoreResponsesAvailable": "And more responses...",
+      "EditRequestButton": "Edit",
+      "OutgoingRequestTitleProvider": function(date, targetGroup) { return "You wrote on " + date + " to " + targetGroup + ":"; },
+      "IncomingRequestTitleProvider": function(date) { return "On " + date + " The World asked you:"; },
+      "OutgoingResponseTitleProvider": function(date) { return "You responded on " + date + ":"; },
+      "SentRequestTextProvider": function(date) { return "This request was sent on <b>" + date +"</b>"; },
+      "DeactivateRequestButton": "Deactivate",
+      "UpdateRequestButton": "Update",
+      "CancelRequestButton": "Cancel",
+      "IgnoreRequestButton": "Ignore/Remove",
+      "CommentRequestButton": "Comment",
+      "SendResponseButton": "Send",
+      "ModifyResponseButton": "Modify",
+      "UpdateResponseButton": "Update",
     }
   }
 }

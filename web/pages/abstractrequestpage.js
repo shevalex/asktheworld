@@ -198,9 +198,9 @@ AbstractRequestPage.OutgoingRequestsTable.prototype._getResponseIdsChangeEventTy
 
 AbstractRequestPage.OutgoingRequestsTable.prototype._getColumns = function() {
   return [
-    {title: "Date", data: "time", type: "date", width: "100px"},
-    {title: "Responses", data: "numOfResponses", type: "num", width: "40px"},
-    {title: "Your Request", data: "text", type: "string"}
+    {title: I18n.getLocale().pages.AbstractRequestPage.TableColumnDate, data: "time", type: "date", width: "100px"},
+    {title: I18n.getLocale().pages.AbstractRequestPage.TableColumnNumOfResponses, data: "numOfResponses", type: "num", width: "40px"},
+    {title: I18n.getLocale().pages.AbstractRequestPage.TableColumnOutgoingRequest, data: "text", type: "string"}
   ];
 }
 
@@ -231,8 +231,8 @@ AbstractRequestPage.IncomingRequestsTable.prototype._getResponseIdsChangeEventTy
 
 AbstractRequestPage.IncomingRequestsTable.prototype._getColumns = function() {
   return [
-    {title: "Date", data: "time", type: "date", width: "100px"},
-    {title: "Inquiry", data: "text", type: "string"}
+    {title: I18n.getLocale().pages.AbstractRequestPage.TableColumnDate, data: "time", type: "date", width: "100px"},
+    {title: I18n.getLocale().pages.AbstractRequestPage.TableColumnIncomingRequest, data: "text", type: "string"}
   ];
 }
 
@@ -703,9 +703,9 @@ AbstractRequestPage._AbstractRequestList._AbstractResponsePanel.prototype._appen
     UIUtils.addClass(responseTextElement, "common-moreresponses-activable");
     UIUtils.setClickListener(responseTextElement, this._settings.requestClickListener.bind(this, this._requestId))
 
-    UIUtils.get$(responseTextElement).html("And more responses. Click to see them all");
+    UIUtils.get$(responseTextElement).html(I18n.getLocale().pages.AbstractRequestPage.SeeMoreResponses);
   } else {
-    UIUtils.get$(responseTextElement).html("And more responses...");
+    UIUtils.get$(responseTextElement).html(I18n.getLocale().pages.AbstractRequestPage.MoreResponsesAvailable);
   }
 }
 
@@ -771,7 +771,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
     }
     
     var requestDate = new Date(request.time);
-    UIUtils.get$(textElement).html("<b>You wrote on " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " to " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender) + ":</b><br>" + text);
+    UIUtils.get$(textElement).html("<b>" + I18n.getLocale().pages.AbstractRequestPage.OutgoingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString(), Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender)) + "</b><br>" + text);
     
     AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(requestHolderElement, request.attachments);
     
@@ -779,7 +779,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
       var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
       UIUtils.addClass(controlPanel, "outgoingrequest-controlpanel");
 
-      var editButton = UIUtils.appendButton(controlPanel, "EditButton", "Edit");
+      var editButton = UIUtils.appendButton(controlPanel, "EditButton", I18n.getLocale().pages.AbstractRequestPage.EditRequestButton);
       UIUtils.addClass(editButton, "outgoingrequest-editbutton");
       UIUtils.setClickListener(editButton, function() {
         UIUtils.emptyContainer(requestHolderElement);
@@ -800,27 +800,27 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   UIUtils.addClass(editPanel, "outgoingrequest-editpanel");
 
   var requestDate = new Date(request.time);
-  var label = UIUtils.appendLabel(editPanel, "Label", "This request was sent on <b>" + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() +"</b>");
+  var label = UIUtils.appendLabel(editPanel, "Label", I18n.getLocale().pages.AbstractRequestPage.SentRequestTextProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString()));
   UIUtils.addClass(label, "outgoingrequest-editpanel-label");
   
-  var genderCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Gender"), "Target gender", Application.Configuration.GENDER_PREFERENCE, "10px"));
+  var genderCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Gender"), I18n.getLocale().literals.TargetGenderLabel, Application.Configuration.GENDER_PREFERENCE, "10px"));
   genderCombo.getInputElement().selectData(request.response_gender);
   
-  var ageCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "AgeCategory"), "Target age group", Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
+  var ageCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "AgeCategory"), I18n.getLocale().literals.TargetAgeGroupLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px"));
   ageCombo.getInputElement().selectData(request.response_age_group);
   
   editPanel.appendChild(UIUtils.createLineBreak());
   
-  var waitTimeCombo = editPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "WaitTime"), "Wait time for responses", Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
+  var waitTimeCombo = editPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "WaitTime"), I18n.getLocale().literals.WaitTimeLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px"));
   waitTimeCombo.getInputElement().selectData(request.response_wait_time);
   
-  var quantityCombo = editPanel.appendChild(UIUtils.createSpan("48%", "20px 0 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Quantity"), "Maximum # of responses", Application.Configuration.RESPONSE_QUANTITY, "10px"));
+  var quantityCombo = editPanel.appendChild(UIUtils.createSpan("48%", "20px 0 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Quantity"), I18n.getLocale().literals.NumOfResponsesLabel, Application.Configuration.RESPONSE_QUANTITY, "10px"));
   quantityCombo.getInputElement().selectData(request.response_quantity);
   
   var textEditor = UIUtils.appendTextEditor(editPanel, "TextArea", {
     textCssClass: "outgoingrequest-editpanel-text",
     fileTooBigListener: function(file) {
-      Application.showMessage("File is too big");
+      Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
     }
   });
   textEditor.setValue(request.text);
@@ -830,7 +830,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
   UIUtils.addClass(controlPanel, "outgoingrequest-controlpanel");
   
-  var deactivateButton = UIUtils.appendButton(controlPanel, "DeactivateButton", "Deactivate");
+  var deactivateButton = UIUtils.appendButton(controlPanel, "DeactivateButton", I18n.getLocale().pages.AbstractRequestPage.DeactivateRequestButton);
   UIUtils.addClass(deactivateButton, "outgoingrequest-deactivatebutton");
   UIUtils.setClickListener(deactivateButton, function() {
     this._requestList.__updateStarted();
@@ -850,7 +850,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     });
   }.bind(this));
   
-  var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", "Update");
+  var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", I18n.getLocale().pages.AbstractRequestPage.UpdateRequestButton);
   UIUtils.addClass(updateButton, "outgoingrequest-updatebutton");
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
@@ -877,7 +877,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
     });
   }.bind(this));
   
-  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
+  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", I18n.getLocale().pages.AbstractRequestPage.CancelRequestButton);
   UIUtils.addClass(cancelButton, "outgoingrequest-cancelbutton");
   UIUtils.setClickListener(cancelButton, completionCallback);
 }
@@ -936,7 +936,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
     }
 
     var requestDate = new Date(request.time);
-    UIUtils.get$(requestTextElement).html("<b>On " + requestDate.toDateString() + ", " + requestDate.toLocaleTimeString() + " the World asked you:</b><br>" + text);
+    UIUtils.get$(requestTextElement).html("<b>" + I18n.getLocale().pages.AbstractRequestPage.IncomingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString()) + "</b><br>" + text);
     
     AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(requestHolderElement, request.attachments);
 
@@ -944,7 +944,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
       var controlPanel = UIUtils.appendBlock(requestHolderElement, "ControlPanel");
       UIUtils.addClass(controlPanel, "incomingrequest-controlpanel");
 
-      var ignoreButton = UIUtils.appendButton(controlPanel, "IgnoreButton", "Ignore/Remove");
+      var ignoreButton = UIUtils.appendButton(controlPanel, "IgnoreButton", I18n.getLocale().pages.AbstractRequestPage.IgnoreRequestButton);
       UIUtils.addClass(ignoreButton, "incomingrequest-ignorebutton");
       UIUtils.setClickListener(ignoreButton, function() {
         this._requestList.__updateStarted();
@@ -963,7 +963,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
         });
       }.bind(this));
 
-      var commentButton = UIUtils.appendButton(controlPanel, "CommentButton", "Comment");
+      var commentButton = UIUtils.appendButton(controlPanel, "CommentButton", I18n.getLocale().pages.AbstractRequestPage.CommentRequestButton);
       UIUtils.addClass(commentButton, "incomingrequest-commentbutton");
       UIUtils.setClickListener(commentButton, function() {
         UIUtils.get$(controlPanel).remove();
@@ -994,7 +994,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
   var textEditor = UIUtils.appendTextEditor(createResponsePanel, "TextArea", {
     textCssClass: "outgoingresponse-createresponsepanel-text",
     fileTooBigListener: function(file) {
-      Application.showMessage("File is too big");
+      Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
     }
   });
   textEditor.focus();
@@ -1002,7 +1002,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
   var controlPanel = UIUtils.appendBlock(createResponsePanel, "ControlPanel");
   UIUtils.addClass(controlPanel, "outgoingresponse-controlpanel");
     
-  var submitButton = UIUtils.appendButton(controlPanel, "SubmitButton", "Send");
+  var submitButton = UIUtils.appendButton(controlPanel, "SubmitButton", I18n.getLocale().pages.AbstractRequestPage.SendResponseButton);
   UIUtils.addClass(submitButton, "outgoingresponse-submitbutton");
   
   UIUtils.setClickListener(submitButton, function() {
@@ -1030,7 +1030,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
     }
   }.bind(this));
 
-  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
+  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", I18n.getLocale().literals.CancelOperationButton);
   UIUtils.addClass(cancelButton, "outgoingresponse-cancelbutton");
   UIUtils.setClickListener(cancelButton, function() {
     UIUtils.get$(createResponsePanel).remove();
@@ -1083,7 +1083,7 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
       Backend.removeIncomingResponse(this._requestId, this._responseId, {
         success: function(responseId) {
           this._requestList.__updateFinished();
-          this._requestList.__responseRemoved(this._requestId, this._responseId);
+          this._requestList.__responseDeleted(this._requestId, this._responseId);
         }.bind(this),
         failure: function() {
           this._requestList.__updateFailed();
@@ -1137,7 +1137,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
     }
 
     var responseDate = new Date(response.time);
-    UIUtils.get$(responseTextElement).html("<b>You responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
+    UIUtils.get$(responseTextElement).html("<b>" + I18n.getLocale().pages.AbstractRequestPage.OutgoingResponseTitleProvider(responseDate.toDateString() + ", " + responseDate.toLocaleTimeString()) + "</b><br>" + text);
 
     AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(responseHolder, response.attachments);
     
@@ -1145,7 +1145,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype._appen
       var responseControlPanel = UIUtils.appendBlock(responseHolder, "ControlPanel");
       UIUtils.addClass(responseControlPanel, "outgoingresponse-controlpanel");
 
-      var editButton = UIUtils.appendButton(responseControlPanel, "ModifyButton", "Modify");
+      var editButton = UIUtils.appendButton(responseControlPanel, "ModifyButton", I18n.getLocale().pages.AbstractRequestPage.ModifyResponseButton);
       UIUtils.addClass(editButton, "outgoingresponse-editbutton");
       UIUtils.setClickListener(editButton, function() {
         UIUtils.emptyContainer(responseHolder);
@@ -1165,12 +1165,12 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   var editPanel = UIUtils.appendBlock(root, "RequestEditPanel");
   
   var responseDate = new Date(response.time);
-  UIUtils.appendLabel(editPanel, "Label", "You responded on <b>" + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() +"</b>");
+  UIUtils.appendLabel(editPanel, "Label", I18n.getLocale().pages.AbstractRequestPage.OutgoingResponseTitleProvider("<b>" + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + "</b>"));
   
   var textEditor = UIUtils.appendTextEditor(editPanel, "TextArea", {
     textCssClass: "outgoingresponse-controlpanel-text",
     fileTooBigListener: function(file) {
-      Application.showMessage("File is too big");
+      Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
     }
   });
   textEditor.setValue(response.text);
@@ -1180,7 +1180,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
   var controlPanel = UIUtils.appendBlock(editPanel, "ControlPanel");
   UIUtils.addClass(controlPanel, "outgoingresponse-controlpanel");
   
-  var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", "Update");
+  var updateButton = UIUtils.appendButton(controlPanel, "UpdateButton", I18n.getLocale().pages.AbstractRequestPage.UpdateResponseButton);
   UIUtils.addClass(updateButton, "outgoingresponse-updatebutton");
   UIUtils.setClickListener(updateButton, function() {
     this._requestList.__updateStarted();
@@ -1200,7 +1200,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingResponsePanel.prototype.__appe
     });
   }.bind(this));
   
-  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", "Cancel");
+  var cancelButton = UIUtils.appendButton(controlPanel, "CancelButton", I18n.getLocale().literals.CancelOperationButton);
   UIUtils.addClass(cancelButton, "outgoingresponse-cancelbutton");
   UIUtils.setClickListener(cancelButton, completionCallback);
 }
