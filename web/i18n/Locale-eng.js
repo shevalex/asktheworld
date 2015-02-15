@@ -123,10 +123,10 @@ var Locale_eng = {
     },
     "RegisterPage": {
       "ProjectDescriptionHtml": "By registering you will get an instant access to the secret technology that we provide",
-      "SignInProvider": function(signInLinkId) { return "Already have an account?<br>Click <a href='#' id='" + signInLinkId + "'>Sign In</a>."; },
+      "SignInProvider": function(signInLinkId) { return "Already have an account?<br>Click <a id='" + signInLinkId + "'>Sign In</a>."; },
       "PasswordLabel": "Password",
       "RetypePasswordLabel": "Re-type Password",
-      "AcceptTermsProvider": function(linkId) { return "Please accept <a href='#' id='" + linkId + "'>Terms And Conditions</a>"; },
+      "AcceptTermsProvider": function(linkId) { return "Please accept <a id='" + linkId + "'>Terms And Conditions</a>"; },
       "RegisterButton": "Register",
       
       "ProvideLoginMessage": "The email is not provided or does not look like a valid email address",
@@ -134,13 +134,13 @@ var Locale_eng = {
       "ProvideLanguageMessage": "One or more languages must be set",
       "ProvideCorrectPasswordMessage": "Password should be at least 5 symbols long",
       "PasswordsDoNotMatchMessage": "Passwords do not match. Please retype.",
-      "MustAcceptTermsMessageProvider": function(linkId) { return "You must accept<p><a href='#' id='" + linkId + "'><b>Terms And Conditions<b></a>"; },
+      "MustAcceptTermsMessageProvider": function(linkId) { return "You must accept<p><a id='" + linkId + "'><b>Terms And Conditions<b></a>"; },
       "AccountCreationFailedMessage": "Failed to create an account",
       "AccountAlreadyExistsMessage": "This login (email) was already used"
     },
     "WelcomePage": {
       "WelcomeProvider": function(name) { return "Welcome, " + name + "<p> We are gald to see you in here. This super site gives you access to an absolutely unique abilities and experiences. Here is how you should use it"; },
-      "GoBackLinkProvider": function(linkId) { return "Click <a href='#' id='" + linkId + "'>Home</a> to start!"; }
+      "GoBackLinkProvider": function(linkId) { return "Click <a id='" + linkId + "'>Home</a> to start!"; }
     },
     "MenuPage": {
       "HomeMenuItem": "Home",
@@ -155,16 +155,16 @@ var Locale_eng = {
     },
     "HomePage": {
       "WelcomeProvider": function(name) { return "Welcome, " + name + "."; },
-      "ActiveOutgoingRequestsLinkProvider": function(linkId) { return "You can always find all your active requests in the <a href='#' id='" + linkId + "'>Active Requests</a> section."; },
+      "ActiveOutgoingRequestsLinkProvider": function(linkId) { return "You can always find all your active requests in the <a id='" + linkId + "'>Active Requests</a> section."; },
       "OutgoingRequestsStatisticProvider": function(numOfRequests, numOfResponses) { return "You have " + numOfResponses + " unviewed responses for " + numOfRequests + " your requests"},
-      "ActiveIncomingRequestsLinkProvider": function(linkId) { return "See all incoming inquiries in <a href='#' id='" + linkId + "'>Active Inquiries</a> section."; },
+      "ActiveIncomingRequestsLinkProvider": function(linkId) { return "See all incoming inquiries in <a id='" + linkId + "'>Active Inquiries</a> section."; },
       "IncomingRequestsStatisticProvider": function(numOfRequests) { return "You have " + numOfRequests + " unanswered requests"; }
     },
     "NewRequestPage": {
       "OutlineText": "Asking The World is just that easy. You are only three steps away.",
       "StepOneLabel": "1. Type in the text of your request first...",
       "StepTwoLabel": "2. Choose who will see your question",
-      "ModifySettingsLinkProvider": function(linkId) { return "Note: You can always modify your defaut settings in <a href='#' id='" + linkId + "'>Your Preferences</a>"; },
+      "ModifySettingsLinkProvider": function(linkId) { return "Note: You can always modify your defaut settings in <a id='" + linkId + "'>Your Preferences</a>"; },
       "StepThreeLabel": "3. And finally send it out!",
       "SendButton": "Ask The World!",
       "ResetButton": "Reset",
@@ -174,19 +174,19 @@ var Locale_eng = {
     },
     "ActiveOutgoingRequestsPage": {
       "ActiveOutgoingRequestsLabel": "This is what you recently Asked The World about and still waiting for more responses.",
-      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older requests in the <a href='#' id='" + linkId + "'>All Requests</a> section."; }
+      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older requests in the <a id='" + linkId + "'>All Requests</a> section."; }
     },
     "AllOutgoingRequestsPage": {
       AllOutgoingRequestsLabel: "This is the complete list of requests that you Asked The World about.",
-      ActiveOutgoingRequestsLinkProvider: function(linkId) { return "You can find your most recent active requests in the <a href='#' id='" + linkId + "'>Active Requests</a> section."; },
+      ActiveOutgoingRequestsLinkProvider: function(linkId) { return "You can find your most recent active requests in the <a id='" + linkId + "'>Active Requests</a> section."; },
     },
     "ActiveIncomingRequestsPage": {
       "ActiveIncomingRequestsLabel": "This is what the World is asking you to comment and is awaiting your opinion about.",
-      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older inquiries in the <a href='#' id='" + linkId + "'>All Inquiries</a> section"; }
+      "AllRequestsLinkProvider": function(linkId) { return "You can always see your older inquiries in the <a id='" + linkId + "'>All Inquiries</a> section"; }
     },
     "AllIncomingRequestsPage": {
       "AllIncomingRequestsLabel": "This is the complete list of requests that The World asked you about.",
-      "ActiveRequestsLinkProvider": function(linkId) { return "You can find the most recent inquiries in the <a href='#' id='" + linkId + "'>Active Inquiries</a> section."; }
+      "ActiveRequestsLinkProvider": function(linkId) { return "You can find the most recent inquiries in the <a id='" + linkId + "'>Active Inquiries</a> section."; }
     },
     "UserProfilePage": {
       "UpdateProfileText": "Update your profile information. <b>We intentionally keep it very basic and generic to insure your privacy</b>.<br>You may only modify the information which you need to correct. Do not type new password if you do not want to change it.",

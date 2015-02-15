@@ -17,6 +17,28 @@ button:disabled {
   color: rgb(220, 220, 220);
 }
 
+a {
+  color: rgb(50, 50, 150);
+  cursor: pointer;
+}
+a:hover {
+  text-decoration: underline;
+  background: transparent;
+  color: blue;
+}
+a:active {
+  text-decoration: underline;
+  background: transparent;
+  color: red;
+}
+a:disabled {
+  text-decoration: none;
+  background: transparent;
+  color: gray;
+}
+
+
+
 
 input {
   border-radius: 5px;

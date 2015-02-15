@@ -251,10 +251,6 @@ UIUtils.appendDropList = function(root, listId, items) {
   return root.appendChild(UIUtils.createDropList(UIUtils.createId(root, listId), items));
 }
 
-UIUtils.appendLink = function(root, linkId, text) {
-  return root.appendChild(UIUtils.createLink(UIUtils.createId(root, linkId), text));
-}
-
 
 UIUtils.createCheckbox = function(cbId, exclusive) {
   var checkbox = UIUtils._createInputField(cbId, exclusive ? "radio" : "checkbox");
@@ -343,6 +339,11 @@ UIUtils.createLink = function(linkId, text) {
   
   return linkElement;
 }
+
+UIUtils.appendLink = function(root, linkId, text) {
+  return root.appendChild(UIUtils.createLink(UIUtils.createId(root, linkId), text));
+}
+
 
 
 

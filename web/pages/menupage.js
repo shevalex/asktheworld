@@ -36,12 +36,13 @@ MenuPage.prototype.definePageContent = function(root) {
 }
 
 MenuPage.prototype.onShow = function(root) {
-  this.showPage(MenuPage.prototype.HOME_ITEM_ID);
 }
 
 MenuPage.prototype.onHide = function() {
   this._selectedMenuItemId = null;
   this._activePage = null;
+  
+  this._contentPanel.innerHTML = "";
 }
 
 
@@ -58,23 +59,13 @@ MenuPage.prototype.showPage = function(pageId, paramBundle, observer) {
   if (this._activePage == newPage) {
     return;
   }
-  
-  var hasMenuItem = $("#" + pageId).length > 0;
-  
-  if (hasMenuItem && this._selectedMenuItemId != null) {
-    $("#" + this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
-  }
-  
-  // Special processing for log-out
-  if (pageId == MenuPage.prototype.LOGOUT_ITEM_ID) {
-    Backend.logOut(function() {
-      Application.reset();
-      Application.showPage(Application.LOGIN_PAGE_ID);
-    });
-    return;
-  }
-  
-  if (hasMenuItem) {
+
+
+  var pageIsMenuItem = $("#" + pageId).length > 0;
+  if (pageIsMenuItem) {
+    if (this._selectedMenuItemId != null) {
+      $("#" + this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
+    }
     this._selectedMenuItemId = pageId;
     $("#" + this._selectedMenuItemId).addClass("menupage-menuitem-selected");
   }
@@ -97,6 +88,8 @@ MenuPage.prototype._appendMenuPanel = function(root) {
     Application.showMenuPage(itemId);
   };
   
+  
+  
   menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.HOME_ITEM_ID, this.getLocale().HomeMenuItem, null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
 
@@ -113,7 +106,12 @@ MenuPage.prototype._appendMenuPanel = function(root) {
   menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID, this.getLocale().PreferencesItem, null, clickListener));
   menuPanel.appendChild(this._createMenuSeparator());
 
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.LOGOUT_ITEM_ID, this.getLocale().LogOutItem, null, clickListener));
+  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.LOGOUT_ITEM_ID, this.getLocale().LogOutItem, null, function() {
+    Backend.logOut(function() {
+      Application.reset();
+      Application.showPage(Application.LOGIN_PAGE_ID);
+    });
+  }));
 }
 
 MenuPage.prototype._createMenuItem = function(itemId, text, icon, clickCallback) {

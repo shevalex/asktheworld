@@ -200,9 +200,8 @@ Application.showMenuPage = function(menuItemId, paramBundle, observer) {
     this._currentPage = this._menuPage;
     this._currentPage.showAnimated(this._rootContainer, null, function() {
       this._menuPage.showPage(menuItemId, paramBundle, observer);
+      window.location.hash = "[menu]-" + menuItemId;
     }.bind(this));
-
-    window.location.hash = "[menu]-" + menuItemId;
   }.bind(this);
   
   if (this._currentPage != null) {

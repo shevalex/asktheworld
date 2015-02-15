@@ -116,7 +116,7 @@ LoginPage.prototype._restorePassword = function() {
       success: function() {
         Application.hideSpinningWheel();
         Application.showMessage(this.getLocale().PasswordResetMessage, Application.MESSAGE_TIMEOUT_SLOW);
-      },
+      }.bind(this),
       error: function() {
         Application.hideSpinningWheel();
         Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
