@@ -18,7 +18,7 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
         otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE)
       }
 
-      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+      Application.showMenuPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     },
     requestEditable: false,
     showFullContent: false,
@@ -39,7 +39,7 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   
   this._incomingRequestList = new AbstractRequestPage.IncomingRequestList({
     requestClickListener: function(requestId) {
-      Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
+      Application.showMenuPage(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
     },
     requestEditable: false,
     showFullContent: false,
@@ -69,7 +69,7 @@ HomePage.prototype.definePageContent = function(root) {
   var activeOutgoingRequestsLinkId = UIUtils.createId(seeActiveOutgoingRequestsElement, "Link");
   seeActiveOutgoingRequestsElement.innerHTML = this.getLocale().ActiveOutgoingRequestsLinkProvider(activeOutgoingRequestsLinkId);
   UIUtils.setClickListener(activeOutgoingRequestsLinkId, function() {
-    Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
+    Application.showMenuPage(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
   });
   
   this._outgoingRequestsPanelRequests = UIUtils.appendBlock(outgoingRequestsPanel, "Requests");
@@ -98,7 +98,7 @@ HomePage.prototype.definePageContent = function(root) {
   var activeIncomingRequestsLinkId = UIUtils.createId(seeActiveIncomingRequestsElement, "Link");
   seeActiveIncomingRequestsElement.innerHTML = this.getLocale().ActiveIncomingRequestsLinkProvider(activeIncomingRequestsLinkId);
   UIUtils.setClickListener(activeIncomingRequestsLinkId, function() {
-    Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
+    Application.showMenuPage(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
   });
   
   this._incomingRequestsPanelRequests = UIUtils.appendBlock(incomingRequestsPanel, "Requests");

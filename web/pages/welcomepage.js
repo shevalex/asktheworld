@@ -11,6 +11,6 @@ WelcomePage.prototype.definePageContent = function(root) {
   goBackPanel.innerHTML = this.getLocale().GoBackLinkProvider(linkId);
   
   UIUtils.setClickListener(linkId, function() {
-    Application.showMenuPage();
+    Application.showMenuPage(MenuPage.prototype.HOME_ITEM_ID);
   });
 }

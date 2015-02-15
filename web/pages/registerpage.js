@@ -14,7 +14,7 @@ RegisterPage.prototype.definePageContent = function(root) {
   var signInLinkId = UIUtils.createId(rightSideDescriptionElement, "SignInLink");
   rightSideDescriptionElement.innerHTML = this.getLocale().SignInProvider(signInLinkId);
   UIUtils.setClickListener(signInLinkId, function() {
-    Application.showLoginPage();
+    Application.showPage(Application.LOGIN_PAGE_ID);
   })
   
   this._appendContentPanel(root);
@@ -117,7 +117,7 @@ RegisterPage.prototype._appendContentPanel = function(root) {
         page._passwordElement.setValue("");
         page._retypePasswordElement.setValue("");
         
-        Application.showWelcomePage();
+        Application.showPage(Application.WELCOME_PAGE_ID);
       },
       failure: function() {
         this._onCompletion();

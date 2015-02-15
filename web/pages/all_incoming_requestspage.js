@@ -15,7 +15,7 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
   var seeActiveElement = UIUtils.appendBlock(generalPanel, "SeeActive");
   seeActiveElement.innerHTML = this.getLocale().ActiveRequestsLinkProvider(linkId);
   UIUtils.setClickListener(linkId, function() {
-    Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
+    Application.showMenuPage(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
   });
 
   this._requestTableContainer = UIUtils.appendBlock(root, "TablePanel");
@@ -30,7 +30,7 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
         otherRequestIds: null
       }
 
-      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+      Application.showMenuPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     }.bind(this),
     updateListener: {
       updateStarted: function() {

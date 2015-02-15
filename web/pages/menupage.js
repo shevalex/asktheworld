@@ -36,7 +36,7 @@ MenuPage.prototype.definePageContent = function(root) {
 }
 
 MenuPage.prototype.onShow = function(root) {
-  this.selectMenuItem(MenuPage.prototype.HOME_ITEM_ID);
+  this.showPage(MenuPage.prototype.HOME_ITEM_ID);
 }
 
 MenuPage.prototype.onHide = function() {
@@ -45,45 +45,48 @@ MenuPage.prototype.onHide = function() {
 }
 
 
-MenuPage.prototype.selectMenuItem = function(itemId) {
-  if (this._selectedMenuItemId == itemId) {
+MenuPage.prototype.showPage = function(pageId, paramBundle, observer) {
+  var newPage = this._getPageForItem(pageId);
+  if (newPage == null) {
+    newPage = this._getPageById(pageId);
+  }
+  if (newPage == null) {
+    console.error("No page for id " + pageId);
     return;
   }
   
-  if (this._selectedMenuItemId != null) {
+  if (this._activePage == newPage) {
+    return;
+  }
+  
+  var hasMenuItem = $("#" + pageId).length > 0;
+  
+  if (hasMenuItem && this._selectedMenuItemId != null) {
     $("#" + this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
   }
   
   // Special processing for log-out
-  if (itemId == MenuPage.prototype.LOGOUT_ITEM_ID) {
+  if (pageId == MenuPage.prototype.LOGOUT_ITEM_ID) {
     Backend.logOut(function() {
       Application.reset();
-      Application.showLoginPage();
+      Application.showPage(Application.LOGIN_PAGE_ID);
     });
     return;
   }
   
-  this._selectedMenuItemId = itemId;
-  $("#" + this._selectedMenuItemId).addClass("menupage-menuitem-selected");
-
-  this.showPage(itemId);
-}
-
-MenuPage.prototype.showPage = function(pageId, paramBundle) {
+  if (hasMenuItem) {
+    this._selectedMenuItemId = pageId;
+    $("#" + this._selectedMenuItemId).addClass("menupage-menuitem-selected");
+  }
+  
+  
   if (this._activePage != null) {
     Application.hideSpinningWheel();
     this._activePage.hide();
   }
-
-  this._activePage = this._getPageForItem(pageId);
-  if (this._activePage == null) {
-    this._activePage = this._getPageById(pageId);
-  }
-  if (this._activePage != null) {
-    this._activePage.showAnimated(this._contentPanel, paramBundle);
-  } else {
-    console.error("No page for id " + pageId);
-  }
+  
+  this._activePage = newPage;
+  this._activePage.showAnimated(this._contentPanel, paramBundle, observer);
 }
 
 
@@ -91,7 +94,7 @@ MenuPage.prototype._appendMenuPanel = function(root) {
   var menuPanel = UIUtils.appendBlock(root, "MenuPanel");
 
   var clickListener = function(itemId) {
-    this.selectMenuItem(itemId);
+    Application.showMenuPage(itemId);
   };
   
   menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.HOME_ITEM_ID, this.getLocale().HomeMenuItem, null, clickListener));

@@ -53,7 +53,7 @@ LoginPage.prototype._appendLoginPanel = function(root) {
   
   var signUpLink = UIUtils.appendLink(contentPanel, "SignUpLink", this.getLocale().RegisterLink);
   UIUtils.setClickListener(signUpLink, function() {
-    Application.showRegisterPage();
+    Application.showPage(Application.REGISTER_PAGE_ID);
   });
 
   UIUtils.setClickListener(signInButton, function() {
@@ -79,7 +79,7 @@ LoginPage.prototype._appendLoginPanel = function(root) {
       var backendCallback = {
         success: function() {
           this._onCompletion();
-          Application.showMenuPage();
+          Application.showMenuPage(MenuPage.prototype.HOME_ITEM_ID);
         },
         failure: function() {
           this._onCompletion();

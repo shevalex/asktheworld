@@ -15,7 +15,7 @@ ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
   var seeAllElement = UIUtils.appendBlock(generalPanel, "SeeAll");
   seeAllElement.innerHTML = this.getLocale().AllRequestsLinkProvider(seeAllLinkId);
   UIUtils.setClickListener(seeAllLinkId, function() {
-    Application.getMenuPage().selectMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID);
+    Application.showMenuPage(MenuPage.prototype.ALL_REQUESTS_ITEM_ID);
   });
   
   this._requestsPanelRequests = UIUtils.appendBlock(root, "RequestsPanel");
@@ -31,7 +31,7 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
         otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE)
       }
 
-      Application.getMenuPage().showPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+      Application.showMenuPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
     },
     requestEditable: true,
     showFullContent: true,

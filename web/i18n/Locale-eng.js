@@ -8,6 +8,7 @@ var Locale_eng = {
     "RequestUpdatedMessage": "Request was updated",
     "ResponseSentMessage": "Your response was sent",
     "RequestRemovedMessage": "Inquiry removed",
+    "LeaveApplicationMessage": "You are about to leave Ask The World",
     
     
     "TargetGenderLabel": "Target gender",

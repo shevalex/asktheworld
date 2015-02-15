@@ -118,9 +118,21 @@ Application.MESSAGE_TIMEOUT_NORMAL = 5;
 Application.MESSAGE_TIMEOUT_SLOW = 10;
 
 
+Application.LOGIN_PAGE_ID = "LoginPage";
+Application.REGISTER_PAGE_ID = "RegisterPage";
+Application.WELCOME_PAGE_ID = "WelcomePage";
+
+
 Application.start = function() {
   this._rootContainer = document.getElementById("RootContainer");
-  this.showLoginPage();
+
+  this._registerHistoryTracker();
+  
+  window.onbeforeunload = function() {
+    return I18n.getLocale().literals.LeaveApplicationMessage;
+  }
+  
+  this.showPage(Application.LOGIN_PAGE_ID);
 
   $("#Footer-ContactUs").click(function() {
     Application.showDialog("About Us", "We will need to find a way to open this page");
@@ -138,41 +150,70 @@ Application.reset = function() {
   this.hideDialog();
 }
 
-Application.showLoginPage = function(observer) {
-  if (this._loginPage == null) {
-    this._loginPage = new LoginPage();
+
+Application.showPage = function(pageId, paramBundle, observer) {
+  var page = this._getPage(pageId);
+  if (page == null)  {
+    throw "Page does not exist " + pageId;
+    return;
   }
   
-  Application._showPage(this._loginPage, null, observer);
-}
-
-Application.showRegisterPage = function(observer) {
-  if (this._registerPage == null) {
-    this._registerPage = new RegisterPage();
+  if (this._currentPage == page) {
+    return;
   }
   
-  Application._showPage(this._registerPage, null, observer);
-}
+  var showNewPage = function() {
+    this._currentPage = page;
+    this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
 
-Application.showWelcomePage = function(observer) {
-  if (this._welcomePage == null) {
-    this._welcomePage = new WelcomePage();
-  }
+    window.location.hash = "[page]-" + pageId;
+  }.bind(this);
   
-  Application._showPage(this._welcomePage, null, observer);
+  if (this._currentPage != null) {
+    this._currentPage.hideAnimated(function() {
+      showNewPage();
+    }.bind(this));
+  } else {
+    showNewPage();
+  }
 }
 
-Application.showMenuPage = function(observer) {
-  Application._showPage(this.getMenuPage(), null, observer);
-}
-
-Application.getMenuPage = function() {
+Application.showMenuPage = function(menuItemId, paramBundle, observer) {
   if (this._menuPage == null) {
     this._menuPage = new MenuPage();
   }
+  
+  if (menuItemId == null) {
+    throw "Menu Item Id is not specified";
+  }
 
-  return this._menuPage;
+  
+  if (this._currentPage == this._menuPage) {
+    this._menuPage.showPage(menuItemId, paramBundle, observer);
+    window.location.hash = "[menu]-" + menuItemId;
+    
+    return;
+  }
+  
+  
+  var showNewPage = function() {
+    this._currentPage = this._menuPage;
+    this._currentPage.showAnimated(this._rootContainer, null, function() {
+      this._menuPage.showPage(menuItemId, paramBundle, observer);
+    }.bind(this));
+
+    window.location.hash = "[menu]-" + menuItemId;
+  }.bind(this);
+  
+  if (this._currentPage != null) {
+    this._currentPage.hideAnimated(function() {
+      showNewPage();
+    }.bind(this));
+  } else {
+    showNewPage();
+  }
 }
+
 
 Application.showSpinningWheel = function() {
   if ($(".spinning-wheel").length == 0) {
@@ -242,17 +283,45 @@ Application.hideDialog = function() {
 
 
 
-Application._showPage = function(page, paramBundle, observer) {
-  if (this._currentPage != null) {
-    this._currentPage.hideAnimated(function() {
-      this._currentPage = page;
-      this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
-    }.bind(this));
+Application._getPage = function(pageId) {
+  if (pageId == Application.LOGIN_PAGE_ID) {
+    if (this._loginPage == null) {
+      this._loginPage = new LoginPage();
+    }
+    
+    return this._loginPage;
+  } else if (pageId == Application.REGISTER_PAGE_ID) {
+    if (this._registerPage == null) {
+      this._registerPage = new RegisterPage();
+    }
+    
+    return this._registerPage;
+  } else if (pageId == Application.WELCOME_PAGE_ID) {
+    if (this._welcomePage == null) {
+      this._welcomePage = new WelcomePage();
+    }
+    
+    return this._welcomePage;
   } else {
-    this._currentPage = page;
-    this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
+    return null;
   }
 }
 
 
+
+Application._registerHistoryTracker = function() {
+  window.onhashchange = function() {
+    var hash = window.location.hash;
+
+    if (hash.indexOf("#[page]") == 0) {
+      var pageId = hash.substring(8);
+      this.showPage(pageId);
+    } else if (hash.indexOf("#[menu]") == 0) {
+      var menuPageId = hash.substring(8);
+      this.showMenuPage(menuPageId);
+    } else {
+      console.debug("HZ chto s etim delat");
+    }
+  }.bind(this);
+}
 

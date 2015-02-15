@@ -29,7 +29,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var prefLinkId = UIUtils.createId(root, "PreferencesLink");
   UIUtils.appendLabel(requestParamsPanel, "Note", this.getLocale().ModifySettingsLinkProvider(prefLinkId));
   UIUtils.setClickListener(prefLinkId, function() {
-    Application.getMenuPage().selectMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID);
+    Application.showMenuPage(MenuPage.prototype.USER_PREFERENCES_ITEM_ID);
   });
   
   var targetSelectorPanel = UIUtils.appendBlock(requestParamsPanel, "TargetSelectors");
@@ -106,7 +106,7 @@ NewRequestPage.prototype._createRequest = function() {
     _onCompletion: function() {
       Application.hideSpinningWheel();
       UIUtils.setEnabled(this._sendButton, true);
-      Application.getMenuPage().selectMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
+      Application.showMenuPage(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
     }.bind(this)
   }
 

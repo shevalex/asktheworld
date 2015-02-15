@@ -26,7 +26,7 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
   var goBackLinkId = UIUtils.createId(generalPanel, "GoBackLink");
   generalPanel.appendChild(UIUtils.createSpan("56%", "0 2% 2% 0")).appendChild(UIUtils.createLink(goBackLinkId, this.getLocale().GoBackLink));
   UIUtils.setClickListener(goBackLinkId, function() {
-    Application.getMenuPage().showPage(this._returnPageId);
+    Application.showMenuPage(this._returnPageId);
   }.bind(this));
 
   this._nextLinkId = UIUtils.createId(generalPanel, "NextLink");
@@ -40,10 +40,12 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
 }
 
 RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
-  this._returnPageId = paramBundle.returnPageId;
-  this._navigatableRequestIds = paramBundle.otherRequestIds;
-  this._currentRequestId = paramBundle.requestId;
-  this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
+  if (paramBundle != null) {
+    this._returnPageId = paramBundle.returnPageId;
+    this._navigatableRequestIds = paramBundle.otherRequestIds;
+    this._currentRequestId = paramBundle.requestId;
+    this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
+  }
 
   this._updatePage();
   
@@ -62,7 +64,7 @@ RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
         }
       }
       
-      Application.getMenuPage().showPage(this._returnPageId);
+      Application.showMenuPage(this._returnPageId);
     }
   }.bind(this);
 
