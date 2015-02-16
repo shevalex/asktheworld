@@ -220,7 +220,7 @@ Application.hideMessage = function() {
 Application.showDialog = function(title, contentHtml) {
   Application.hideDialog();
   
-  $("body").append("<div class='modal-dialog' id='ModalDialog'><div class='modal-dialog-content'>" + contentHtml + "</div><hr><div class='modal-dialog-controlpanel'><button class='modal-dialog-okbutton'>" + I18n.getLocale().literarals.OkButton + "</button><div></div>");
+  $("body").append("<div class='modal-dialog' id='ModalDialog'><div class='modal-dialog-content'>" + contentHtml + "</div><hr><div class='modal-dialog-controlpanel'><button class='modal-dialog-okbutton'>" + I18n.getLocale().literals.OkButton + "</button><div></div>");
   $(".modal-dialog-okbutton").click(function() {
     $(".modal-dialog").fadeOut("slow", function() {
       $(this).remove();

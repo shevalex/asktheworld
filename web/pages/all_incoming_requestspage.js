@@ -25,7 +25,7 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
     clickObserver: function(requestId) {
       var paramBundle = {
         incoming: true,
-        returnPageId: ActiveIncomingRequestsPage.name,
+        returnPageId: AllIncomingRequestsPage.name,
         requestId: requestId,
         otherRequestIds: null
       }
