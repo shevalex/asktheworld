@@ -104,11 +104,8 @@ var Application = {
   
   _rootContainer: null,
   _currentPage: null,
-  
-  _loginPage: null,
-  _registerPage: null,
-  _welcomePage: null,
-  _menuPage: null,
+
+  _pages: [],
   
   _messageTimer: null
 };
@@ -125,8 +122,6 @@ Application.WELCOME_PAGE_ID = "WelcomePage";
 
 Application.start = function() {
   this._rootContainer = document.getElementById("RootContainer");
-
-  this._registerHistoryTracker();
   
   window.onbeforeunload = function() {
     return I18n.getLocale().literals.LeaveApplicationMessage;
@@ -140,10 +135,7 @@ Application.start = function() {
 }
 
 Application.reset = function() {
-  this._loginPage = null;
-  this._registerPage = null;
-  this._welcomePage = null;
-  this._menuPage = null;
+  this._pages = [];
   
   this.hideMessage();
   this.hideSpinningWheel();
@@ -159,14 +151,15 @@ Application.showPage = function(pageId, paramBundle, observer) {
   }
   
   if (this._currentPage == page) {
+    if (observer != null) {
+      observer();
+    }
     return;
   }
   
   var showNewPage = function() {
     this._currentPage = page;
     this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
-
-    window.location.hash = "[page]-" + pageId;
   }.bind(this);
   
   if (this._currentPage != null) {
@@ -178,39 +171,14 @@ Application.showPage = function(pageId, paramBundle, observer) {
   }
 }
 
-Application.showMenuPage = function(menuItemId, paramBundle, observer) {
-  if (this._menuPage == null) {
-    this._menuPage = new MenuPage();
-  }
-  
-  if (menuItemId == null) {
-    throw "Menu Item Id is not specified";
-  }
+Application.showChildPage = function(parentPageId, childPageId, paramBundle, observer) {
+  Application.showPage(parentPageId, null, function() {
+    this._getPage(parentPageId).showChildPage(childPageId, paramBundle, observer);
+  }.bind(this));
+}
 
-  
-  if (this._currentPage == this._menuPage) {
-    this._menuPage.showPage(menuItemId, paramBundle, observer);
-    window.location.hash = "[menu]-" + menuItemId;
-    
-    return;
-  }
-  
-  
-  var showNewPage = function() {
-    this._currentPage = this._menuPage;
-    this._currentPage.showAnimated(this._rootContainer, null, function() {
-      this._menuPage.showPage(menuItemId, paramBundle, observer);
-      window.location.hash = "[menu]-" + menuItemId;
-    }.bind(this));
-  }.bind(this);
-  
-  if (this._currentPage != null) {
-    this._currentPage.hideAnimated(function() {
-      showNewPage();
-    }.bind(this));
-  } else {
-    showNewPage();
-  }
+Application.showMenuPage = function(childPageId, paramBundle, observer) {
+  Application.showChildPage(MenuPage.name, childPageId, paramBundle, observer);
 }
 
 
@@ -283,44 +251,15 @@ Application.hideDialog = function() {
 
 
 Application._getPage = function(pageId) {
-  if (pageId == Application.LOGIN_PAGE_ID) {
-    if (this._loginPage == null) {
-      this._loginPage = new LoginPage();
+  var page = this._pages[pageId];
+  if (page == null) {
+    if (window[pageId] == null) {
+      return null;
     }
     
-    return this._loginPage;
-  } else if (pageId == Application.REGISTER_PAGE_ID) {
-    if (this._registerPage == null) {
-      this._registerPage = new RegisterPage();
-    }
-    
-    return this._registerPage;
-  } else if (pageId == Application.WELCOME_PAGE_ID) {
-    if (this._welcomePage == null) {
-      this._welcomePage = new WelcomePage();
-    }
-    
-    return this._welcomePage;
-  } else {
-    return null;
+    page = new window[pageId]();
+    this._pages[pageId] = page;
   }
+  
+  return page;
 }
-
-
-
-Application._registerHistoryTracker = function() {
-  window.onhashchange = function() {
-    var hash = window.location.hash;
-
-    if (hash.indexOf("#[page]") == 0) {
-      var pageId = hash.substring(8);
-      this.showPage(pageId);
-    } else if (hash.indexOf("#[menu]") == 0) {
-      var menuPageId = hash.substring(8);
-      this.showMenuPage(menuPageId);
-    } else {
-      console.debug("HZ chto s etim delat");
-    }
-  }.bind(this);
-}
-

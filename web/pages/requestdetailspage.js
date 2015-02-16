@@ -1,5 +1,5 @@
 RequestDetailsPage = ClassUtils.defineClass(AbstractPage, function RequestDetailsPage() {
-  AbstractPage.call(this, "RequestDetailsPage");
+  AbstractPage.call(this, RequestDetailsPage.name);
   
   this._previousLinkId;
   this._nextLinkId;

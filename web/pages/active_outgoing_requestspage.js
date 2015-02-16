@@ -1,5 +1,5 @@
 ActiveOutgoingRequestsPage = ClassUtils.defineClass(AbstractPage, function ActiveOutgoingRequestsPage() {
-  AbstractPage.call(this, "ActiveOutgoingRequestsPage");
+  AbstractPage.call(this, ActiveOutgoingRequestsPage.name);
   
   this._requestsPanelRequests;
   this._requestList
@@ -15,7 +15,7 @@ ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
   var seeAllElement = UIUtils.appendBlock(generalPanel, "SeeAll");
   seeAllElement.innerHTML = this.getLocale().AllRequestsLinkProvider(seeAllLinkId);
   UIUtils.setClickListener(seeAllLinkId, function() {
-    Application.showMenuPage(MenuPage.prototype.ALL_REQUESTS_ITEM_ID);
+    Application.showMenuPage(AllOutgoingRequestsPage.name);
   });
   
   this._requestsPanelRequests = UIUtils.appendBlock(root, "RequestsPanel");
@@ -26,12 +26,12 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
     requestClickListener: function(requestId) {
       var paramBundle = {
         incoming: false,
-        returnPageId: MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID,
+        returnPageId: ActiveOutgoingRequestsPage.name,
         requestId: requestId,
         otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE)
       }
 
-      Application.showMenuPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+      Application.showMenuPage(RequestDetailsPage.name, paramBundle);
     },
     requestEditable: true,
     showFullContent: true,

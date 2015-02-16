@@ -1,5 +1,5 @@
 HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
-  AbstractPage.call(this, "HomePage");
+  AbstractPage.call(this, HomePage.name);
   
   this._outgoingRequestsPanelRequests = null;
   this._outgoingRequestsStatusElement = null;
@@ -13,12 +13,12 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   this._outgoingRequestList = new AbstractRequestPage.OutgoingRequestList({
     requestClickListener: function(requestId) {
       var paramBundle = {
-        returnPageId: MenuPage.prototype.HOME_ITEM_ID,
+        returnPageId: HomePage.name,
         requestId: requestId,
         otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE)
       }
 
-      Application.showMenuPage(MenuPage.prototype.REQUEST_DETAILS_PAGE_ID, paramBundle);
+      Application.showMenuPage(RequestDetailsPage.name, paramBundle);
     },
     requestEditable: false,
     showFullContent: false,
@@ -39,7 +39,7 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   
   this._incomingRequestList = new AbstractRequestPage.IncomingRequestList({
     requestClickListener: function(requestId) {
-      Application.showMenuPage(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
+      Application.showMenuPage(ActiveIncomingRequestsPage.name);
     },
     requestEditable: false,
     showFullContent: false,
@@ -58,6 +58,7 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   });
 });
 
+
 HomePage.prototype.definePageContent = function(root) {
   var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
   generalPanel.innerHTML = this.getLocale().WelcomeProvider(Backend.getUserProfile().name);
@@ -69,7 +70,7 @@ HomePage.prototype.definePageContent = function(root) {
   var activeOutgoingRequestsLinkId = UIUtils.createId(seeActiveOutgoingRequestsElement, "Link");
   seeActiveOutgoingRequestsElement.innerHTML = this.getLocale().ActiveOutgoingRequestsLinkProvider(activeOutgoingRequestsLinkId);
   UIUtils.setClickListener(activeOutgoingRequestsLinkId, function() {
-    Application.showMenuPage(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID);
+    Application.showMenuPage(ActiveOutgoingRequestsPage.name);
   });
   
   this._outgoingRequestsPanelRequests = UIUtils.appendBlock(outgoingRequestsPanel, "Requests");
@@ -98,7 +99,7 @@ HomePage.prototype.definePageContent = function(root) {
   var activeIncomingRequestsLinkId = UIUtils.createId(seeActiveIncomingRequestsElement, "Link");
   seeActiveIncomingRequestsElement.innerHTML = this.getLocale().ActiveIncomingRequestsLinkProvider(activeIncomingRequestsLinkId);
   UIUtils.setClickListener(activeIncomingRequestsLinkId, function() {
-    Application.showMenuPage(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID);
+    Application.showMenuPage(ActiveIncomingRequestsPage.name);
   });
   
   this._incomingRequestsPanelRequests = UIUtils.appendBlock(incomingRequestsPanel, "Requests");

@@ -1,5 +1,5 @@
 UserProfilePage = ClassUtils.defineClass(AbstractPage, function UserProfilePage() {
-  AbstractPage.call(this, "UserProfilePage");
+  AbstractPage.call(this, UserProfilePage.name);
   
   this._nameElement;
   this._genderElement;

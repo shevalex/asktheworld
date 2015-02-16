@@ -1,5 +1,5 @@
 RegisterPage = ClassUtils.defineClass(AbstractPage, function RegisterPage() {
-  AbstractPage.call(this, "RegisterPage");
+  AbstractPage.call(this, RegisterPage.name);
   
   this._passwordElement;
   this._retypePasswordElement;
@@ -14,7 +14,7 @@ RegisterPage.prototype.definePageContent = function(root) {
   var signInLinkId = UIUtils.createId(rightSideDescriptionElement, "SignInLink");
   rightSideDescriptionElement.innerHTML = this.getLocale().SignInProvider(signInLinkId);
   UIUtils.setClickListener(signInLinkId, function() {
-    Application.showPage(Application.LOGIN_PAGE_ID);
+    Application.showPage(LoginPage.name);
   })
   
   this._appendContentPanel(root);
@@ -117,7 +117,7 @@ RegisterPage.prototype._appendContentPanel = function(root) {
         page._passwordElement.setValue("");
         page._retypePasswordElement.setValue("");
         
-        Application.showPage(Application.WELCOME_PAGE_ID);
+        Application.showPage(WelcomePage.name);
       },
       failure: function() {
         this._onCompletion();

@@ -1,5 +1,5 @@
 WelcomePage = ClassUtils.defineClass(AbstractPage, function WelcomePage() {
-  AbstractPage.call(this, "WelcomePage");
+  AbstractPage.call(this, WelcomePage.name);
 });
 
 WelcomePage.prototype.definePageContent = function(root) {
@@ -11,6 +11,6 @@ WelcomePage.prototype.definePageContent = function(root) {
   goBackPanel.innerHTML = this.getLocale().GoBackLinkProvider(linkId);
   
   UIUtils.setClickListener(linkId, function() {
-    Application.showMenuPage(MenuPage.prototype.HOME_ITEM_ID);
+    Application.showMenuPage(HomePage.name);
   });
 }

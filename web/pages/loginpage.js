@@ -1,5 +1,5 @@
 LoginPage = ClassUtils.defineClass(AbstractPage, function LoginPage() {
-  AbstractPage.call(this, "LoginPage");
+  AbstractPage.call(this, LoginPage.name);
   
   this._loginElement;
   this._passwordElement;
@@ -53,7 +53,7 @@ LoginPage.prototype._appendLoginPanel = function(root) {
   
   var signUpLink = UIUtils.appendLink(contentPanel, "SignUpLink", this.getLocale().RegisterLink);
   UIUtils.setClickListener(signUpLink, function() {
-    Application.showPage(Application.REGISTER_PAGE_ID);
+    Application.showPage(RegisterPage.name);
   });
 
   UIUtils.setClickListener(signInButton, function() {
@@ -79,7 +79,7 @@ LoginPage.prototype._appendLoginPanel = function(root) {
       var backendCallback = {
         success: function() {
           this._onCompletion();
-          Application.showMenuPage(MenuPage.prototype.HOME_ITEM_ID);
+          Application.showMenuPage(HomePage.name);
         },
         failure: function() {
           this._onCompletion();

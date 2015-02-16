@@ -1,36 +1,18 @@
 MenuPage = ClassUtils.defineClass(AbstractPage, function MenuPage() {
-  AbstractPage.call(this, "MenuPage");
+  AbstractPage.call(this, MenuPage.name);
   
   this._contentPanel = null;
   this._selectedMenuItemId = null;
   this._activePage = null;
+
+  this._pages = [];
   
-  this._homePage = null;
-  this._newRequestPage = null;
-  this._activeRequestsPage = null;
-  this._allRequestsPage = null;
-  this._activeInquiriesPage = null;
-  this._allInquiriesPage = null;
-  this._requestDetailsPage = null;
-  this._userProfilePage = null;
-  this._userPreferencesPage = null;
+  this._menuPanel = null;
 });
-
-MenuPage.prototype.HOME_ITEM_ID = "MenuPage-MenuPanel-Home";
-MenuPage.prototype.NEW_REQUEST_ITEM_ID = "MenuPage-MenuPanel-NewRequest";
-MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID = "MenuPage-MenuPanel-ActiveRequests";
-MenuPage.prototype.ALL_REQUESTS_ITEM_ID = "MenuPage-MenuPanel-AllRequests";
-MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID = "MenuPage-MenuPanel-ActiveInquiries";
-MenuPage.prototype.ALL_INQUIRIES_ITEM_ID = "MenuPage-MenuPanel-AllInquiries";
-MenuPage.prototype.USER_PROFILE_ITEM_ID = "MenuPage-MenuPanel-UserProfile";
-MenuPage.prototype.USER_PREFERENCES_ITEM_ID = "MenuPage-MenuPanel-UserPreferences";
-MenuPage.prototype.LOGOUT_ITEM_ID = "MenuPage-MenuPanel-Logout";
-
-MenuPage.prototype.REQUEST_DETAILS_PAGE_ID = "MenuPage-RequestDetailsPage";
 
 
 MenuPage.prototype.definePageContent = function(root) {
-  this._appendMenuPanel(root);
+  this._menuPanel = this._appendMenuPanel(root);
   
   this._contentPanel = UIUtils.appendBlock(root, "ContentPanel");
 }
@@ -45,12 +27,14 @@ MenuPage.prototype.onHide = function() {
   this._contentPanel.innerHTML = "";
 }
 
+MenuPage.prototype.getContentPanel = function() {
+  return this._contentPanel;
+}
 
-MenuPage.prototype.showPage = function(pageId, paramBundle, observer) {
-  var newPage = this._getPageForItem(pageId);
-  if (newPage == null) {
-    newPage = this._getPageById(pageId);
-  }
+
+
+MenuPage.prototype.showChildPage = function(pageId, paramBundle, observer) {
+  var newPage = this._getPage(pageId);
   if (newPage == null) {
     console.error("No page for id " + pageId);
     return;
@@ -60,14 +44,15 @@ MenuPage.prototype.showPage = function(pageId, paramBundle, observer) {
     return;
   }
 
-
-  var pageIsMenuItem = $("#" + pageId).length > 0;
+  
+  var menuItemId = UIUtils.createId(this._menuPanel, pageId);
+  var pageIsMenuItem = UIUtils.get$(menuItemId).length > 0;
   if (pageIsMenuItem) {
     if (this._selectedMenuItemId != null) {
-      $("#" + this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
+      UIUtils.get$(this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
     }
-    this._selectedMenuItemId = pageId;
-    $("#" + this._selectedMenuItemId).addClass("menupage-menuitem-selected");
+    this._selectedMenuItemId = menuItemId;
+    UIUtils.get$(this._selectedMenuItemId).addClass("menupage-menuitem-selected");
   }
   
   
@@ -77,8 +62,12 @@ MenuPage.prototype.showPage = function(pageId, paramBundle, observer) {
   }
   
   this._activePage = newPage;
-  this._activePage.showAnimated(this._contentPanel, paramBundle, observer);
+  this._activePage.showAnimated(this, paramBundle, observer);
 }
+
+MenuPage.prototype.putHistory = function() {
+}
+
 
 
 MenuPage.prototype._appendMenuPanel = function(root) {
@@ -89,40 +78,39 @@ MenuPage.prototype._appendMenuPanel = function(root) {
   };
   
   
-  
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.HOME_ITEM_ID, this.getLocale().HomeMenuItem, null, clickListener));
+  this._appendMenuItem(menuPanel, HomePage.name, this.getLocale().HomeMenuItem, null, clickListener);
   menuPanel.appendChild(this._createMenuSeparator());
 
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.NEW_REQUEST_ITEM_ID, this.getLocale().CreateNewRequestItem, null, clickListener));
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID, this.getLocale().ActiveOutgoingRequestsItem, null, clickListener));
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ALL_REQUESTS_ITEM_ID, this.getLocale().AllOutgoingRequestsItem, null, clickListener));
+  this._appendMenuItem(menuPanel, NewRequestPage.name, this.getLocale().CreateNewRequestItem, null, clickListener);
+  this._appendMenuItem(menuPanel, ActiveOutgoingRequestsPage.name, this.getLocale().ActiveOutgoingRequestsItem, null, clickListener);
+  this._appendMenuItem(menuPanel, AllOutgoingRequestsPage.name, this.getLocale().AllOutgoingRequestsItem, null, clickListener);
   menuPanel.appendChild(this._createMenuSeparator());
   
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID, this.getLocale().ActiveIncomingRequestsItem, null, clickListener));
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.ALL_INQUIRIES_ITEM_ID, this.getLocale().AllIncomingRequestsItem, null, clickListener));
+  this._appendMenuItem(menuPanel, ActiveIncomingRequestsPage.name, this.getLocale().ActiveIncomingRequestsItem, null, clickListener);
+  this._appendMenuItem(menuPanel, AllIncomingRequestsPage.name, this.getLocale().AllIncomingRequestsItem, null, clickListener);
   menuPanel.appendChild(this._createMenuSeparator());
   
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.USER_PROFILE_ITEM_ID, this.getLocale().ProfileItem, null, clickListener));
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.USER_PREFERENCES_ITEM_ID, this.getLocale().PreferencesItem, null, clickListener));
+  this._appendMenuItem(menuPanel, UserProfilePage.name, this.getLocale().ProfileItem, null, clickListener);
+  this._appendMenuItem(menuPanel, UserPreferencesPage.name, this.getLocale().PreferencesItem, null, clickListener);
   menuPanel.appendChild(this._createMenuSeparator());
 
-  menuPanel.appendChild(this._createMenuItem(MenuPage.prototype.LOGOUT_ITEM_ID, this.getLocale().LogOutItem, null, function() {
+  this._appendMenuItem(menuPanel, "logout", this.getLocale().LogOutItem, null, function() {
     Backend.logOut(function() {
       Application.reset();
-      Application.showPage(Application.LOGIN_PAGE_ID);
+      Application.showPage(LoginPage.PAGE_ID);
     });
-  }));
+  });
+  
+  return menuPanel;
 }
 
-MenuPage.prototype._createMenuItem = function(itemId, text, icon, clickCallback) {
-  var itemElement = UIUtils.createBlock(itemId);
+MenuPage.prototype._appendMenuItem = function(root, itemId, text, icon, clickCallback) {
+  var itemElement = UIUtils.appendBlock(root, itemId);
   
   itemElement.setAttribute("class", "menupage-menuitem");
   itemElement.innerHTML = text;
     
   itemElement.onclick = clickCallback.bind(this, itemId);
-
-  return itemElement;
 }
 
 MenuPage.prototype._createMenuSeparator = function() {
@@ -133,59 +121,16 @@ MenuPage.prototype._createMenuSeparator = function() {
 }
 
 
-MenuPage.prototype._getPageForItem = function(itemId) {
-  if (itemId == MenuPage.prototype.HOME_ITEM_ID) {
-    if (this._homePage == null) {
-      this._homePage = new HomePage();
+MenuPage.prototype._getPage = function(pageId) {
+  var page = this._pages[pageId];
+  if (page == null) {
+    if (window[pageId] == null) {
+      return null;
     }
-    return this._homePage;
-  } else if (itemId == MenuPage.prototype.NEW_REQUEST_ITEM_ID) {
-    if (this._newRequestPage == null) {
-      this._newRequestPage = new NewRequestPage();
-    }
-    return this._newRequestPage;
-  } else if (itemId == MenuPage.prototype.ACTIVE_REQUESTS_ITEM_ID) {
-    if (this._activeRequestsPage == null) {
-      this._activeRequestsPage = new ActiveOutgoingRequestsPage();
-    }
-    return this._activeRequestsPage;
-  } else if (itemId == MenuPage.prototype.ALL_REQUESTS_ITEM_ID) {
-    if (this._allRequestsPage == null) {
-      this._allRequestsPage = new AllOutgoingRequestsPage();
-    }
-    return this._allRequestsPage;
-  } else if (itemId == MenuPage.prototype.ACTIVE_INQUIRIES_ITEM_ID) {
-    if (this._activeInquiriesPage == null) {
-      this._activeInquiriesPage = new ActiveIncomingRequestsPage();
-    }
-    return this._activeInquiriesPage;
-  } else if (itemId == MenuPage.prototype.ALL_INQUIRIES_ITEM_ID) {
-    if (this._allInquiriesPage == null) {
-      this._allInquiriesPage = new AllIncomingRequestsPage();
-    }
-    return this._allInquiriesPage;
-  } else if (itemId == MenuPage.prototype.USER_PROFILE_ITEM_ID) {
-    if (this._userProfilePage == null) {
-      this._userProfilePage = new UserProfilePage();
-    }
-    return this._userProfilePage;
-  } else if (itemId == MenuPage.prototype.USER_PREFERENCES_ITEM_ID) {
-    if (this._userPreferencesPage == null) {
-      this._userPreferencesPage = new UserPreferencesPage();
-    }
-    return this._userPreferencesPage;
-  } else {
-    return null;
+    
+    page = new window[pageId]();
+    this._pages[pageId] = page;
   }
-}
-
-MenuPage.prototype._getPageById = function(pageId) {
-  if (pageId == MenuPage.prototype.REQUEST_DETAILS_PAGE_ID) {
-    if (this._requestDetailsPage == null) {
-      this._requestDetailsPage = new RequestDetailsPage();
-    }
-    return this._requestDetailsPage;
-  } else {
-    return null;
-  }
+  
+  return page;
 }
