@@ -115,11 +115,6 @@ Application.MESSAGE_TIMEOUT_NORMAL = 5;
 Application.MESSAGE_TIMEOUT_SLOW = 10;
 
 
-Application.LOGIN_PAGE_ID = "LoginPage";
-Application.REGISTER_PAGE_ID = "RegisterPage";
-Application.WELCOME_PAGE_ID = "WelcomePage";
-
-
 Application.start = function() {
   this._rootContainer = document.getElementById("RootContainer");
   
@@ -127,7 +122,7 @@ Application.start = function() {
     return I18n.getLocale().literals.LeaveApplicationMessage;
   }
   
-  this.showPage(Application.LOGIN_PAGE_ID);
+  this.showPage(LoginPage.name);
 
   $("#Footer-ContactUs").click(function() {
     Application.showDialog("About Us", "We will need to find a way to open this page");

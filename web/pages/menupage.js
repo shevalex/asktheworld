@@ -40,7 +40,7 @@ MenuPage.prototype.showChildPage = function(pageId, paramBundle, observer) {
     return;
   }
   
-  if (this._activePage == newPage) {
+  if (this._activePage == newPage && paramBundle == null) {
     return;
   }
 
@@ -96,9 +96,11 @@ MenuPage.prototype._appendMenuPanel = function(root) {
 
   this._appendMenuItem(menuPanel, "logout", this.getLocale().LogOutItem, null, function() {
     Backend.logOut(function() {
+      this._pages = [];
+      
       Application.reset();
-      Application.showPage(LoginPage.PAGE_ID);
-    });
+      Application.showPage(LoginPage.name);
+    }.bind(this));
   });
   
   return menuPanel;

@@ -24,6 +24,7 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
 
 AbstractPage._historyListeners = [];
 AbstractPage._addHistoryListener = function(listener) {
+
   if (AbstractPage._historyListeners.length == 0) {
     //perform one-time registration
     window.onhashchange = function() {
@@ -32,7 +33,7 @@ AbstractPage._addHistoryListener = function(listener) {
       }
     }
   }
-  
+
   AbstractPage._historyListeners.push(listener);
 }
 
@@ -48,8 +49,8 @@ AbstractPage.prototype.show = function(container, paramBundle) {
     this.definePageContent(this._pageElement);
     this._isDefined = true;
   }
-  this.putHistory();
   this.onShow(this._pageElement, paramBundle);
+  this.putHistory();
 }
 
 AbstractPage.prototype.showAnimated = function(container, paramBundle, completionObserver) {
@@ -102,13 +103,25 @@ AbstractPage.prototype.restoreFromHistory = function(hash) {
     var pageIdStartIndex = hash.indexOf("-[page]-");
     var parentPageId = hash.substring(9, pageIdStartIndex);
     
-    var childPageId = hash.substr(pageIdStartIndex + 8);
-    Application.showChildPage(parentPageId, childPageId);
+    var indexOfSuffix = hash.indexOf("-", pageIdStartIndex + 9);
+    if (indexOfSuffix == -1) {
+      var childPageId = hash.substring(pageIdStartIndex + 8);
+      Application.showChildPage(parentPageId, childPageId);
+    } else {
+      var childPageId = hash.substring(pageIdStartIndex + 8, indexOfSuffix);
+      Application.showChildPage(parentPageId, childPageId, {history: hash.substring(indexOfSuffix + 1)});
+    }
   } else if (hash.indexOf("[page]") == 0) {
-    var pageId = hash.substr(7);
-    Application.showPage(pageId);
+    var indexOfSuffix = hash.indexOf("-", 7);
+    if (indexOfSuffix == -1) {
+      var pageId = hash.substring(7);
+      Application.showPage(pageId);
+    } else {
+      var pageId = hash.substring(7, indexOfSuffix);
+      Application.showPage(pageId, {history: hash.substring(indexOfSuffix + 1)});
+    }
   } else {
-    console.error("Incorrect hash: " + hash);         
+    console.error("Incorrect hash: " + hash);
   }
 }
 

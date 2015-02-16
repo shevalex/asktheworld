@@ -1,6 +1,7 @@
 RequestDetailsPage = ClassUtils.defineClass(AbstractPage, function RequestDetailsPage() {
   AbstractPage.call(this, RequestDetailsPage.name);
   
+  this._currentRequestId;
   this._previousLinkId;
   this._nextLinkId;
   
@@ -21,6 +22,12 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(this._previousLinkId, function() {
     this._currentRequestId = this._getPreviousRequestId();
     this._updatePage();
+//    Application.showMenuPage(RequestDetailsPage.name, {
+//      requestId: this._getPreviousRequestId(),
+//      returnPageId: this._navigatableRequestIds,
+//      otherRequestIds: this._navigatableRequestIds,
+//      incoming: this._isIncomingList
+//    });
   }.bind(this));
 
   var goBackLinkId = UIUtils.createId(generalPanel, "GoBackLink");
@@ -34,6 +41,13 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(this._nextLinkId, function() {
     this._currentRequestId = this._getNextRequestId();
     this._updatePage();
+//    
+//    Application.showMenuPage(RequestDetailsPage.name, {
+//      requestId: this._getNextRequestId(),
+//      returnPageId: this._navigatableRequestIds,
+//      otherRequestIds: this._navigatableRequestIds,
+//      incoming: this._isIncomingList
+//    });
   }.bind(this));
 
   this._requestsPanel = UIUtils.appendBlock(root, "RequestsPanel");
@@ -41,10 +55,14 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
 
 RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   if (paramBundle != null) {
-    this._returnPageId = paramBundle.returnPageId;
-    this._navigatableRequestIds = paramBundle.otherRequestIds;
-    this._currentRequestId = paramBundle.requestId;
-    this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
+    if (paramBundle.history != null) {
+      this._currentRequestId = paramBundle.history;
+    } else {
+      this._returnPageId = paramBundle.returnPageId;
+      this._navigatableRequestIds = paramBundle.otherRequestIds;
+      this._currentRequestId = paramBundle.requestId;
+      this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
+    }
   }
 
   this._updatePage();
@@ -63,7 +81,7 @@ RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
           return;
         }
       }
-      
+
       Application.showMenuPage(this._returnPageId);
     }
   }.bind(this);
@@ -76,6 +94,11 @@ RequestDetailsPage.prototype.onHide = function() {
   Backend.removeCacheChangeListener(this._cacheChangeListener);
   this._requestList.remove();
 }
+
+RequestDetailsPage.prototype.putHistory = function() {
+  window.location.hash = this.getHistoryPrefix() + "-" + this._currentRequestId;
+}
+
 
 
 RequestDetailsPage.prototype._getPreviousRequestId = function() {
@@ -157,6 +180,8 @@ RequestDetailsPage.prototype._updatePage = function() {
   }
   
   this._requestList.append(this._requestsPanel);
+  
+  this.putHistory();
 }
 
 
