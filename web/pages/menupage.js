@@ -17,6 +17,10 @@ MenuPage.prototype.definePageContent = function(root) {
   this._contentPanel = UIUtils.appendBlock(root, "ContentPanel");
 }
 
+MenuPage.prototype.getContentPanel = function() {
+  return this._contentPanel;
+}
+
 MenuPage.prototype.onShow = function(root) {
 }
 
@@ -27,8 +31,11 @@ MenuPage.prototype.onHide = function() {
   this._contentPanel.innerHTML = "";
 }
 
-MenuPage.prototype.getContentPanel = function() {
-  return this._contentPanel;
+MenuPage.prototype.onDestroy = function() {
+  for (var index in this._pages) {
+    this._pages[index].destroy();
+  }
+  this._pages = [];
 }
 
 
@@ -65,7 +72,8 @@ MenuPage.prototype.showChildPage = function(pageId, paramBundle, observer) {
   this._activePage.showAnimated(this, paramBundle, observer);
 }
 
-MenuPage.prototype.putHistory = function() {
+MenuPage.prototype.provideHistory = function() {
+  return null;
 }
 
 
@@ -96,10 +104,7 @@ MenuPage.prototype._appendMenuPanel = function(root) {
 
   this._appendMenuItem(menuPanel, "logout", this.getLocale().LogOutItem, null, function() {
     Backend.logOut(function() {
-      this._pages = [];
-      
       Application.reset();
-      Application.showPage(LoginPage.name);
     }.bind(this));
   });
   

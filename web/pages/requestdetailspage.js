@@ -54,37 +54,51 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
 }
 
 RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
-  if (paramBundle != null) {
-    if (paramBundle.history != null) {
-      this._currentRequestId = paramBundle.history;
-    } else {
-      this._returnPageId = paramBundle.returnPageId;
-      this._navigatableRequestIds = paramBundle.otherRequestIds;
-      this._currentRequestId = paramBundle.requestId;
-      this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
+  if (paramBundle.history != null) {
+    this._currentRequestId = AbstractPage.getHistoryTagValue("request");
+    if (this._currentRequestId == null) {
+      console.error("Cannot restore the page " + this._pageId + ": missing request");
     }
+    
+    this._returnPageId = AbstractPage.getHistoryTagValue("return");
+    if (this._returnPageId == null) {
+      console.error("Cannot restore the page " + this._pageId + ": missing return page");
+    }
+    
+    var type = AbstractPage.getHistoryTagValue("type");
+    if (type == null) {
+      console.error("Cannot restore the page " + this._pageId + ": missing type");
+    } else {
+      this._isIncomingList = type == "incoming";
+    }
+  } else {
+    this._returnPageId = paramBundle.returnPageId;
+    this._navigatableRequestIds = paramBundle.otherRequestIds;
+    this._currentRequestId = paramBundle.requestId;
+    this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
   }
 
   this._updatePage();
-  
-  this._cacheChangeListener = function(event) {
-    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
-      var requestList;
-      if (this._isIncomingList) {
-        requestList = Backend.getIncomingRequestIds();
-      } else {
-        requestList = Backend.getOutgoingRequestIds();
-      }
-      
-      for (var index in requestList) {
-        if (requestList[index] == this._currentRequestId) {
-          return;
-        }
-      }
 
-      Application.showMenuPage(this._returnPageId);
-    }
-  }.bind(this);
+//  Consider closing the oage if the request shown is being removed
+//  this._cacheChangeListener = function(event) {
+//    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
+//      var requestList;
+//      if (this._isIncomingList) {
+//        requestList = Backend.getIncomingRequestIds();
+//      } else {
+//        requestList = Backend.getOutgoingRequestIds();
+//      }
+//      
+//      for (var index in requestList) {
+//        if (requestList[index] == this._currentRequestId) {
+//          return;
+//        }
+//      }
+//
+//      Application.showMenuPage(this._returnPageId);
+//    }
+//  }.bind(this);
 
   
   Backend.addCacheChangeListener(this._cacheChangeListener);
@@ -95,8 +109,8 @@ RequestDetailsPage.prototype.onHide = function() {
   this._requestList.remove();
 }
 
-RequestDetailsPage.prototype.putHistory = function() {
-  window.location.hash = this.getHistoryPrefix() + "-" + this._currentRequestId;
+RequestDetailsPage.prototype.provideHistory = function() {
+  return AbstractPage.makeHistory([this.getHistoryPrefix(), ["request", this._currentRequestId], ["return", this._returnPageId], ["type", (this._isIncomingList ? "incoming" : "outgoing")]]);
 }
 
 
@@ -181,7 +195,7 @@ RequestDetailsPage.prototype._updatePage = function() {
   
   this._requestList.append(this._requestsPanel);
   
-  this.putHistory();
+  this.placeHistory();
 }
 
 

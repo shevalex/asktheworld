@@ -130,13 +130,17 @@ Application.start = function() {
 }
 
 Application.reset = function() {
+  for (var index in this._pages) {
+    this._pages[index].destroy();
+  }
   this._pages = [];
   
   this.hideMessage();
   this.hideSpinningWheel();
   this.hideDialog();
+  
+  Application.showPage(LoginPage.name);
 }
-
 
 Application.showPage = function(pageId, paramBundle, observer) {
   var page = this._getPage(pageId);

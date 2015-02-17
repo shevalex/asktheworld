@@ -11,30 +11,81 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
   this._parentPage = null;
   
   this._isDefined = false;
-  
-  AbstractPage._addHistoryListener(function() {
-    var hash = window.location.hash.substr(1);
-    
-    if (this.isPageHistory(hash)) {
-      this.restoreFromHistory(hash);
-    }
-  }.bind(this));
 });
 
 
-AbstractPage._historyListeners = [];
-AbstractPage._addHistoryListener = function(listener) {
+// HISTORY MANAGEMENT
 
-  if (AbstractPage._historyListeners.length == 0) {
-    //perform one-time registration
-    window.onhashchange = function() {
-      for (var index in AbstractPage._historyListeners) {
-        AbstractPage._historyListeners[index]();
-      }
+window.onhashchange = function() {
+  var hash = window.location.hash.substr(1); 
+  AbstractPage.restoreFromHistory(hash);
+}
+
+AbstractPage.restoreFromHistory = function(hash) {
+  var parentPageId = AbstractPage.getHistoryTagValue("parent");
+  
+  if (parentPageId != null) {
+    var childPageId = AbstractPage.getHistoryTagValue("page");
+    if (childPageId != null) {
+      Application.showChildPage(parentPageId, childPageId, {history: hash});
+    } else {
+      console.error("Icorrect hash - parent without child: " + hash);
+    }
+  } else {
+    var pageId = AbstractPage.getHistoryTagValue("page");
+    if (pageId != null) {
+      Application.showPage(pageId, {history: hash});
+    } else {
+      console.error("Incorrect hash - no page:" + hash);
     }
   }
+}
 
-  AbstractPage._historyListeners.push(listener);
+AbstractPage.getHistoryTagValue = function(tagName) {
+  var hash = window.location.hash;
+  
+  var tagStartIndex = hash.indexOf("[" + tagName);
+  if (tagStartIndex == -1) {
+    return null;
+  }
+  
+  var tagClosingIndex = hash.indexOf("]", tagStartIndex);
+  if (tagClosingIndex == -1) {
+    return null;
+  }
+  
+  return hash.substring(tagStartIndex + tagName.length + 2, tagClosingIndex);
+}
+
+AbstractPage.makeHistoryTag = function(tagName, value) {
+  return "[" + tagName + "-" + value + "]";
+}
+
+AbstractPage.makeHistory = function(tagValueArray) {
+  var hash = "";
+  
+  for (var index in tagValueArray) {
+    if (hash.length > 0) {
+      hash += "-";
+    }
+    
+    if (typeof tagValueArray[index] == "string") {
+      hash += tagValueArray[index];
+    } else {
+      hash += AbstractPage.makeHistoryTag(tagValueArray[index][0], tagValueArray[index][1]);
+    }
+  }
+  
+  return hash;
+}
+
+// END OF HISTORY MANAGEMENT
+
+
+
+AbstractPage.prototype.destroy = function() {
+  this.hide();
+  this.onDestroy();
 }
 
 AbstractPage.prototype.show = function(container, paramBundle) {
@@ -50,7 +101,7 @@ AbstractPage.prototype.show = function(container, paramBundle) {
     this._isDefined = true;
   }
   this.onShow(this._pageElement, paramBundle);
-  this.putHistory();
+  this.placeHistory();
 }
 
 AbstractPage.prototype.showAnimated = function(container, paramBundle, completionObserver) {
@@ -61,20 +112,24 @@ AbstractPage.prototype.showAnimated = function(container, paramBundle, completio
 }
 
 AbstractPage.prototype.hide = function() {
-  this.onHide();
-  if (this._pageElement.parentElement != null) {
+  if (this.isShown()) {
+    this.onHide();
     this._pageElement.parentElement.removeChild(this._pageElement);
   }
 }
 
 AbstractPage.prototype.hideAnimated = function(completionObserver) {
-  this.onHide();
-  $("#" + this._pageId).slideUp("fast", function() {
-    this._pageElement.parentElement.removeChild(this._pageElement);
-    if (completionObserver != null) {
-      completionObserver();
-    }
-  }.bind(this));
+  if (this.isShown()) {
+    this.onHide();
+    $("#" + this._pageId).slideUp("fast", function() {
+      this._pageElement.parentElement.removeChild(this._pageElement);
+      if (completionObserver != null) {
+        completionObserver();
+      }
+    }.bind(this));
+  } else if (completionObserver != null) {
+    completionObserver();
+  }
 }
 
 AbstractPage.prototype.getContentPanel = function() {
@@ -94,46 +149,18 @@ AbstractPage.prototype.onShow = function(root) {
 AbstractPage.prototype.onHide = function() {
 }
 
-AbstractPage.prototype.putHistory = function() {
-  window.location.hash = this.getHistoryPrefix();
+AbstractPage.prototype.onDestroy = function() {
 }
 
-AbstractPage.prototype.restoreFromHistory = function(hash) {
-  if (hash.indexOf("[parent]") == 0) {
-    var pageIdStartIndex = hash.indexOf("-[page]-");
-    var parentPageId = hash.substring(9, pageIdStartIndex);
-    
-    var indexOfSuffix = hash.indexOf("-", pageIdStartIndex + 9);
-    if (indexOfSuffix == -1) {
-      var childPageId = hash.substring(pageIdStartIndex + 8);
-      Application.showChildPage(parentPageId, childPageId);
-    } else {
-      var childPageId = hash.substring(pageIdStartIndex + 8, indexOfSuffix);
-      Application.showChildPage(parentPageId, childPageId, {history: hash.substring(indexOfSuffix + 1)});
-    }
-  } else if (hash.indexOf("[page]") == 0) {
-    var indexOfSuffix = hash.indexOf("-", 7);
-    if (indexOfSuffix == -1) {
-      var pageId = hash.substring(7);
-      Application.showPage(pageId);
-    } else {
-      var pageId = hash.substring(7, indexOfSuffix);
-      Application.showPage(pageId, {history: hash.substring(indexOfSuffix + 1)});
-    }
-  } else {
-    console.error("Incorrect hash: " + hash);
-  }
-}
-
-AbstractPage.prototype.isPageHistory = function(hash) {
-  return hash.indexOf(this.getHistoryPrefix()) == 0;
+AbstractPage.prototype.provideHistory = function() {
+  return this.getHistoryPrefix();
 }
 
 AbstractPage.prototype.getHistoryPrefix = function() {
   if (this._parentPage != null) {
-    return "[parent]-" + this._parentPage._pageId + "-[page]-" + this._pageId;
+    return AbstractPage.makeHistory([["parent", this._parentPage._pageId], ["page", this._pageId]]);
   } else {
-    return "[page]-" + this._pageId;
+    return AbstractPage.makeHistoryTag("page", this._pageId);
   }
 }
 
@@ -142,3 +169,9 @@ AbstractPage.prototype.getLocale = function(lang) {
 }
 
 
+AbstractPage.prototype.placeHistory = function() {
+  var history = this.provideHistory();
+  if (history != null) {
+    window.location.hash = history;
+  }
+}
