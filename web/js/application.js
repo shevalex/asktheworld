@@ -118,9 +118,15 @@ Application.MESSAGE_TIMEOUT_SLOW = 10;
 Application.start = function() {
   this._rootContainer = document.getElementById("RootContainer");
   
+  window.onhashchange = function() {
+    var hash = window.location.hash.substr(1); 
+    Application.restoreFromHistory(hash);
+  }
+  
   window.onbeforeunload = function() {
     return I18n.getLocale().literals.LeaveApplicationMessage;
   }
+  
   
   this.showPage(LoginPage.name);
 
@@ -141,6 +147,9 @@ Application.reset = function() {
   
   Application.showPage(LoginPage.name);
 }
+
+
+// PAGE MANAGEMENT
 
 Application.showPage = function(pageId, paramBundle, observer) {
   var page = this._getPage(pageId);
@@ -179,6 +188,10 @@ Application.showChildPage = function(parentPageId, childPageId, paramBundle, obs
 Application.showMenuPage = function(childPageId, paramBundle, observer) {
   Application.showChildPage(MenuPage.name, childPageId, paramBundle, observer);
 }
+
+
+// END OF PAGE MANAGEMEMT
+
 
 
 Application.showSpinningWheel = function() {
@@ -248,7 +261,6 @@ Application.hideDialog = function() {
 }
 
 
-
 Application._getPage = function(pageId) {
   var page = this._pages[pageId];
   if (page == null) {
@@ -262,3 +274,69 @@ Application._getPage = function(pageId) {
   
   return page;
 }
+
+
+
+// HISTORY MANAGEMENT
+
+Application.restoreFromHistory = function(hash) {
+  var parentPageId = Application.getHistoryTagValue("parent");
+  
+  if (parentPageId != null) {
+    var childPageId = Application.getHistoryTagValue("page");
+    if (childPageId != null) {
+      Application.showChildPage(parentPageId, childPageId, {history: hash});
+    } else {
+      console.error("Icorrect hash - parent without child: " + hash);
+    }
+  } else {
+    var pageId = Application.getHistoryTagValue("page");
+    if (pageId != null) {
+      Application.showPage(pageId, {history: hash});
+    } else {
+      console.error("Incorrect hash - no page:" + hash);
+    }
+  }
+}
+
+Application.getHistoryTagValue = function(tagName) {
+  var hash = window.location.hash;
+  
+  var tagStartIndex = hash.indexOf("[" + tagName);
+  if (tagStartIndex == -1) {
+    return null;
+  }
+  
+  var tagClosingIndex = hash.indexOf("]", tagStartIndex);
+  if (tagClosingIndex == -1) {
+    return null;
+  }
+  
+  return hash.substring(tagStartIndex + tagName.length + 2, tagClosingIndex);
+}
+
+Application.makeHistoryTag = function(tagName, value) {
+  return "[" + tagName + "-" + value + "]";
+}
+
+Application.makeHistory = function(tagValueArray) {
+  var hash = "";
+  
+  for (var index in tagValueArray) {
+    if (hash.length > 0) {
+      hash += "-";
+    }
+    
+    if (typeof tagValueArray[index] == "string") {
+      hash += tagValueArray[index];
+    } else {
+      hash += Application.makeHistoryTag(tagValueArray[index][0], tagValueArray[index][1]);
+    }
+  }
+  
+  return hash;
+}
+
+// END OF HISTORY MANAGEMENT
+
+

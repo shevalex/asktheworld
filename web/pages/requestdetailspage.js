@@ -55,21 +55,28 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
 
 RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   if (paramBundle.history != null) {
-    this._currentRequestId = AbstractPage.getHistoryTagValue("request");
+    this._currentRequestId = Application.getHistoryTagValue("request");
     if (this._currentRequestId == null) {
       console.error("Cannot restore the page " + this._pageId + ": missing request");
     }
     
-    this._returnPageId = AbstractPage.getHistoryTagValue("return");
+    this._returnPageId = Application.getHistoryTagValue("return");
     if (this._returnPageId == null) {
       console.error("Cannot restore the page " + this._pageId + ": missing return page");
     }
     
-    var type = AbstractPage.getHistoryTagValue("type");
+    var type = Application.getHistoryTagValue("type");
     if (type == null) {
       console.error("Cannot restore the page " + this._pageId + ": missing type");
     } else {
       this._isIncomingList = type == "incoming";
+    }
+
+    var otherRequests = Application.getHistoryTagValue("siblings");
+    if (otherRequests == null) {
+      this._navigatableRequestIds
+    } else {
+      this._navigatableRequestIds = otherRequests.split(",");
     }
   } else {
     this._returnPageId = paramBundle.returnPageId;
@@ -80,7 +87,7 @@ RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
 
   this._updatePage();
 
-//  Consider closing the oage if the request shown is being removed
+//  Consider closing the page if the request shown is being removed
 //  this._cacheChangeListener = function(event) {
 //    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
 //      var requestList;
@@ -110,7 +117,7 @@ RequestDetailsPage.prototype.onHide = function() {
 }
 
 RequestDetailsPage.prototype.provideHistory = function() {
-  return AbstractPage.makeHistory([this.getHistoryPrefix(), ["request", this._currentRequestId], ["return", this._returnPageId], ["type", (this._isIncomingList ? "incoming" : "outgoing")]]);
+  return Application.makeHistory([this.getHistoryPrefix(), ["request", this._currentRequestId], ["return", this._returnPageId], ["type", (this._isIncomingList ? "incoming" : "outgoing")], ["siblings", this._navigatableRequestIds != null ? this._navigatableRequestIds.join(",") : ""]]);
 }
 
 

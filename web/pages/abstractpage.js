@@ -14,74 +14,6 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
 });
 
 
-// HISTORY MANAGEMENT
-
-window.onhashchange = function() {
-  var hash = window.location.hash.substr(1); 
-  AbstractPage.restoreFromHistory(hash);
-}
-
-AbstractPage.restoreFromHistory = function(hash) {
-  var parentPageId = AbstractPage.getHistoryTagValue("parent");
-  
-  if (parentPageId != null) {
-    var childPageId = AbstractPage.getHistoryTagValue("page");
-    if (childPageId != null) {
-      Application.showChildPage(parentPageId, childPageId, {history: hash});
-    } else {
-      console.error("Icorrect hash - parent without child: " + hash);
-    }
-  } else {
-    var pageId = AbstractPage.getHistoryTagValue("page");
-    if (pageId != null) {
-      Application.showPage(pageId, {history: hash});
-    } else {
-      console.error("Incorrect hash - no page:" + hash);
-    }
-  }
-}
-
-AbstractPage.getHistoryTagValue = function(tagName) {
-  var hash = window.location.hash;
-  
-  var tagStartIndex = hash.indexOf("[" + tagName);
-  if (tagStartIndex == -1) {
-    return null;
-  }
-  
-  var tagClosingIndex = hash.indexOf("]", tagStartIndex);
-  if (tagClosingIndex == -1) {
-    return null;
-  }
-  
-  return hash.substring(tagStartIndex + tagName.length + 2, tagClosingIndex);
-}
-
-AbstractPage.makeHistoryTag = function(tagName, value) {
-  return "[" + tagName + "-" + value + "]";
-}
-
-AbstractPage.makeHistory = function(tagValueArray) {
-  var hash = "";
-  
-  for (var index in tagValueArray) {
-    if (hash.length > 0) {
-      hash += "-";
-    }
-    
-    if (typeof tagValueArray[index] == "string") {
-      hash += tagValueArray[index];
-    } else {
-      hash += AbstractPage.makeHistoryTag(tagValueArray[index][0], tagValueArray[index][1]);
-    }
-  }
-  
-  return hash;
-}
-
-// END OF HISTORY MANAGEMENT
-
-
 
 AbstractPage.prototype.destroy = function() {
   this.hide();
@@ -158,9 +90,16 @@ AbstractPage.prototype.provideHistory = function() {
 
 AbstractPage.prototype.getHistoryPrefix = function() {
   if (this._parentPage != null) {
-    return AbstractPage.makeHistory([["parent", this._parentPage._pageId], ["page", this._pageId]]);
+    return Application.makeHistory([["parent", this._parentPage._pageId], ["page", this._pageId]]);
   } else {
-    return AbstractPage.makeHistoryTag("page", this._pageId);
+    return Application.makeHistoryTag("page", this._pageId);
+  }
+}
+
+AbstractPage.prototype.placeHistory = function() {
+  var history = this.provideHistory();
+  if (history != null) {
+    window.location.hash = history;
   }
 }
 
@@ -169,9 +108,3 @@ AbstractPage.prototype.getLocale = function(lang) {
 }
 
 
-AbstractPage.prototype.placeHistory = function() {
-  var history = this.provideHistory();
-  if (history != null) {
-    window.location.hash = history;
-  }
-}
