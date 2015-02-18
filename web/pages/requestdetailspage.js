@@ -190,7 +190,8 @@ RequestDetailsPage.prototype._updatePage = function() {
       },
       requestDeleted: function() {
         Application.showMessage(I18n.getLocale().literals.RequestRemovedMessage, Application.MESSAGE_TIMEOUT_FAST);
-      }
+        Application.showMenuPage(this._returnPageId);
+      }.bind(this)
     }
   };
   
