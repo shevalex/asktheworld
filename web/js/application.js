@@ -168,6 +168,13 @@ Application.showPage = function(pageId, paramBundle, observer) {
   var showNewPage = function() {
     this._currentPage = page;
     this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
+    
+    if (paramBundle == null) {
+      paramBundle = {};
+    }
+    paramBundle.page = pageId;
+    
+    this.placeHistory(this._currentPage, paramBundle);
   }.bind(this);
   
   if (this._currentPage != null) {
@@ -181,7 +188,17 @@ Application.showPage = function(pageId, paramBundle, observer) {
 
 Application.showChildPage = function(parentPageId, childPageId, paramBundle, observer) {
   Application.showPage(parentPageId, null, function() {
-    this._getPage(parentPageId).showChildPage(childPageId, paramBundle, observer);
+    var parentPage = this._getPage(parentPageId);
+    
+    parentPage.showChildPage(childPageId, paramBundle, observer);
+    
+    if (paramBundle == null) {
+      paramBundle = {};
+    }
+    paramBundle.parent = parentPageId;
+    paramBundle.page = childPageId;
+    
+    this.placeHistory(parentPage.getPage(childPageId), paramBundle);
   }.bind(this));
 }
 
@@ -280,61 +297,64 @@ Application._getPage = function(pageId) {
 // HISTORY MANAGEMENT
 
 Application.restoreFromHistory = function(hash) {
-  var parentPageId = Application.getHistoryTagValue("parent");
+  var historyBundle = Application._deserialize(hash);
   
-  if (parentPageId != null) {
-    var childPageId = Application.getHistoryTagValue("page");
-    if (childPageId != null) {
-      Application.showChildPage(parentPageId, childPageId, {history: hash});
+  if (historyBundle.parent != null) {
+    if (historyBundle.page != null) {
+      Application.showChildPage(historyBundle.parent, historyBundle.page, historyBundle);
     } else {
       console.error("Icorrect hash - parent without child: " + hash);
     }
   } else {
-    var pageId = Application.getHistoryTagValue("page");
-    if (pageId != null) {
-      Application.showPage(pageId, {history: hash});
+    if (historyBundle.page != null) {
+      Application.showPage(historyBundle.page, historyBundle);
     } else {
       console.error("Incorrect hash - no page:" + hash);
     }
   }
 }
 
-Application.getHistoryTagValue = function(tagName) {
-  var hash = window.location.hash;
-  
-  var tagStartIndex = hash.indexOf("[" + tagName);
-  if (tagStartIndex == -1) {
-    return null;
+Application.placeHistory = function(page, paramBundle) {
+  if (page.hasHistory()) {
+    window.location.hash = Application._serialize(paramBundle);
   }
-  
-  var tagClosingIndex = hash.indexOf("]", tagStartIndex);
-  if (tagClosingIndex == -1) {
-    return null;
-  }
-  
-  return hash.substring(tagStartIndex + tagName.length + 2, tagClosingIndex);
 }
 
-Application.makeHistoryTag = function(tagName, value) {
-  return "[" + tagName + "-" + value + "]";
+
+Application._serialize = function(parcel) {
+  var ser = "";
+  
+  for (var key in parcel) {
+    if (ser.length > 0) {
+      ser += ":";
+    }
+    ser += "[" + key + "-" + parcel[key] + "]";
+  }
+  
+  return ser;
 }
 
-Application.makeHistory = function(tagValueArray) {
-  var hash = "";
+Application._deserialize = function(ser) {
+  var parcel = {};
   
-  for (var index in tagValueArray) {
-    if (hash.length > 0) {
-      hash += "-";
+  var tags = ser.split(":");
+  for (var index in tags) {
+    var tag = tags[index];
+    if (tag.charAt(0) != "[" || tag.charAt(tag.length - 1) != "]") {
+      console.error("Deserialization integrity issue for tag " + tag);
+      continue;
     }
     
-    if (typeof tagValueArray[index] == "string") {
-      hash += tagValueArray[index];
-    } else {
-      hash += Application.makeHistoryTag(tagValueArray[index][0], tagValueArray[index][1]);
+    var pair = tag.substring(1, tag.length - 1).split("-");
+    if (pair.length != 2) {
+      console.error("Deserialization integrity issue for tag " + tag);
+      continue;
     }
+    
+    parcel[pair[0]] = pair[1];
   }
   
-  return hash;
+  return parcel;
 }
 
 // END OF HISTORY MANAGEMENT

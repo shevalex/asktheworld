@@ -17,10 +17,6 @@ MenuPage.prototype.definePageContent = function(root) {
   this._contentPanel = UIUtils.appendBlock(root, "ContentPanel");
 }
 
-MenuPage.prototype.getContentPanel = function() {
-  return this._contentPanel;
-}
-
 MenuPage.prototype.onShow = function(root) {
 }
 
@@ -40,14 +36,14 @@ MenuPage.prototype.onDestroy = function() {
 
 
 
-MenuPage.prototype.showChildPage = function(pageId, paramBundle, observer) {
-  var newPage = this._getPage(pageId);
+MenuPage.prototype.showChildPage = function(pageId, paramParcel, observer) {
+  var newPage = this.getPage(pageId);
   if (newPage == null) {
     console.error("No page for id " + pageId);
     return;
   }
   
-  if (this._activePage == newPage && paramBundle == null) {
+  if (this._activePage == newPage && paramParcel == null) {
     return;
   }
 
@@ -69,11 +65,26 @@ MenuPage.prototype.showChildPage = function(pageId, paramBundle, observer) {
   }
   
   this._activePage = newPage;
-  this._activePage.showAnimated(this, paramBundle, observer);
+  this._activePage.showAnimated(this._contentPanel, paramParcel, observer);
 }
 
-MenuPage.prototype.provideHistory = function() {
-  return null;
+MenuPage.prototype.getPage = function(pageId) {
+  var page = this._pages[pageId];
+  if (page == null) {
+    if (window[pageId] == null) {
+      return null;
+    }
+    
+    page = new window[pageId]();
+    this._pages[pageId] = page;
+  }
+  
+  return page;
+}
+
+
+MenuPage.prototype.hasHistory = function() {
+  return false;
 }
 
 
@@ -128,16 +139,3 @@ MenuPage.prototype._createMenuSeparator = function() {
 }
 
 
-MenuPage.prototype._getPage = function(pageId) {
-  var page = this._pages[pageId];
-  if (page == null) {
-    if (window[pageId] == null) {
-      return null;
-    }
-    
-    page = new window[pageId]();
-    this._pages[pageId] = page;
-  }
-  
-  return page;
-}

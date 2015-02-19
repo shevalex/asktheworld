@@ -20,14 +20,15 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
   this._previousLinkId = UIUtils.createId(generalPanel, "PreviousLink");
   generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink(this._previousLinkId, this.getLocale().PreviousLink));
   UIUtils.setClickListener(this._previousLinkId, function() {
-    this._currentRequestId = this._getPreviousRequestId();
-    this._updatePage();
-//    Application.showMenuPage(RequestDetailsPage.name, {
-//      requestId: this._getPreviousRequestId(),
-//      returnPageId: this._navigatableRequestIds,
-//      otherRequestIds: this._navigatableRequestIds,
-//      incoming: this._isIncomingList
-//    });
+//    this._currentRequestId = this._getPreviousRequestId();
+//    this._updatePage();
+    
+    Application.showMenuPage(RequestDetailsPage.name, {
+      requestId: this._getPreviousRequestId(),
+      returnPageId: this._navigatableRequestIds,
+      otherRequestIds: this._navigatableRequestIds.join(","),
+      incoming: this._isIncomingList
+    });
   }.bind(this));
 
   var goBackLinkId = UIUtils.createId(generalPanel, "GoBackLink");
@@ -39,52 +40,25 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
   this._nextLinkId = UIUtils.createId(generalPanel, "NextLink");
   generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink(this._nextLinkId, this.getLocale().NextLink));
   UIUtils.setClickListener(this._nextLinkId, function() {
-    this._currentRequestId = this._getNextRequestId();
-    this._updatePage();
-//    
-//    Application.showMenuPage(RequestDetailsPage.name, {
-//      requestId: this._getNextRequestId(),
-//      returnPageId: this._navigatableRequestIds,
-//      otherRequestIds: this._navigatableRequestIds,
-//      incoming: this._isIncomingList
-//    });
+//    this._currentRequestId = this._getNextRequestId();
+//    this._updatePage();
+    
+    Application.showMenuPage(RequestDetailsPage.name, {
+      requestId: this._getNextRequestId(),
+      returnPageId: this._navigatableRequestIds,
+      otherRequestIds: this._navigatableRequestIds.join(","),
+      incoming: this._isIncomingList
+    });
   }.bind(this));
 
   this._requestsPanel = UIUtils.appendBlock(root, "RequestsPanel");
 }
 
 RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
-  if (paramBundle.history != null) {
-    this._currentRequestId = Application.getHistoryTagValue("request");
-    if (this._currentRequestId == null) {
-      console.error("Cannot restore the page " + this._pageId + ": missing request");
-    }
-    
-    this._returnPageId = Application.getHistoryTagValue("return");
-    if (this._returnPageId == null) {
-      console.error("Cannot restore the page " + this._pageId + ": missing return page");
-    }
-    
-    var type = Application.getHistoryTagValue("type");
-    if (type == null) {
-      console.error("Cannot restore the page " + this._pageId + ": missing type");
-    } else {
-      this._isIncomingList = type == "incoming";
-    }
-
-    var otherRequests = Application.getHistoryTagValue("siblings");
-    if (otherRequests == null) {
-      this._navigatableRequestIds
-    } else {
-      this._navigatableRequestIds = otherRequests.split(",");
-    }
-  } else {
-    this._returnPageId = paramBundle.returnPageId;
-    this._navigatableRequestIds = paramBundle.otherRequestIds;
-    this._currentRequestId = paramBundle.requestId;
-    this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
-  }
-
+  this._returnPageId = paramBundle.returnPageId;
+  this._currentRequestId = paramBundle.requestId;
+  this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
+  this._navigatableRequestIds = paramBundle.otherRequestIds.split(",");
   this._updatePage();
 
 //  Consider closing the page if the request shown is being removed
@@ -202,8 +176,6 @@ RequestDetailsPage.prototype._updatePage = function() {
   }
   
   this._requestList.append(this._requestsPanel);
-  
-  this.placeHistory();
 }
 
 

@@ -28,7 +28,7 @@ ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
         incoming: false,
         returnPageId: ActiveOutgoingRequestsPage.name,
         requestId: requestId,
-        otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE)
+        otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE).join(",")
       }
 
       Application.showMenuPage(RequestDetailsPage.name, paramBundle);

@@ -15,7 +15,7 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
       var paramBundle = {
         returnPageId: HomePage.name,
         requestId: requestId,
-        otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE)
+        otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE).join(",")
       }
 
       Application.showMenuPage(RequestDetailsPage.name, paramBundle);
