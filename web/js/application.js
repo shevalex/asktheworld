@@ -378,6 +378,8 @@ Application._setupLanguageChooser = function() {
       UIUtils.setClickListener(item, function(lr) {
         $("#Title-Language-Text").html(lr.display);
         I18n.setCurrentLanguage(lr.data);
+        window.localStorage.menuLanguage = lr.data;
+        
         Application.reload();
         
         var container = UIUtils.get$(popup);
@@ -389,7 +391,16 @@ Application._setupLanguageChooser = function() {
     
     Application._setPopupCloser("language-selection-popup");
   }.bind(this));
-  $("#Title-Language-Text").html(Application.Configuration.LANGUAGES[0].display);
+  
+  var currentLanguage = window.localStorage.menuLanguage || Application.Configuration.LANGUAGES[0].data;
+  var displayLanguage = Application.Configuration.LANGUAGES[0].display;
+  for (var index in Application.Configuration.LANGUAGES) {
+    if (Application.Configuration.LANGUAGES[index].data == currentLanguage) {
+      displayLanguage = Application.Configuration.LANGUAGES[index].display;
+      break;
+    }
+  }
+  $("#Title-Language-Text").html(displayLanguage);
 }
 
 
