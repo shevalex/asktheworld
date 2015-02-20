@@ -15,6 +15,10 @@ MenuPage.prototype.definePageContent = function(root) {
   this._menuPanel = this._appendMenuPanel(root);
   
   this._contentPanel = UIUtils.appendBlock(root, "ContentPanel");
+  
+  for (var index in this._pages) {
+    this._pages[index].reload();
+  }
 }
 
 MenuPage.prototype.onShow = function(root) {

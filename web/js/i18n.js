@@ -1,5 +1,5 @@
 var I18n = {
-  _currentLanguage: null
+  _currentLanguage: null,
 }
 
 I18n.ENGLISH = "eng";
@@ -15,7 +15,12 @@ I18n.setCurrentLanguage = function(lang) {
 I18n.getLocale = function(lang) {
   var language = lang || this._currentLanguage;
   
-  return window["Locale_" + language];
+  var locale = window["Locale_" + language];
+  if (locale == null) {
+    locale = window["Locale_" + I18n.ENGLISH];
+  }
+  
+  return locale;
 }
 
 I18n.getPageLocale = function(page, lang) {

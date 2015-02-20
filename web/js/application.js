@@ -1,7 +1,7 @@
 
 var Application = {
   Configuration: {
-    LANGUAGES: [{data: "rus", display: I18n.getLocale().literals.LanguageRussian}, {data: "eng", display: I18n.getLocale().literals.LanguageEnglish}, {data: "ger", display: I18n.getLocale().literals.LanguageGerman}, {data: "esp", display: I18n.getLocale().literals.LanguageSpanish}, {data: "fra", display: I18n.getLocale().literals.LanguageFrench}, {data: "por", display: I18n.getLocale().literals.LanguagePortugeese}, {data: "grc", display: I18n.getLocale().literals.LanguageGreece}, {data: "gon", display: I18n.getLocale().literals.LanguageGondurasee}],
+    LANGUAGES: [ {data: "eng", display: I18n.getLocale().literals.LanguageEnglish}, {data: "rus", display: I18n.getLocale().literals.LanguageRussian}, {data: "ger", display: I18n.getLocale().literals.LanguageGerman}, {data: "esp", display: I18n.getLocale().literals.LanguageSpanish}, {data: "fra", display: I18n.getLocale().literals.LanguageFrench}, {data: "por", display: I18n.getLocale().literals.LanguagePortugeese}, {data: "grc", display: I18n.getLocale().literals.LanguageGreece}, {data: "gon", display: I18n.getLocale().literals.LanguageGondurasee}],
     
     AGE_CATEGORIES: [{data: "child", display: I18n.getLocale().literals.AgeChild}, {data: "teenager", display: I18n.getLocale().literals.AgeTeenager}, {data: "young", display: I18n.getLocale().literals.AgeYoung}, {data: "adult", display: I18n.getLocale().literals.AgeAdult}, {data: "senior", display: I18n.getLocale().literals.AgeSenior}],
     RESPONSE_WAIT_TIME: [{data: 148, display: I18n.getLocale().literals.WaitTimeWeek}, {data: 24, display: I18n.getLocale().literals.WaitTimeDay}, {data: 12, display: I18n.getLocale().literals.WaitTimeHalfDay}, {data: 1, display: I18n.getLocale().literals.WaitTimeHour}],
@@ -127,12 +127,15 @@ Application.start = function() {
     return I18n.getLocale().literals.LeaveApplicationMessage;
   }
   
-  
-  this.showPage(LoginPage.name);
 
   $("#Footer-ContactUs").click(function() {
-    Application.showDialog("About Us", "We will need to find a way to open this page");
+    Application.showDialog("", "We will need to find a way to open this page");
   });
+  
+  Application._setupLanguageChooser();
+  
+
+  this.showPage(LoginPage.name);
 }
 
 Application.reset = function() {
@@ -146,6 +149,16 @@ Application.reset = function() {
   this.hideDialog();
   
   Application.showPage(LoginPage.name);
+}
+
+Application.reload = function() {
+  for (var index in this._pages) {
+    this._pages[index].reload();
+  }
+
+  this.hideMessage();
+  this.hideSpinningWheel();
+  this.hideDialog();
 }
 
 
@@ -261,16 +274,7 @@ Application.showDialog = function(title, contentHtml) {
     });
   });
   
-  $(document).mouseup(function(event) {
-    var container = $(".modal-dialog");
-
-    if (!container.is(event.target) && container.has(event.target).length == 0) {
-      container.fadeOut("slow", function() {
-        container.remove();
-      });
-      $(document).unbind("mouseup");
-    }
-  });
+  Application._setPopupCloser("modal-dialog");
 }
 
 Application.hideDialog = function() {
@@ -360,3 +364,44 @@ Application._deserialize = function(ser) {
 // END OF HISTORY MANAGEMENT
 
 
+Application._setupLanguageChooser = function() {
+  $("#Title-Language-Text").click(function() {
+    var popup = UIUtils.appendBlock($("#Title-Language").get(0), "Title-Language-Popup");
+    UIUtils.addClass(popup, "language-selection-popup");
+    
+    for (var index in Application.Configuration.LANGUAGES) {
+      var languageRecord = Application.Configuration.LANGUAGES[index];
+      
+      var item = UIUtils.appendLink(popup, languageRecord.data, languageRecord.display);
+      UIUtils.addClass(item, "language-selection-item");
+      
+      UIUtils.setClickListener(item, function(lr) {
+        $("#Title-Language-Text").html(lr.display);
+        I18n.setCurrentLanguage(lr.data);
+        Application.reload();
+        
+        var container = UIUtils.get$(popup);
+        container.fadeOut("fast", function() {
+          container.remove();
+        });
+      }.bind(this, languageRecord));
+    }
+    
+    Application._setPopupCloser("language-selection-popup");
+  }.bind(this));
+  $("#Title-Language-Text").html(Application.Configuration.LANGUAGES[0].display);
+}
+
+
+Application._setPopupCloser = function(popupClass) {
+  $(document).mouseup(function(event) {
+    var container = $("." + popupClass);
+
+    if (!container.is(event.target) && container.has(event.target).length == 0) {
+      container.fadeOut("slow", function() {
+        container.remove();
+      });
+      $(document).unbind("mouseup");
+    }
+  });
+}

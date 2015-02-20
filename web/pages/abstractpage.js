@@ -20,6 +20,18 @@ AbstractPage.prototype.destroy = function() {
   this.onDestroy();
 }
 
+AbstractPage.prototype.reload = function() {
+  this._isDefined = false;
+  
+  if (this.isShown()) {
+    var parent = this._pageElement.parentElement;
+    var paramBundle = this._paramBundle;
+    this.hide();
+    this._pageElement.innerHTML = "";
+    this.show(parent, paramBundle);
+  }
+}
+
 AbstractPage.prototype.show = function(container, paramBundle) {
   this._paramBundle = paramBundle;
   

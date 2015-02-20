@@ -15,12 +15,20 @@ body {
   text-align: center;
   background: rgb(254, 251, 233);
 }
-
 #Title-Label {
   font-size: 50px;
   font-style: italic;
   font-weight: bold;
   color: rgb(185, 122, 87);
+}
+#Title-Language {
+  position: absolute;
+  right: 30px;
+  top: 20px;
+}
+#Title-Language-Text {
+  font-size: 15px;
+  font-style: italic;
 }
 
 #Footer {
