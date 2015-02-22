@@ -771,7 +771,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
     }
     
     var requestDate = new Date(request.time);
-    UIUtils.get$(textElement).html("<b>" + I18n.getPageLocale("AbstractRequestPage").OutgoingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString(), Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender)) + "</b><br>" + text);
+    UIUtils.get$(textElement).html("<b>" + I18n.getPageLocale("AbstractRequestPage").OutgoingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString(), Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender), Application.Configuration.toExpertiseString(request.expertise_category)) + "</b><br>" + text);
     
     AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(requestHolderElement, request.attachments);
     
@@ -940,7 +940,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
     }
 
     var requestDate = new Date(request.time);
-    UIUtils.get$(requestTextElement).html("<b>" + I18n.getPageLocale("AbstractRequestPage").IncomingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString()) + "</b><br>" + text);
+    UIUtils.get$(requestTextElement).html("<b>" + I18n.getPageLocale("AbstractRequestPage").IncomingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString(), Application.Configuration.toExpertiseString(request.expertise_category)) + "</b><br>" + text);
     
     AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(requestHolderElement, request.attachments);
 

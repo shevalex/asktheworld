@@ -100,6 +100,18 @@ var Application = {
       }
       
       throw "Incorrect input parameters";
+    },
+    
+    toExpertiseString: function(expertiseCategory) {
+      if (expertiseCategory == this.EXPERTISES[0].data) {
+        return I18n.getLocale().literals.ExpertiseCategoryGeneral;
+      } else if (expertiseCategory == this.EXPERTISES[1].data) {
+        return I18n.getLocale().literals.ExpertiseCategoryLaw;
+      } else if (expertiseCategory == this.EXPERTISES[2].data) {
+        return I18n.getLocale().literals.ExpertiseCategoryMedicine;
+      } else if (expertiseCategory == this.EXPERTISES[3].data) {
+        return I18n.getLocale().literals.ExpertiseCategoryConstruction;
+      }
     }
   },
   

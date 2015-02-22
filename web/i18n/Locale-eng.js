@@ -107,7 +107,13 @@ var Locale_eng = {
     "UserIdentityAdultMan": "man",
     "UserIdentityAdultWoman": "woman",
     "UserIdentitySeniorMan": "senior man",
-    "UserIdentitySeniorWoman": "senior woman"
+    "UserIdentitySeniorWoman": "senior woman",
+    
+    "ExpertiseCategoryGeneral": "general",
+    "ExpertiseCategoryMedicine": "medical",
+    "ExpertiseCategoryLaw": "law",
+    "ExpertiseCategoryConstruction": "construction/repair",
+    
   },
   "pages": {
     "LoginPage": {
@@ -171,7 +177,7 @@ var Locale_eng = {
       "OutlineText": "Asking The World is just that easy. You are only four steps away.",
       "ContentPanelLabel": "1. Type in the text of your request first...",
       "ExpertiseCategoryLabel": "2. Choose professional category of your request",
-      "ParametersLabel": "3. Choose who will see your question",
+      "ParametersLabel": "3. Choose who will see your question. It will be honered if possible given your chosen professional category",
       "ModifySettingsLinkProvider": function(linkId) { return "Note: You can always modify your defaut settings in <a id='" + linkId + "'>Your Preferences</a>"; },
       "ControlsLabel": "4. And finally send it out!",
       "SendButton": "Ask The World!",
@@ -251,8 +257,8 @@ var Locale_eng = {
       "SeeMoreResponses": "And more responses. Click to see them all",
       "MoreResponsesAvailable": "And more responses...",
       "EditRequestButton": "Edit",
-      "OutgoingRequestTitleProvider": function(date, targetGroup) { return "You wrote on " + date + " to " + targetGroup + ":"; },
-      "IncomingRequestTitleProvider": function(date) { return "On " + date + " The World asked you:"; },
+      "OutgoingRequestTitleProvider": function(date, targetGroup, expertiseCategory) { return "You wrote a " + expertiseCategory + " request on " + date + " to " + targetGroup + ":"; },
+      "IncomingRequestTitleProvider": function(date, expertiseCategory) { return "On " + date + " The World asked you a " + expertiseCategory + " question:"; },
       "OutgoingResponseTitleProvider": function(date) { return "You responded on " + date + ":"; },
       "SentRequestTextProvider": function(date) { return "This request was sent on <b>" + date +"</b>"; },
       "DeactivateRequestButton": "Deactivate",
