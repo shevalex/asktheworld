@@ -803,6 +803,9 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
   var label = UIUtils.appendLabel(editPanel, "Label", I18n.getPageLocale("AbstractRequestPage").SentRequestTextProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString()));
   UIUtils.addClass(label, "outgoingrequest-editpanel-label");
   
+  var expertiseCombo = editPanel.appendChild(UIUtils.createSpan("100%", "0 0 20px 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "ExpertiseCategory"), I18n.getLocale().literals.ExpertiseCategoryLabel, Application.Configuration.EXPERTISES, "10px"));
+  expertiseCombo.getInputElement().selectData(request.expertise_category);
+  
   var genderCombo = editPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(editPanel, "Gender"), I18n.getLocale().literals.TargetGenderLabel, Application.Configuration.GENDER_PREFERENCE, "10px"));
   genderCombo.getInputElement().selectData(request.response_gender);
   
@@ -861,7 +864,8 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype.__appen
         response_quantity: quantityCombo.getInputElement().getSelectedData(),
         response_wait_time: waitTimeCombo.getInputElement().getSelectedData(),
         response_age_group: ageCombo.getInputElement().getSelectedData(),
-        response_gender: genderCombo.getInputElement().getSelectedData()
+        response_gender: genderCombo.getInputElement().getSelectedData(),
+        expertise_category: expertiseCombo.getInputElement().getSelectedData()
       }, {
         success: function() {
           this._requestList.__updateFinished();

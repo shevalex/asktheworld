@@ -73,7 +73,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
 }
 
 NewRequestPage.prototype.onShow = function() {
-  this._requestTextEditor.focus();
+  this._resetPage();
 }
 
 NewRequestPage.prototype.onHide = function() {
@@ -89,6 +89,8 @@ NewRequestPage.prototype._resetPage = function() {
   this._requestAgeElement.selectData(Backend.getUserPreferences().requestTargetAge);
   this._requestQuantityElement.selectData(Backend.getUserPreferences().responseQuantity);
   this._requestWaitTimeElement.selectData(Backend.getUserPreferences().responseWaitTime);
+  
+  this._requestExpertiseCategoryElement.selectChoices([Application.Configuration.EXPERTISES[0]]);
 }
 
 NewRequestPage.prototype._createRequest = function() {
@@ -122,7 +124,8 @@ NewRequestPage.prototype._createRequest = function() {
     response_gender: this._requestGenderElement.getSelectedData(),
     response_quantity: this._requestQuantityElement.getSelectedData(),
     response_wait_time: this._requestWaitTimeElement.getSelectedData(),
-    response_age_group: this._requestAgeElement.getSelectedData()
+    response_age_group: this._requestAgeElement.getSelectedData(),
+    expertise_category: this._requestExpertiseCategoryElement.getSelectedData()
   }
   
   UIUtils.setEnabled(this._sendButton, false);

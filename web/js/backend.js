@@ -818,6 +818,7 @@ Backend._createDummyRequest = function(requestId) {
     response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime].data,
     response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age].data,
     response_gender: Application.Configuration.GENDER_PREFERENCE[gender].data,
+    expertise_category: Application.Configuration.EXPERTISES[0].data,
     status: status
   };
     
