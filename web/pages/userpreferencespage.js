@@ -9,6 +9,11 @@ UserPreferencesPage = ClassUtils.defineClass(AbstractPage, function UserPreferen
   this._inquiryAgeElement;
   this._inquiryGenderElement;
   
+  this._expertiseElement;
+  this._makeContactInfoRequestableCheckbox;
+  this._nameElement;
+  this._contactElement;  
+  
   this._updateButton;
   this._resetButton;
 });
@@ -85,6 +90,24 @@ UserPreferencesPage.prototype._appendControlPanel = function(root) {
   
   UIUtils.setClickListener(this._resetButton, this._resetParameters.bind(this));
   UIUtils.setClickListener(this._updateButton, function() {
+    if (this._makeContactInfoRequestableCheckbox.getValue()) {
+      if (this._expertiseElement.getSelectedData().length == 0) {
+        this._expertiseElement.indicateInvalidInput();
+        Application.showMessage(this.getLocale().NoExpertiseMessage);
+        return;
+      }
+      if (this._nameElement.getValue() == "") {
+        UIUtils.indicateInvalidInput(this._nameElement);
+        Application.showMessage(this.getLocale().NoNameMessage);
+        return;
+      }
+      if (this._contactElement.getValue() == "") {
+        UIUtils.indicateInvalidInput(this._contactElement);
+        Application.showMessage(this.getLocale().NoContactInfoMessage);
+        return;
+      }
+    }
+
     var page = this;
     
     var callback = {
@@ -122,6 +145,11 @@ UserPreferencesPage.prototype._resetParameters = function() {
   this._inquiryLimitElement.selectData(Backend.getUserPreferences().dailyInquiryLimit);
   this._inquiryAgeElement.selectData(Backend.getUserPreferences().inquiryAge);
   this._inquiryGenderElement.selectData(Backend.getUserPreferences().inquiryGender);
+  
+  this._expertiseElement.selectChoices(Backend.getUserPreferences().expertises);
+  this._makeContactInfoRequestableCheckbox.setValue(Backend.getUserPreferences().contactVisible);
+  this._nameElement.setValue(Backend.getUserPreferences().contactName);
+  this._contactElement.setValue(Backend.getUserPreferences().contactInfo);
 }
 
 
@@ -133,7 +161,12 @@ UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
     requestTargetGender: this._genderElement.getSelectedData(),
     dailyInquiryLimit: this._inquiryLimitElement.getSelectedData(),
     inquiryAge: this._inquiryAgeElement.getSelectedData(),
-    inquiryGender: this._inquiryGenderElement.getSelectedData()
+    inquiryGender: this._inquiryGenderElement.getSelectedData(),
+
+    expertises: this._expertiseElement.getSelectedData(),
+    contactVisible: this._makeContactInfoRequestableCheckbox.getValue(),
+    contactName: this._nameElement.getValue(),
+    contactInfo: this._contactElement.getValue()
   };
   
   Backend.updateUserPreferences(userPreferences, callback);

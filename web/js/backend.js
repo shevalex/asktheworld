@@ -202,6 +202,11 @@ Backend.updateUserPreferences = function(userPreferences, callback) {
       Backend.UserPreferences.dailyInquiryLimit = userPreferences.dailyInquiryLimit;
       Backend.UserPreferences.inquiryAge = userPreferences.inquiryAge;
       Backend.UserPreferences.inquiryGender = userPreferences.inquiryGender;
+      
+      Backend.UserPreferences.expertises = userPreferences.expertises;
+      Backend.UserPreferences.contactVisible = userPreferences.contactVisible;
+      Backend.UserPreferences.contactName = userPreferences.contactName;
+      Backend.UserPreferences.contactInfo = userPreferences.contactInfo;
 
       callback.success();
     },

@@ -230,7 +230,10 @@ var Locale_eng = {
       "ResetButton": "Reset",
       
       "PreferencesUpdatedMessage": "Your preferences were successfully updated",
-      "UpdateFailedMessage": "Failed to update preferences"
+      "UpdateFailedMessage": "Failed to update preferences",
+      "NoExpertiseMessage": "You must specifiy your areas of expetise; otherwise you won't receive any professional questions which you can provide an advice and reveal your contact information",
+      "NoNameMessage": "You chose to let the system reveal your contact but did not provide you name",
+      "NoContactInfoMessage": "You chose to let the system reveal your contact but did not provide you contact information"
     },
     "RequestDetailsPage": {
       "PreviousLink": "Previous",
