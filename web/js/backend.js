@@ -16,7 +16,12 @@ Backend.UserPreferences = {
   requestTargetGender: Application.Configuration.GENDER_PREFERENCE[0].data,
   dailyInquiryLimit: Application.Configuration.INQUIRY_LIMIT_PREFERENCE[0].data,
   inquiryAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
-  inquiryGender: Application.Configuration.GENDER_PREFERENCE[0].data
+  inquiryGender: Application.Configuration.GENDER_PREFERENCE[0].data,
+
+  expertises: [],
+  contactVisible: false,
+  contactName: "",
+  contactInfo: ""
 };
 
 Backend.getUserProfile = function() {
@@ -58,8 +63,9 @@ Backend.logOut = function(callback) {
   this._cacheChangeListeners = [];
   
   //We may need to inform the server maybe?
-  
-  callback();
+  if (callback != null) {
+    callback();
+  }
 }
 
 Backend.pullUserProfile = function(callback) {
@@ -166,6 +172,11 @@ Backend.pullUserPreferences = function(callback) {
       Backend.UserPreferences.dailyInquiryLimit = data.inquiry_quantity_per_day || Backend.UserPreferences.dailyInquiryLimit;
       Backend.UserPreferences.inquiryAge = data.inquiry_age_group_preference || Backend.UserPreferences.inquiryAge;
       Backend.UserPreferences.inquiryGender = data.inquiry_gender_preference || Backend.UserPreferences.inquiryGender;
+
+      Backend.UserPreferences.expertises = data.expertises || Backend.UserPreferences.expertises;
+      Backend.UserPreferences.contactVisible = data.contact_info_requestable || Backend.UserPreferences.contactVisible;
+      Backend.UserPreferences.contactName = data.contact_name || Backend.UserPreferences.contactName;
+      Backend.UserPreferences.contactInfo = data.contact_info || Backend.UserPreferences.contactInfo;
 
       callback.success();
     },

@@ -23,6 +23,9 @@ UserPreferencesPage.prototype.definePageContent = function(root) {
   UIUtils.appendLabel(root, "InquiryPreferencesLabel", this.getLocale().InquiryPreferencesLabel);
   this._appendInquiryPreferencesPanel(root);
   
+  UIUtils.appendLabel(root, "ContactInfoPreferencesLabel", this.getLocale().ContactInfoPreferencesLabel);
+  this._appendContactInfoPreferencesPanel(root);
+  
   this._appendControlPanel(root);
 }
 
@@ -56,6 +59,18 @@ UserPreferencesPage.prototype._appendInquiryPreferencesPanel = function(root) {
   this._inquiryAgeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryAge"), this.getLocale().RequestersAgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
   
   this._inquiryGenderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryGender"), this.getLocale().RequestersGenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
+}
+
+UserPreferencesPage.prototype._appendContactInfoPreferencesPanel = function(root) {
+  var contentPanel = UIUtils.appendBlock(root, "ContactInfoPreferencesPanel");
+  
+  this._expertiseElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Expertise"), this.getLocale().ExpertisePreferenceLabel, Application.Configuration.EXPERTISES, "10px")).getInputElement();
+  
+  this._makeContactInfoRequestableCheckbox = UIUtils.appendCheckbox(contentPanel, "AllowContactInfo", this.getLocale().AllowContactInfoPreferenceLabel);
+  
+  this._nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), this.getLocale().NamePreferenceLabel, "10px")).getInputElement();
+
+  this._contactElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Contact"), this.getLocale().ContactPreferenceLabel, "10px")).getInputElement();
 }
 
 

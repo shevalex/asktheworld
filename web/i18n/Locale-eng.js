@@ -36,6 +36,11 @@ var Locale_eng = {
     "LanguageGreece": "Greece",
     "LanguageGondurasee": "Gondurasee",
     
+    "ExpertiseLaw": "Law",
+    "ExpertiseMedicine": "Medicine",
+    "ExpertiseConstruction": "Construction",
+    
+    
     "AgeChild": "Child",
     "AgeTeenager": "Teenager",
     "AgeYoung": "Young Adult",
@@ -207,6 +212,7 @@ var Locale_eng = {
       "UpdatePreferencesText": "Update your preferences. This is what we will use as your default choice when you are Asking The World.<br>Note, that you can always override these defauls for the specific request.",
       "RequestPreferencesLabel": "Tell us whom do you want to send your requests to",
       "InquiryPreferencesLabel": "Tell us who do you want to receive the inquiries from",
+      "ContactInfoPreferencesLabel": "Tell us if you want to allow your contact information to be requesable when you answer professional questions of your expertise",
       
       "NumOfResponsesPreferenceLabel": "Maximum number of responses that you want to see",
       "AgePreferenceLabel": "Who do you want to send this request to",
@@ -215,6 +221,10 @@ var Locale_eng = {
       "NumOfInquiriesPreferenceLabel": "Maximum daily amount of inquiries you want to receive",
       "RequestersAgePreferenceLabel": "Age of requesters",
       "RequestersGenderPreferenceLabel": "Gender of requesters",
+      "ExpertisePreferenceLabel": "Areas of your profiessional expertise",
+      "AllowContactInfoPreferenceLabel": "Make my contact information requestable",
+      "NamePreferenceLabel": "You name",
+      "ContactPreferenceLabel": "You phone number and/or other contact information",
       
       "UpdateButton": "Update Preferences",
       "ResetButton": "Reset",

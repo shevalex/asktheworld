@@ -118,9 +118,7 @@ MenuPage.prototype._appendMenuPanel = function(root) {
   menuPanel.appendChild(this._createMenuSeparator());
 
   this._appendMenuItem(menuPanel, "logout", this.getLocale().LogOutItem, null, function() {
-    Backend.logOut(function() {
-      Application.reset();
-    }.bind(this));
+    Application.reset();
   });
   
   return menuPanel;
