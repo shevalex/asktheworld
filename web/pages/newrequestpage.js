@@ -16,15 +16,21 @@ NewRequestPage.prototype.definePageContent = function(root) {
   generalPanel.innerHTML = this.getLocale().OutlineText;
 
   var requestTextPanel = UIUtils.appendBlock(root, "RequestContentPanel");
-  UIUtils.appendLabel(requestTextPanel, "Label", this.getLocale().StepOneLabel);
+  UIUtils.appendLabel(requestTextPanel, "Label", this.getLocale().ContentPanelLabel);
   this._requestTextEditor = UIUtils.appendTextEditor(requestTextPanel, "TextEditor", {
     fileTooBigListener: function(file) {
       Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
     }
   });
+
+  var requestExpirtiseCategoryPanel = UIUtils.appendBlock(root, "RequestExpertiseCategoryPanel");
+  UIUtils.appendLabel(requestExpirtiseCategoryPanel, "Label", this.getLocale().ExpertiseCategoryLabel);
+  var requestExpirtiseCategoryContainer = UIUtils.appendBlock(requestExpirtiseCategoryPanel, "Container");
+  this._requestExpertiseCategoryElement = requestExpirtiseCategoryContainer.appendChild(UIUtils.createMultiOptionList(UIUtils.createId(requestExpirtiseCategoryPanel, "ExpertiseCategory"), Application.Configuration.EXPERTISES, true));
+  
   
   var requestParamsPanel = UIUtils.appendBlock(root, "RequestParametersPanel");
-  UIUtils.appendLabel(requestParamsPanel, "Label", this.getLocale().StepTwoLabel);
+  UIUtils.appendLabel(requestParamsPanel, "Label", this.getLocale().ParametersLabel);
 
   var prefLinkId = UIUtils.createId(root, "PreferencesLink");
   UIUtils.appendLabel(requestParamsPanel, "Note", this.getLocale().ModifySettingsLinkProvider(prefLinkId));
@@ -45,7 +51,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
   this._requestQuantityElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "Quantity"), I18n.getLocale().literals.NumOfResponsesLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
   
   var controlPanel = UIUtils.appendBlock(root, "RequestControlPanel");
-  UIUtils.appendLabel(controlPanel, "Label", this.getLocale().StepThreeLabel);
+  UIUtils.appendLabel(controlPanel, "Label", this.getLocale().ControlsLabel);
   
   controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0"));
   this._sendButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "SendButton"), this.getLocale().SendButton));

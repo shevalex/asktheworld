@@ -21,6 +21,7 @@ var Locale_eng = {
     "YourGenderLabel": "Your Gender",
     "YourAgeCategoryLabel": "Your Age Category",
     "YourLanguagesLabel": "Languages that you speak",
+    "ExpertiseCategoryLabel": "Expirtise area of your request",
     
     "CancelOperationButton": "Cancel",
     "OkButton": "OK",
@@ -36,6 +37,7 @@ var Locale_eng = {
     "LanguageGreece": "Greece",
     "LanguageGondurasee": "Gondurasee",
     
+    "ExpertiseGeneral": "General",
     "ExpertiseLaw": "Law",
     "ExpertiseMedicine": "Medicine",
     "ExpertiseConstruction": "Construction",
@@ -166,11 +168,12 @@ var Locale_eng = {
       "IncomingRequestsStatisticProvider": function(numOfRequests) { return "You have " + numOfRequests + " unanswered requests"; }
     },
     "NewRequestPage": {
-      "OutlineText": "Asking The World is just that easy. You are only three steps away.",
-      "StepOneLabel": "1. Type in the text of your request first...",
-      "StepTwoLabel": "2. Choose who will see your question",
+      "OutlineText": "Asking The World is just that easy. You are only four steps away.",
+      "ContentPanelLabel": "1. Type in the text of your request first...",
+      "ExpertiseCategoryLabel": "2. Choose professional category of your request",
+      "ParametersLabel": "3. Choose who will see your question",
       "ModifySettingsLinkProvider": function(linkId) { return "Note: You can always modify your defaut settings in <a id='" + linkId + "'>Your Preferences</a>"; },
-      "StepThreeLabel": "3. And finally send it out!",
+      "ControlsLabel": "4. And finally send it out!",
       "SendButton": "Ask The World!",
       "ResetButton": "Reset",
       "RequestEmptyMessage": "Please create a message",

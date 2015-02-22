@@ -18,7 +18,7 @@ Backend.UserPreferences = {
   inquiryAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
   inquiryGender: Application.Configuration.GENDER_PREFERENCE[0].data,
 
-  expertises: [],
+  expertises: [Application.Configuration.EXPERTISES[0]],
   contactVisible: false,
   contactName: "",
   contactInfo: ""

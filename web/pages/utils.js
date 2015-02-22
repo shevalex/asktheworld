@@ -69,12 +69,7 @@ UIUtils.createLabeledPasswordInput = function(inputFieldId, labelText, margin) {
 
 UIUtils.createLabeledDropList = function(dropListId, labelText, options, margin) {
   //return UIUtils._createLabeledCombo(dropListId, labelText, UIUtils.createDropList(dropListId, options), margin);
-  var list = UIUtils.createLabeledSingleChoiceList(dropListId, labelText, options, margin);
-  if (options.length > 0) {
-    list.getInputElement().selectChoices([options[0]]);
-  }
-  
-  return list;
+  return UIUtils.createLabeledSingleChoiceList(dropListId, labelText, options, margin);
 }
 
 UIUtils.createLabeledMultiChoiceList = function(listId, labelText, options, margin) {
@@ -446,7 +441,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     itemElement.setAttribute("class", "multichoicelist-dropdown-item notselectable");
     var checkbox = UIUtils.appendCheckbox(itemElement, listId + "-" + index + "-cb", choice.display, exclusive);
     checkbox.style.width = "20px";
-    checkbox.getLabel().style.width = "calc(100% - 40px)";
+    checkbox.getLabel().style.width = "calc(100% - 45px)";
     
     
     checkbox.setAttribute("name", listId);
@@ -543,6 +538,11 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     UIUtils.indicateInvalidInput(selector);
   }
 
+
+  // Set default value
+  if (exclusive && choices.length > 0) {
+    mChoiceList.selectChoices([choices[0]]);
+  }
   
   return mChoiceList;
 }
