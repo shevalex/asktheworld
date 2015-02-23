@@ -1,6 +1,5 @@
 
 ClassUtils = {};
-
 ClassUtils.defineClass = function(superClass, childConstructor) {
   var childClass = childConstructor;
   var childClassName = childConstructor.name;
@@ -16,6 +15,36 @@ ClassUtils.defineClass = function(superClass, childConstructor) {
 
   return childClass;
 }
+
+
+GeneralUtils = {};
+GeneralUtils.isEqual = function(obj1, obj2) {
+  if (obj1 == null && obj2 == null) {
+    return true;
+  }
+  if (obj1 == null || obj2 == null) {
+    return false;
+  }
+  
+  if (Object.keys(obj1).length != Object.keys(obj2).length) {
+    return false;
+  }
+  
+  for (var key in obj1) {
+    if (obj2.hasOwnProperty(key)) {
+      var value1 = obj1[key];
+      var value2 = obj2[key];
+      if (value1 !== value2) {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
 
 ResourceUtils = {};
 ResourceUtils.loadResource = function(resourceUrl, isJsonResource, callback) {

@@ -186,14 +186,14 @@ Application.showPage = function(pageId, paramBundle, observer) {
     throw "Page does not exist " + pageId;
     return;
   }
-  
-  if (this._currentPage == page) {
+
+  if (this._currentPage == page && Application.isEqualBundle(this._currentPage.getParamBundle(), paramBundle)) {
     if (observer != null) {
       observer();
     }
     return;
   }
-  
+
   var showNewPage = function() {
     this._currentPage = page;
     this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
@@ -313,6 +313,35 @@ Application._getPage = function(pageId) {
 }
 
 
+
+Application.isEqualBundle = function(bundle1, bundle2) {
+  if (bundle1 == null && bundle2 == null) {
+    return true;
+  }
+  
+  if (bundle1 == null) {
+    bundle1 = {};
+  }
+  if (bundle2 == null) {
+    bundle2 = {};
+  }
+  
+  if (bundle1.page == null && bundle2.page != null) {
+    bundle1.page = bundle2.page;
+  }
+  if (bundle1.page != null && bundle2.page == null) {
+    bundle2.page = bundle1.page;
+  }
+
+  if (bundle1.parent == null && bundle2.parent != null) {
+    bundle1.parent = bundle2.parent;
+  }
+  if (bundle1.parent != null && bundle2.parent == null) {
+    bundle2.parent = bundle1.parent;
+  }
+
+  return GeneralUtils.isEqual(bundle1, bundle2);
+}
 
 // HISTORY MANAGEMENT
 

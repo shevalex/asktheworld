@@ -57,9 +57,10 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
 RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._returnPageId = paramBundle.returnPageId;
   this._currentRequestId = paramBundle.requestId;
-  this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming;
+  this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming == "true";
   this._navigatableRequestIds = paramBundle.otherRequestIds.split(",");
   this._updatePage();
+  
 
 //  Consider closing the page if the request shown is being removed
 //  this._cacheChangeListener = function(event) {
@@ -168,7 +169,7 @@ RequestDetailsPage.prototype._updatePage = function() {
       }.bind(this)
     }
   };
-  
+
   if (this._isIncomingList) {
     this._requestList = new AbstractRequestPage.IncomingRequestList(requestListParams);
   } else {

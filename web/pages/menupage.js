@@ -40,17 +40,16 @@ MenuPage.prototype.onDestroy = function() {
 
 
 
-MenuPage.prototype.showChildPage = function(pageId, paramParcel, observer) {
+MenuPage.prototype.showChildPage = function(pageId, paramBundle, observer) {
   var newPage = this.getPage(pageId);
   if (newPage == null) {
     console.error("No page for id " + pageId);
     return;
   }
   
-  if (this._activePage == newPage && paramParcel == null) {
+  if (this._activePage == newPage && Application.isEqualBundle(this._activePage.getParamBundle(), paramBundle)) {
     return;
   }
-
   
   var menuItemId = UIUtils.createId(this._menuPanel, pageId);
   var pageIsMenuItem = UIUtils.get$(menuItemId).length > 0;
@@ -69,7 +68,7 @@ MenuPage.prototype.showChildPage = function(pageId, paramParcel, observer) {
   }
   
   this._activePage = newPage;
-  this._activePage.showAnimated(this._contentPanel, paramParcel, observer);
+  this._activePage.showAnimated(this._contentPanel, paramBundle, observer);
 }
 
 MenuPage.prototype.getPage = function(pageId) {

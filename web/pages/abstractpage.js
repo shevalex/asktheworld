@@ -33,6 +33,12 @@ AbstractPage.prototype.reload = function() {
 }
 
 AbstractPage.prototype.show = function(container, paramBundle) {
+  if (this.isShown()) {
+    if (GeneralUtils.isEqual(this._paramBundle, paramBundle)) {
+      return;
+    }
+  }
+
   this._paramBundle = paramBundle;
   
   container.appendChild(this._pageElement);
@@ -77,6 +83,10 @@ AbstractPage.prototype.hideAnimated = function(completionObserver) {
 
 AbstractPage.prototype.isShown = function() {
   return this._pageElement.parentElement != null;
+}
+
+AbstractPage.prototype.getParamBundle = function() {
+  return this._paramBundle;
 }
 
 AbstractPage.prototype.definePageContent = function(root) {
