@@ -27,7 +27,7 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
         incoming: true,
         returnPageId: AllIncomingRequestsPage.name,
         requestId: requestId,
-        otherRequestIds: null
+        otherRequestIds: ""
       }
 
       Application.showMenuPage(RequestDetailsPage.name, paramBundle);
