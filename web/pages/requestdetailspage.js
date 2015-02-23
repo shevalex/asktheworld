@@ -25,7 +25,7 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
     
     Application.showMenuPage(RequestDetailsPage.name, {
       requestId: this._getPreviousRequestId(),
-      returnPageId: this._navigatableRequestIds,
+      returnPageId: this._returnPageId,
       otherRequestIds: this._navigatableRequestIds.join(","),
       incoming: this._isIncomingList
     });
@@ -45,7 +45,7 @@ RequestDetailsPage.prototype.definePageContent = function(root) {
     
     Application.showMenuPage(RequestDetailsPage.name, {
       requestId: this._getNextRequestId(),
-      returnPageId: this._navigatableRequestIds,
+      returnPageId: this._returnPageId,
       otherRequestIds: this._navigatableRequestIds.join(","),
       incoming: this._isIncomingList
     });

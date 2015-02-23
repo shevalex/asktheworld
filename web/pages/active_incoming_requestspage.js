@@ -27,9 +27,18 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
       var paramBundle = {
         incoming: true,
         returnPageId: ActiveIncomingRequestsPage.name,
-        requestId: requestId,
-        otherRequestIds: Backend.getIncomingRequestIds(Backend.Request.STATUS_ACTIVE).join(",")
+        requestId: requestId
       }
+      
+      var activeRequestIds = Backend.getIncomingRequestIds(Backend.Request.STATUS_ACTIVE);
+      var activeNoResponseRequestIds = [];
+      for (var index in activeRequestIds) {
+        var responses = Backend.getOutgoingResponseIds(activeRequestIds[index]);
+        if (responses != null && responses.length == 0) {
+          activeNoResponseRequestIds.push(activeRequestIds[index]);
+        }
+      }
+      paramBundle.otherRequestIds = activeNoResponseRequestIds.join(",");
 
       Application.showMenuPage(RequestDetailsPage.name, paramBundle);
     },
