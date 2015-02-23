@@ -75,6 +75,7 @@ MenuPage.prototype.getPage = function(pageId) {
   var page = this._pages[pageId];
   if (page == null) {
     if (window[pageId] == null) {
+      console.error("requested unsupported page: " + pageId);
       return null;
     }
     
