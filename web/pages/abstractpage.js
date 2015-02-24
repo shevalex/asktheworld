@@ -23,11 +23,18 @@ AbstractPage.prototype.destroy = function() {
 AbstractPage.prototype.reload = function() {
   this._isDefined = false;
   
-  if (this.isShown()) {
-    var parent = this._pageElement.parentElement;
-    var paramBundle = this._paramBundle;
+  var isShown = this.isShown();
+
+  var parent = this._pageElement.parentElement;
+  var paramBundle = this._paramBundle;
+  
+  if (isShown) {
     this.hide();
-    this._pageElement.innerHTML = "";
+  }
+  
+  this._pageElement.innerHTML = "";
+  
+  if (isShown) {
     this.show(parent, paramBundle);
   }
 }

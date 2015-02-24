@@ -412,6 +412,10 @@ Application._deserialize = function(ser) {
 
 Application._setupLanguageChooser = function() {
   $("#Title-Language-Text").click(function() {
+    if ($(".language-selection-popup").length > 0) {
+      return;
+    }
+    
     var popup = UIUtils.appendBlock($("#Title-Language").get(0), "Title-Language-Popup");
     UIUtils.addClass(popup, "language-selection-popup");
     
