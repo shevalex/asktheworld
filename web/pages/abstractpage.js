@@ -96,6 +96,10 @@ AbstractPage.prototype.getParamBundle = function() {
   return this._paramBundle;
 }
 
+AbstractPage.prototype.getPageId = function() {
+  return this._pageId;
+}
+
 AbstractPage.prototype.definePageContent = function(root) {
 }
 

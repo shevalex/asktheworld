@@ -1,13 +1,17 @@
 MenuPage = ClassUtils.defineClass(AbstractPage, function MenuPage() {
   AbstractPage.call(this, MenuPage.name);
   
-  this._contentPanel = null;
-  this._selectedMenuItemId = null;
-  this._activePage = null;
+  this._contentPanel;
+  this._selectedMenuItemId;
+  this._activePage;
+  
+  this._lastShownPageBundle;
+  this._lastShownPageId;
+  
 
   this._pages = [];
   
-  this._menuPanel = null;
+  this._menuPanel;
 });
 
 
@@ -22,9 +26,15 @@ MenuPage.prototype.definePageContent = function(root) {
 }
 
 MenuPage.prototype.onShow = function(root) {
+  if (this._lastShownPageId != null) {
+    this.showChildPage(this._lastShownPageId, this._lastShownPageBundle);
+  }
 }
 
 MenuPage.prototype.onHide = function() {
+  this._lastShownPageId = this._activePage.getPageId();
+  this._lastShownPageBundle = this._activePage.getParamBundle();
+
   this._selectedMenuItemId = null;
   this._activePage = null;
   
@@ -40,17 +50,18 @@ MenuPage.prototype.onDestroy = function() {
 
 
 
+
 MenuPage.prototype.showChildPage = function(pageId, paramBundle, observer) {
   var newPage = this.getPage(pageId);
   if (newPage == null) {
     console.error("No page for id " + pageId);
     return;
   }
-  
+
   if (this._activePage == newPage && Application.isEqualBundle(this._activePage.getParamBundle(), paramBundle)) {
     return;
   }
-  
+
   var menuItemId = UIUtils.createId(this._menuPanel, pageId);
   var pageIsMenuItem = UIUtils.get$(menuItemId).length > 0;
   if (pageIsMenuItem) {
