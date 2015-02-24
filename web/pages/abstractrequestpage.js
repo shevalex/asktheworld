@@ -1011,7 +1011,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype.__appen
     if (responseText != "") {
       this._requestList.__updateStarted();
       
-      Backend.createResponse(this._requestId, {text: responseText, attachments: textEditor.getAttachments()}, {
+      Backend.createResponse(this._requestId, {text: responseText, contact_info_status: Backend.UserPreferences.contactVisible ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE, attachments: textEditor.getAttachments()}, {
         success: function(responseId) {
           UIUtils.get$(createResponsePanel).remove();
           this._requestList.__updateFinished();

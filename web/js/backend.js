@@ -529,7 +529,7 @@ Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
   setTimeout(function() {
     var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
     
-    var contactIndex = Math.round(Math.random() * contacts.length);
+    var contactIndex = Math.round(Math.random() * (contacts.length - 1));
     
     var contactInfo = contacts[contactIndex];
     
