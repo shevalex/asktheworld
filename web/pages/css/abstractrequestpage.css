@@ -22,6 +22,7 @@
 }
 
 .outgoingrequest-info, .incomingrequest-info, .incomingresponse-info, .outgoingresponse-info {
+  position: relative;
   padding: 5px;
   
   border-radius: 3px;
@@ -64,16 +65,15 @@
   overflow: hidden;
   word-wrap: break-word;
 }
-.incomingresponse-message-full {
-  display: inline-block;
-  width: calc(100% - 20px);
-}
 .incomingresponse-x {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  
   display: none;
   
   width: 20px;
   height: 20px;
-  float: right;
 
   background-image: url(../../imgs/close.png);
   background-color: transparent;
@@ -91,6 +91,39 @@
 }
 .incomingresponse-x:active {
   background-color: rgb(225, 60, 50);
+}
+
+.incomingresponse-requestcontact {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  
+  display: none;
+  
+  width: 20px;
+  height: 20px;
+
+  background-image: url(../../imgs/close.png);
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  
+  border-width: 1;
+  border-style: solid;
+  border-color: rgb(100, 100, 100);
+  border-radius: 5px;
+}
+.incomingresponse-info:hover .incomingresponse-requestcontact {
+  display: inline-block;
+}
+.incomingresponse-requestcontact:hover {
+  border-color: black;
+  background-color: rgba(200, 200, 200, 0.8);
+}
+.incomingresponse-requestcontact:active {
+  border-color: black;
+  background-color: rgba(200, 100, 100, 0.8);
 }
 
 

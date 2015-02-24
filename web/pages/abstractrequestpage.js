@@ -455,9 +455,6 @@ AbstractRequestPage._AbstractRequestList.prototype.__responseDeleted = function(
   }
 }
 
-AbstractRequestPage._AbstractRequestList.__setResponseStatus = function(requestId, responseId, status, completionCallback) {
-  this.__updateResponse(requestId, responseId, {status: Backend.Response.STATUS_READ}, completionCallback);
-}
 
 AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel = function(root, attachments) {
   if (attachments == null || attachments.length == 0) {
@@ -1099,13 +1096,59 @@ AbstractRequestPage._AbstractRequestList._IncomingResponsePanel.prototype._appen
       
       return false;
     }.bind(this));
+    
+    if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE) {
+      var requestContactInfoElement = UIUtils.appendBlock(responseInfoElement, "RequestContact");
+      UIUtils.addClass(requestContactInfoElement, "incomingresponse-requestcontact");
+      UIUtils.setClickListener(requestContactInfoElement, function(event) {
+        var callback = {
+          success: function() {
+            Backend.updateResponse(this._requestId, this._responseId, {contact_info_status: Backend.Response.CONTACT_INFO_STATUS_PROVIDED}, {
+              success: function() {
+                this._requestList.__updateFinished();
+              }.bind(this),
+              failure: function() {
+                this._requestList.__updateFailed();
+              }.bind(this),
+              error: function() {
+                this._requestList.__updateFailed();
+              }.bind(this)
+            });
+          }.bind(this),
+          failure: function() {
+            this._requestList.__updateFailed();
+          }.bind(this),
+          error: function() {
+            this._requestList.__updateFailed();
+          }.bind(this)
+        }
+        
+        this._requestList.__updateStarted();
+        Backend.getContactInfo(this._requestId, this._responseId, callback);
+
+        return false;
+      }.bind(this));
+    }
   } else {
     UIUtils.addClass(responseTextElement, "incomingresponse-message-short");
     text = UIUtils.getOneLine(response.text);
   }
   
+  
   var responseDate = new Date(response.time);
   UIUtils.get$(responseTextElement).html("<b>A " + Application.Configuration.toUserIdentityString(response.age_category, response.gender) + " responded on " + responseDate.toDateString() + ", " + responseDate.toLocaleTimeString() + ":</b><br>" + text);
+  
+  if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_PROVIDED) {
+    var callback = {
+      success: function(contactInfo) {
+        UIUtils.get$(responseTextElement).html(UIUtils.get$(responseTextElement).html() + "<hr>" + contactInfo.contact_name + ", " + contactInfo.contact_info);
+      }
+    }
+    
+    var contactInfo = Backend.getContactInfo(this._requestId, this._responseId, callback);
+  }
+  
+  
   
   AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(responseInfoElement, response.attachments);
 }

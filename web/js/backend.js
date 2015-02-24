@@ -1,6 +1,8 @@
 var Backend = {
   _cache: {},
-  _cacheChangeListeners: []
+  _cacheChangeListeners: [],
+  
+  _contactInfo: {}
 };
 
 Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
@@ -261,6 +263,7 @@ Backend._pullUserSettings = function(callback) {
 
 
 
+
 // REQUEST (and Response) management
 
 Backend.Request = {};
@@ -270,6 +273,9 @@ Backend.Request.STATUS_INACTIVE = "inactive";
 Backend.Response = {};
 Backend.Response.STATUS_UNREAD = "unread";
 Backend.Response.STATUS_READ = "read";
+Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE = "no";
+Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE = "can_provide";
+Backend.Response.CONTACT_INFO_STATUS_PROVIDED = "provided";
 
 
 
@@ -513,6 +519,27 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
   }.bind(this), 1000);
 }
+
+Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
+  if (this._contactInfo[responseId] != null) {
+    transactionCallback.success(this._contactInfo[responseId]);
+    return this._contactInfo[responseId];
+  }
+  
+  setTimeout(function() {
+    var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
+    
+    var contactIndex = Math.round(Math.random() * contacts.length);
+    
+    var contactInfo = contacts[contactIndex];
+    
+    this._contactInfo[responseId] = contactInfo;
+    transactionCallback.success(contactInfo);
+  }.bind(this), 2000);
+  
+  return null;
+}
+
 
 
 Backend.getIncomingResponseIds = function(requestId, responseStatus) {
@@ -828,6 +855,7 @@ Backend._createDummyRequest = function(requestId) {
 Backend._createDummyResponse = function(requestId, responseId) {
   var age = Math.round(Math.random() * 4);
   var gender = Math.round(Math.random());
+  var contactStatus = Math.round(Math.random() * 2);
   var statusUnread = false;
   
   var responses = null;
@@ -843,6 +871,14 @@ Backend._createDummyResponse = function(requestId, responseId) {
     }
   }
   
+  if (contactStatus == 0) {
+    contactInfoStatus = Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE;
+  } else if (contactStatus == 1) {
+    contactInfoStatus = Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE;
+  } else if (contactStatus == 2) {
+    contactInfoStatus = Backend.Response.CONTACT_INFO_STATUS_PROVIDED;
+  }
+  
   var response = {
     time: Date.now(),
     text: "This is the response " + responseId + " to the request " + requestId,
@@ -850,7 +886,8 @@ Backend._createDummyResponse = function(requestId, responseId) {
     audios: [],
     age_category: Application.Configuration.AGE_CATEGORIES[age].data,
     gender: Application.Configuration.GENDERS[gender].data,
-    status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ
+    status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ,
+    contact_info_status: contactInfoStatus
   }
 
   return response;
