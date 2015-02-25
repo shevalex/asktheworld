@@ -1,0 +1,422 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE571A9E2882006E7698 /* AppDelegate.swift */; };
+		F745FE5A1A9E2882006E7698 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE591A9E2882006E7698 /* ViewController.swift */; };
+		F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F745FE5B1A9E2882006E7698 /* Main.storyboard */; };
+		F745FE5F1A9E2882006E7698 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F745FE5E1A9E2882006E7698 /* Images.xcassets */; };
+		F745FE621A9E2882006E7698 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F745FE601A9E2882006E7698 /* LaunchScreen.xib */; };
+		F745FE6E1A9E2882006E7698 /* AWTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE6D1A9E2882006E7698 /* AWTTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F745FE681A9E2882006E7698 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F745FE4A1A9E2882006E7698 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F745FE511A9E2882006E7698;
+			remoteInfo = AWT;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F745FE521A9E2882006E7698 /* AWT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AWT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F745FE561A9E2882006E7698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F745FE571A9E2882006E7698 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F745FE591A9E2882006E7698 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F745FE5C1A9E2882006E7698 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F745FE5E1A9E2882006E7698 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		F745FE611A9E2882006E7698 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		F745FE671A9E2882006E7698 /* AWTTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWTTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F745FE6C1A9E2882006E7698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F745FE6D1A9E2882006E7698 /* AWTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWTTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F745FE4F1A9E2882006E7698 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F745FE641A9E2882006E7698 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F745FE491A9E2882006E7698 = {
+			isa = PBXGroup;
+			children = (
+				F745FE541A9E2882006E7698 /* AWT */,
+				F745FE6A1A9E2882006E7698 /* AWTTests */,
+				F745FE531A9E2882006E7698 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F745FE531A9E2882006E7698 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F745FE521A9E2882006E7698 /* AWT.app */,
+				F745FE671A9E2882006E7698 /* AWTTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F745FE541A9E2882006E7698 /* AWT */ = {
+			isa = PBXGroup;
+			children = (
+				F745FE571A9E2882006E7698 /* AppDelegate.swift */,
+				F745FE591A9E2882006E7698 /* ViewController.swift */,
+				F745FE5B1A9E2882006E7698 /* Main.storyboard */,
+				F745FE5E1A9E2882006E7698 /* Images.xcassets */,
+				F745FE601A9E2882006E7698 /* LaunchScreen.xib */,
+				F745FE551A9E2882006E7698 /* Supporting Files */,
+			);
+			path = AWT;
+			sourceTree = "<group>";
+		};
+		F745FE551A9E2882006E7698 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F745FE561A9E2882006E7698 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F745FE6A1A9E2882006E7698 /* AWTTests */ = {
+			isa = PBXGroup;
+			children = (
+				F745FE6D1A9E2882006E7698 /* AWTTests.swift */,
+				F745FE6B1A9E2882006E7698 /* Supporting Files */,
+			);
+			path = AWTTests;
+			sourceTree = "<group>";
+		};
+		F745FE6B1A9E2882006E7698 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F745FE6C1A9E2882006E7698 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F745FE511A9E2882006E7698 /* AWT */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F745FE711A9E2882006E7698 /* Build configuration list for PBXNativeTarget "AWT" */;
+			buildPhases = (
+				F745FE4E1A9E2882006E7698 /* Sources */,
+				F745FE4F1A9E2882006E7698 /* Frameworks */,
+				F745FE501A9E2882006E7698 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AWT;
+			productName = AWT;
+			productReference = F745FE521A9E2882006E7698 /* AWT.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F745FE661A9E2882006E7698 /* AWTTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F745FE741A9E2882006E7698 /* Build configuration list for PBXNativeTarget "AWTTests" */;
+			buildPhases = (
+				F745FE631A9E2882006E7698 /* Sources */,
+				F745FE641A9E2882006E7698 /* Frameworks */,
+				F745FE651A9E2882006E7698 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F745FE691A9E2882006E7698 /* PBXTargetDependency */,
+			);
+			name = AWTTests;
+			productName = AWTTests;
+			productReference = F745FE671A9E2882006E7698 /* AWTTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F745FE4A1A9E2882006E7698 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "PiSoft Corporation";
+				TargetAttributes = {
+					F745FE511A9E2882006E7698 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+					F745FE661A9E2882006E7698 = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = F745FE511A9E2882006E7698;
+					};
+				};
+			};
+			buildConfigurationList = F745FE4D1A9E2882006E7698 /* Build configuration list for PBXProject "AWT" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F745FE491A9E2882006E7698;
+			productRefGroup = F745FE531A9E2882006E7698 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F745FE511A9E2882006E7698 /* AWT */,
+				F745FE661A9E2882006E7698 /* AWTTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F745FE501A9E2882006E7698 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */,
+				F745FE621A9E2882006E7698 /* LaunchScreen.xib in Resources */,
+				F745FE5F1A9E2882006E7698 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F745FE651A9E2882006E7698 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F745FE4E1A9E2882006E7698 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F745FE5A1A9E2882006E7698 /* ViewController.swift in Sources */,
+				F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F745FE631A9E2882006E7698 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F745FE6E1A9E2882006E7698 /* AWTTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F745FE691A9E2882006E7698 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F745FE511A9E2882006E7698 /* AWT */;
+			targetProxy = F745FE681A9E2882006E7698 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F745FE5B1A9E2882006E7698 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F745FE5C1A9E2882006E7698 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		F745FE601A9E2882006E7698 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F745FE611A9E2882006E7698 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F745FE6F1A9E2882006E7698 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F745FE701A9E2882006E7698 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F745FE721A9E2882006E7698 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = AWT/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F745FE731A9E2882006E7698 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = AWT/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		F745FE751A9E2882006E7698 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = AWTTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AWT.app/AWT";
+			};
+			name = Debug;
+		};
+		F745FE761A9E2882006E7698 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = AWTTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AWT.app/AWT";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F745FE4D1A9E2882006E7698 /* Build configuration list for PBXProject "AWT" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F745FE6F1A9E2882006E7698 /* Debug */,
+				F745FE701A9E2882006E7698 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F745FE711A9E2882006E7698 /* Build configuration list for PBXNativeTarget "AWT" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F745FE721A9E2882006E7698 /* Debug */,
+				F745FE731A9E2882006E7698 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		F745FE741A9E2882006E7698 /* Build configuration list for PBXNativeTarget "AWTTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F745FE751A9E2882006E7698 /* Debug */,
+				F745FE761A9E2882006E7698 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F745FE4A1A9E2882006E7698 /* Project object */;
+}
