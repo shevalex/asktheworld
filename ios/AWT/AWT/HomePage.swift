@@ -8,10 +8,11 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class HomePage: UIViewController {
 
-    override func viewDidLoad() {
+       override func viewDidLoad() {
         super.viewDidLoad()
+        //self.scrollView.contentSize.height = 3000
         // Do any additional setup after loading the view, typically from a nib.
     }
 

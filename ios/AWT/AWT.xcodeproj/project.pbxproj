@@ -8,11 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE571A9E2882006E7698 /* AppDelegate.swift */; };
-		F745FE5A1A9E2882006E7698 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE591A9E2882006E7698 /* ViewController.swift */; };
+		F745FE5A1A9E2882006E7698 /* HomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE591A9E2882006E7698 /* HomePage.swift */; };
 		F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F745FE5B1A9E2882006E7698 /* Main.storyboard */; };
 		F745FE5F1A9E2882006E7698 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F745FE5E1A9E2882006E7698 /* Images.xcassets */; };
 		F745FE621A9E2882006E7698 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F745FE601A9E2882006E7698 /* LaunchScreen.xib */; };
 		F745FE6E1A9E2882006E7698 /* AWTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE6D1A9E2882006E7698 /* AWTTests.swift */; };
+		F750F3341A9E6A3700D929E2 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750F3331A9E6A3700D929E2 /* LoginPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,13 +30,14 @@
 		F745FE521A9E2882006E7698 /* AWT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AWT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F745FE561A9E2882006E7698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F745FE571A9E2882006E7698 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F745FE591A9E2882006E7698 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F745FE591A9E2882006E7698 /* HomePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePage.swift; sourceTree = "<group>"; };
 		F745FE5C1A9E2882006E7698 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F745FE5E1A9E2882006E7698 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F745FE611A9E2882006E7698 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		F745FE671A9E2882006E7698 /* AWTTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWTTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F745FE6C1A9E2882006E7698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F745FE6D1A9E2882006E7698 /* AWTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWTTests.swift; sourceTree = "<group>"; };
+		F750F3331A9E6A3700D929E2 /* LoginPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,8 +80,9 @@
 			isa = PBXGroup;
 			children = (
 				F745FE571A9E2882006E7698 /* AppDelegate.swift */,
-				F745FE591A9E2882006E7698 /* ViewController.swift */,
+				F745FE591A9E2882006E7698 /* HomePage.swift */,
 				F745FE5B1A9E2882006E7698 /* Main.storyboard */,
+				F750F3331A9E6A3700D929E2 /* LoginPage.swift */,
 				F745FE5E1A9E2882006E7698 /* Images.xcassets */,
 				F745FE601A9E2882006E7698 /* LaunchScreen.xib */,
 				F745FE551A9E2882006E7698 /* Supporting Files */,
@@ -212,8 +215,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F745FE5A1A9E2882006E7698 /* ViewController.swift in Sources */,
+				F745FE5A1A9E2882006E7698 /* HomePage.swift in Sources */,
 				F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */,
+				F750F3341A9E6A3700D929E2 /* LoginPage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,6 +411,7 @@
 				F745FE731A9E2882006E7698 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		F745FE741A9E2882006E7698 /* Build configuration list for PBXNativeTarget "AWTTests" */ = {
 			isa = XCConfigurationList;
@@ -415,6 +420,7 @@
 				F745FE761A9E2882006E7698 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
