@@ -218,6 +218,9 @@
                         </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="emailTextField" destination="RU5-zt-IO0" id="kif-6n-Onm"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zjc-Gg-Tku" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

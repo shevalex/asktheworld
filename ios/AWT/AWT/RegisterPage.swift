@@ -10,6 +10,8 @@ import UIKit
 
 class RegisterPage: UIViewController {
 
+@IBOutlet weak var emailTextField: UITextField!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
