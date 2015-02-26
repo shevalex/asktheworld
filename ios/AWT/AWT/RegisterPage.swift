@@ -9,8 +9,14 @@
 import UIKit
 
 class RegisterPage: UIViewController {
+    @IBOutlet weak var languagesTextField: UITextField!
+    @IBOutlet weak var genderTextField: UITextField!
+    @IBOutlet weak var ageTextField: UITextField!
+    @IBOutlet weak var confirmPasswordTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var nicknameTextField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField!
 
-@IBOutlet weak var emailTextField: UITextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
