@@ -37,12 +37,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jAB-zi-Sky">
-                                <rect key="frame" x="66" y="84" width="188" height="30"/>
+                                <rect key="frame" x="50" y="84" width="220" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HEV-ac-Wlv">
-                                <rect key="frame" x="66" y="122" width="188" height="30"/>
+                                <rect key="frame" x="50" y="122" width="220" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
@@ -85,7 +85,7 @@
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="jAB-zi-Sky" secondAttribute="centerX" id="Fve-Tk-cCk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="wIY-ek-M5Q" secondAttribute="trailing" constant="-16" id="IOS-k5-l1b"/>
-                            <constraint firstItem="jAB-zi-Sky" firstAttribute="leading" secondItem="cMC-xO-UA9" secondAttribute="leadingMargin" constant="50" id="JMd-RX-cx7"/>
+                            <constraint firstItem="jAB-zi-Sky" firstAttribute="leading" secondItem="cMC-xO-UA9" secondAttribute="leadingMargin" constant="34" id="JMd-RX-cx7"/>
                             <constraint firstItem="HEV-ac-Wlv" firstAttribute="leading" secondItem="jAB-zi-Sky" secondAttribute="leading" id="KrJ-E8-EC2"/>
                             <constraint firstItem="WcZ-Dt-x82" firstAttribute="top" secondItem="HEV-ac-Wlv" secondAttribute="bottom" constant="15" id="PaH-YZ-kiZ"/>
                             <constraint firstAttribute="centerX" secondItem="WcZ-Dt-x82" secondAttribute="centerX" id="VNA-Us-bc8"/>
