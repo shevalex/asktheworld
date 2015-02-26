@@ -237,24 +237,12 @@
                         <constraints>
                             <constraint firstItem="8Sv-AE-ead" firstAttribute="leading" secondItem="aPT-gD-IWy" secondAttribute="leading" id="4cq-yM-s8L"/>
                             <constraint firstItem="1PH-E2-WBG" firstAttribute="bottom" secondItem="c20-ic-cdQ" secondAttribute="top" id="7xp-S9-sy0"/>
-                            <constraint firstItem="8Sv-AE-ead" firstAttribute="trailing" secondItem="1PH-E2-WBG" secondAttribute="trailing" id="Amx-qM-aRk"/>
                             <constraint firstItem="8Sv-AE-ead" firstAttribute="top" secondItem="gmB-6u-BQ0" secondAttribute="bottom" id="OSd-cq-0gG"/>
                             <constraint firstItem="8Sv-AE-ead" firstAttribute="leading" secondItem="1PH-E2-WBG" secondAttribute="leading" id="OxQ-2O-hpm"/>
                             <constraint firstItem="8Sv-AE-ead" firstAttribute="bottom" secondItem="1PH-E2-WBG" secondAttribute="top" id="T2U-yz-Sfp"/>
                             <constraint firstAttribute="trailing" secondItem="8Sv-AE-ead" secondAttribute="trailing" id="aDQ-h0-tvu"/>
-                            <constraint firstAttribute="trailing" secondItem="1PH-E2-WBG" secondAttribute="trailing" id="b24-f0-4vU"/>
                             <constraint firstItem="8Sv-AE-ead" firstAttribute="trailing" secondItem="1PH-E2-WBG" secondAttribute="trailing" id="gSN-mh-1zn"/>
-                            <constraint firstItem="1PH-E2-WBG" firstAttribute="leading" secondItem="8Sv-AE-ead" secondAttribute="leading" id="i8i-3f-eBz"/>
-                            <constraint firstItem="1PH-E2-WBG" firstAttribute="leading" secondItem="aPT-gD-IWy" secondAttribute="leading" id="kYv-29-Akd"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="Amx-qM-aRk"/>
-                                <exclude reference="b24-f0-4vU"/>
-                                <exclude reference="i8i-3f-eBz"/>
-                                <exclude reference="kYv-29-Akd"/>
-                            </mask>
-                        </variation>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
