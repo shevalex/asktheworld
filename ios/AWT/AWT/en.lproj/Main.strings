@@ -1,0 +1,45 @@
+
+/* Class = "IBUIButton"; normalTitle = "Register"; ObjectID = "3Tk-gc-46c"; */
+"3Tk-gc-46c.normalTitle" = "Register";
+
+/* Class = "IBUITextField"; placeholder = "Languages"; ObjectID = "40P-K4-Pt8"; */
+"40P-K4-Pt8.placeholder" = "Languages";
+
+/* Class = "IBUITextField"; placeholder = "Nickname"; ObjectID = "Ef8-S5-GoV"; */
+"Ef8-S5-GoV.placeholder" = "Nickname";
+
+/* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "Fox-8B-Ka5"; */
+"Fox-8B-Ka5.placeholder" = "Password";
+
+/* Class = "IBUITextField"; placeholder = "Password"; ObjectID = "HEV-ac-Wlv"; */
+"HEV-ac-Wlv.placeholder" = "Password";
+
+/* Class = "IBUIBarButtonItem"; title = "Information"; ObjectID = "NVH-BA-jzO"; */
+"NVH-BA-jzO.title" = "Information";
+
+/* Class = "IBUITextField"; placeholder = "Email"; ObjectID = "RU5-zt-IO0"; */
+"RU5-zt-IO0.placeholder" = "Email";
+
+/* Class = "IBUITextField"; placeholder = "Age"; ObjectID = "SvH-aH-SXX"; */
+"SvH-aH-SXX.placeholder" = "Age";
+
+/* Class = "IBUIButton"; normalTitle = "Register"; ObjectID = "VgI-Qf-Kt8"; */
+"VgI-Qf-Kt8.normalTitle" = "Register";
+
+/* Class = "IBUIButton"; normalTitle = "Login"; ObjectID = "WcZ-Dt-x82"; */
+"WcZ-Dt-x82.normalTitle" = "Login";
+
+/* Class = "IBUITextField"; placeholder = "Confirm Password"; ObjectID = "Zwy-d8-4hY"; */
+"Zwy-d8-4hY.placeholder" = "Confirm Password";
+
+/* Class = "IBUIButton"; normalTitle = "Forgot Password"; ObjectID = "b6R-Hp-ZBJ"; */
+"b6R-Hp-ZBJ.normalTitle" = "Forgot Password";
+
+/* Class = "IBUITextField"; placeholder = "Email"; ObjectID = "jAB-zi-Sky"; */
+"jAB-zi-Sky.placeholder" = "Email";
+
+/* Class = "IBUIBarButtonItem"; title = "Information"; ObjectID = "tz8-QY-qtL"; */
+"tz8-QY-qtL.title" = "Information";
+
+/* Class = "IBUITextField"; placeholder = "Gender"; ObjectID = "viG-Fu-Fmp"; */
+"viG-Fu-Fmp.placeholder" = "Gender";
