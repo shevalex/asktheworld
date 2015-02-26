@@ -16,7 +16,23 @@ class RegisterPage: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
+    
+    func displayPopup(popupTitle:String, popupError:String) {
+        var popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
+        popup.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in }))
+        self.presentViewController(popup, animated: true, completion: nil)
+    }
 
+
+    @IBAction func registerButtonAction(sender: UIButton) {
+        var emailText = emailTextField.text
+        
+        if (emailText == "") {
+            println("Gopa")
+            displayPopup("Big gopa", popupError: "Gopa")
+        }
+
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

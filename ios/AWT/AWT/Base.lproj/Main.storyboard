@@ -172,6 +172,9 @@
                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="registerButtonAction:" destination="PqC-Vm-GPP" eventType="touchUpInside" id="IDb-61-HHi"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -221,10 +224,9 @@
                     <connections>
                         <outlet property="ageTextField" destination="SvH-aH-SXX" id="ds0-9A-8N5"/>
                         <outlet property="confirmPasswordTextField" destination="Zwy-d8-4hY" id="26h-V0-xV4"/>
-                        <outlet property="emailTextField" destination="RU5-zt-IO0" id="kif-6n-Onm"/>
+                        <outlet property="emailTextField" destination="RU5-zt-IO0" id="CNN-Hw-A2g"/>
                         <outlet property="genderTextField" destination="viG-Fu-Fmp" id="d1e-t1-GOs"/>
                         <outlet property="languagesTextField" destination="40P-K4-Pt8" id="8b8-JX-j1F"/>
-                        <outlet property="nicknameField" destination="Ef8-S5-GoV" id="uY1-KM-nTO"/>
                         <outlet property="nicknameTextField" destination="Ef8-S5-GoV" id="dEA-Yg-h9W"/>
                         <outlet property="passwordTextField" destination="Fox-8B-Ka5" id="2co-Kr-Hd5"/>
                     </connections>
