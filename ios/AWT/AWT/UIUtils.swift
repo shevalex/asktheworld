@@ -10,14 +10,13 @@ import Foundation
 import UIKit
 
 struct AwtUiUtils {
-    static let localizationBundles: NSDictionary!
+    static let localizationBundles: NSMutableDictionary! = NSMutableDictionary();
     
     static func loadLocalizationBundle(bundleName: String) -> NSDictionary! {
         var bundleData: AnyObject? = localizationBundles.valueForKey(bundleName);
         if (bundleData == nil) {
             let bundlePath = NSBundle.mainBundle().pathForResource(bundleName, ofType: "strings")!;
             bundleData = NSDictionary(contentsOfFile: bundlePath);
-            
             localizationBundles.setValue(bundleData, forKey: bundleName);
         }
         
@@ -43,7 +42,7 @@ struct AwtUiUtils {
     
     static func showPopup(anchor: UIViewController, popupTitle: String, popupError: String, okCallback: (() -> Void)? = nil) {
         var popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
-        popup.addAction(UIAlertAction(title: getUIUtilsLocalizedString("OK_BUTTON"), style: .Default, handler: { action in }))
+        popup.addAction(UIAlertAction(title: AwtUiUtils.getUIUtilsLocalizedString("OK_BUTTON"), style: .Default, handler: { action in }))
         anchor.presentViewController(popup, animated: true, completion: okCallback)
     }
 }
