@@ -23,7 +23,7 @@ struct AwtUiUtils {
         return bundleData as NSDictionary;
     }
     
-    static func getLocalizedString(bundleName: String, keyName: String) -> String {
+    static func getBundleLocalizedString(bundleName: String, keyName: String) -> String {
         let value: AnyObject? = loadLocalizationBundle(bundleName).valueForKey(keyName);
         if (value != nil) {
             return value as String;
@@ -32,8 +32,8 @@ struct AwtUiUtils {
         }
     }
     
-    static func getUIUtilsLocalizedString(keyName: String) -> String {
-        return getLocalizedString("uiutils", keyName: keyName);
+    static func getLocalizedString(keyName: String) -> String {
+        return getBundleLocalizedString("uiutils", keyName: keyName);
     }
     
     
@@ -42,7 +42,17 @@ struct AwtUiUtils {
     
     static func showPopup(anchor: UIViewController, popupTitle: String, popupError: String, okCallback: (() -> Void)? = nil) {
         var popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
-        popup.addAction(UIAlertAction(title: AwtUiUtils.getUIUtilsLocalizedString("OK_BUTTON"), style: .Default, handler: { action in }))
+        popup.addAction(UIAlertAction(title: AwtUiUtils.getLocalizedString("OK_BUTTON"), style: .Default, handler: { action in }))
         anchor.presentViewController(popup, animated: true, completion: okCallback)
+    }
+    
+    static func isEmailValid(email: String) -> Bool! {
+        //TODO: implement
+        return true;
+    }
+    
+    static func isPasswordValid(password: String!) -> Bool! {
+        //TODO: implement
+        return countElements(password) >= 5;
     }
 }

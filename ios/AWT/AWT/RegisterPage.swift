@@ -22,7 +22,9 @@ class RegisterPage: UIViewController {
         var emailText = emailTextField.text
         
         if (emailText == "") {
-            showPopup("Email must be provided");
+            showErrorMessage("EMAIL_NOT_PROVIDED");
+        } else if (!AwtUiUtils.isEmailValid(emailText)) {
+            showErrorMessage("EMAIL_NOT_VALID");
         }
     }
 
@@ -48,8 +50,8 @@ class RegisterPage: UIViewController {
     }
     */
 
-    func showPopup(popupError: String) {
-        AwtUiUtils.showPopup(self, popupTitle: "Registration Error", popupError: popupError)
+    func showErrorMessage(popupErrorKey: String) {
+        AwtUiUtils.showPopup(self, popupTitle: AwtUiUtils.getLocalizedString("REGISTRATION_ERROR_TTILE"), popupError: AwtUiUtils.getLocalizedString(popupErrorKey))
     }
     
 
