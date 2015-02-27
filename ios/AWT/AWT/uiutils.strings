@@ -1,0 +1,9 @@
+/* 
+  uiutils.strings
+  AWT
+
+  Created by Anton Avtamonov on 2/26/15.
+  Copyright (c) 2015 PiSoft Corporation. All rights reserved.
+*/
+
+"OK_BUTTON" = "OK";
