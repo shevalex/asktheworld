@@ -17,6 +17,8 @@ class RegisterPage: UIViewController {
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
     
+    var tool = Tools()
+    
     func displayPopup(popupTitle:String, popupError:String) {
         var popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
         popup.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in }))
@@ -29,7 +31,8 @@ class RegisterPage: UIViewController {
         
         if (emailText == "") {
             println("Gopa")
-            displayPopup("Big gopa", popupError: "Gopa")
+            //displayPopup("Big gopa", popupError: "Gopa")
+            tool.displayPopup("Big Popa", popupError: "Popec")
         }
 
     }

@@ -15,6 +15,7 @@
 		F745FE6E1A9E2882006E7698 /* AWTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE6D1A9E2882006E7698 /* AWTTests.swift */; };
 		F750F3341A9E6A3700D929E2 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750F3331A9E6A3700D929E2 /* LoginPage.swift */; };
 		F750F33A1A9E6E3600D929E2 /* RegisterPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750F3391A9E6E3600D929E2 /* RegisterPage.swift */; };
+		F78BC7D01A9FEA65009281EF /* UIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78BC7CF1A9FEA65009281EF /* UIUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		F745FE6D1A9E2882006E7698 /* AWTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWTTests.swift; sourceTree = "<group>"; };
 		F750F3331A9E6A3700D929E2 /* LoginPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		F750F3391A9E6E3600D929E2 /* RegisterPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterPage.swift; sourceTree = "<group>"; };
+		F78BC7CF1A9FEA65009281EF /* UIUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 		F745FE541A9E2882006E7698 /* AWT */ = {
 			isa = PBXGroup;
 			children = (
+				F78BC7CE1A9FEA2C009281EF /* utils */,
 				F745FE571A9E2882006E7698 /* AppDelegate.swift */,
 				F745FE591A9E2882006E7698 /* HomePage.swift */,
 				F745FE5B1A9E2882006E7698 /* Main.storyboard */,
@@ -116,6 +119,14 @@
 				F745FE6C1A9E2882006E7698 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F78BC7CE1A9FEA2C009281EF /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				F78BC7CF1A9FEA65009281EF /* UIUtils.swift */,
+			);
+			name = utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -218,6 +229,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F78BC7D01A9FEA65009281EF /* UIUtils.swift in Sources */,
 				F745FE5A1A9E2882006E7698 /* HomePage.swift in Sources */,
 				F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */,
 				F750F3341A9E6A3700D929E2 /* LoginPage.swift in Sources */,
