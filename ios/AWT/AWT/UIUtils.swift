@@ -9,11 +9,10 @@
 import Foundation
 import UIKit
 
-class Tools: UIViewController
-{
-    func displayPopup(popupTitle:String, popupError:String) {
+struct AwtUiUtils {
+    static func showPopup(anchor: UIViewController, popupTitle: String, popupError: String, okCallback: (() -> Void)? = nil) {
         var popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
-        popup.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in }))
-        //self.presentViewController(popup, animated: true, completion: nil)
+        popup.addAction(UIAlertAction(title: "OK", style: .Default, handler: { action in }))
+        anchor.presentViewController(popup, animated: true, completion: okCallback)
     }
 }

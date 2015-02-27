@@ -17,24 +17,13 @@ class RegisterPage: UIViewController {
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
     
-    var tool = Tools()
-    
-    func displayPopup(popupTitle:String, popupError:String) {
-        var popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
-        popup.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { action in }))
-        self.presentViewController(popup, animated: true, completion: nil)
-    }
-
 
     @IBAction func registerButtonAction(sender: UIButton) {
         var emailText = emailTextField.text
         
         if (emailText == "") {
-            println("Gopa")
-            //displayPopup("Big gopa", popupError: "Gopa")
-            tool.displayPopup("Big Popa", popupError: "Popec")
+            showPopup("Email must be provided");
         }
-
     }
 
     override func viewDidLoad() {
@@ -58,5 +47,10 @@ class RegisterPage: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+
+    func showPopup(popupError: String) {
+        AwtUiUtils.showPopup(self, popupTitle: "Registration Error", popupError: popupError)
+    }
+    
 
 }
