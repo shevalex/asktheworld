@@ -12,6 +12,8 @@ import UIKit
 struct AtwUiUtils {
     static let localizationBundles: NSMutableDictionary! = NSMutableDictionary();
     
+    static var activityIndicator: UIActivityIndicatorView! = nil;
+    
     static func loadLocalizationBundle(bundleName: String) -> NSDictionary! {
         var bundleData: AnyObject? = localizationBundles.valueForKey(bundleName);
         if (bundleData == nil) {
@@ -37,7 +39,25 @@ struct AtwUiUtils {
     }
     
     
-    
+    static func showSpinner(anchor: UIView!) {
+        activityIndicator = UIActivityIndicatorView();
+        
+        activityIndicator.center = anchor.center;
+        activityIndicator.hidesWhenStopped = true;
+        activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray;
+        anchor.addSubview(activityIndicator);
+        
+        UIApplication.sharedApplication().beginIgnoringInteractionEvents();
+        activityIndicator.startAnimating();
+    }
+    static func hideSpinner() {
+        if (activityIndicator != nil) {
+            UIApplication.sharedApplication().endIgnoringInteractionEvents();
+            activityIndicator.stopAnimating();
+            
+            activityIndicator = nil;
+        }
+    }
     
     
     static func showPopup(anchor: UIViewController, popupTitle: String, popupError: String, okCallback: (() -> Void)? = nil) {

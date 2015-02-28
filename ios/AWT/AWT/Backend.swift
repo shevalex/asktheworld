@@ -59,8 +59,6 @@ public struct Backend {
                 Backend.userContext.password = password;
                 
                 self.pullUserSettings(callback);
-                
-//                callback?.onSuccess();
             } else if (statusCode == 401 || statusCode == 404) {
                 callback?.onFailure();
             } else {

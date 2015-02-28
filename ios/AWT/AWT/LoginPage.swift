@@ -28,16 +28,19 @@ class LoginPage: UIViewController, BackendCallback {
     //BackendCallback
     func onError() {
         AtwUiUtils.runOnMainThread({
+            AtwUiUtils.hideSpinner();
             self.showErrorMessage("SERVER_ERROR_MESSSAGE");
         });
     }
     func onSuccess() {
         AtwUiUtils.runOnMainThread({
+            AtwUiUtils.hideSpinner();
             self.performSegueWithIdentifier("showHomeScreen", sender: self);
         });
     }
     func onFailure() {
         AtwUiUtils.runOnMainThread({
+            AtwUiUtils.hideSpinner();
             self.showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
         });
     }
@@ -62,7 +65,7 @@ class LoginPage: UIViewController, BackendCallback {
             return;
         }
 
-        
+        AtwUiUtils.showSpinner(self.view);
         Backend.logIn(emailText, password: passwordText, callback: self);
         
     }
