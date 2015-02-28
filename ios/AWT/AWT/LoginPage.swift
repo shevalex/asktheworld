@@ -33,6 +33,10 @@ class LoginPage: UIViewController, BackendCallback {
     }
     func onSuccess() {
         println("Successflly logged");
+        dispatch_async(dispatch_get_main_queue(), {
+            self.performSegueWithIdentifier("showHomeScreen", sender: self)
+        });
+        
     }
     func onFailure() {
         dispatch_async(dispatch_get_main_queue(), {
@@ -62,6 +66,7 @@ class LoginPage: UIViewController, BackendCallback {
 
         
         Backend.logIn(emailText, password: passwordText, callback: self);
+        
     }
 
     /*

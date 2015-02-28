@@ -12,7 +12,7 @@ class HomePage: UIViewController {
 
        override func viewDidLoad() {
         super.viewDidLoad()
-        //self.scrollView.contentSize.height = 3000
+        self.navigationItem.hidesBackButton = true;
         // Do any additional setup after loading the view, typically from a nib.
     }
 

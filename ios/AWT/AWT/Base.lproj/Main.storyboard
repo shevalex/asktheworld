@@ -22,7 +22,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S7f-J9-QcJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="604" y="310"/>
+            <point key="canvasLocation" x="599" y="310"/>
         </scene>
         <!--Login Page-->
         <scene sceneID="qHI-Or-WUt">
@@ -108,6 +108,7 @@
                     <connections>
                         <outlet property="emailTextField" destination="jAB-zi-Sky" id="jr4-yo-16X"/>
                         <outlet property="passwordTextField" destination="HEV-ac-Wlv" id="RUP-q2-XLL"/>
+                        <segue destination="tb2-wo-b3s" kind="show" identifier="showHomeScreen" id="c75-sv-RRF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U1T-2w-s9I" userLabel="First Responder" sceneMemberID="firstResponder"/>
