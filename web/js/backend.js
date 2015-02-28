@@ -74,14 +74,13 @@ Backend.pullUserProfile = function(callback) {
   if (Backend.UserProfile.userId == null) {
     throw "Must login or register first";
   }
-  
+
   var communicationCallback = {
     success: function(data, status, xhr) {
       Backend.UserProfile.languages = data.languages;
       Backend.UserProfile.gender = data.gender;
       Backend.UserProfile.name = data.name;
       Backend.UserProfile.age = data.age_category;
-      Backend.UserProfile.languages = data.languages;
 
       callback.success();
     },
