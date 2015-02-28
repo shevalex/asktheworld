@@ -240,6 +240,7 @@
                         <outlet property="languagesTextField" destination="40P-K4-Pt8" id="8b8-JX-j1F"/>
                         <outlet property="nicknameTextField" destination="Ef8-S5-GoV" id="dEA-Yg-h9W"/>
                         <outlet property="passwordTextField" destination="Fox-8B-Ka5" id="2co-Kr-Hd5"/>
+                        <segue destination="tb2-wo-b3s" kind="show" identifier="showHomeScreen" id="008-zD-FCd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zjc-Gg-Tku" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -266,4 +267,7 @@
             <point key="canvasLocation" x="1035" y="310"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="008-zD-FCd"/>
+    </inferredMetricsTieBreakers>
 </document>
