@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginPage: UIViewController {
+class LoginPage: UIViewController, BackendCallback {
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -23,6 +23,19 @@ class LoginPage: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
+    
+    func onError() {
+        showErrorMessage("SERVER_ERROR_MESSSAGE");
+    }
+    func onSuccess() {
+        println("Successflly logged");
+    }
+    func onFailure() {
+        showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
+    }
+    
     
     @IBAction func loginButtonClicked(sender: UIButton) {
         var emailText = emailTextField.text;
@@ -42,22 +55,9 @@ class LoginPage: UIViewController {
             showErrorMessage("PASSWORD_NOT_VALID_MESSAGE");
             return;
         }
+
         
-        
-        struct loginCallback : BackendCallback {
-            func onError() {
-                showErrorMessage("SERVER_ERROR_MESSSAGE");
-            }
-            
-            func onSuccess() {
-                println("Successflly logged");
-            }
-            
-            func onFailure() {
-                showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
-            }
-        }
-        Backend.logIn(emailText, password: passwordText, callback: loginCallback());
+        Backend.logIn(emailText, password: passwordText, callback: self);
     }
 
     /*
