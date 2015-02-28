@@ -188,13 +188,16 @@
                                             <action selector="registerButtonAction:" destination="PqC-Vm-GPP" eventType="touchUpInside" id="IDb-61-HHi"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="By pressing Register button you are agree with" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iSs-IA-42I">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By pressing Register button you are agree with" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iSs-IA-42I">
                                         <rect key="frame" x="50" y="286" width="220" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="8Pi-dL-PlJ"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wdy-Yo-Ovw">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wdy-Yo-Ovw">
                                         <rect key="frame" x="104" y="307" width="113" height="13"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                         <state key="normal" title="Terms and Conditions">
@@ -207,8 +210,11 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="3Tk-gc-46c" secondAttribute="bottom" constant="104" id="0Qt-R0-HcF"/>
+                                    <constraint firstAttribute="centerX" secondItem="iSs-IA-42I" secondAttribute="centerX" id="1ZD-4z-zQq"/>
+                                    <constraint firstItem="iSs-IA-42I" firstAttribute="top" secondItem="Zwy-d8-4hY" secondAttribute="bottom" constant="8" symbolic="YES" id="6jA-U8-Xyk"/>
                                     <constraint firstItem="RU5-zt-IO0" firstAttribute="top" secondItem="8Sv-AE-ead" secondAttribute="top" constant="20" id="78y-Ie-kzA"/>
                                     <constraint firstItem="Fox-8B-Ka5" firstAttribute="leading" secondItem="40P-K4-Pt8" secondAttribute="leading" id="ALH-JG-tzM"/>
+                                    <constraint firstItem="wdy-Yo-Ovw" firstAttribute="top" secondItem="iSs-IA-42I" secondAttribute="bottom" id="DKI-n5-Di9"/>
                                     <constraint firstItem="Fox-8B-Ka5" firstAttribute="top" secondItem="40P-K4-Pt8" secondAttribute="bottom" constant="8" symbolic="YES" id="F26-hL-FpH"/>
                                     <constraint firstItem="SvH-aH-SXX" firstAttribute="leading" secondItem="viG-Fu-Fmp" secondAttribute="leading" id="HRz-6U-jNZ"/>
                                     <constraint firstItem="Ef8-S5-GoV" firstAttribute="trailing" secondItem="viG-Fu-Fmp" secondAttribute="trailing" id="KTR-Sh-Em8"/>
@@ -225,10 +231,13 @@
                                     <constraint firstAttribute="trailing" secondItem="RU5-zt-IO0" secondAttribute="trailing" constant="50" id="h6h-jE-H3B"/>
                                     <constraint firstItem="40P-K4-Pt8" firstAttribute="trailing" secondItem="Fox-8B-Ka5" secondAttribute="trailing" id="hhY-TN-cGZ"/>
                                     <constraint firstItem="40P-K4-Pt8" firstAttribute="top" secondItem="SvH-aH-SXX" secondAttribute="bottom" constant="8" symbolic="YES" id="m7u-oN-jJ8"/>
+                                    <constraint firstItem="iSs-IA-42I" firstAttribute="leading" secondItem="Zwy-d8-4hY" secondAttribute="leading" id="nFh-VO-JY9"/>
+                                    <constraint firstItem="wdy-Yo-Ovw" firstAttribute="centerX" secondItem="iSs-IA-42I" secondAttribute="centerX" id="qjV-qa-LAj"/>
                                     <constraint firstItem="RU5-zt-IO0" firstAttribute="trailing" secondItem="Ef8-S5-GoV" secondAttribute="trailing" id="rDF-k0-k1f"/>
                                     <constraint firstItem="SvH-aH-SXX" firstAttribute="trailing" secondItem="40P-K4-Pt8" secondAttribute="trailing" id="rat-ee-G5A"/>
                                     <constraint firstItem="3Tk-gc-46c" firstAttribute="trailing" secondItem="Zwy-d8-4hY" secondAttribute="trailing" id="tlJ-c4-do8"/>
                                     <constraint firstItem="viG-Fu-Fmp" firstAttribute="top" secondItem="Ef8-S5-GoV" secondAttribute="bottom" constant="8" symbolic="YES" id="uEn-89-d8G"/>
+                                    <constraint firstItem="3Tk-gc-46c" firstAttribute="top" secondItem="wdy-Yo-Ovw" secondAttribute="bottom" constant="8" symbolic="YES" id="umC-6E-Sgs"/>
                                     <constraint firstItem="Fox-8B-Ka5" firstAttribute="leading" secondItem="Zwy-d8-4hY" secondAttribute="leading" id="wXL-Sv-5fw"/>
                                     <constraint firstItem="SvH-aH-SXX" firstAttribute="trailing" secondItem="viG-Fu-Fmp" secondAttribute="trailing" id="yQp-Qc-H1h"/>
                                 </constraints>
