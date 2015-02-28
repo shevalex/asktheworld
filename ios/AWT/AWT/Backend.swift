@@ -35,7 +35,7 @@ public struct Backend {
             }
         };
 
-        Backend.communicate("user?login=" + login, method: HttpMethod.GET, params: nil, completionHandler: completionHandler, login: nil, password: nil);
+        Backend.communicate("user?login=" + login, method: HttpMethod.GET, params: nil, completionHandler: completionHandler, login: login, password: password);
     }
     
     
