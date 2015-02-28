@@ -10,6 +10,9 @@ import UIKit
 
 class LoginPage: UIViewController {
 
+    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -21,6 +24,41 @@ class LoginPage: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func loginButtonClicked(sender: UIButton) {
+        var emailText = emailTextField.text;
+        if (emailText == "") {
+            showErrorMessage("EMAIL_NOT_PROVIDED_MESSAGE");
+            return;
+        } else if (!AwtUiUtils.isEmailValid(emailText)) {
+            showErrorMessage("EMAIL_NOT_VALID_MESSAGE");
+            return;
+        }
+        
+        var passwordText = passwordTextField.text;
+        if (passwordText == "") {
+            showErrorMessage("PASSWORD_NOT_PROVIDED_MESSAGE");
+            return;
+        } else if (!AwtUiUtils.isPasswordValid(passwordText)) {
+            showErrorMessage("PASSWORD_NOT_VALID_MESSAGE");
+            return;
+        }
+        
+        
+        struct loginCallback : BackendCallback {
+            func onError() {
+                showErrorMessage("SERVER_ERROR_MESSSAGE");
+            }
+            
+            func onSuccess() {
+                println("Successflly logged");
+            }
+            
+            func onFailure() {
+                showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
+            }
+        }
+        Backend.logIn(emailText, password: passwordText, callback: loginCallback());
+    }
 
     /*
     // MARK: - Navigation
@@ -32,4 +70,10 @@ class LoginPage: UIViewController {
     }
     */
 
+    
+    private func showErrorMessage(popupErrorKey: String) {
+        AwtUiUtils.showPopup(self, popupTitle: AwtUiUtils.getLocalizedString("LOGIN_ERROR_MESSAGE_TTILE"), popupError: AwtUiUtils.getLocalizedString(popupErrorKey))
+    }
+    
+    
 }

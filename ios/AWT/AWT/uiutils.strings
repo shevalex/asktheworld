@@ -10,6 +10,10 @@
 "OK_BUTTON" = "OK";
 
 // Messages
-"REGISTRATION_ERROR_TTILE" = "Registration Error";
-"EMAIL_NOT_PROVIDED" = "Email must be provided";
-"EMAIL_NOT_VALID" = "Email does not look like a valid email address";
+"LOGIN_ERROR_MESSAGE_TTILE" = "Login Error";
+"REGISTRATION_ERROR_MESSGAE_TTILE" = "Registration Error";
+
+"EMAIL_NOT_PROVIDED_MESSAGE" = "Email must be provided";
+"EMAIL_NOT_VALID_MESSAGE" = "Email does not look like a valid email address";
+"PASSWORD_NOT_PROVIDED_MESSAGE" = "Password must be provided";
+"PASSWORD_NOT_VALID_MESSAGE" = "Password should be 5 or more symbols";

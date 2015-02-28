@@ -54,6 +54,9 @@
                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="loginButtonClicked:" destination="k6r-wg-U10" eventType="touchUpInside" id="Qil-NG-Hme"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VgI-Qf-Kt8">
                                 <rect key="frame" x="112" y="258" width="97" height="28"/>
@@ -102,6 +105,10 @@
                     </view>
                     <navigationItem key="navigationItem" id="4PU-ZN-M28"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="emailTextField" destination="jAB-zi-Sky" id="jr4-yo-16X"/>
+                        <outlet property="passwordTextField" destination="HEV-ac-Wlv" id="RUP-q2-XLL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U1T-2w-s9I" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
