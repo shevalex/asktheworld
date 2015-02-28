@@ -17,3 +17,6 @@
 "EMAIL_NOT_VALID_MESSAGE" = "Email does not look like a valid email address";
 "PASSWORD_NOT_PROVIDED_MESSAGE" = "Password must be provided";
 "PASSWORD_NOT_VALID_MESSAGE" = "Password should be 5 or more symbols";
+
+"FAILED_TO_LOGIN_MESSAGE" = "Cannot log in";
+"SERVER_ERROR_MESSSAGE" = "Server communication error";

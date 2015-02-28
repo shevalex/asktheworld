@@ -16,7 +16,7 @@ public protocol BackendCallback {
 }
 
 public struct Backend {
-    private static let SERVER_URL: String! = "http://";
+    private static let SERVER_URL: String! = "https://hidden-taiga-8809.herokuapp.com";
     
     
     public static func logIn(login: String!, password: String!, callback: BackendCallback?) {

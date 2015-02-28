@@ -27,13 +27,17 @@ class LoginPage: UIViewController, BackendCallback {
     
     //BackendCallback
     func onError() {
-        showErrorMessage("SERVER_ERROR_MESSSAGE");
+        dispatch_async(dispatch_get_main_queue(), {
+            self.showErrorMessage("SERVER_ERROR_MESSSAGE");
+        });
     }
     func onSuccess() {
         println("Successflly logged");
     }
     func onFailure() {
-        showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
+        dispatch_async(dispatch_get_main_queue(), {
+            self.showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
+        });
     }
     
     
