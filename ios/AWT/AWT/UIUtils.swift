@@ -40,6 +40,10 @@ struct AtwUiUtils {
     
     
     static func showSpinner(anchor: UIView!) {
+        if (activityIndicator != nil) {
+            self.hideSpinner();
+        }
+        
         activityIndicator = UIActivityIndicatorView();
         
         activityIndicator.center = anchor.center;

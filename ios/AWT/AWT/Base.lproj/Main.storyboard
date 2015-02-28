@@ -151,6 +151,9 @@
                                         <rect key="frame" x="50" y="96" width="220" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                        <connections>
+                                            <action selector="passwordChangedAction:" destination="PqC-Vm-GPP" eventType="editingChanged" id="zbO-kc-y1G"/>
+                                        </connections>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Confirm Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Zwy-d8-4hY">
                                         <rect key="frame" x="50" y="134" width="220" height="30"/>

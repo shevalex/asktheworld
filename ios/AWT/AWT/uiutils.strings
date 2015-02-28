@@ -11,12 +11,19 @@
 
 // Messages
 "LOGIN_ERROR_MESSAGE_TTILE" = "Login Error";
-"REGISTRATION_ERROR_MESSGAE_TTILE" = "Registration Error";
+"REGISTRATION_ERROR_MESSAGE_TTILE" = "Registration Error";
 
 "EMAIL_NOT_PROVIDED_MESSAGE" = "Email must be provided";
 "EMAIL_NOT_VALID_MESSAGE" = "Email does not look like a valid email address";
 "PASSWORD_NOT_PROVIDED_MESSAGE" = "Password must be provided";
 "PASSWORD_NOT_VALID_MESSAGE" = "Password should be 5 or more symbols";
+"PASSWORD_NOT_MATCH_MESSAGE" = "Password do not match. Please retype";
+"NICKNAME_NOT_PROVIDED_MESSAGE" = "Nickname must be provided";
+"GENDER_NOT_PROVIDED_MESSAGE" = "Gender must be provided";
+"AGE_NOT_PROVIDED_MESSAGE" = "Age must be provided";
+"LANGUAGE_NOT_PROVIDED_MESSAGE" = "You must choose at least one language";
+
 
 "FAILED_TO_LOGIN_MESSAGE" = "Cannot log in";
+"FAILED_TO_REGISTER_MESSAGE" = "User with such email is already registered";
 "SERVER_ERROR_MESSSAGE" = "Server communication error";

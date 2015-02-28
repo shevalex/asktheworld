@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RegisterPage: UIViewController {
+class RegisterPage: UIViewController, BackendCallback {
     @IBOutlet weak var languagesTextField: UITextField!
     @IBOutlet weak var genderTextField: UITextField!
     @IBOutlet weak var ageTextField: UITextField!
@@ -18,15 +18,78 @@ class RegisterPage: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     
 
-    @IBAction func registerButtonAction(sender: UIButton) {
-        var emailText = emailTextField.text
-        
-        if (emailText == "") {
-            showErrorMessage("EMAIL_NOT_PROVIDED_MESSAGE");
-        } else if (!AtwUiUtils.isEmailValid(emailText)) {
-            showErrorMessage("EMAIL_NOT_VALID_MESSAGE");
-        }
+    //BackendCallback
+    func onError() {
+        AtwUiUtils.runOnMainThread({
+            AtwUiUtils.hideSpinner();
+            self.showErrorMessage("SERVER_ERROR_MESSSAGE");
+        });
     }
+    func onSuccess() {
+        AtwUiUtils.runOnMainThread({
+            AtwUiUtils.hideSpinner();
+            self.performSegueWithIdentifier("showHomeScreen", sender: self);
+        });
+    }
+    func onFailure() {
+        AtwUiUtils.runOnMainThread({
+            AtwUiUtils.hideSpinner();
+            self.showErrorMessage("FAILED_TO_REGISTER_MESSAGE");
+        });
+    }
+    
+    @IBAction func registerButtonAction(sender: UIButton) {
+        if (emailTextField.text == "") {
+            showErrorMessage("EMAIL_NOT_PROVIDED_MESSAGE");
+            return;
+        } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
+            showErrorMessage("EMAIL_NOT_VALID_MESSAGE");
+            return;
+        }
+
+        if (nicknameTextField.text == "") {
+            showErrorMessage("NICKNAME_NOT_PROVIDED_MESSAGE");
+            return;
+        }
+
+        if (genderTextField.text == "") {
+            showErrorMessage("GENDER_NOT_PROVIDED_MESSAGE");
+            return;
+        }
+
+        if (ageTextField.text == "") {
+            showErrorMessage("AGE_NOT_PROVIDED_MESSAGE");
+            return;
+        }
+
+        if (languagesTextField.text == "") {
+            showErrorMessage("LANGUAGE_NOT_PROVIDED_MESSAGE");
+            return;
+        }
+        
+        if (passwordTextField.text == "") {
+            showErrorMessage("PASSWORD_NOT_PROVIDED_MESSAGE");
+            return;
+        } else if (!AtwUiUtils.isPasswordValid(passwordTextField.text)) {
+            showErrorMessage("PASSWORD_NOT_VALID_MESSAGE");
+            return;
+        } else if (passwordTextField.text != confirmPasswordTextField.text) {
+            showErrorMessage("PASSWORD_NOT_MATCH_MESSAGE");
+            return;
+        }
+        
+        AtwUiUtils.showSpinner(self.view);
+        
+        //TODO: perform proper parsing
+        let languages: [String] = [languagesTextField.text];
+        
+        Backend.register(emailTextField.text, password: passwordTextField.text, gender: genderTextField.text, age: ageTextField.text, nickname: nicknameTextField.text, languages: languages, callback: self)
+    }
+    
+    @IBAction func passwordChangedAction(sender: UITextField) {
+        confirmPasswordTextField.text = "";
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()

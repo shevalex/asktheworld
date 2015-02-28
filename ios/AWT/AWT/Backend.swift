@@ -42,6 +42,8 @@ public class UserContext {
 
 public struct Backend {
     private static let SERVER_URL: String! = "https://hidden-taiga-8809.herokuapp.com";
+    
+    private static let LOCATION_HEADER_KEY: String! = "_location";
 
     private static var userContext: UserContext! = nil;
     
@@ -68,6 +70,42 @@ public struct Backend {
 
         Backend.communicate("user?login=" + login, method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: login, password: password);
     }
+
+    
+    public static func register(login: String!, password: String!, gender: String!, age: String!, nickname: String!, languages: [String]!, callback: BackendCallback?) {
+        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            if (statusCode == 201) {
+                Backend.userContext = UserContext();
+                let location = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as String?;
+                if (location == nil) {
+                    println("Error: server malformed response - no userid provided in Location header");
+                    callback?.onError();
+                    return;
+                }
+                
+                Backend.userContext.userId = location!.toInt();
+                Backend.userContext.login = login;
+                Backend.userContext.password = password;
+                
+                self.pullUserSettings(callback);
+            } else if (statusCode == 409) {
+                callback?.onFailure();
+            } else {
+                callback?.onError();
+            }
+        };
+        
+        var params: NSDictionary! = NSMutableDictionary();
+        params.setValue(login, forKey: "login");
+        params.setValue(password, forKey: "password");
+        params.setValue(gender, forKey: "gender");
+        params.setValue(age, forKey: "age_category");
+        params.setValue(nickname, forKey: "name");
+        params.setValue(languages, forKey: "languages");
+        
+        Backend.communicate("user", method: HttpMethod.POST, params: params, communicationCallback: communicationCallback, login: login, password: password);
+    }
+
     
 
     class ProfileCallback: BackendCallback {
@@ -189,9 +227,19 @@ public struct Backend {
                 communicationCallback(-1, nil);
             } else {
                 let res = response as NSHTTPURLResponse
+                
                 if (res.statusCode >= 200 && res.statusCode < 300) {
-                    var err: NSError?
-                    let jsonData = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &err) as NSDictionary
+                    var jsonData: NSMutableDictionary?;
+                    if (data != nil) {
+                        var err: NSError?
+                        jsonData = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &err) as? NSMutableDictionary;
+                    }
+                    
+                    let location: AnyObject? = res.allHeaderFields["Location"];
+                    if (location != nil) {
+                        jsonData = NSMutableDictionary();
+                        jsonData!.setValue(location, forKey: Backend.LOCATION_HEADER_KEY);
+                    }
 
                     communicationCallback(res.statusCode, jsonData);
                 } else {

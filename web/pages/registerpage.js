@@ -121,11 +121,11 @@ RegisterPage.prototype._appendContentPanel = function(root) {
       },
       failure: function() {
         this._onCompletion();
-        Application.showMessage(this.getLocale().AccountCreationFailedMessage);
+        Application.showMessage(page.getLocale().AccountCreationFailedMessage);
       },
-      conflict : function() {
+      conflict: function() {
         this._onCompletion();
-        Application.showMessage(this.getLocale().AccountAlreadyExistsMessage);
+        Application.showMessage(page.getLocale().AccountAlreadyExistsMessage);
       },
       error: function() {
         this._onCompletion();

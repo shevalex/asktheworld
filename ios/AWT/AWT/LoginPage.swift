@@ -47,26 +47,24 @@ class LoginPage: UIViewController, BackendCallback {
     
     
     @IBAction func loginButtonClicked(sender: UIButton) {
-        var emailText = emailTextField.text;
-        if (emailText == "") {
+        if (emailTextField.text == "") {
             showErrorMessage("EMAIL_NOT_PROVIDED_MESSAGE");
             return;
-        } else if (!AtwUiUtils.isEmailValid(emailText)) {
+        } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
             showErrorMessage("EMAIL_NOT_VALID_MESSAGE");
             return;
         }
         
-        var passwordText = passwordTextField.text;
-        if (passwordText == "") {
+        if (passwordTextField.text == "") {
             showErrorMessage("PASSWORD_NOT_PROVIDED_MESSAGE");
             return;
-        } else if (!AtwUiUtils.isPasswordValid(passwordText)) {
+        } else if (!AtwUiUtils.isPasswordValid(passwordTextField.text)) {
             showErrorMessage("PASSWORD_NOT_VALID_MESSAGE");
             return;
         }
 
         AtwUiUtils.showSpinner(self.view);
-        Backend.logIn(emailText, password: passwordText, callback: self);
+        Backend.logIn(emailTextField.text, password: passwordTextField.text, callback: self);
         
     }
 

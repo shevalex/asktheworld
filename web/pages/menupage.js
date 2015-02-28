@@ -130,6 +130,7 @@ MenuPage.prototype._appendMenuPanel = function(root) {
 
   this._appendMenuItem(menuPanel, "logout", this.getLocale().LogOutItem, null, function() {
     Application.reset();
+    Application.showPage(LoginPage.name);
   });
   
   return menuPanel;
