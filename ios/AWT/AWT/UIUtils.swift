@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct AwtUiUtils {
+struct AtwUiUtils {
     static let localizationBundles: NSMutableDictionary! = NSMutableDictionary();
     
     static func loadLocalizationBundle(bundleName: String) -> NSDictionary! {
@@ -42,7 +42,7 @@ struct AwtUiUtils {
     
     static func showPopup(anchor: UIViewController, popupTitle: String, popupError: String, okCallback: (() -> Void)? = nil) {
         var popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
-        popup.addAction(UIAlertAction(title: AwtUiUtils.getLocalizedString("OK_BUTTON"), style: .Default, handler: { action in }))
+        popup.addAction(UIAlertAction(title: AtwUiUtils.getLocalizedString("OK_BUTTON"), style: .Default, handler: { action in }))
         anchor.presentViewController(popup, animated: true, completion: okCallback)
     }
     
@@ -54,5 +54,9 @@ struct AwtUiUtils {
     static func isPasswordValid(password: String!) -> Bool! {
         //TODO: implement
         return countElements(password) >= 5;
+    }
+    
+    static func runOnMainThread(block: dispatch_block_t!) {
+        dispatch_async(dispatch_get_main_queue(), block);
     }
 }

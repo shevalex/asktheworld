@@ -27,19 +27,17 @@ class LoginPage: UIViewController, BackendCallback {
     
     //BackendCallback
     func onError() {
-        dispatch_async(dispatch_get_main_queue(), {
+        AtwUiUtils.runOnMainThread({
             self.showErrorMessage("SERVER_ERROR_MESSSAGE");
         });
     }
     func onSuccess() {
-        println("Successflly logged");
-        dispatch_async(dispatch_get_main_queue(), {
-            self.performSegueWithIdentifier("showHomeScreen", sender: self)
+        AtwUiUtils.runOnMainThread({
+            self.performSegueWithIdentifier("showHomeScreen", sender: self);
         });
-        
     }
     func onFailure() {
-        dispatch_async(dispatch_get_main_queue(), {
+        AtwUiUtils.runOnMainThread({
             self.showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
         });
     }
@@ -50,7 +48,7 @@ class LoginPage: UIViewController, BackendCallback {
         if (emailText == "") {
             showErrorMessage("EMAIL_NOT_PROVIDED_MESSAGE");
             return;
-        } else if (!AwtUiUtils.isEmailValid(emailText)) {
+        } else if (!AtwUiUtils.isEmailValid(emailText)) {
             showErrorMessage("EMAIL_NOT_VALID_MESSAGE");
             return;
         }
@@ -59,7 +57,7 @@ class LoginPage: UIViewController, BackendCallback {
         if (passwordText == "") {
             showErrorMessage("PASSWORD_NOT_PROVIDED_MESSAGE");
             return;
-        } else if (!AwtUiUtils.isPasswordValid(passwordText)) {
+        } else if (!AtwUiUtils.isPasswordValid(passwordText)) {
             showErrorMessage("PASSWORD_NOT_VALID_MESSAGE");
             return;
         }
@@ -81,7 +79,7 @@ class LoginPage: UIViewController, BackendCallback {
 
     
     private func showErrorMessage(popupErrorKey: String) {
-        AwtUiUtils.showPopup(self, popupTitle: AwtUiUtils.getLocalizedString("LOGIN_ERROR_MESSAGE_TTILE"), popupError: AwtUiUtils.getLocalizedString(popupErrorKey))
+        AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("LOGIN_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
     }
     
     
