@@ -25,7 +25,7 @@ class LoginPage: UIViewController, BackendCallback {
     }
     
     
-    
+    //BackendCallback
     func onError() {
         showErrorMessage("SERVER_ERROR_MESSSAGE");
     }
