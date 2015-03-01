@@ -9,35 +9,62 @@
 import Foundation
 
 
-public protocol BackendCallback {
-    func onError();
-    func onSuccess();
-    func onFailure();
+struct Configuration {
+    struct Item {
+        var display: String!;
+        var data: AnyObject!;
+        
+        init(display: String!, data: AnyObject!) {
+            self.display = display;
+            self.data = data;
+        }
+        
+        func getDisplay() -> String {
+            return AtwUiUtils.getLocalizedString(display);
+        }
+    }
+    
+    
+    static let LANGUAGE: [Item] = [Item(display: "LANGUAGE_ENGLISH", data: "eng"), Item(display: "LANGUAGE_RUSSIAN", data: "rus")];
+    static let EXPERTISES: [Item] = [Item(display: "EXPERTISE_GENERAL", data: "general"), Item(display: "EXPERTISE_LAW", data: "law"), Item(display: "EXPERTISE_MEDICINE", data: "medicine"), Item(display: "EXPERTISE_CONSTRUCTION", data: "construction")];
+    static let AGE_CATEGORIES: [Item] = [Item(display: "AGE_CHILD", data: "child"), Item(display: "AGE_TEENAGER", data: "teenager"), Item(display: "AGE_YOUNG", data: "young"), Item(display: "AGE_ADULT", data: "adult"), Item(display: "AGE_ASENIOR", data: "senior")];
+    static let RESPONSE_WAIT_TIME: [Item] = [Item(display: "WAIT_TIME_WEEK", data: 148), Item(display: "WAIT_TIME_DAY", data: 24), Item(display: "WAIT_TIME_HALFDAY", data: 12), Item(display: "WAIT_TIME_HOUR", data: 1)];
+    static let RESPONSE_QUANTITY: [Item] = [Item(display: "QUANTITY_ALL", data: -1), Item(display: "QUANTITY_TEN", data: 10), Item(display: "QUANTITY_FIVE", data: 5), Item(display: "QUANTITY_THREE", data: 3), Item(display: "QUANTITY_ONE", data: 1)];
+    static let GENDERS: [Item] = [Item(display: "GENDER_MALE", data: "male"), Item(display: "GENDER_FEMALE", data: "female")];
+    static let AGE_CATEGORY_PREFERENCE: [Item] = [Item(display: "AGE_PREFERENCE_ALL", data: "all"), Item(display: "AGE_PREFERENCE_CHILDREN", data: "children"), Item(display: "AGE_PREFERENCE_TEENAGERS", data: "teenagers"), Item(display: "AGE_PREFERENCE_YOUNG", data: "youngs"), Item(display: "AGE_PREFERENCE_ADULTS", data: "adults"), Item(display: "AGE_PREFERENCE_SENIORS", data: "seniors")];
+    static let GENDER_PREFERENCE: [Item] = [Item(display: "GENDER_PREFERENCE_ANY", data: "any"), Item(display: "GENDER_PREFERENCE_MALE", data: "male"), Item(display: "GENDER_PREFERENCE_FEMALE", data: "female")];
+    static let INQUIRY_LIMIT_PREFERENCE: [Item] = [Item(display: "INCOMING_LIMIT_PREFERENCE_ALL", data: -1), Item(display: "INCOMING_LIMIT_PREFERENCE_TEN", data: 10), Item(display: "INCOMING_LIMIT_PREFERENCE_FIVE", data: 5), Item(display: "INCOMING_LIMIT_PREFERENCE_NONE", data: 0)];
 }
 
 public class UserContext {
     //Profile
-    private var login: String!;
-    private var password: String!;
-    private var gender: String!;
-    private var languages: [String]!;
-    private var age: String!;
-    private var name: String!;
+    public var login: String!;
+    public var password: String!;
+    public var gender: String!;
+    public var languages: [String]!;
+    public var age: String!;
+    public var name: String!;
     public var userId: Int!;
     
     //Preferences
-    private var responseQuantity: Int!;
-    private var responseWaitTime: Int!;
-    private var requestTargetAge: String!;
-    private var requestTargetGender: String!;
+    public var responseQuantity: Int! = Configuration.RESPONSE_QUANTITY[0].data as Int;
+    public var responseWaitTime: Int! = Configuration.RESPONSE_WAIT_TIME[0].data as Int;
+    public var requestTargetAge: String! = Configuration.AGE_CATEGORY_PREFERENCE[0].data as String;
+    public var requestTargetGender: String! = Configuration.GENDER_PREFERENCE[0].data as String;
 
-    private var dailyInquiryLimit: Int!;
-    private var inquiryAge: String!;
-    private var inquiryGender: String!;
-    private var expertises: [String]!;
-    private var contactVisible: Bool!;
-    private var contactName: String!;
-    private var contactInfo: String!;
+    public var dailyInquiryLimit: Int! = Configuration.INQUIRY_LIMIT_PREFERENCE[0].data as Int;
+    public var inquiryAge: String! = Configuration.AGE_CATEGORY_PREFERENCE[0].data as String;
+    public var inquiryGender: String! = Configuration.GENDER_PREFERENCE[0].data as String;
+    public var expertises: [String]! = [Configuration.EXPERTISES[0].data as String];
+    public var contactVisible: Bool! = false;
+    public var contactName: String! = "";
+    public var contactInfo: String! = "";
+}
+
+public protocol BackendCallback {
+    func onError();
+    func onSuccess();
+    func onFailure();
 }
 
 public struct Backend {
@@ -182,7 +209,18 @@ public struct Backend {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                //TBD: read data
+                Backend.userContext.responseQuantity = data?.valueForKey("default_response_quantity") as Int?;
+                Backend.userContext.responseWaitTime = data?.valueForKey("default_response_wait_time") as Int?;
+                Backend.userContext.requestTargetAge = data?.valueForKey("default_response_age_group_preference") as String?;
+                Backend.userContext.requestTargetGender = data?.valueForKey("default_gender_preference") as String?;
+                
+                Backend.userContext.dailyInquiryLimit = data?.valueForKey("inquiry_quantity_per_day") as Int?;
+                Backend.userContext.inquiryAge = data?.valueForKey("inquiry_age_group_preference") as String?;
+                Backend.userContext.inquiryGender = data?.valueForKey("inquiry_gender_preference") as String?;
+                Backend.userContext.expertises = data?.valueForKey("expertises") as [String]?;
+                Backend.userContext.contactVisible = data?.valueForKey("contact_info_requestable") as Bool?;
+                Backend.userContext.contactName = data?.valueForKey("contact_name") as String?;
+                Backend.userContext.contactInfo = data?.valueForKey("contact_info") as String?;
                 
                 callback?.onSuccess();
             } else if (statusCode == 401 || statusCode == 404) {

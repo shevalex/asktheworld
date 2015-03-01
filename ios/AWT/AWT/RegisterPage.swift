@@ -81,7 +81,7 @@ class RegisterPage: UIViewController, BackendCallback {
         AtwUiUtils.showSpinner(self.view);
         
         //TODO: perform proper parsing
-        let languages: [String] = [languagesTextField.text];
+        let languages: [String] = split(languagesTextField.text) {$0 == " "};
         
         Backend.register(emailTextField.text, password: passwordTextField.text, gender: genderTextField.text, age: ageTextField.text, nickname: nicknameTextField.text, languages: languages, callback: self)
     }

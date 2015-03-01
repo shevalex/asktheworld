@@ -31,3 +31,49 @@
 "PASSWORD_RECOVERY_MESSAGE_TTILE" = "Password Recovery";
 "PASSWORD_RECOVERY_SENT_MESSAGE" = "The message was sent to your email. You may disregard it if you do not need to change your password";
 "PASSWORD_RECOVERY_FAILED_MESSAGE" = "Password recovery failed. Please chekc if your email is valid";
+
+
+"LANGUAGE_ENGLISH" = "English";
+"LANGUAGE_RUSSIAN" = "Russian";
+
+"EXPERTISE_GENERAL" = "General";
+"EXPERTISE_LAW" = "Law";
+"EXPERTISE_LAW" = "Medicicne";
+"EXPERTISE_CONSTRUCTION" = "Construction";
+
+"AGE_CHILD" = "Child";
+"AGE_TEENAGER" = "Teenager";
+"AGE_YOUNG" = "Young Adult";
+"AGE_ADULT" = "Adult";
+"AGE_SENIOR" = "Senior";
+
+"WAIT_TIME_WEEK" = "1 week";
+"WAIT_TIME_DAY" = "1 day";
+"WAIT_TIME_HALFDAY" = "half-day";
+"WAIT_TIME_HOUR" = "1 hour";
+
+"QUANTITY_ALL" = "As many as arrive";
+"QUANTITY_TEN" = "Ten";
+"QUANTITY_FIVE" = "Five";
+"QUANTITY_THREE" = "Three";
+"QUANTITY_ONE" = "Just the first one";
+
+"GENDER_MALE" = "Male";
+"GENDER_FEMALE" = "Female";
+
+"AGE_PREFERENCE_ALL" = "All";
+"AGE_PREFERENCE_CHILDREN" = "Children";
+"AGE_PREFERENCE_TEENAGERS" = "Teenagers";
+"AGE_PREFERENCE_YOUNG" = "Youngs";
+"AGE_PREFERENCE_ADULTS" = "Adults";
+"AGE_PREFERENCE_SENOIRS" = "Seniors";
+
+"GENDER_PREFERENCE_ANY" = "Any";
+"GENDER_PREFERENCE_MALE" = "Male";
+"GENDER_PREFERENCE_FEMALE" = "Female";
+
+"INCOMING_LIMIT_PREFERENCE_ALL" = "As many as possible";
+"INCOMING_LIMIT_PREFERENCE_TEN" = "No more than ten";
+"INCOMING_LIMIT_PREFERENCE_FIVE" = "No more than five";
+"INCOMING_LIMIT_PREFERENCE_NONE" = "I don't want to get any inquiries";
+
