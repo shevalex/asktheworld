@@ -105,6 +105,23 @@ public struct Backend {
         
         Backend.communicate("user", method: HttpMethod.POST, params: params, communicationCallback: communicationCallback, login: login, password: password);
     }
+    
+    
+    public static func resetUserPassword(login: String!, callback: BackendCallback?) {
+        callback?.onSuccess();
+//        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data in
+//            if (statusCode == 200) {
+//                callback?.onSuccess();
+//            } else if (statusCode == 404) {
+//                callback?.onFailure();
+//            } else {
+//                callback?.onError();
+//            }
+//        };
+//        
+//        Backend.communicate("user", method: HttpMethod.POST, params: nil, communicationCallback: communicationCallback, login: nil, password: nil);
+    }
+    
 
     
 

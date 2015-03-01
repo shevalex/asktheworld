@@ -27,3 +27,7 @@
 "FAILED_TO_LOGIN_MESSAGE" = "Cannot log in";
 "FAILED_TO_REGISTER_MESSAGE" = "User with such email is already registered";
 "SERVER_ERROR_MESSSAGE" = "Server communication error";
+
+"PASSWORD_RECOVERY_MESSAGE_TTILE" = "Password Recovery";
+"PASSWORD_RECOVERY_SENT_MESSAGE" = "The message was sent to your email. You may disregard it if you do not need to change your password";
+"PASSWORD_RECOVERY_FAILED_MESSAGE" = "Password recovery failed. Please chekc if your email is valid";

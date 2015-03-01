@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginPage: UIViewController, BackendCallback {
+class LoginPage: UIViewController {
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -25,27 +25,33 @@ class LoginPage: UIViewController, BackendCallback {
     }
     
     
-    //BackendCallback
-    func onError() {
-        AtwUiUtils.runOnMainThread({
-            AtwUiUtils.hideSpinner();
-            self.showErrorMessage("SERVER_ERROR_MESSSAGE");
-        });
+    private class LoginCallback: BackendCallback {
+        private var page: LoginPage!;
+        
+        init(page: LoginPage) {
+            self.page = page;
+            
+        }
+        
+        func onError() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage("SERVER_ERROR_MESSSAGE");
+            });
+        }
+        func onSuccess() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.performSegueWithIdentifier("showHomeScreen", sender: self);
+            });
+        }
+        func onFailure() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
+            });
+        }
     }
-    func onSuccess() {
-        AtwUiUtils.runOnMainThread({
-            AtwUiUtils.hideSpinner();
-            self.performSegueWithIdentifier("showHomeScreen", sender: self);
-        });
-    }
-    func onFailure() {
-        AtwUiUtils.runOnMainThread({
-            AtwUiUtils.hideSpinner();
-            self.showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
-        });
-    }
-    
-    
     @IBAction func loginButtonClicked(sender: UIButton) {
         if (emailTextField.text == "") {
             showErrorMessage("EMAIL_NOT_PROVIDED_MESSAGE");
@@ -64,8 +70,47 @@ class LoginPage: UIViewController, BackendCallback {
         }
 
         AtwUiUtils.showSpinner(self.view);
-        Backend.logIn(emailTextField.text, password: passwordTextField.text, callback: self);
+        Backend.logIn(emailTextField.text, password: passwordTextField.text, callback: LoginCallback(page: self));
+    }
+    
+    
+    
+    private class PasswordRecoveryCallback: BackendCallback {
+        private var page: LoginPage!;
         
+        init(page: LoginPage) {
+            self.page = page;
+        }
+        
+        func onError() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showPasswordRecoveryMessage("SERVER_ERROR_MESSSAGE");
+            });
+        }
+        func onSuccess() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showPasswordRecoveryMessage("PASSWORD_RECOVERY_SENT_MESSAGE");
+            });
+        }
+        func onFailure() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showPasswordRecoveryMessage("PASSWORD_RECOVERY_FAILED_MESSAGE");
+            });
+        }
+    }
+    @IBAction func forgotPasswordClicked() {
+        if (emailTextField.text == "") {
+            showPasswordRecoveryMessage("EMAIL_NOT_PROVIDED_MESSAGE");
+            return;
+        } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
+            showPasswordRecoveryMessage("EMAIL_NOT_VALID_MESSAGE");
+            return;
+        }
+        
+        Backend.resetUserPassword(emailTextField.text, callback: PasswordRecoveryCallback(page: self));
     }
 
     /*
@@ -83,5 +128,8 @@ class LoginPage: UIViewController, BackendCallback {
         AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("LOGIN_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
     }
     
+    private func showPasswordRecoveryMessage(popupMessageKey: String) {
+        AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("PASSWORD_RECOVERY_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupMessageKey))
+    }
     
 }
