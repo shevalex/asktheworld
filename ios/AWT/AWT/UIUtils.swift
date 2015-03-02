@@ -114,6 +114,7 @@ public struct AtwUiUtils {
 
         var pickerDelegate = PickerDelegate(items: items, boundInputElement: boundTextField);
         var picker = UIPickerView();
+        picker.backgroundColor = UIColor.whiteColor();
         picker.delegate = pickerDelegate;
         boundTextField.inputView = picker;
         
