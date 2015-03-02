@@ -24,6 +24,10 @@ class LoginPage: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        view.endEditing(true)
+    }
+    
     
     private class LoginCallback: BackendCallback {
         private var page: LoginPage!;
