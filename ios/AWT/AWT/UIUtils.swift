@@ -83,4 +83,41 @@ struct AtwUiUtils {
     static func runOnMainThread(block: dispatch_block_t!) {
         dispatch_async(dispatch_get_main_queue(), block);
     }
+    
+    
+
+    class PickerDelegate: NSObject, UIPickerViewDelegate {
+        private let items: [Configuration.Item]!;
+        private let boundInputElement: UITextField!;
+        
+        init(items: [Configuration.Item], boundInputElement: UITextField) {
+            self.items = items;
+            self.boundInputElement = boundInputElement;
+        }
+        
+        func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int {
+            return 1;
+        }
+        func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int {
+            return items.count + 1;
+        }
+        func pickerView(pickerView: UIPickerView!, titleForRow row: Int, forComponent component: Int) -> String! {
+            return row == 0 ? "<unset>" : items[row - 1].getDisplay();
+        }
+        func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
+        {
+            boundInputElement.text = row == 0 ? "" : items[row - 1].getDisplay();
+        }
+    }
+
+    
+    static func setDataPicker(boundTextField: UITextField!, items: [Configuration.Item]) -> UIPickerViewDelegate {
+
+        var pickerDelegate = PickerDelegate(items: items, boundInputElement: boundTextField);
+        var picker = UIPickerView();
+        picker.delegate = pickerDelegate;
+        boundTextField.inputView = picker;
+        
+        return pickerDelegate;
+    }
 }

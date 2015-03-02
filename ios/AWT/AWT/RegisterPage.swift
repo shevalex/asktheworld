@@ -17,33 +17,10 @@ class RegisterPage: UIViewController, BackendCallback {
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
     
-    let genderArray = ["Male","Female"]
-    let ageArray = ["Teen","Young","Adult"]
     
-    class PickerDelegate: NSObject, UIPickerViewDelegate {
-        let arrayElements: Array<String>
-        let textEdit: UITextField!
-        
-        init(elements: Array<String>, textField: UITextField) {
-            arrayElements = elements
-            textEdit = textField
-        }
-        
-        func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int{
-            return 1
-        }
-        func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int{
-            return arrayElements.count
-        }
-        func pickerView(pickerView: UIPickerView!, titleForRow row: Int, forComponent component: Int) -> String! {
-            return arrayElements[row]
-        }
-        func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
-        {
-            textEdit.text = arrayElements[row]
-        }
-        
-    }
+    private var genderPickerDelegate: UIPickerViewDelegate!
+    private var agePickerDelegate: UIPickerViewDelegate!
+    
     
     //BackendCallback
     func onError() {
@@ -117,24 +94,11 @@ class RegisterPage: UIViewController, BackendCallback {
         confirmPasswordTextField.text = "";
     }
     
-    var genderDelegate: PickerDelegate!
-    var ageDelegate: PickerDelegate!
-
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad();
         
-        var genderPicker = UIPickerView()
-        var agePicker = UIPickerView()
-        
-        genderDelegate = PickerDelegate(elements: genderArray, textField: genderTextField)
-        ageDelegate = PickerDelegate(elements: ageArray, textField: ageTextField)
-        
-        genderPicker.delegate = genderDelegate
-        agePicker.delegate = ageDelegate
-        
-        genderTextField.inputView = genderPicker
-        ageTextField.inputView = agePicker
-        
+        genderPickerDelegate = AtwUiUtils.setDataPicker(genderTextField, items: Configuration.GENDERS);
+        agePickerDelegate = AtwUiUtils.setDataPicker(ageTextField, items: Configuration.AGE_CATEGORIES);
         
         // Do any additional setup after loading the view.
     }
@@ -158,6 +122,4 @@ class RegisterPage: UIViewController, BackendCallback {
     func showErrorMessage(popupErrorKey: String) {
         AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("REGISTRATION_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
     }
-    
-
 }
