@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct AtwUiUtils {
+public struct AtwUiUtils {
     static let localizationBundles: NSMutableDictionary! = NSMutableDictionary();
     
     static var activityIndicator: UIActivityIndicatorView! = nil;
@@ -109,7 +109,6 @@ struct AtwUiUtils {
             boundInputElement.text = row == 0 ? "" : items[row - 1].getDisplay();
         }
     }
-
     
     static func setDataPicker(boundTextField: UITextField!, items: [Configuration.Item]) -> UIPickerViewDelegate {
 
