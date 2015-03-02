@@ -17,7 +17,34 @@ class RegisterPage: UIViewController, BackendCallback {
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
     
-
+    let genderArray = ["Male","Female"]
+    let ageArray = ["Teen","Young","Adult"]
+    
+    class PickerDelegate: NSObject, UIPickerViewDelegate {
+        let arrayElements: Array<String>
+        let textEdit: UITextField!
+        
+        init(elements: Array<String>, textField: UITextField) {
+            arrayElements = elements
+            textEdit = textField
+        }
+        
+        func numberOfComponentsInPickerView(pickerView: UIPickerView!) -> Int{
+            return 1
+        }
+        func pickerView(pickerView: UIPickerView!, numberOfRowsInComponent component: Int) -> Int{
+            return arrayElements.count
+        }
+        func pickerView(pickerView: UIPickerView!, titleForRow row: Int, forComponent component: Int) -> String! {
+            return arrayElements[row]
+        }
+        func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
+        {
+            textEdit.text = arrayElements[row]
+        }
+        
+    }
+    
     //BackendCallback
     func onError() {
         AtwUiUtils.runOnMainThread({
@@ -90,10 +117,25 @@ class RegisterPage: UIViewController, BackendCallback {
         confirmPasswordTextField.text = "";
     }
     
+    var genderDelegate: PickerDelegate!
+    var ageDelegate: PickerDelegate!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        var genderPicker = UIPickerView()
+        var agePicker = UIPickerView()
+        
+        genderDelegate = PickerDelegate(elements: genderArray, textField: genderTextField)
+        ageDelegate = PickerDelegate(elements: ageArray, textField: ageTextField)
+        
+        genderPicker.delegate = genderDelegate
+        agePicker.delegate = ageDelegate
+        
+        genderTextField.inputView = genderPicker
+        ageTextField.inputView = agePicker
+        
+        
         // Do any additional setup after loading the view.
     }
 
