@@ -173,15 +173,6 @@ public struct AtwUiUtils {
     }
 */
     
-    static func setToolbarWithButton(anchor: UIViewController!, boundTextField: UITextField!) {
-        var toolbar = UIToolbar()
-        toolbar.barStyle = UIBarStyle.Default
-        toolbar.sizeToFit()
-        var toolbarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: anchor, action: "donePickerAction")
-        toolbar.setItems([toolbarButton], animated: true)
-        boundTextField.inputAccessoryView = toolbar
-    }
-    
     class UIDataSelectorDelegate: NSObject, UITableViewDelegate {
         private var dataModel: UIDataSelectorDataModel!;
         private var boundTextField: UITextField!;
@@ -272,6 +263,13 @@ public struct AtwUiUtils {
         
         var tableView: UITableView! = UITableView(frame: CGRect(x: 0, y: 0, width: 0, height: height));
         
+        var toolbar = UIToolbar()
+        toolbar.barStyle = UIBarStyle.Default
+        toolbar.sizeToFit()
+        var toolbarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: boundTextField, action: nil) //need to add some action
+        toolbar.setItems([toolbarButton], animated: true)
+        boundTextField.inputAccessoryView = toolbar
+        
         var dataModel = UIDataSelectorDataModel(data: items);
         var dataSelectorDelegate: UIDataSelectorDelegate! = UIDataSelectorDelegate(anchor: boundTextField, dataModel: dataModel);
         tableView.delegate = dataSelectorDelegate;
@@ -282,5 +280,10 @@ public struct AtwUiUtils {
         
         return dataSelectorDelegate;
     }
+    
+    func test() {
+        
+    }
+    
     
 }

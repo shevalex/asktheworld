@@ -99,18 +99,12 @@ class RegisterPage: UIViewController, BackendCallback {
         genderSelectorDelegate = AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS);
         ageSelectorDelegate = AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES);
         
-        AtwUiUtils.setToolbarWithButton(self, boundTextField: genderTextField)
-        
         // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    func donePickerAction() {
-        genderTextField.resignFirstResponder()
     }
 
     /*
