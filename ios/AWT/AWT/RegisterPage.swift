@@ -18,9 +18,8 @@ class RegisterPage: UIViewController, BackendCallback {
     @IBOutlet weak var emailTextField: UITextField!
     
     
-    private var genderPickerDelegate: UIPickerViewDelegate!
-    private var agePickerDelegate: UIPickerViewDelegate!
-    
+    private var genderSelectorDelegate: AtwUiUtils.UIDataSelectorDelegate!
+    private var ageSelectorDelegate: AtwUiUtils.UIDataSelectorDelegate!
     
     //BackendCallback
     func onError() {
@@ -97,8 +96,8 @@ class RegisterPage: UIViewController, BackendCallback {
     override func viewDidLoad() {
         super.viewDidLoad();
         
-        genderPickerDelegate = AtwUiUtils.setDataPicker(genderTextField, items: Configuration.GENDERS);
-        agePickerDelegate = AtwUiUtils.setDataPicker(ageTextField, items: Configuration.AGE_CATEGORIES);
+        genderSelectorDelegate = AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS);
+        ageSelectorDelegate = AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES);
         
         // Do any additional setup after loading the view.
     }

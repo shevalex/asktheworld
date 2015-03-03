@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		82A4014D1AA01B1C00E26253 /* uiutils.strings in Resources */ = {isa = PBXBuildFile; fileRef = 82A4014C1AA01B1C00E26253 /* uiutils.strings */; };
 		82A4014F1AA158CA00E26253 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A4014E1AA158CA00E26253 /* Backend.swift */; };
+		82BDE9D71AA50B7C002B6F5D /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 82BDE9D61AA50B7C002B6F5D /* close.png */; };
 		F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE571A9E2882006E7698 /* AppDelegate.swift */; };
 		F745FE5A1A9E2882006E7698 /* HomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE591A9E2882006E7698 /* HomePage.swift */; };
 		F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F745FE5B1A9E2882006E7698 /* Main.storyboard */; };
@@ -33,6 +34,7 @@
 /* Begin PBXFileReference section */
 		82A4014C1AA01B1C00E26253 /* uiutils.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = uiutils.strings; sourceTree = "<group>"; };
 		82A4014E1AA158CA00E26253 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
+		82BDE9D61AA50B7C002B6F5D /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = ../../../web/imgs/close.png; sourceTree = "<group>"; };
 		F745FE521A9E2882006E7698 /* AWT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AWT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F745FE561A9E2882006E7698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F745FE571A9E2882006E7698 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 		F745FE551A9E2882006E7698 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				82BDE9D61AA50B7C002B6F5D /* close.png */,
 				F745FE561A9E2882006E7698 /* Info.plist */,
 				82A4014C1AA01B1C00E26253 /* uiutils.strings */,
 			);
@@ -218,6 +221,7 @@
 				F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */,
 				F745FE621A9E2882006E7698 /* LaunchScreen.xib in Resources */,
 				82A4014D1AA01B1C00E26253 /* uiutils.strings in Resources */,
+				82BDE9D71AA50B7C002B6F5D /* close.png in Resources */,
 				F745FE5F1A9E2882006E7698 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
