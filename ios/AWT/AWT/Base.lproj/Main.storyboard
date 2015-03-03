@@ -18,7 +18,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Home" id="LvB-rW-WMh"/>
+                    <navigationItem key="navigationItem" title="Home" id="LvB-rW-WMh">
+                        <barButtonItem key="rightBarButtonItem" image="user_info.png" id="vPa-CB-v1b">
+                            <connections>
+                                <segue destination="sbM-f3-mzd" kind="show" id="InD-JW-irA"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S7f-J9-QcJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -297,6 +303,39 @@
             </objects>
             <point key="canvasLocation" x="2293" y="310"/>
         </scene>
+        <!--Settings-->
+        <scene sceneID="gEI-Dg-GVv">
+            <objects>
+                <viewController id="sbM-f3-mzd" customClass="UserSettingsPage" customModule="AWT" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="PBJ-ER-PrU"/>
+                        <viewControllerLayoutGuide type="bottom" id="s3E-p2-bfX"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3h5-ap-avF">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="odx-v4-noP">
+                                <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                <items>
+                                    <barButtonItem title="Information" id="kW0-tS-6yM"/>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="odx-v4-noP" firstAttribute="leading" secondItem="3h5-ap-avF" secondAttribute="leadingMargin" constant="-16" id="C6d-aF-dHF"/>
+                            <constraint firstItem="odx-v4-noP" firstAttribute="bottom" secondItem="s3E-p2-bfX" secondAttribute="top" id="MHs-QZ-stV"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="odx-v4-noP" secondAttribute="trailing" constant="-16" id="SBH-MZ-oB4"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Settings" id="pUD-hb-m8r"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g61-as-HC4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1035" y="-309"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="2Qa-12-Tym">
             <objects>
@@ -317,6 +356,9 @@
             <point key="canvasLocation" x="1035" y="310"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="user_info.png" width="30" height="30"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="c75-sv-RRF"/>
     </inferredMetricsTieBreakers>

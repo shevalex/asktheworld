@@ -266,7 +266,7 @@ public struct AtwUiUtils {
         var toolbar = UIToolbar()
         toolbar.barStyle = UIBarStyle.Default
         toolbar.sizeToFit()
-        var toolbarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: boundTextField, action: nil) //need to add some action
+        var toolbarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: tableView, action: nil) //need to add some action and right view
         toolbar.setItems([toolbarButton], animated: true)
         boundTextField.inputAccessoryView = toolbar
         
