@@ -280,10 +280,5 @@ public struct AtwUiUtils {
         
         return dataSelectorDelegate;
     }
-    
-    func test() {
-        
-    }
-    
-    
+
 }
