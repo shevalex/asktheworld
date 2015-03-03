@@ -183,10 +183,52 @@ public struct AtwUiUtils {
     }
     
     class UIDataSelectorDelegate: NSObject, UITableViewDelegate {
-        var dataModel: UIDataSelectorDataModel!;
+        private var dataModel: UIDataSelectorDataModel!;
+        private var boundTextField: UITextField!;
         
-        init(dataModel: UIDataSelectorDataModel) {
+        private var selectedItems: [Configuration.Item] = [];
+        
+        init(anchor: UITextField!, dataModel: UIDataSelectorDataModel) {
+            self.boundTextField = anchor;
             self.dataModel = dataModel;
+        }
+        
+        func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+            return true;
+        }
+        
+        func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+            
+            selectedItems.append(dataModel.getDataItem(indexPath));
+            
+            updateSelection();
+        }
+        func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+            
+            var deselectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
+            for (var i: Int! = 0; i < selectedItems.count; i = i.successor()) {
+                if (deselectedItem.data === selectedItems[i].data) {
+                    selectedItems.removeAtIndex(i);
+                    break;
+                }
+            }
+            
+            
+            updateSelection();
+        }
+        
+        
+        private func updateSelection() {
+            var text: String! = "";
+            if (selectedItems.count > 0) {
+                text = selectedItems[0].getDisplay();
+            }
+            
+            for (var i: Int! = 1; i < selectedItems.count; i = i.successor()) {
+                text = "\(text), \(selectedItems[i].getDisplay())";
+            }
+            
+            boundTextField.text = text;
         }
     }
     
@@ -195,6 +237,14 @@ public struct AtwUiUtils {
         
         init(data: [Configuration.Item]) {
             self.data = data;
+        }
+        
+        func getDataItem(indexPath: NSIndexPath) -> Configuration.Item {
+            return getDataItem(indexPath.row);
+        }
+        
+        func getDataItem(index: Int) -> Configuration.Item {
+            return data[index];
         }
         
         func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -206,8 +256,8 @@ public struct AtwUiUtils {
             var tableCell: UITableViewCell! = UITableViewCell();
             tableCell.backgroundColor = UIColor.blueColor();
             
-            var currentIndex = indexPath.indexAtPosition(1);
-            tableCell.textLabel?.text = data[currentIndex].getDisplay();
+            tableCell.textLabel?.text = getDataItem(indexPath).getDisplay();
+            tableCell.textLabel?.textAlignment = .Center;
             
             tableCell.textLabel?.backgroundColor = UIColor.greenColor();
             
@@ -222,7 +272,8 @@ public struct AtwUiUtils {
         
         var tableView: UITableView! = UITableView(frame: CGRect(x: 0, y: 0, width: 0, height: height));
         
-        var dataSelectorDelegate: UIDataSelectorDelegate! = UIDataSelectorDelegate(dataModel: UIDataSelectorDataModel(data: items));
+        var dataModel = UIDataSelectorDataModel(data: items);
+        var dataSelectorDelegate: UIDataSelectorDelegate! = UIDataSelectorDelegate(anchor: boundTextField, dataModel: dataModel);
         tableView.delegate = dataSelectorDelegate;
         tableView.dataSource = dataSelectorDelegate.dataModel;
         boundTextField.inputView = tableView;
