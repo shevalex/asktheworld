@@ -173,6 +173,15 @@ public struct AtwUiUtils {
     }
 */
     
+    static func setToolbarWithButton(anchor: UIViewController!, boundTextField: UITextField!) {
+        var toolbar = UIToolbar()
+        toolbar.barStyle = UIBarStyle.Default
+        toolbar.sizeToFit()
+        var toolbarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: anchor, action: "donePickerAction")
+        toolbar.setItems([toolbarButton], animated: true)
+        boundTextField.inputAccessoryView = toolbar
+    }
+    
     class UIDataSelectorDelegate: NSObject, UITableViewDelegate {
         var dataModel: UIDataSelectorDataModel!;
         
