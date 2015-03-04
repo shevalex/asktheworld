@@ -178,8 +178,10 @@ class UIDataSelectorDataModel: NSObject, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        var tableCell: UITableViewCell! = UITableViewCell();
+        var tableCell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("cell") as? UITableViewCell;
+        if (tableCell == nil) {
+            tableCell = UITableViewCell(style: .Default, reuseIdentifier: "cell");
+        }
         
         tableCell.textLabel?.text = getDataItem(indexPath).getDisplay();
         tableCell.textLabel?.textAlignment = .Center;
