@@ -220,8 +220,9 @@ struct DataChooserFactory {
         var toolbar = UIToolbar();
         toolbar.barStyle = .Default;
         toolbar.sizeToFit();
-        var doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: dataSelectorDelegate, action: "doneButtonClickedAction") //need to add some action and right view
-        toolbar.setItems([doneButton], animated: true);
+        var doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: dataSelectorDelegate, action: "doneButtonClickedAction")
+        var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        toolbar.setItems([flexibleSpace, doneButton, flexibleSpace], animated: true);
         boundTextField.inputAccessoryView = toolbar;
         
         var rowHeight: Int! = 45;
