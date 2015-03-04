@@ -183,7 +183,7 @@ class UIDataSelectorDataModel: NSObject, UITableViewDataSource {
         
         tableCell.textLabel?.text = getDataItem(indexPath).getDisplay();
         tableCell.textLabel?.textAlignment = .Center;
-        tableCell.textLabel?.textColor = UIColor.blueColor();
+        tableCell.textLabel?.textColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1.0)
         
         return tableCell;
     }
