@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UserSettingsPage: UIViewController {
+class UserSettingsPage: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
