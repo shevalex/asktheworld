@@ -188,10 +188,10 @@ public struct Backend {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                Backend.userContext.languages = data?.valueForKey("languages") as [String];
-                Backend.userContext.gender = data?.valueForKey("gender") as String;
-                Backend.userContext.name = data?.valueForKey("name") as String;
-                Backend.userContext.age = data?.valueForKey("age_category") as String;
+                Backend.userContext.languages = data?.valueForKey("languages") as? [String];
+                Backend.userContext.gender = data?.valueForKey("gender") as? String;
+                Backend.userContext.name = data?.valueForKey("name") as? String;
+                Backend.userContext.age = data?.valueForKey("age_category") as? String;
 
                 callback?.onSuccess();
             } else if (statusCode == 401 || statusCode == 404) {
@@ -213,18 +213,18 @@ public struct Backend {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                Backend.userContext.responseQuantity = data?.valueForKey("default_response_quantity") as Int?;
-                Backend.userContext.responseWaitTime = data?.valueForKey("default_response_wait_time") as Int?;
-                Backend.userContext.requestTargetAge = data?.valueForKey("default_response_age_group_preference") as String?;
-                Backend.userContext.requestTargetGender = data?.valueForKey("default_gender_preference") as String?;
-                
-                Backend.userContext.dailyInquiryLimit = data?.valueForKey("inquiry_quantity_per_day") as Int?;
-                Backend.userContext.inquiryAge = data?.valueForKey("inquiry_age_group_preference") as String?;
-                Backend.userContext.inquiryGender = data?.valueForKey("inquiry_gender_preference") as String?;
-                Backend.userContext.expertises = data?.valueForKey("expertises") as [String]?;
-                Backend.userContext.contactVisible = data?.valueForKey("contact_info_requestable") as Bool?;
-                Backend.userContext.contactName = data?.valueForKey("contact_name") as String?;
-                Backend.userContext.contactInfo = data?.valueForKey("contact_info") as String?;
+                Backend.userContext.responseQuantity = data?.valueForKey("default_response_quantity") as? Int;
+                Backend.userContext.responseWaitTime = data?.valueForKey("default_response_wait_time") as? Int;
+                Backend.userContext.requestTargetAge = data?.valueForKey("default_response_age_group_preference") as? String;
+                Backend.userContext.requestTargetGender = data?.valueForKey("default_gender_preference") as?
+                        String;
+                Backend.userContext.dailyInquiryLimit = data?.valueForKey("inquiry_quantity_per_day") as? Int;
+                Backend.userContext.inquiryAge = data?.valueForKey("inquiry_age_group_preference") as? String;
+                Backend.userContext.inquiryGender = data?.valueForKey("inquiry_gender_preference") as? String;
+                Backend.userContext.expertises = data?.valueForKey("expertises") as? [String];
+                Backend.userContext.contactVisible = data?.valueForKey("contact_info_requestable") as? Bool;
+                Backend.userContext.contactName = data?.valueForKey("contact_name") as? String;
+                Backend.userContext.contactInfo = data?.valueForKey("contact_info") as? String;
                 
                 callback?.onSuccess();
             } else if (statusCode == 401 || statusCode == 404) {
