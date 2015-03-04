@@ -9,8 +9,8 @@
 import Foundation
 
 
-struct Configuration {
-    struct Item {
+public struct Configuration {
+    public struct Item {
         var display: String!;
         var data: AnyObject!;
         
@@ -103,8 +103,9 @@ public struct Backend {
     }
 
     
-    public static func register(login: String!, password: String!, gender: String!, age: String!, nickname: String!, languages: [String]!, callback: BackendCallback?) {
+    public static func register(login: String!, password: String!, gender: Configuration.Item!, age: Configuration.Item!, nickname: String!, languages: [Configuration.Item]!, callback: BackendCallback?) {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            
             if (statusCode == 201) {
                 Backend.userContext = UserContext();
                 let location = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as String?;
@@ -129,10 +130,16 @@ public struct Backend {
         var params: NSDictionary! = NSMutableDictionary();
         params.setValue(login, forKey: "login");
         params.setValue(password, forKey: "password");
-        params.setValue(gender, forKey: "gender");
-        params.setValue(age, forKey: "age_category");
+        params.setValue(gender.data, forKey: "gender");
+        params.setValue(age.data, forKey: "age_category");
         params.setValue(nickname, forKey: "name");
-        params.setValue(languages, forKey: "languages");
+        
+        var langData: [String] = [];
+        for (index, item) in enumerate(languages) {
+            langData.append(item.data as String);
+        }
+        
+        params.setValue(langData, forKey: "languages");
         
         Backend.communicate("user", method: HttpMethod.POST, params: params, communicationCallback: communicationCallback, login: login, password: password);
     }

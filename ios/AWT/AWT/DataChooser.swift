@@ -140,6 +140,10 @@ class UIDataSelectorDelegate: NSObject, UITableViewDelegate {
     }
     
     
+    func getSelectedItems() -> [Configuration.Item]! {
+        return selectedItems;
+    }
+    
     func doneButtonClickedAction() {
         boundTextField.endEditing(true);
     }
@@ -210,11 +214,15 @@ class SelectorView: UITableView {
     required override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style);
     }
+    
+    func getSelectedItems() -> [Configuration.Item]! {
+        return delegateHolder.getSelectedItems();
+    }
 }
 
 
 struct DataChooserFactory {
-    static func createDataChooser(boundTextField: UITextField!, items: [Configuration.Item], multichoice: Bool!) -> UIView! {
+    static func createDataChooser(boundTextField: UITextField!, items: [Configuration.Item], multichoice: Bool!) -> SelectorView! {
         
         var dataModel = UIDataSelectorDataModel(data: items);
         var dataSelectorDelegate: UIDataSelectorDelegate! = UIDataSelectorDelegate(anchor: boundTextField, dataModel: dataModel);
@@ -232,7 +240,7 @@ struct DataChooserFactory {
         var numOfRowsToShow = items.count > 5 ? 5: items.count;
         var height = rowHeight * numOfRowsToShow;
         
-        var tableView: UITableView! = SelectorView(height: height, delegate: dataSelectorDelegate);
+        var tableView: SelectorView! = SelectorView(height: height, delegate: dataSelectorDelegate);
         
         tableView.allowsMultipleSelection = multichoice;
         tableView.editing = false;

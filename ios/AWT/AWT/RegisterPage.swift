@@ -80,10 +80,11 @@ class RegisterPage: UIViewController, BackendCallback {
         
         AtwUiUtils.showSpinner(self.view);
         
-        //TODO: perform proper parsing
-        let languages: [String] = split(languagesTextField.text) {$0 == " "};
+        var languageItems = (languagesTextField.inputView as SelectorView).getSelectedItems();
+        var genderItem = (genderTextField.inputView as SelectorView).getSelectedItems()[0];
+        var ageItem = (ageTextField.inputView as SelectorView).getSelectedItems()[0];
         
-        Backend.register(emailTextField.text, password: passwordTextField.text, gender: genderTextField.text, age: ageTextField.text, nickname: nicknameTextField.text, languages: languages, callback: self)
+        Backend.register(emailTextField.text, password: passwordTextField.text, gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, callback: self)
     }
     
     @IBAction func passwordChangedAction(sender: UITextField) {
