@@ -178,7 +178,7 @@ public struct AtwUiUtils {
         private var boundTextField: UITextField!;
         
         private var selectedItems: [Configuration.Item] = [];
-        
+    
         init(anchor: UITextField!, dataModel: UIDataSelectorDataModel) {
             self.boundTextField = anchor;
             self.dataModel = dataModel;
@@ -190,7 +190,14 @@ public struct AtwUiUtils {
         
         func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
             
-            selectedItems.append(dataModel.getDataItem(indexPath));
+            var selectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
+            for (var i: Int! = 0; i < selectedItems.count; i = i.successor()) {
+                if (selectedItem.data === selectedItems[i].data) {
+                    return;
+                }
+            }
+
+            selectedItems.append(selectedItem);
             
             updateSelection();
         }
@@ -203,7 +210,6 @@ public struct AtwUiUtils {
                     break;
                 }
             }
-            
             
             updateSelection();
         }
@@ -247,14 +253,12 @@ public struct AtwUiUtils {
         }
         
         func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-            
+
             var tableCell: UITableViewCell! = UITableViewCell();
-            tableCell.backgroundColor = UIColor.blueColor();
             
             tableCell.textLabel?.text = getDataItem(indexPath).getDisplay();
             tableCell.textLabel?.textAlignment = .Center;
-            
-            tableCell.textLabel?.backgroundColor = UIColor.greenColor();
+            tableCell.textLabel?.textColor = UIColor.blueColor();
             
             return tableCell;
         }
@@ -272,17 +276,21 @@ public struct AtwUiUtils {
         toolbar.setItems([doneButton], animated: true);
         boundTextField.inputAccessoryView = toolbar;
         
+        var rowHeight: Int! = 45;
 
         var numOfRowsToShow = items.count > 5 ? 5: items.count;
-        var height = 45 * numOfRowsToShow;
+        var height = rowHeight * numOfRowsToShow;
         
         var tableView: UITableView! = UITableView(frame: CGRect(x: 0, y: 0, width: 0, height: height));
         
         tableView.delegate = dataSelectorDelegate;
-        tableView.dataSource = dataSelectorDelegate.dataModel;
+        tableView.dataSource = dataModel;
         boundTextField.inputView = tableView;
         
         tableView.backgroundColor = UIColor.redColor();
+        tableView.allowsMultipleSelection = false;
+        tableView.editing = false;
+        tableView.rowHeight = CGFloat(rowHeight);
         
         return dataSelectorDelegate;
     }
