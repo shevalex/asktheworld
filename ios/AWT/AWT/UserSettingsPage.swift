@@ -20,7 +20,6 @@ class UserSettingsPage: UITableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 
     /*
     // MARK: - Navigation
@@ -32,4 +31,14 @@ class UserSettingsPage: UITableViewController {
     }
     */
 
+}
+
+class logoutSegue: UIStoryboardSegue {
+    override func perform() {
+        let src = sourceViewController as UITableViewController
+        let dst = destinationViewController as UIViewController
+        src.navigationController?.pushViewController(dst, animated: true)
+        dst.navigationItem.hidesBackButton = true
+        Backend.logOut()
+    }
 }

@@ -97,6 +97,10 @@ public struct Backend {
 
         Backend.communicate("user?login=" + login, method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: login, password: password);
     }
+    
+    public static func logOut() {
+        println("Clear Backend here")
+    }
 
     
     public static func register(login: String!, password: String!, gender: String!, age: String!, nickname: String!, languages: [String]!, callback: BackendCallback?) {

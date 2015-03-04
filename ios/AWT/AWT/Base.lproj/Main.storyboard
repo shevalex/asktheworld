@@ -387,6 +387,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="k6r-wg-U10" kind="custom" customClass="logoutSegue" customModule="AWT" customModuleProvider="target" id="SiB-Oj-I7o"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -428,5 +431,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="c75-sv-RRF"/>
+        <segue reference="SiB-Oj-I7o"/>
     </inferredMetricsTieBreakers>
 </document>
