@@ -231,7 +231,6 @@ struct DataChooserFactory {
         
         var tableView: UITableView! = SelectorView(height: height, delegate: dataSelectorDelegate);
         
-        tableView.backgroundColor = UIColor.redColor();
         tableView.allowsMultipleSelection = multichoice;
         tableView.editing = false;
         tableView.rowHeight = CGFloat(rowHeight);
