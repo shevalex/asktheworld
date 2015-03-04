@@ -412,7 +412,7 @@
         <!--Profile-->
         <scene sceneID="i6j-14-Tqa">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Wvw-ON-6iQ" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Wvw-ON-6iQ" customClass="ProfilePage" customModule="AWT" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="W45-9U-JzW"/>
                         <viewControllerLayoutGuide type="bottom" id="Tbf-Ry-qI5"/>
@@ -462,8 +462,11 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YPO-Uq-TG6">
                                         <rect key="frame" x="112" y="293" width="97" height="28"/>
                                         <color key="backgroundColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="97" id="5iA-Gj-1Y6"/>
+                                        </constraints>
                                         <inset key="contentEdgeInsets" minX="20" minY="5" maxX="20" maxY="5"/>
-                                        <state key="normal" title="Register">
+                                        <state key="normal" title="Update">
                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -474,14 +477,13 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="CSf-Ye-XOP" firstAttribute="trailing" secondItem="ZQh-Fr-xGv" secondAttribute="trailing" id="1KW-Wd-Vfo"/>
-                                    <constraint firstAttribute="bottom" secondItem="YPO-Uq-TG6" secondAttribute="bottom" constant="183" id="3Nc-kX-4CV"/>
+                                    <constraint firstItem="YPO-Uq-TG6" firstAttribute="centerX" secondItem="dsk-qt-dHW" secondAttribute="centerX" id="36P-aa-eMo"/>
                                     <constraint firstItem="scf-S1-Bxk" firstAttribute="top" secondItem="CSf-Ye-XOP" secondAttribute="bottom" constant="8" symbolic="YES" id="3jN-lT-tWs"/>
                                     <constraint firstItem="CSf-Ye-XOP" firstAttribute="trailing" secondItem="hC4-Vz-fwg" secondAttribute="trailing" id="5PJ-bd-1Y5"/>
-                                    <constraint firstItem="CSf-Ye-XOP" firstAttribute="centerX" secondItem="YPO-Uq-TG6" secondAttribute="centerX" id="6MC-UQ-Y89"/>
+                                    <constraint firstAttribute="bottom" secondItem="YPO-Uq-TG6" secondAttribute="bottom" constant="183" id="Ayz-wO-Al8"/>
                                     <constraint firstItem="hC4-Vz-fwg" firstAttribute="top" secondItem="scf-S1-Bxk" secondAttribute="bottom" constant="8" symbolic="YES" id="Egq-VV-tAE"/>
                                     <constraint firstItem="dsk-qt-dHW" firstAttribute="top" secondItem="GBh-Go-8Hv" secondAttribute="bottom" constant="8" symbolic="YES" id="F4O-n5-i5e"/>
                                     <constraint firstItem="GBh-Go-8Hv" firstAttribute="top" secondItem="C7p-zj-bGg" secondAttribute="top" constant="210" id="J9G-iL-Ofn"/>
-                                    <constraint firstItem="YPO-Uq-TG6" firstAttribute="top" secondItem="dsk-qt-dHW" secondAttribute="bottom" constant="15" id="JRI-Ym-ujx"/>
                                     <constraint firstItem="GBh-Go-8Hv" firstAttribute="top" secondItem="abF-yE-bqV" secondAttribute="bottom" constant="8" symbolic="YES" id="JT0-M0-lJm"/>
                                     <constraint firstItem="CSf-Ye-XOP" firstAttribute="leading" secondItem="abF-yE-bqV" secondAttribute="leading" id="PFZ-s7-ig9"/>
                                     <constraint firstAttribute="trailing" secondItem="CSf-Ye-XOP" secondAttribute="trailing" constant="50" id="PMQ-zF-ng2"/>
@@ -498,6 +500,7 @@
                                     <constraint firstItem="CSf-Ye-XOP" firstAttribute="top" secondItem="C7p-zj-bGg" secondAttribute="top" constant="20" id="tD4-YU-gnH"/>
                                     <constraint firstItem="CSf-Ye-XOP" firstAttribute="leading" secondItem="scf-S1-Bxk" secondAttribute="leading" id="u5T-Wb-NC2"/>
                                     <constraint firstItem="CSf-Ye-XOP" firstAttribute="trailing" secondItem="dsk-qt-dHW" secondAttribute="trailing" id="yro-Ms-GDA"/>
+                                    <constraint firstItem="YPO-Uq-TG6" firstAttribute="top" secondItem="dsk-qt-dHW" secondAttribute="bottom" constant="15" id="zfu-Xl-Uav"/>
                                 </constraints>
                             </scrollView>
                         </subviews>
