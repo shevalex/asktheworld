@@ -374,7 +374,7 @@
                             </tableViewSection>
                             <tableViewSection id="hzD-BL-XER">
                                 <cells>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="hEt-Xr-x7q" style="IBUITableViewCellStyleDefault" id="d37-kp-smB">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="hEt-Xr-x7q" style="IBUITableViewCellStyleDefault" id="d37-kp-smB">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="d37-kp-smB" id="WjM-ds-yWb">
                                             <autoresizingMask key="autoresizingMask"/>
