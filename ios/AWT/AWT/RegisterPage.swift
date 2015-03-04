@@ -95,6 +95,7 @@ class RegisterPage: UIViewController, BackendCallback {
         
         AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS, multichoice: false);
         AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES, multichoice: false);
+        AtwUiUtils.setDataChooser(languagesTextField, items: Configuration.LANGUAGES, multichoice: true);
         
         // Do any additional setup after loading the view.
     }
