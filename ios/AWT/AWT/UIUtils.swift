@@ -184,6 +184,10 @@ public struct AtwUiUtils {
             self.dataModel = dataModel;
         }
         
+        func getDataModel() -> UIDataSelectorDataModel! {
+            return dataModel;
+        }
+        
         func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
             return true;
         }
@@ -264,7 +268,28 @@ public struct AtwUiUtils {
         }
     }
     
-    static func setDataChooser(boundTextField: UITextField!, items: [Configuration.Item]) -> UIDataSelectorDelegate {
+    class SelectorView: UITableView {
+        private var delegateHolder: UIDataSelectorDelegate!;
+        
+        init(height: Int!, delegate: UIDataSelectorDelegate!) {
+            var rect: CGRect! = CGRect(x: 0, y: 0, width: 0, height: height);
+            super.init(frame: rect);
+            
+            self.delegate = delegate;
+            self.delegateHolder = delegate;
+            self.dataSource = delegate.getDataModel();
+        }
+        
+        required init(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder);
+        }
+        
+        required override init(frame: CGRect, style: UITableViewStyle) {
+            super.init(frame: frame, style: style);
+        }
+    }
+    
+    static func setDataChooser(boundTextField: UITextField!, items: [Configuration.Item], multichoice: Bool!) {
         
         var dataModel = UIDataSelectorDataModel(data: items);
         var dataSelectorDelegate: UIDataSelectorDelegate! = UIDataSelectorDelegate(anchor: boundTextField, dataModel: dataModel);
@@ -281,18 +306,14 @@ public struct AtwUiUtils {
         var numOfRowsToShow = items.count > 5 ? 5: items.count;
         var height = rowHeight * numOfRowsToShow;
         
-        var tableView: UITableView! = UITableView(frame: CGRect(x: 0, y: 0, width: 0, height: height));
+        var tableView: UITableView! = SelectorView(height: height, delegate: dataSelectorDelegate);
         
-        tableView.delegate = dataSelectorDelegate;
-        tableView.dataSource = dataModel;
         boundTextField.inputView = tableView;
         
         tableView.backgroundColor = UIColor.redColor();
-        tableView.allowsMultipleSelection = false;
+        tableView.allowsMultipleSelection = multichoice;
         tableView.editing = false;
         tableView.rowHeight = CGFloat(rowHeight);
-        
-        return dataSelectorDelegate;
     }
 
 }
