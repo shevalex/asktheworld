@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8236B5871AA6C16200EE3258 /* DataChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236B5861AA6C16200EE3258 /* DataChooser.swift */; };
 		82A4014D1AA01B1C00E26253 /* uiutils.strings in Resources */ = {isa = PBXBuildFile; fileRef = 82A4014C1AA01B1C00E26253 /* uiutils.strings */; };
 		82A4014F1AA158CA00E26253 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A4014E1AA158CA00E26253 /* Backend.swift */; };
 		82BDE9D71AA50B7C002B6F5D /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 82BDE9D61AA50B7C002B6F5D /* close.png */; };
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8236B5861AA6C16200EE3258 /* DataChooser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataChooser.swift; sourceTree = "<group>"; };
 		82A4014C1AA01B1C00E26253 /* uiutils.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = uiutils.strings; sourceTree = "<group>"; };
 		82A4014E1AA158CA00E26253 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
 		82BDE9D61AA50B7C002B6F5D /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = ../../../web/imgs/close.png; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 			children = (
 				F78BC7CF1A9FEA65009281EF /* UIUtils.swift */,
 				82A4014E1AA158CA00E26253 /* Backend.swift */,
+				8236B5861AA6C16200EE3258 /* DataChooser.swift */,
 			);
 			name = utils;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F78BC7D01A9FEA65009281EF /* UIUtils.swift in Sources */,
+				8236B5871AA6C16200EE3258 /* DataChooser.swift in Sources */,
 				F745FE5A1A9E2882006E7698 /* HomePage.swift in Sources */,
 				82A4014F1AA158CA00E26253 /* Backend.swift in Sources */,
 				F771DCA91AA6347F00717996 /* UserSettingsPage.swift in Sources */,
