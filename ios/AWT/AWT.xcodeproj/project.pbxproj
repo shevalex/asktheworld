@@ -18,8 +18,8 @@
 		F745FE6E1A9E2882006E7698 /* AWTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE6D1A9E2882006E7698 /* AWTTests.swift */; };
 		F750F3341A9E6A3700D929E2 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750F3331A9E6A3700D929E2 /* LoginPage.swift */; };
 		F750F33A1A9E6E3600D929E2 /* RegisterPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750F3391A9E6E3600D929E2 /* RegisterPage.swift */; };
-		F771DCA71AA6331900717996 /* user_info.png in Resources */ = {isa = PBXBuildFile; fileRef = F771DCA61AA6331900717996 /* user_info.png */; };
 		F771DCA91AA6347F00717996 /* UserSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F771DCA81AA6347F00717996 /* UserSettingsPage.swift */; };
+		F773F3D11AA68D300053A712 /* contact_info.png in Resources */ = {isa = PBXBuildFile; fileRef = F773F3D01AA68D300053A712 /* contact_info.png */; };
 		F78BC7D01A9FEA65009281EF /* UIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78BC7CF1A9FEA65009281EF /* UIUtils.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,8 +49,8 @@
 		F745FE6D1A9E2882006E7698 /* AWTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWTTests.swift; sourceTree = "<group>"; };
 		F750F3331A9E6A3700D929E2 /* LoginPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		F750F3391A9E6E3600D929E2 /* RegisterPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterPage.swift; sourceTree = "<group>"; };
-		F771DCA61AA6331900717996 /* user_info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = user_info.png; path = ../../../../../../Downloads/user_info.png; sourceTree = "<group>"; };
 		F771DCA81AA6347F00717996 /* UserSettingsPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSettingsPage.swift; sourceTree = "<group>"; };
+		F773F3D01AA68D300053A712 /* contact_info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = contact_info.png; path = ../../../web/imgs/contact_info.png; sourceTree = "<group>"; };
 		F78BC7CF1A9FEA65009281EF /* UIUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -110,7 +110,7 @@
 		F745FE551A9E2882006E7698 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F771DCA61AA6331900717996 /* user_info.png */,
+				F773F3D01AA68D300053A712 /* contact_info.png */,
 				82BDE9D61AA50B7C002B6F5D /* close.png */,
 				F745FE561A9E2882006E7698 /* Info.plist */,
 				82A4014C1AA01B1C00E26253 /* uiutils.strings */,
@@ -227,7 +227,7 @@
 				F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */,
 				F745FE621A9E2882006E7698 /* LaunchScreen.xib in Resources */,
 				82A4014D1AA01B1C00E26253 /* uiutils.strings in Resources */,
-				F771DCA71AA6331900717996 /* user_info.png in Resources */,
+				F773F3D11AA68D300053A712 /* contact_info.png in Resources */,
 				82BDE9D71AA50B7C002B6F5D /* close.png in Resources */,
 				F745FE5F1A9E2882006E7698 /* Images.xcassets in Resources */,
 			);

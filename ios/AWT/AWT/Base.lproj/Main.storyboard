@@ -19,7 +19,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Home" id="LvB-rW-WMh">
-                        <barButtonItem key="rightBarButtonItem" image="user_info.png" id="vPa-CB-v1b">
+                        <barButtonItem key="rightBarButtonItem" image="contact_info.png" id="vPa-CB-v1b">
                             <connections>
                                 <segue destination="sbM-f3-mzd" kind="show" id="InD-JW-irA"/>
                             </connections>
@@ -357,7 +357,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="user_info.png" width="30" height="30"/>
+        <image name="contact_info.png" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="c75-sv-RRF"/>
