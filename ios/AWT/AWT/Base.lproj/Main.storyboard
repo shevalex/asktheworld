@@ -658,7 +658,7 @@
         <!--Response Preferences-->
         <scene sceneID="y53-K3-Fw8">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="gCe-NB-pLo" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="gCe-NB-pLo" customClass="ResponsePreferencesPage" customModule="AWT" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="6AG-ov-VdL"/>
                         <viewControllerLayoutGuide type="bottom" id="fHL-jn-JVj"/>
