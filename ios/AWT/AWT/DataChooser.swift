@@ -114,7 +114,6 @@ class UIDataSelectorDelegate: NSObject, UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
         var selectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
         for (var i: Int! = 0; i < selectedItems.count; i = i.successor()) {
             if (selectedItem.data === selectedItems[i].data) {
@@ -127,7 +126,6 @@ class UIDataSelectorDelegate: NSObject, UITableViewDelegate {
         updateSelection();
     }
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        
         var deselectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
         for (var i: Int! = 0; i < selectedItems.count; i = i.successor()) {
             if (deselectedItem.data === selectedItems[i].data) {
@@ -144,6 +142,13 @@ class UIDataSelectorDelegate: NSObject, UITableViewDelegate {
         return selectedItems;
     }
     
+    func setSelectedItems(selection: [Configuration.Item]!) {
+        selectedItems = selection;
+        
+        updateSelection();
+    }
+    
+
     func doneButtonClickedAction() {
         boundTextField.endEditing(true);
     }
@@ -170,11 +175,11 @@ class UIDataSelectorDataModel: NSObject, UITableViewDataSource {
     }
     
     func getDataItem(indexPath: NSIndexPath) -> Configuration.Item {
-        return getDataItem(indexPath.row);
+        return data[indexPath.row];
     }
     
-    func getDataItem(index: Int) -> Configuration.Item {
-        return data[index];
+    func getData() -> [Configuration.Item]! {
+        return data;
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -218,11 +223,28 @@ class SelectorView: UITableView {
     func getSelectedItems() -> [Configuration.Item]! {
         return delegateHolder.getSelectedItems();
     }
+    func setSelectedItem(selectedItem: Configuration.Item!)  {
+        setSelectedItems([selectedItem]);
+    }
+    
+    func setSelectedItems(selectedItems: [Configuration.Item]!)  {
+        delegateHolder.setSelectedItems(selectedItems);
+
+        var data = delegateHolder.getDataModel().getData();
+        for (i, selectedItem) in enumerate(selectedItems) {
+            for (index, item) in enumerate(data) {
+                if (selectedItem.data === item.data) {
+                    var indexPath = NSIndexPath(index: 0).indexPathByAddingIndex(index);
+                    self.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.None);
+                }
+            }
+        }
+    }
 }
 
 
 struct DataChooserFactory {
-    static func createDataChooser(boundTextField: UITextField!, items: [Configuration.Item], multichoice: Bool!) -> SelectorView! {
+    static func createDataChooser(boundTextField: UITextField!, items: [Configuration.Item]!, multichoice: Bool!) -> SelectorView! {
         
         var dataModel = UIDataSelectorDataModel(data: items);
         var dataSelectorDelegate: UIDataSelectorDelegate! = UIDataSelectorDelegate(anchor: boundTextField, dataModel: dataModel);

@@ -89,8 +89,11 @@ public struct AtwUiUtils {
     
 
     
-    static func setDataChooser(boundTextField: UITextField!, items: [Configuration.Item], multichoice: Bool!) {
+    static func setDataChooser(boundTextField: UITextField!, items: [Configuration.Item], multichoice: Bool! = false) -> SelectorView! {
         
-        boundTextField.inputView = DataChooserFactory.createDataChooser(boundTextField, items: items, multichoice: multichoice);
+        var chooserView: SelectorView! = DataChooserFactory.createDataChooser(boundTextField, items: items, multichoice: multichoice);
+        boundTextField.inputView = chooserView;
+        
+        return chooserView;
     }
 }
