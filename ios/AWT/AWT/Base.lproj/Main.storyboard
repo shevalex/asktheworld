@@ -450,7 +450,6 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                         <connections>
-                                            <action selector="newPasswordChanged:" destination="Wvw-ON-6iQ" eventType="editingChanged" id="3pN-fn-zPY"/>
                                             <action selector="newPasswordChangedAction:" destination="Wvw-ON-6iQ" eventType="editingChanged" id="Nl0-2d-TnI"/>
                                         </connections>
                                     </textField>
