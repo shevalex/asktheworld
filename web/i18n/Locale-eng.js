@@ -224,9 +224,9 @@ var Locale_eng = {
       "ContactInfoPreferencesLabel": "Tell us if you want to allow your contact information to be requesable when you answer professional questions of your expertise",
       
       "NumOfResponsesPreferenceLabel": "Maximum number of responses that you want to see",
-      "AgePreferenceLabel": "Who do you want to send this request to",
+      "AgePreferenceLabel": "What is desired age of respondents",
       "WaitPreferenceLabel": "How long do you want to wait",
-      "GenderPreferenceLabel": "Gender preference",
+      "GenderPreferenceLabel": "Who do you want to send this request to",
       "NumOfInquiriesPreferenceLabel": "Maximum daily amount of inquiries you want to receive",
       "RequestersAgePreferenceLabel": "Age of requesters",
       "RequestersGenderPreferenceLabel": "Gender of requesters",

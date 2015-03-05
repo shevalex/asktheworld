@@ -47,13 +47,13 @@ UserPreferencesPage.prototype.onHide = function() {
 UserPreferencesPage.prototype._appendRequestPreferencesPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "RequestPreferencesPanel");
   
-  this._quantityElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Quantity"), this.getLocale().NumOfResponsesPreferenceLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
-  
+  this._genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), this.getLocale().GenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
+
   this._ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), this.getLocale().AgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
   
-  this._waitTimeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "WaitTime"), this.getLocale().WaitPreferenceLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
+  this._quantityElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Quantity"), this.getLocale().NumOfResponsesPreferenceLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
   
-  this._genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), this.getLocale().GenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
+  this._waitTimeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "WaitTime"), this.getLocale().WaitPreferenceLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
 }
 
 UserPreferencesPage.prototype._appendInquiryPreferencesPanel = function(root) {
