@@ -745,6 +745,7 @@
                                         </state>
                                         <connections>
                                             <action selector="registerButtonAction:" destination="PqC-Vm-GPP" eventType="touchUpInside" id="8Rv-kc-EgK"/>
+                                            <action selector="updateButtonClickAction:" destination="gCe-NB-pLo" eventType="touchUpInside" id="XUp-Ry-oX1"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -783,6 +784,11 @@
                     </view>
                     <navigationItem key="navigationItem" title="Response Preferences" id="6aJ-tI-QFP"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="ageTextField" destination="zwU-hv-dO0" id="4ZJ-6N-1id"/>
+                        <outlet property="amountOfInquiriesTextField" destination="gzf-cf-rkV" id="w9X-ku-DQH"/>
+                        <outlet property="genderTextField" destination="gCg-wT-Ugj" id="dxs-S3-t0u"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VOj-oM-yt5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

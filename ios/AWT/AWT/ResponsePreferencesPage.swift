@@ -10,6 +10,13 @@ import UIKit
 
 class ResponsePreferencesPage: UIViewController {
 
+    @IBOutlet weak var amountOfInquiriesTextField: UITextField!
+    @IBOutlet weak var ageTextField: UITextField!
+    @IBOutlet weak var genderTextField: UITextField!
+    
+    @IBAction func updateButtonClickAction(sender: UIButton) {
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
