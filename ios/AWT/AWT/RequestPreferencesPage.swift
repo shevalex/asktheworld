@@ -10,6 +10,14 @@ import UIKit
 
 class RequestPreferencesPage: UIViewController {
 
+    @IBOutlet weak var genderTextField: UITextField!
+    @IBOutlet weak var ageTextField: UITextField!
+    @IBOutlet weak var numberOfResponsesTextField: UITextField!
+    @IBOutlet weak var waitTimeTextField: UITextField!
+    
+    @IBAction func updateButtonClickAction(sender: UIButton) {
+        
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
