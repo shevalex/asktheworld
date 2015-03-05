@@ -34,28 +34,60 @@ public struct Configuration {
     static let AGE_CATEGORY_PREFERENCE: [Item] = [Item(display: "AGE_PREFERENCE_ALL", data: "all"), Item(display: "AGE_PREFERENCE_CHILDREN", data: "children"), Item(display: "AGE_PREFERENCE_TEENAGERS", data: "teenagers"), Item(display: "AGE_PREFERENCE_YOUNG", data: "youngs"), Item(display: "AGE_PREFERENCE_ADULTS", data: "adults"), Item(display: "AGE_PREFERENCE_SENIORS", data: "seniors")];
     static let GENDER_PREFERENCE: [Item] = [Item(display: "GENDER_PREFERENCE_ANY", data: "any"), Item(display: "GENDER_PREFERENCE_MALE", data: "male"), Item(display: "GENDER_PREFERENCE_FEMALE", data: "female")];
     static let INQUIRY_LIMIT_PREFERENCE: [Item] = [Item(display: "INCOMING_LIMIT_PREFERENCE_ALL", data: -1), Item(display: "INCOMING_LIMIT_PREFERENCE_TEN", data: 10), Item(display: "INCOMING_LIMIT_PREFERENCE_FIVE", data: 5), Item(display: "INCOMING_LIMIT_PREFERENCE_NONE", data: 0)];
+    
+    
+    static func resolve(value: AnyObject?, predefinedList: [Configuration.Item]!) -> Configuration.Item? {
+        if (value == nil) {
+            return nil;
+        }
+        
+        for (index, item) in enumerate(predefinedList) {
+            if (item.data === value) {
+                return item;
+            }
+        }
+        
+        return nil;
+    }
+
+    static func resolve(values: [AnyObject]?, predefinedList: [Configuration.Item]!) -> [Configuration.Item] {
+        var result: [Configuration.Item]! = [];
+        if (values == nil) {
+            return result;
+        }
+        
+        for (index, item) in enumerate(predefinedList) {
+            for (i, value) in enumerate(values!) {
+                if (item.data === value) {
+                    result.append(item);
+                }
+            }
+        }
+        
+        return result;
+    }
 }
 
 public class UserContext {
     //Profile
     public var login: String!;
     public var password: String!;
-    public var gender: String!;
-    public var languages: [String]!;
-    public var age: String!;
+    public var gender: Configuration.Item!;
+    public var languages: [Configuration.Item]!;
+    public var age: Configuration.Item!;
     public var name: String!;
     public var userId: Int!;
     
     //Preferences
-    public var responseQuantity: Int! = Configuration.RESPONSE_QUANTITY[0].data as Int;
-    public var responseWaitTime: Int! = Configuration.RESPONSE_WAIT_TIME[0].data as Int;
-    public var requestTargetAge: String! = Configuration.AGE_CATEGORY_PREFERENCE[0].data as String;
-    public var requestTargetGender: String! = Configuration.GENDER_PREFERENCE[0].data as String;
+    public var responseQuantity: Configuration.Item! = Configuration.RESPONSE_QUANTITY[0];
+    public var responseWaitTime: Configuration.Item! = Configuration.RESPONSE_WAIT_TIME[0];
+    public var requestTargetAge: Configuration.Item! = Configuration.AGE_CATEGORY_PREFERENCE[0];
+    public var requestTargetGender: Configuration.Item! = Configuration.GENDER_PREFERENCE[0];
 
-    public var dailyInquiryLimit: Int! = Configuration.INQUIRY_LIMIT_PREFERENCE[0].data as Int;
-    public var inquiryAge: String! = Configuration.AGE_CATEGORY_PREFERENCE[0].data as String;
-    public var inquiryGender: String! = Configuration.GENDER_PREFERENCE[0].data as String;
-    public var expertises: [String]! = [Configuration.EXPERTISES[0].data as String];
+    public var dailyInquiryLimit: Configuration.Item! = Configuration.INQUIRY_LIMIT_PREFERENCE[0];
+    public var inquiryAge: Configuration.Item! = Configuration.AGE_CATEGORY_PREFERENCE[0];
+    public var inquiryGender: Configuration.Item! = Configuration.GENDER_PREFERENCE[0];
+    public var expertises: [Configuration.Item]! = [Configuration.EXPERTISES[0]];
     public var contactVisible: Bool! = false;
     public var contactName: String! = "";
     public var contactInfo: String! = "";
@@ -195,10 +227,10 @@ public struct Backend {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                Backend.userContext.languages = data?.valueForKey("languages") as? [String];
-                Backend.userContext.gender = data?.valueForKey("gender") as? String;
                 Backend.userContext.name = data?.valueForKey("name") as? String;
-                Backend.userContext.age = data?.valueForKey("age_category") as? String;
+                Backend.userContext.languages = Configuration.resolve(data?.valueForKey("languages") as? [String], predefinedList: Configuration.LANGUAGES);
+                Backend.userContext.gender = Configuration.resolve(data?.valueForKey("gender"), predefinedList: Configuration.GENDERS);
+                Backend.userContext.age = Configuration.resolve(data?.valueForKey("age"), predefinedList: Configuration.AGE_CATEGORIES);
 
                 callback?.onSuccess();
             } else if (statusCode == 401 || statusCode == 404) {
@@ -220,15 +252,14 @@ public struct Backend {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                Backend.userContext.responseQuantity = data?.valueForKey("default_response_quantity") as? Int;
-                Backend.userContext.responseWaitTime = data?.valueForKey("default_response_wait_time") as? Int;
-                Backend.userContext.requestTargetAge = data?.valueForKey("default_response_age_group_preference") as? String;
-                Backend.userContext.requestTargetGender = data?.valueForKey("default_gender_preference") as?
-                        String;
-                Backend.userContext.dailyInquiryLimit = data?.valueForKey("inquiry_quantity_per_day") as? Int;
-                Backend.userContext.inquiryAge = data?.valueForKey("inquiry_age_group_preference") as? String;
-                Backend.userContext.inquiryGender = data?.valueForKey("inquiry_gender_preference") as? String;
-                Backend.userContext.expertises = data?.valueForKey("expertises") as? [String];
+                Backend.userContext.responseQuantity = Configuration.resolve(data?.valueForKey("default_response_quantity"), predefinedList: Configuration.RESPONSE_QUANTITY);
+                Backend.userContext.responseWaitTime = Configuration.resolve(data?.valueForKey("default_response_wait_time"), predefinedList: Configuration.RESPONSE_WAIT_TIME);
+                Backend.userContext.requestTargetAge = Configuration.resolve(data?.valueForKey("default_response_age_group_preference"), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
+                Backend.userContext.requestTargetGender = Configuration.resolve(data?.valueForKey("default_gender_preference"), predefinedList: Configuration.GENDER_PREFERENCE);
+                Backend.userContext.dailyInquiryLimit = Configuration.resolve(data?.valueForKey("inquiry_quantity_per_day"), predefinedList: Configuration.INQUIRY_LIMIT_PREFERENCE);
+                Backend.userContext.inquiryAge = Configuration.resolve(data?.valueForKey("inquiry_age_group_preference"), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
+                Backend.userContext.inquiryGender = Configuration.resolve(data?.valueForKey("inquiry_gender_preference"), predefinedList: Configuration.GENDER_PREFERENCE);
+                Backend.userContext.expertises = Configuration.resolve(data?.valueForKey("expertises") as? [String], predefinedList: Configuration.EXPERTISES);
                 Backend.userContext.contactVisible = data?.valueForKey("contact_info_requestable") as? Bool;
                 Backend.userContext.contactName = data?.valueForKey("contact_name") as? String;
                 Backend.userContext.contactInfo = data?.valueForKey("contact_info") as? String;
@@ -244,6 +275,7 @@ public struct Backend {
         let url = "user/\(Backend.userContext.userId)/settings";
         Backend.communicate(url, method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: Backend.userContext.login, password: Backend.userContext.password);
     }
+
     
     
     
