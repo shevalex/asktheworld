@@ -101,7 +101,7 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
         return;
       }
     }
-    
+
     var callback = {
       success: function(requestId) {
         callback._onCompletion();
@@ -111,11 +111,11 @@ UserProfilePage.prototype._appendControlPanel = function(root) {
         this._confirmNewPasswordElement.setValue("");
       }.bind(this),
       failure: function() {
-        this._onCompletion();
+        callback._onCompletion();
         Application.showMessage(this.getLocale().UpdateFailedMessage);
-      },
+      }.bind(this),
       error: function() {
-        this._onCompletion();
+        callback._onCompletion();
         Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       },
 
