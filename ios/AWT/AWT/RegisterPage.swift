@@ -116,7 +116,7 @@ class RegisterPage: UIViewController, BackendCallback {
     }
     */
 
-    func showErrorMessage(popupErrorKey: String) {
+    private func showErrorMessage(popupErrorKey: String) {
         AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("REGISTRATION_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
     }
 }

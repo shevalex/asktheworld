@@ -40,9 +40,9 @@ public struct Configuration {
         if (value == nil) {
             return nil;
         }
-        
+
         for (index, item) in enumerate(predefinedList) {
-            if (item.data === value) {
+            if (item.data as NSObject == value as NSObject) {
                 return item;
             }
         }
@@ -58,7 +58,7 @@ public struct Configuration {
         
         for (index, item) in enumerate(predefinedList) {
             for (i, value) in enumerate(values!) {
-                if (item.data === value) {
+                if (item.data as NSObject == value as NSObject) {
                     result.append(item);
                 }
             }
@@ -230,7 +230,7 @@ public struct Backend {
                 Backend.userContext.name = data?.valueForKey("name") as? String;
                 Backend.userContext.languages = Configuration.resolve(data?.valueForKey("languages") as? [String], predefinedList: Configuration.LANGUAGES);
                 Backend.userContext.gender = Configuration.resolve(data?.valueForKey("gender"), predefinedList: Configuration.GENDERS);
-                Backend.userContext.age = Configuration.resolve(data?.valueForKey("age"), predefinedList: Configuration.AGE_CATEGORIES);
+                Backend.userContext.age = Configuration.resolve(data?.valueForKey("age_category"), predefinedList: Configuration.AGE_CATEGORIES);
 
                 callback?.onSuccess();
             } else if (statusCode == 401 || statusCode == 404) {

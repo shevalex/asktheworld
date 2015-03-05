@@ -446,6 +446,10 @@
                                         <rect key="frame" x="50" y="172" width="220" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                        <connections>
+                                            <action selector="newPasswordChanged:" destination="Wvw-ON-6iQ" eventType="editingChanged" id="3pN-fn-zPY"/>
+                                            <action selector="newPasswordChangedAction:" destination="Wvw-ON-6iQ" eventType="editingChanged" id="Nl0-2d-TnI"/>
+                                        </connections>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="252" verticalCompressionResistancePriority="753" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Confirm New Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GBh-Go-8Hv">
                                         <rect key="frame" x="50" y="210" width="220" height="30"/>
@@ -475,6 +479,7 @@
                                         </state>
                                         <connections>
                                             <action selector="registerButtonAction:" destination="PqC-Vm-GPP" eventType="touchUpInside" id="gxf-Uw-oPL"/>
+                                            <action selector="updateButtonClickAction:" destination="Wvw-ON-6iQ" eventType="touchUpInside" id="2SI-2a-g7g"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -517,6 +522,15 @@
                     </view>
                     <navigationItem key="navigationItem" title="Profile" id="Ndz-Ck-xSs"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="ageTextField" destination="hC4-Vz-fwg" id="3UM-vt-Azi"/>
+                        <outlet property="confirmPasswordTextField" destination="GBh-Go-8Hv" id="j66-Ev-3j0"/>
+                        <outlet property="currentPasswordTextField" destination="dsk-qt-dHW" id="GLD-e9-mNf"/>
+                        <outlet property="genderTextField" destination="scf-S1-Bxk" id="C1l-AI-Qgv"/>
+                        <outlet property="languagesTextField" destination="ZQh-Fr-xGv" id="CXw-VY-7QU"/>
+                        <outlet property="newPasswordTextField" destination="abF-yE-bqV" id="nNV-si-nD3"/>
+                        <outlet property="nicknameTextField" destination="CSf-Ye-XOP" id="uNv-bO-xlr"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kMb-pv-qhl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
