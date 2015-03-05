@@ -12,6 +12,7 @@
 		82A4014F1AA158CA00E26253 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A4014E1AA158CA00E26253 /* Backend.swift */; };
 		82BDE9D71AA50B7C002B6F5D /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 82BDE9D61AA50B7C002B6F5D /* close.png */; };
 		F73D302A1AA771F800A5317A /* ProfilePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73D30291AA771F800A5317A /* ProfilePage.swift */; };
+		F73D302C1AA7F01E00A5317A /* RequestPreferencesPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */; };
 		F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE571A9E2882006E7698 /* AppDelegate.swift */; };
 		F745FE5A1A9E2882006E7698 /* HomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE591A9E2882006E7698 /* HomePage.swift */; };
 		F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F745FE5B1A9E2882006E7698 /* Main.storyboard */; };
@@ -41,6 +42,7 @@
 		82A4014E1AA158CA00E26253 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
 		82BDE9D61AA50B7C002B6F5D /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = ../../../web/imgs/close.png; sourceTree = "<group>"; };
 		F73D30291AA771F800A5317A /* ProfilePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePage.swift; sourceTree = "<group>"; };
+		F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestPreferencesPage.swift; sourceTree = "<group>"; };
 		F745FE521A9E2882006E7698 /* AWT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AWT.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F745FE561A9E2882006E7698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F745FE571A9E2882006E7698 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				F745FE571A9E2882006E7698 /* AppDelegate.swift */,
 				F745FE591A9E2882006E7698 /* HomePage.swift */,
 				F745FE5B1A9E2882006E7698 /* Main.storyboard */,
+				F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */,
 				F73D30291AA771F800A5317A /* ProfilePage.swift */,
 				F771DCA81AA6347F00717996 /* UserSettingsPage.swift */,
 				F750F3331A9E6A3700D929E2 /* LoginPage.swift */,
@@ -256,6 +259,7 @@
 				F73D302A1AA771F800A5317A /* ProfilePage.swift in Sources */,
 				F78BC7D01A9FEA65009281EF /* UIUtils.swift in Sources */,
 				8236B5871AA6C16200EE3258 /* DataChooser.swift in Sources */,
+				F73D302C1AA7F01E00A5317A /* RequestPreferencesPage.swift in Sources */,
 				F745FE5A1A9E2882006E7698 /* HomePage.swift in Sources */,
 				82A4014F1AA158CA00E26253 /* Backend.swift in Sources */,
 				F771DCA91AA6347F00717996 /* UserSettingsPage.swift in Sources */,

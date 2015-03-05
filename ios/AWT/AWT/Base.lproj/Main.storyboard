@@ -525,7 +525,7 @@
         <!--Request Preferences-->
         <scene sceneID="9kp-Kp-JVD">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="lRs-88-Et6" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="lRs-88-Et6" customClass="RequestPreferencesPage" customModule="AWT" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="edw-9V-D0j"/>
                         <viewControllerLayoutGuide type="bottom" id="ag3-tU-dR4"/>
