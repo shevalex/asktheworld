@@ -800,7 +800,7 @@
         <!--Contact Info-->
         <scene sceneID="Bdf-0i-s1U">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="zab-Rf-b2G" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="zab-Rf-b2G" customClass="ContactInfoPage" customModule="AWT" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Azp-hV-nvC"/>
                         <viewControllerLayoutGuide type="bottom" id="vdd-ZA-M6g"/>
