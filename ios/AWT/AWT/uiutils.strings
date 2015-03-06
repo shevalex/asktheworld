@@ -10,9 +10,9 @@
 "OK_BUTTON" = "OK";
 
 // Messages
-"LOGIN_ERROR_MESSAGE_TTILE" = "Login Message";
-"REGISTRATION_ERROR_MESSAGE_TTILE" = "Registration Message";
-"PROFILE_ERROR_MESSAGE_TTILE" = "Update Profile Message";
+"LOGIN_ERROR_MESSAGE_TTILE" = "Signing In";
+"REGISTRATION_ERROR_MESSAGE_TTILE" = "Registration";
+"PROFILE_ERROR_MESSAGE_TTILE" = "Profile Update";
 
 "EMAIL_NOT_PROVIDED_MESSAGE" = "Email must be provided";
 "EMAIL_NOT_VALID_MESSAGE" = "Email does not look like a valid email address";

@@ -30,7 +30,7 @@ class ProfilePage: UIViewController, BackendCallback {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
             self.showErrorMessage("UPDATE_SUCCESSFUL_PROFILE_MESSAGE");
-            currentPasswordTextField.text = "";
+            self.currentPasswordTextField.text = "";
         });
     }
     func onFailure() {

@@ -219,7 +219,7 @@ public struct Backend {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             
             if (statusCode == 200) {
-                Backend.userContext.password = currentPassword;
+                Backend.userContext.password = password;
                 self.pullUserProfile(callback);
             } else if (statusCode == 401) {
                 callback?.onFailure();
