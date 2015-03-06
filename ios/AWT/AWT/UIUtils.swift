@@ -60,6 +60,10 @@ public struct AtwUiUtils {
             return;
         }
         
+        if (activityIndicator.superview == nil) {
+            return;
+        }
+        
         UIApplication.sharedApplication().endIgnoringInteractionEvents();
         activityIndicator.stopAnimating();
         
