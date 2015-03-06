@@ -26,7 +26,7 @@ class RequestPreferencesPage: UIViewController, BackendCallback {
     func onSuccess() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("UPDATE_SUCCESSFUL_PREFERENCES_MESSAGE");
+            self.navigationController?.popViewControllerAnimated(true);
         });
     }
     func onFailure() {

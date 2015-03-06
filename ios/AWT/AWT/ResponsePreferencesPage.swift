@@ -8,19 +8,40 @@
 
 import UIKit
 
-class ResponsePreferencesPage: UIViewController {
+class ResponsePreferencesPage: UIViewController, BackendCallback {
 
     @IBOutlet weak var amountOfInquiriesTextField: UITextField!
     @IBOutlet weak var ageTextField: UITextField!
     @IBOutlet weak var genderTextField: UITextField!
     
-    @IBAction func updateButtonClickAction(sender: UIButton) {
-        
+    
+    //BackendCallback
+    func onError() {
+        AtwUiUtils.runOnMainThread({
+            AtwUiUtils.hideSpinner();
+            self.showErrorMessage("SERVER_ERROR_MESSSAGE");
+        });
     }
+    func onSuccess() {
+        AtwUiUtils.runOnMainThread({
+            AtwUiUtils.hideSpinner();
+            self.navigationController?.popViewControllerAnimated(true);
+        });
+    }
+    func onFailure() {
+        AtwUiUtils.runOnMainThread({
+            AtwUiUtils.hideSpinner();
+            self.showErrorMessage("FAILED_TO_UPDATE_PREFERENECS_MESSAGE");
+        });
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        AtwUiUtils.setDataChooser(amountOfInquiriesTextField, items: Configuration.INQUIRY_LIMIT_PREFERENCE).setSelectedItem(Backend.getUserContext().dailyInquiryLimit);
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE).setSelectedItem(Backend.getUserContext().inquiryAge);
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getUserContext().inquiryGender);
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,6 +49,15 @@ class ResponsePreferencesPage: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func updateButtonClickAction(sender: UIButton) {
+        AtwUiUtils.showSpinner(self.view);
+        
+        var limitItem = (amountOfInquiriesTextField.inputView as SelectorView).getSelectedItems()[0];
+        var ageItem = (ageTextField.inputView as SelectorView).getSelectedItems()[0];
+        var genderItem = (genderTextField.inputView as SelectorView).getSelectedItems()[0];
+        
+        Backend.updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: limitItem, inquiryAge: ageItem, inquiryGender: genderItem, expertises: nil, contactRequestable: nil, contactName: nil, contactDetails: nil, callback: self);
+    }
 
     /*
     // MARK: - Navigation
@@ -38,5 +68,8 @@ class ResponsePreferencesPage: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
+    
+    private func showErrorMessage(popupErrorKey: String) {
+        AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("PREFERENCES_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
+    }
 }

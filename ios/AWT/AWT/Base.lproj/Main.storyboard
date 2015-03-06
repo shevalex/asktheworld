@@ -868,6 +868,7 @@
                                         <connections>
                                             <action selector="registerButtonAction:" destination="PqC-Vm-GPP" eventType="touchUpInside" id="zMi-dD-OJp"/>
                                             <action selector="updateButtonClickAction:" destination="gCe-NB-pLo" eventType="touchUpInside" id="4Zb-Wh-UAl"/>
+                                            <action selector="updateButtonClickAction:" destination="zab-Rf-b2G" eventType="touchUpInside" id="ny5-1M-tgV"/>
                                         </connections>
                                     </button>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="252" verticalCompressionResistancePriority="753" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Contact Info" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xr4-GS-62n">
@@ -921,6 +922,12 @@
                     </view>
                     <navigationItem key="navigationItem" title="Contact Info" id="GAv-vd-IWd"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="contactInfoTestField" destination="xr4-GS-62n" id="sQm-Tu-vbZ"/>
+                        <outlet property="contactVisibleTextField" destination="o4W-cl-v8a" id="ClT-XF-Jyq"/>
+                        <outlet property="expertisesTextField" destination="FB1-02-JRx" id="RtN-3j-OiR"/>
+                        <outlet property="nameTextField" destination="4Yp-nJ-vwh" id="2pU-hz-BFW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1cv-GL-hLM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

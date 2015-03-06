@@ -29,8 +29,7 @@ class ProfilePage: UIViewController, BackendCallback {
     func onSuccess() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("UPDATE_SUCCESSFUL_PROFILE_MESSAGE");
-            self.currentPasswordTextField.text = "";
+            self.navigationController?.popViewControllerAnimated(true);            
         });
     }
     func onFailure() {

@@ -58,17 +58,13 @@ return renderView;
 }
 
 func pickerTouched() {
-println("JOPA!");
 }
 
 func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-println("PIZDEC");
 return true;
 }
 
 func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-
-println("PIZDEC2");
 return true;
 }
 
