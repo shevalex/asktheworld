@@ -214,12 +214,12 @@ public struct Backend {
     }
     
     
-    public static func updateUserProfile(password: String!, gender: Configuration.Item!, age: Configuration.Item!, nickname: String!, languages: [Configuration.Item]!, currentPassword: String!, callback: BackendCallback?) {
+    public static func updateUserProfile(password: String?, gender: Configuration.Item!, age: Configuration.Item!, nickname: String!, languages: [Configuration.Item]!, currentPassword: String!, callback: BackendCallback?) {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             
             if (statusCode == 200) {
-                Backend.userContext.password = password;
+                Backend.userContext.password = password != nil ? password : currentPassword;
                 self.pullUserProfile(callback);
             } else if (statusCode == 401) {
                 callback?.onFailure();

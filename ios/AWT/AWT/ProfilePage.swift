@@ -104,7 +104,9 @@ class ProfilePage: UIViewController, BackendCallback {
         var genderItem = (genderTextField.inputView as SelectorView).getSelectedItems()[0];
         var ageItem = (ageTextField.inputView as SelectorView).getSelectedItems()[0];
         
-        Backend.updateUserProfile(newPasswordTextField.text, gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, currentPassword: currentPasswordTextField.text, callback: self);
+        var newPassword = newPasswordTextField.text != "" ? newPasswordTextField.text : nil;
+        
+        Backend.updateUserProfile(newPassword , gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, currentPassword: currentPasswordTextField.text, callback: self);
     }
     
 
