@@ -10,9 +10,9 @@
 "OK_BUTTON" = "OK";
 
 // Messages
-"LOGIN_ERROR_MESSAGE_TTILE" = "Login Error";
-"REGISTRATION_ERROR_MESSAGE_TTILE" = "Registration Error";
-"PROFILE_ERROR_MESSAGE_TTILE" = "Update Profile Error";
+"LOGIN_ERROR_MESSAGE_TTILE" = "Login Message";
+"REGISTRATION_ERROR_MESSAGE_TTILE" = "Registration Message";
+"PROFILE_ERROR_MESSAGE_TTILE" = "Update Profile Message";
 
 "EMAIL_NOT_PROVIDED_MESSAGE" = "Email must be provided";
 "EMAIL_NOT_VALID_MESSAGE" = "Email does not look like a valid email address";
@@ -25,7 +25,6 @@
 "AGE_NOT_PROVIDED_MESSAGE" = "Age must be provided";
 "LANGUAGE_NOT_PROVIDED_MESSAGE" = "You must choose at least one language";
 
-
 "FAILED_TO_LOGIN_MESSAGE" = "Cannot log in";
 "FAILED_TO_REGISTER_MESSAGE" = "User with such email is already registered";
 "SERVER_ERROR_MESSSAGE" = "Server communication error";
@@ -33,6 +32,10 @@
 "PASSWORD_RECOVERY_MESSAGE_TTILE" = "Password Recovery";
 "PASSWORD_RECOVERY_SENT_MESSAGE" = "The message was sent to your email. You may disregard it if you do not need to change your password";
 "PASSWORD_RECOVERY_FAILED_MESSAGE" = "Password recovery failed. Please chekc if your email is valid";
+
+"FAILED_TO_UPDATE_PROFILE_MESSAGE" = "Profile was not updated. Check your password";
+"UPDATE_SUCCESSFUL_PROFILE_MESSAGE" = "Profile was successfully updated.";
+
 
 
 "LANGUAGE_ENGLISH" = "English";

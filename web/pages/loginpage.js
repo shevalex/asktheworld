@@ -97,7 +97,7 @@ LoginPage.prototype._appendLoginPanel = function(root) {
         _onCompletion: function() {
           UIUtils.setEnabled(this._signInButton, true);
           Application.hideSpinningWheel();
-        }
+        }.bind(this)
       }
       
       UIUtils.setEnabled(this._signInButton, false);

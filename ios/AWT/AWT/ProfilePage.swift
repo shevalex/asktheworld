@@ -29,13 +29,14 @@ class ProfilePage: UIViewController, BackendCallback {
     func onSuccess() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.performSegueWithIdentifier("showHomeScreen", sender: self);
+            self.showErrorMessage("UPDATE_SUCCESSFUL_PROFILE_MESSAGE");
+            currentPasswordTextField.text = "";
         });
     }
     func onFailure() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("FAILED_TO_REGISTER_MESSAGE");
+            self.showErrorMessage("FAILED_TO_UPDATE_PROFILE_MESSAGE");
         });
     }
     

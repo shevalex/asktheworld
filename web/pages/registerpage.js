@@ -109,10 +109,10 @@ RegisterPage.prototype._appendContentPanel = function(root) {
       return;
     }
 
-    var page = this;
+
     var backendCallback = {
       success: function() {
-        this._onCompletion();
+        backendCallback._onCompletion();
 
         emailElement.setValue("");
         nameElement.setValue("");
@@ -123,24 +123,24 @@ RegisterPage.prototype._appendContentPanel = function(root) {
         page._retypePasswordElement.setValue("");
         
         Application.showPage(WelcomePage.name);
-      },
+      }.bind(this),
       failure: function() {
-        this._onCompletion();
+        backendCallback._onCompletion();
         Application.showMessage(page.getLocale().AccountCreationFailedMessage);
       },
       conflict: function() {
-        this._onCompletion();
+        backendCallback._onCompletion();
         Application.showMessage(page.getLocale().AccountAlreadyExistsMessage);
       },
       error: function() {
-        this._onCompletion();
+        backendCallback._onCompletion();
         Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       },
 
       _onCompletion: function() {
         UIUtils.setEnabled(this._registerButton, true);
         Application.hideSpinningWheel();
-      }
+      }.bind(this)
     }
 
     var userProfile = {
