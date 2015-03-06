@@ -3,6 +3,7 @@ LoginPage = ClassUtils.defineClass(AbstractPage, function LoginPage() {
   
   this._loginElement;
   this._passwordElement;
+  this._signInButton;
 });
 
 LoginPage.prototype.definePageContent = function(root) {
@@ -32,6 +33,9 @@ LoginPage.prototype.onShow = function() {
   }
 }
 
+LoginPage.prototype.onHide = function() {
+    UIUtils.setEnabled(this._signInButton, true);
+}
 
 LoginPage.prototype._appendLoginPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
@@ -46,7 +50,7 @@ LoginPage.prototype._appendLoginPanel = function(root) {
     window.localStorage.remember = rememberCheckbox.getValue() ? "yes" : "no";
   });
   
-  var signInButton = UIUtils.appendButton(contentPanel, "SignInButton", this.getLocale().SignInButton);
+  this._signInButton = UIUtils.appendButton(contentPanel, "SignInButton", this.getLocale().SignInButton);
 
   var forgotPasswordLink = UIUtils.appendLink(contentPanel, "ForgotPasswordLink", this.getLocale().ForgotPassowrdLink);
   UIUtils.setClickListener(forgotPasswordLink, this._restorePassword.bind(this));
@@ -56,7 +60,7 @@ LoginPage.prototype._appendLoginPanel = function(root) {
     Application.showPage(RegisterPage.name);
   });
 
-  UIUtils.setClickListener(signInButton, function() {
+  UIUtils.setClickListener(this._signInButton, function() {
     var login = this._loginElement.getValue();
     var isEmailValid = ValidationUtils.isValidEmail(login);
     if (!isEmailValid) {
@@ -91,12 +95,12 @@ LoginPage.prototype._appendLoginPanel = function(root) {
         },
         
         _onCompletion: function() {
-          UIUtils.setEnabled(signInButton, true);
+          UIUtils.setEnabled(this._signInButton, true);
           Application.hideSpinningWheel();
         }
       }
       
-      UIUtils.setEnabled(signInButton, false);
+      UIUtils.setEnabled(this._signInButton, false);
       Application.showSpinningWheel();
       
       Backend.logIn(login, password, backendCallback);
