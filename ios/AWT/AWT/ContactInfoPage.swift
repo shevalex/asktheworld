@@ -12,7 +12,7 @@ class ContactInfoPage: UIViewController, BackendCallback {
     @IBOutlet weak var expertisesTextField: UITextField!
     @IBOutlet weak var contactVisibleTextField: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
-    @IBOutlet weak var contactInfoTestField: UITextField!
+    @IBOutlet weak var contactInfoTextField: UITextField!
     
     private let YES_NO: [String]! = ["Yes", "No"];
     
@@ -43,7 +43,7 @@ class ContactInfoPage: UIViewController, BackendCallback {
         AtwUiUtils.setDataChooser(contactVisibleTextField, items: Configuration.CONTACT_REQUESTABLE).setSelectedItem(Backend.getUserContext().contactVisible);
         
         nameTextField.text = Backend.getUserContext().contactName;
-        contactInfoTestField.text = Backend.getUserContext().contactInfo;
+        contactInfoTextField.text = Backend.getUserContext().contactInfo;
     }
 
     override func didReceiveMemoryWarning() {
@@ -57,7 +57,7 @@ class ContactInfoPage: UIViewController, BackendCallback {
         var expertisesItems = (expertisesTextField.inputView as SelectorView).getSelectedItems();
         var visibleItem = (contactVisibleTextField.inputView as SelectorView).getSelectedItems()[0];
         
-        Backend.updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: expertisesItems, contactRequestable: visibleItem, contactName: nameTextField.text, contactDetails: contactInfoTestField.text, callback: self);
+        Backend.updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: expertisesItems, contactRequestable: visibleItem, contactName: nameTextField.text, contactDetails: contactInfoTextField.text, callback: self);
     }
 
     /*

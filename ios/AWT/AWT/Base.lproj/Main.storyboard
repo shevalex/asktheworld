@@ -923,7 +923,7 @@
                     <navigationItem key="navigationItem" title="Contact Info" id="GAv-vd-IWd"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <outlet property="contactInfoTestField" destination="xr4-GS-62n" id="sQm-Tu-vbZ"/>
+                        <outlet property="contactInfoTextField" destination="xr4-GS-62n" id="aw2-ZQ-ng1"/>
                         <outlet property="contactVisibleTextField" destination="o4W-cl-v8a" id="ClT-XF-Jyq"/>
                         <outlet property="expertisesTextField" destination="FB1-02-JRx" id="RtN-3j-OiR"/>
                         <outlet property="nameTextField" destination="4Yp-nJ-vwh" id="2pU-hz-BFW"/>
