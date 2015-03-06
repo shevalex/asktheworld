@@ -232,8 +232,8 @@ var Locale_eng = {
       "RequestersGenderPreferenceLabel": "Gender of requesters",
       "ExpertisePreferenceLabel": "Areas of your profiessional expertise",
       "AllowContactInfoPreferenceLabel": "Make my contact information requestable",
-      "NamePreferenceLabel": "You name",
-      "ContactPreferenceLabel": "You phone number and/or other contact information",
+      "NamePreferenceLabel": "Your name",
+      "ContactPreferenceLabel": "Your phone number and/or other contact information",
       
       "UpdateButton": "Update Preferences",
       "ResetButton": "Reset",
@@ -241,7 +241,7 @@ var Locale_eng = {
       "PreferencesUpdatedMessage": "Your preferences were successfully updated",
       "UpdateFailedMessage": "Failed to update preferences",
       "NoExpertiseMessage": "You must specifiy your areas of expetise; otherwise you won't receive any professional questions which you can provide an advice and reveal your contact information",
-      "NoNameMessage": "You chose to let the system reveal your contact but did not provide you name",
+      "NoNameMessage": "You chose to let the system reveal your contact but did not provide your name",
       "NoContactInfoMessage": "You chose to let the system reveal your contact but did not provide you contact information"
     },
     "RequestDetailsPage": {

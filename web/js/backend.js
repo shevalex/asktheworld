@@ -129,7 +129,7 @@ Backend.registerUser = function(userProfile, callback) {
     false, {}, communicationCallback);
 }
 
-Backend.updateUser = function(userProfile, currentPassword, callback) {
+Backend.updateUserProfile = function(userProfile, currentPassword, callback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (userProfile.password != null) {
@@ -138,7 +138,7 @@ Backend.updateUser = function(userProfile, currentPassword, callback) {
       Backend.pullUserProfile(callback);
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 400 || xhr.status == 401) {
+      if (xhr.status == 401) {
         callback.failure();
       } else {
         callback.error();
@@ -196,23 +196,24 @@ Backend.pullUserPreferences = function(callback) {
 Backend.updateUserPreferences = function(userPreferences, callback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
-      Backend.UserPreferences.requestTargetAge = userPreferences.requestTargetAge;
-      Backend.UserPreferences.requestTargetGender = userPreferences.requestTargetGender;
-      Backend.UserPreferences.responseQuantity = userPreferences.responseQuantity;
-      Backend.UserPreferences.responseWaitTime = userPreferences.responseWaitTime;
-      Backend.UserPreferences.dailyInquiryLimit = userPreferences.dailyInquiryLimit;
-      Backend.UserPreferences.inquiryAge = userPreferences.inquiryAge;
-      Backend.UserPreferences.inquiryGender = userPreferences.inquiryGender;
-      
-      Backend.UserPreferences.expertises = userPreferences.expertises;
-      Backend.UserPreferences.contactVisible = userPreferences.contactVisible;
-      Backend.UserPreferences.contactName = userPreferences.contactName;
-      Backend.UserPreferences.contactInfo = userPreferences.contactInfo;
-
-      callback.success();
+//      Backend.UserPreferences.requestTargetAge = userPreferences.requestTargetAge;
+//      Backend.UserPreferences.requestTargetGender = userPreferences.requestTargetGender;
+//      Backend.UserPreferences.responseQuantity = userPreferences.responseQuantity;
+//      Backend.UserPreferences.responseWaitTime = userPreferences.responseWaitTime;
+//      Backend.UserPreferences.dailyInquiryLimit = userPreferences.dailyInquiryLimit;
+//      Backend.UserPreferences.inquiryAge = userPreferences.inquiryAge;
+//      Backend.UserPreferences.inquiryGender = userPreferences.inquiryGender;
+//      
+//      Backend.UserPreferences.expertises = userPreferences.expertises;
+//      Backend.UserPreferences.contactVisible = userPreferences.contactVisible;
+//      Backend.UserPreferences.contactName = userPreferences.contactName;
+//      Backend.UserPreferences.contactInfo = userPreferences.contactInfo;
+//
+//      callback.success();
+      Backend.pullUserPreferences(callback);
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 400 || xhr.status == 401) {
+      if (xhr.status == 401) {
         callback.failure();
       } else {
         callback.error();

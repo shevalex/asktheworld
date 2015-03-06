@@ -103,8 +103,7 @@ class ProfilePage: UIViewController, BackendCallback {
         var genderItem = (genderTextField.inputView as SelectorView).getSelectedItems()[0];
         var ageItem = (ageTextField.inputView as SelectorView).getSelectedItems()[0];
         
-//        Backend.register(emailTextField.text, password: passwordTextField.text, gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, callback: self)
-        
+        Backend.updateUserProfile(newPasswordTextField.text, gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, currentPassword: currentPasswordTextField.text, callback: self);
     }
     
 

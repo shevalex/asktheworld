@@ -159,5 +159,5 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
   
   var currentPassword = this._currentPasswordElement.getValue();
   
-  Backend.updateUser(userProfile, currentPassword, callback);
+  Backend.updateUserProfile(userProfile, currentPassword, callback);
 }
