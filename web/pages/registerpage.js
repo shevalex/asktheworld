@@ -119,19 +119,19 @@ RegisterPage.prototype._appendContentPanel = function(root) {
         genderElement.clearChoices();
         ageElement.clearChoices();
         languagesElement.clearChoices();
-        page._passwordElement.setValue("");
-        page._retypePasswordElement.setValue("");
+        this._passwordElement.setValue("");
+        this._retypePasswordElement.setValue("");
         
         Application.showPage(WelcomePage.name);
       }.bind(this),
       failure: function() {
         backendCallback._onCompletion();
-        Application.showMessage(page.getLocale().AccountCreationFailedMessage);
-      },
+        Application.showMessage(this.getLocale().AccountCreationFailedMessage);
+      }.bind(this),
       conflict: function() {
         backendCallback._onCompletion();
-        Application.showMessage(page.getLocale().AccountAlreadyExistsMessage);
-      },
+        Application.showMessage(this.getLocale().AccountAlreadyExistsMessage);
+      }.bind(this),
       error: function() {
         backendCallback._onCompletion();
         Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
