@@ -4,6 +4,7 @@ RegisterPage = ClassUtils.defineClass(AbstractPage, function RegisterPage() {
   this._passwordElement;
   this._retypePasswordElement;
   this._acceptCheckbox;
+  this._registerButton;
 });
 
 RegisterPage.prototype.definePageContent = function(root) {
@@ -20,10 +21,14 @@ RegisterPage.prototype.definePageContent = function(root) {
   this._appendContentPanel(root);
 }
 
-RegisterPage.prototype.onShow = function(root) {
+RegisterPage.prototype.onShow = function() {
   this._passwordElement.setValue("");
   this._retypePasswordElement.setValue("");
   this._acceptCheckbox.setValue(false);
+}
+
+RegisterPage.prototype.onHide = function() {
+  UIUtils.setEnabled(this._registerButton, true);
 }
 
 
@@ -51,13 +56,13 @@ RegisterPage.prototype._appendContentPanel = function(root) {
     setTimeout(this._acceptCheckbox.setValue.bind(this, false), 0);
   }.bind(this));
   
-  var registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", this.getLocale().RegisterButton);
+  this._registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", this.getLocale().RegisterButton);
   
   UIUtils.get$(this._passwordElement).on("input", function() {
     this._retypePasswordElement.setValue("");
   }.bind(this));
   
-  UIUtils.setClickListener(registerButton, function() {
+  UIUtils.setClickListener(this._registerButton, function() {
     var email = emailElement.getValue();
     var isValidEmail = ValidationUtils.isValidEmail(email);
     if (!isValidEmail) {
@@ -133,7 +138,7 @@ RegisterPage.prototype._appendContentPanel = function(root) {
       },
 
       _onCompletion: function() {
-        UIUtils.setEnabled(registerButton, true);
+        UIUtils.setEnabled(this._registerButton, true);
         Application.hideSpinningWheel();
       }
     }
@@ -147,7 +152,7 @@ RegisterPage.prototype._appendContentPanel = function(root) {
       age: ageElement.getSelectedData(),
     };
 
-    UIUtils.setEnabled(registerButton, false);
+    UIUtils.setEnabled(this._registerButton, false);
     Application.showSpinningWheel();
 
     Backend.registerUser(userProfile, backendCallback);
