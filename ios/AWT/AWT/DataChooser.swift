@@ -235,7 +235,7 @@ class SelectorView: UITableView {
             for (index, item) in enumerate(data) {
                 if (selectedItem.data === item.data) {
                     var indexPath = NSIndexPath(index: 0).indexPathByAddingIndex(index);
-                    self.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.None);
+                    self.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.Middle);
                 }
             }
         }

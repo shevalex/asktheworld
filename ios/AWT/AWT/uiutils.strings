@@ -36,6 +36,9 @@
 "FAILED_TO_UPDATE_PROFILE_MESSAGE" = "Profile was not updated. Check your password";
 "UPDATE_SUCCESSFUL_PROFILE_MESSAGE" = "Profile was successfully updated.";
 
+"PREFERENCES_ERROR_MESSAGE_TTILE" = "Preferences Update";
+"UPDATE_SUCCESSFUL_PREFERENCES_MESSAGE" = "Preferences were successfully updated";
+"FAILED_TO_UPDATE_PREFERENECS_MESSAGE" = "Preferences weren't updated";
 
 
 "LANGUAGE_ENGLISH" = "English";
@@ -71,7 +74,7 @@
 "AGE_PREFERENCE_TEENAGERS" = "Teenagers";
 "AGE_PREFERENCE_YOUNG" = "Youngs";
 "AGE_PREFERENCE_ADULTS" = "Adults";
-"AGE_PREFERENCE_SENOIRS" = "Seniors";
+"AGE_PREFERENCE_SENIORS" = "Seniors";
 
 "GENDER_PREFERENCE_ANY" = "Any";
 "GENDER_PREFERENCE_MALE" = "Male";

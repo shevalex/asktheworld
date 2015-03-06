@@ -44,8 +44,8 @@ class ProfilePage: UIViewController, BackendCallback {
         super.viewDidLoad()
 
         nicknameTextField.text = Backend.getUserContext().name;
-        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS, multichoice: false).setSelectedItem(Backend.getUserContext().gender);
-        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES, multichoice: false).setSelectedItem(Backend.getUserContext().age);
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS).setSelectedItem(Backend.getUserContext().gender);
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES).setSelectedItem(Backend.getUserContext().age);
         AtwUiUtils.setDataChooser(languagesTextField, items: Configuration.LANGUAGES, multichoice: true).setSelectedItems(Backend.getUserContext().languages);
     }
 
@@ -123,5 +123,4 @@ class ProfilePage: UIViewController, BackendCallback {
     private func showErrorMessage(popupErrorKey: String) {
         AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("PROFILE_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
     }
-    
 }
