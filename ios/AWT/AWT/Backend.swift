@@ -245,12 +245,24 @@ public struct Backend {
         Backend.communicate(url, method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: Backend.userContext.login, password: currentPassword);
     }
 
-    public static func updateUserPreferences(requestTargetAge: Configuration.Item!, requestTargetGender: Configuration.Item!, responseQuantity: Configuration.Item!, responseWaitTime: Configuration.Item!, dailyInquiryLimit: Configuration.Item!, inquiryAge: Configuration.Item!, inquiryGender: Configuration.Item!, expertises: Configuration.Item!, contactRequestable: Configuration.Item!, contactName: Configuration.Item!, contactDetails: Configuration.Item!, callback: BackendCallback?) {
+    public static func updateUserPreferences(requestTargetAge: Configuration.Item!, requestTargetGender: Configuration.Item!, responseQuantity: Configuration.Item!, responseWaitTime: Configuration.Item!, dailyInquiryLimit: Configuration.Item!, inquiryAge: Configuration.Item!, inquiryGender: Configuration.Item!, expertises: [Configuration.Item]!, contactRequestable: Bool!, contactName: String!, contactDetails: String!, callback: BackendCallback?) {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             
             if (statusCode == 200) {
-                self.pullUserPreferences(callback);
+                Backend.userContext.responseQuantity = responseQuantity;
+                Backend.userContext.responseWaitTime = responseWaitTime;
+                Backend.userContext.requestTargetAge = requestTargetAge;
+                Backend.userContext.requestTargetGender = requestTargetGender;
+                Backend.userContext.dailyInquiryLimit = dailyInquiryLimit;
+                Backend.userContext.inquiryAge = inquiryAge;
+                Backend.userContext.inquiryGender = inquiryGender;
+                Backend.userContext.expertises = expertises;
+                Backend.userContext.contactVisible = contactRequestable;
+                Backend.userContext.contactName = contactName;
+                Backend.userContext.contactInfo = contactDetails;
+                
+                //self.pullUserPreferences(callback);
             } else if (statusCode == 401) {
                 callback?.onFailure();
             } else {
@@ -266,10 +278,17 @@ public struct Backend {
         params.setValue(dailyInquiryLimit.data, forKey: USER_PREFERENCE_INQUIRY_LIMIT);
         params.setValue(inquiryAge.data, forKey: USER_PREFERENCE_INQUIRY_AGE);
         params.setValue(inquiryGender.data, forKey: USER_PREFERENCE_INQUIRY_GENDER);
-        params.setValue(expertises.data, forKey: USER_PREFERENCE_EXPERTISES);
-        params.setValue(contactRequestable.data, forKey: USER_PREFERENCE_CONTACT_REQUESTABLE);
-        params.setValue(contactName.data, forKey: USER_PREFERENCE_CONTACT_NAME);
-        params.setValue(contactDetails.data, forKey: USER_PREFERENCE_CONTACT_DETAILS);
+        
+        var expertisesData: [String]! = [];
+        for (index, item) in enumerate(expertises) {
+            expertisesData.append(item.data as String);
+        }
+        params.setValue(expertisesData, forKey: USER_PREFERENCE_EXPERTISES);
+        
+        
+        params.setValue(contactRequestable, forKey: USER_PREFERENCE_CONTACT_REQUESTABLE);
+        params.setValue(contactName, forKey: USER_PREFERENCE_CONTACT_NAME);
+        params.setValue(contactDetails, forKey: USER_PREFERENCE_CONTACT_DETAILS);
 
         
         let url = "user/\(Backend.userContext.userId)/settings";
