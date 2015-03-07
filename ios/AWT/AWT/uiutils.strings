@@ -86,3 +86,41 @@
 "CONTACT_REQUESTABLE_NO" = "No";
 "CONTACT_REQUESTABLE_YES" = "Yes";
 
+
+"TARGET_GROUP_ALL" = "all people";
+"TARGET_GROUP_ALL_MEN" = "all men";
+"TARGET_GROUP_ALL_WOMEN" = "all women";
+"TARGET_GROUP_ALL_CHILDREN" = "all children";
+"TARGET_GROUP_ALL_BOYS" = "all boys";
+"TARGET_GROUP_ALL_GIRLS" = "all girls";
+"TARGET_GROUP_ALL_TEENAGERS" = "all teenagers";
+"TARGET_GROUP_ALL_TEEN_BOYS" = "all teen guys";
+"TARGET_GROUP_ALL_TEEN_GIRLS" = "all teen girls";
+"TARGET_GROUP_ALL_YOUNGS" = "all young people";
+"TARGET_GROUP_ALL_YOUNG_MEN" = "all young men";
+"TARGET_GROUP_ALL_YOUNG_WOMEN" = "all young women";
+"TARGET_GROUP_ALL_ADULTS" = "all adults";
+"TARGET_GROUP_ALL_ADULT_MEN" = "all adult men";
+"TARGET_GROUP_ALL_ADULT_WOMEN" = "all adult women";
+"TARGET_GROUP_ALL_SENIORS" = "all senior people";
+"TARGET_GROUP_ALL_SENIOR_MEN" = "all senior men";
+"TARGET_GROUP_ALL_SENIOR_WOMEN" = "all senior women";
+
+"USER_IDENTITY_BOY" = "boy";
+"USER_IDENTITY_GIRL" = "girl";
+"USER_IDENTITY_TEEN_BOY" = "teen boy";
+"USER_IDENTITY_TEEN_GIRL" = "teen girl";
+"USER_IDENTITY_YOUNG_MAN" = "young man";
+"USER_IDENTITY_YOUNG_WOMAN" = "young woman";
+"USER_IDENTITY_ADULT_MAN" = "man";
+"USER_IDENTITY_ADULT_WOMAN" = "woman";
+"USER_IDENTITY_SENIOR_MAN" = "senior man";
+"USER_IDENTITY_SENIOR_WOMAN" = "senior woman";
+
+"EXPERTISE_CATEGORY_GENERAL" = "general";
+"EXPERTISE_CATEGORY_MEDICINE" = "medical";
+"EXPERTISE_CATEGORY_LAW" = "law";
+"EXPERTISE_CATEGORY_CONSTRUCTION" = "construction/repair";
+
+"OUTGOING_REQUEST_TARGET_PREFIX" = "To";
+

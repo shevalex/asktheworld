@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		820418371AAAAF63003429CC /* RequestManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820418361AAAAF63003429CC /* RequestManagement.swift */; };
+		820418391AAB9E4D003429CC /* incoming_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 820418381AAB9E4D003429CC /* incoming_arrow.png */; };
+		8204183B1AAB9E5B003429CC /* outgoing_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 8204183A1AAB9E5B003429CC /* outgoing_arrow.png */; };
 		8236B5871AA6C16200EE3258 /* DataChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236B5861AA6C16200EE3258 /* DataChooser.swift */; };
 		82A4014D1AA01B1C00E26253 /* uiutils.strings in Resources */ = {isa = PBXBuildFile; fileRef = 82A4014C1AA01B1C00E26253 /* uiutils.strings */; };
 		82A4014F1AA158CA00E26253 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A4014E1AA158CA00E26253 /* Backend.swift */; };
-		82BDE9D71AA50B7C002B6F5D /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 82BDE9D61AA50B7C002B6F5D /* close.png */; };
 		F719A2041AA8A60200725A5A /* ContactInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719A2031AA8A60200725A5A /* ContactInfoPage.swift */; };
 		F73D302A1AA771F800A5317A /* ProfilePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73D30291AA771F800A5317A /* ProfilePage.swift */; };
 		F73D302C1AA7F01E00A5317A /* RequestPreferencesPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */; };
@@ -41,10 +42,11 @@
 
 /* Begin PBXFileReference section */
 		820418361AAAAF63003429CC /* RequestManagement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestManagement.swift; sourceTree = "<group>"; };
+		820418381AAB9E4D003429CC /* incoming_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = incoming_arrow.png; path = imgs/incoming_arrow.png; sourceTree = SOURCE_ROOT; };
+		8204183A1AAB9E5B003429CC /* outgoing_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = outgoing_arrow.png; path = imgs/outgoing_arrow.png; sourceTree = SOURCE_ROOT; };
 		8236B5861AA6C16200EE3258 /* DataChooser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataChooser.swift; sourceTree = "<group>"; };
 		82A4014C1AA01B1C00E26253 /* uiutils.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = uiutils.strings; sourceTree = "<group>"; };
 		82A4014E1AA158CA00E26253 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
-		82BDE9D61AA50B7C002B6F5D /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = ../../../web/imgs/close.png; sourceTree = "<group>"; };
 		F719A2031AA8A60200725A5A /* ContactInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactInfoPage.swift; sourceTree = "<group>"; };
 		F73D30291AA771F800A5317A /* ProfilePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePage.swift; sourceTree = "<group>"; };
 		F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestPreferencesPage.swift; sourceTree = "<group>"; };
@@ -126,8 +128,9 @@
 		F745FE551A9E2882006E7698 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8204183A1AAB9E5B003429CC /* outgoing_arrow.png */,
+				820418381AAB9E4D003429CC /* incoming_arrow.png */,
 				F773F3D01AA68D300053A712 /* contact_info.png */,
-				82BDE9D61AA50B7C002B6F5D /* close.png */,
 				F745FE561A9E2882006E7698 /* Info.plist */,
 				82A4014C1AA01B1C00E26253 /* uiutils.strings */,
 			);
@@ -243,10 +246,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */,
+				820418391AAB9E4D003429CC /* incoming_arrow.png in Resources */,
 				F745FE621A9E2882006E7698 /* LaunchScreen.xib in Resources */,
 				82A4014D1AA01B1C00E26253 /* uiutils.strings in Resources */,
 				F773F3D11AA68D300053A712 /* contact_info.png in Resources */,
-				82BDE9D71AA50B7C002B6F5D /* close.png in Resources */,
+				8204183B1AAB9E5B003429CC /* outgoing_arrow.png in Resources */,
 				F745FE5F1A9E2882006E7698 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

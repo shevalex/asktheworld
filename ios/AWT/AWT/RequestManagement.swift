@@ -13,6 +13,7 @@ import UIKit;
 protocol RequestObjectProvider {
     func getRequest(index: Int!) -> Backend.RequestObject;
     func count() -> Int;
+    func setChangeObserver(observer: ((index: Int?) -> Void)!);
 }
 
 
@@ -64,14 +65,20 @@ class UIRequestDataModel: NSObject, UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var tableCell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("cell") as? UITableViewCell;
         if (tableCell == nil) {
-            tableCell = UITableViewCell(style: .Default, reuseIdentifier: "cell");
+            tableCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell");
         }
         
         var request: Backend.RequestObject! = getRequest(indexPath);
         
-        tableCell.textLabel?.text = request.text;
-        tableCell.textLabel?.textAlignment = .Center;
-        tableCell.textLabel?.textColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1.0)
+        tableCell.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0);
+        
+        var targetPrefix = AtwUiUtils.getLocalizedString("OUTGOING_REQUEST_TARGET_PREFIX");
+        tableCell.textLabel!.text = "\(targetPrefix) \(Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender))";
+        tableCell.detailTextLabel!.text = request.text;
+        tableCell.detailTextLabel!.textColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1.0)
+        tableCell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
+        tableCell.imageView?.image = UIImage(named: "outgoing_arrow.png");
+//        tableCell.selectionStyle = UITableViewCellSelectionStyle.Gray;
         
         return tableCell;
     }
@@ -88,9 +95,25 @@ struct RequestManagement {
     static private var mapping: NSCache! = NSCache();
     
     
+    class ActiveOutgoingRequestObjectProvider: RequestObjectProvider {
+        func getRequest(index: Int!) -> Backend.RequestObject {
+            var requestId = Backend.getOutgoingRequestIds()[index];
+            return Backend.getRequest(requestId);
+        }
+        
+        func count() -> Int {
+            return Backend.getOutgoingRequestIds().count;
+        }
+        
+        func setChangeObserver(observer: ((index: Int?) -> Void)!) {
+            
+        }
+    }
+    
+    
     static func attachRequestObjectProvider(tableView: UITableView, requestObjectProvider: RequestObjectProvider) {
 
-        tableView.rowHeight = CGFloat(30);
+//        tableView.rowHeight = CGFloat(30);
         
         var delegate: AnyObject? = mapping.objectForKey(tableView);
         if (delegate != nil) {
@@ -100,9 +123,11 @@ struct RequestManagement {
         }
 
         var dataModel = UIRequestDataModel(dataProvider: requestObjectProvider);
-        tableView.delegate = UIRequestTableDelegate(dataModel: dataModel);
+        delegate = UIRequestTableDelegate(dataModel: dataModel);
+        tableView.delegate = delegate as? UITableViewDelegate;
         tableView.dataSource = dataModel;
         
-        mapping.setObject(tableView.delegate!, forKey: tableView);
+        mapping.setObject(delegate!, forKey: tableView);
     }
+    
 }

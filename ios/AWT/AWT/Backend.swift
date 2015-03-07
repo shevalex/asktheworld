@@ -68,6 +68,114 @@ public struct Configuration {
         
         return result;
     }
+    
+    
+    static func toTargetGroupString(ageCategory: Item, gender: Item) -> String {
+        if (ageCategory.data === AGE_CATEGORY_PREFERENCE[0].data) {
+            if (gender.data === GENDER_PREFERENCE[0].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL");
+            } else if (gender.data === GENDER_PREFERENCE[1].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_MEN");
+            } else if (gender.data === GENDER_PREFERENCE[2].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_WOMEN");
+            }
+        } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[1].data) {
+            if (gender.data === GENDER_PREFERENCE[0].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_CHILDREN");
+            } else if (gender.data === GENDER_PREFERENCE[1].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_BOYS");
+            } else if (gender.data === GENDER_PREFERENCE[2].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_GIRLS");
+            }
+        } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[2].data) {
+            if (gender.data === GENDER_PREFERENCE[0].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_TEENAGERS");
+            } else if (gender.data === GENDER_PREFERENCE[1].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_TEEN_BOYS");
+            } else if (gender.data === GENDER_PREFERENCE[2].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_TEEN_BOYS");
+            }
+        } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[3].data) {
+            if (gender.data === GENDER_PREFERENCE[0].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_YOUNGS");
+            } else if (gender.data === GENDER_PREFERENCE[1].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_YOUNG_MEN");
+            } else if (gender.data === GENDER_PREFERENCE[2].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_YOUNG_WOMEN");
+            }
+        } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[4].data) {
+            if (gender.data === GENDER_PREFERENCE[0].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_ADULTS");
+            } else if (gender.data === GENDER_PREFERENCE[1].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_ADULT_MEN");
+            } else if (gender.data === GENDER_PREFERENCE[2].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_ADULT_WOMEN");
+            }
+        } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[5].data) {
+            if (gender.data === GENDER_PREFERENCE[0].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_SENIORS");
+            } else if (gender.data === GENDER_PREFERENCE[1].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_SENIOR_MEN");
+            } else if (gender.data === GENDER_PREFERENCE[2].data) {
+                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_SENIOR_WOMEN");
+            }
+        }
+        
+        println("Unexpected target group params \(ageCategory.data), \(gender.data)");
+        return "Unexpected target group params \(ageCategory.data), \(gender.data)";
+    }
+    
+    static func toUserIdentityString(ageCategory: Item, gender: Item) -> String {
+        if (ageCategory.data === AGE_CATEGORIES[0].data) {
+            if (gender.data === GENDERS[0].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_BOY");
+            } else if (gender.data === GENDERS[1].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_GIRL");
+            }
+        } else if (ageCategory.data === AGE_CATEGORIES[1].data) {
+            if (gender.data === GENDERS[0].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_TEEN_BOY");
+            } else if (gender.data === GENDERS[1].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_TEEN_GIRL");
+            }
+        } else if (ageCategory.data === AGE_CATEGORIES[2].data) {
+            if (gender.data === GENDERS[0].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_YOUNG_MAN");
+            } else if (gender.data === GENDERS[1].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_YOUNG_WOMAN");
+            }
+        } else if (ageCategory.data === AGE_CATEGORIES[3].data) {
+            if (gender.data === GENDERS[0].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_ADULT_MAN");
+            } else if (gender.data === GENDERS[1].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_ADULT_WOMAN");
+            }
+        } else if (ageCategory.data === AGE_CATEGORIES[4].data) {
+            if (gender.data === GENDERS[0].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_SENIOR_MAN");
+            } else if (gender.data === GENDERS[1].data) {
+                return AtwUiUtils.getLocalizedString("USER_IDENTITY_SENOIR_WOMAN");
+            }
+        }
+        
+        println("Unexpected identity params \(ageCategory.data), \(gender.data)");
+        return "Unexpected identity params \(ageCategory.data), \(gender.data)";
+    }
+    
+    static func toExpertiseString(expertiseCategory: Item) -> String {
+        if (expertiseCategory.data === EXPERTISES[0].data) {
+            return AtwUiUtils.getLocalizedString("EXPERTISE_CATEGORY_GENERAL");
+        } else if (expertiseCategory.data === EXPERTISES[1].data) {
+            return AtwUiUtils.getLocalizedString("EXPERTISE_CATEGORY_LAW");
+        } else if (expertiseCategory.data === EXPERTISES[2].data) {
+            return AtwUiUtils.getLocalizedString("EXPERTISE_CATEGORY_MEDICINE");
+        } else if (expertiseCategory.data === EXPERTISES[3].data) {
+            return AtwUiUtils.getLocalizedString("EXPERTISE_CATEGORY_CONSTRUCTION");
+        }
+        
+        println("Unexpected expertise category \(expertiseCategory.data)");
+        return "Unexpected expertise category \(expertiseCategory.data)";
+    }
 }
 
 
@@ -136,7 +244,13 @@ public struct Backend {
     
     
     public struct RequestObject {
-        var time: Int! = 0;
+        static let STATUS_ACTIVE: String = "active";
+        static let STATUS_INACTIVE: String = "inactive";
+        
+        init() {
+        }
+        
+        var time: Double! = 0;
         var text: String! = "";
         var attachments: [String]!;
         var responseQuantity: Configuration.Item!;
@@ -144,7 +258,7 @@ public struct Backend {
         var responseAgeGroup: Configuration.Item!;
         var responseGender: Configuration.Item!;
         var expertiseCategory: Configuration.Item!;
-        var status: Int!;
+        var status: String! = STATUS_ACTIVE;
     }
     
     public class ResponseObject {
@@ -328,6 +442,19 @@ public struct Backend {
         Backend.communicate(url, method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: Backend.userContext.login, password: Backend.userContext.password);
     }
     
+    public static func getOutgoingRequestIds(requestStatus: String? = nil) -> [String] {
+        return ["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"];
+    }
+    
+    public static func getRequest(requestId: String!) -> RequestObject {
+        var request: RequestObject = RequestObject();
+        request.text = "Request \(requestId)";
+        request.responseAgeGroup = Configuration.AGE_CATEGORY_PREFERENCE[2];
+        request.responseGender = Configuration.GENDER_PREFERENCE[0];
+        request.time = NSDate().timeIntervalSince1970;
+        
+        return request;
+    }
     
     
     

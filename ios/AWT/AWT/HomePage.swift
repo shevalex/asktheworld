@@ -10,10 +10,16 @@ import UIKit
 
 class HomePage: UIViewController {
 
-       override func viewDidLoad() {
+    @IBOutlet weak var activeRequestsLabel: UILabel!
+    @IBOutlet weak var requestTableView: UITableView!
+    @IBOutlet weak var activeResponsesLabel: UILabel!
+    @IBOutlet weak var responseTableView: UITableView!
+    
+    override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true;
-        // Do any additional setup after loading the view, typically from a nib.
+
+        RequestManagement.attachRequestObjectProvider(requestTableView, requestObjectProvider: RequestManagement.ActiveOutgoingRequestObjectProvider());
     }
 
     override func didReceiveMemoryWarning() {
