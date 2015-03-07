@@ -839,8 +839,7 @@ Backend._createDummyRequest = function(requestId) {
   var request = {
     time: Date.now(),
     text: "This is the request with the id " + requestId,
-    pictures: [],
-    audios: [],
+    attachments: [],
     response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity].data,
     response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime].data,
     response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age].data,
@@ -882,8 +881,7 @@ Backend._createDummyResponse = function(requestId, responseId) {
   var response = {
     time: Date.now(),
     text: "This is the response " + responseId + " to the request " + requestId,
-    pictures: [],
-    audios: [],
+    attachments: [],
     age_category: Application.Configuration.AGE_CATEGORIES[age].data,
     gender: Application.Configuration.GENDERS[gender].data,
     status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ,

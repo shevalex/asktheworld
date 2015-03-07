@@ -70,30 +70,7 @@ public struct Configuration {
     }
 }
 
-public class UserContext {
-    //Profile
-    public var login: String!;
-    public var password: String!;
-    public var gender: Configuration.Item!;
-    public var languages: [Configuration.Item]!;
-    public var age: Configuration.Item!;
-    public var name: String!;
-    public var userId: Int!;
-    
-    //Preferences
-    public var responseQuantity: Configuration.Item! = Configuration.RESPONSE_QUANTITY[0];
-    public var responseWaitTime: Configuration.Item! = Configuration.RESPONSE_WAIT_TIME[0];
-    public var requestTargetAge: Configuration.Item! = Configuration.AGE_CATEGORY_PREFERENCE[0];
-    public var requestTargetGender: Configuration.Item! = Configuration.GENDER_PREFERENCE[0];
 
-    public var dailyInquiryLimit: Configuration.Item! = Configuration.INQUIRY_LIMIT_PREFERENCE[0];
-    public var inquiryAge: Configuration.Item! = Configuration.AGE_CATEGORY_PREFERENCE[0];
-    public var inquiryGender: Configuration.Item! = Configuration.GENDER_PREFERENCE[0];
-    public var expertises: [Configuration.Item]! = [Configuration.EXPERTISES[0]];
-    public var contactVisible: Configuration.Item!! = Configuration.CONTACT_REQUESTABLE[0];
-    public var contactName: String! = "";
-    public var contactInfo: String! = "";
-}
 
 public protocol BackendCallback {
     func onError();
@@ -128,6 +105,53 @@ public struct Backend {
     
 
     private static var userContext: UserContext! = nil;
+    
+    
+    
+    
+    public class UserContext {
+        //Profile
+        public var login: String!;
+        public var password: String!;
+        public var gender: Configuration.Item!;
+        public var languages: [Configuration.Item]!;
+        public var age: Configuration.Item!;
+        public var name: String!;
+        public var userId: Int!;
+        
+        //Preferences
+        public var responseQuantity: Configuration.Item! = Configuration.RESPONSE_QUANTITY[0];
+        public var responseWaitTime: Configuration.Item! = Configuration.RESPONSE_WAIT_TIME[0];
+        public var requestTargetAge: Configuration.Item! = Configuration.AGE_CATEGORY_PREFERENCE[0];
+        public var requestTargetGender: Configuration.Item! = Configuration.GENDER_PREFERENCE[0];
+        
+        public var dailyInquiryLimit: Configuration.Item! = Configuration.INQUIRY_LIMIT_PREFERENCE[0];
+        public var inquiryAge: Configuration.Item! = Configuration.AGE_CATEGORY_PREFERENCE[0];
+        public var inquiryGender: Configuration.Item! = Configuration.GENDER_PREFERENCE[0];
+        public var expertises: [Configuration.Item]! = [Configuration.EXPERTISES[0]];
+        public var contactVisible: Configuration.Item!! = Configuration.CONTACT_REQUESTABLE[0];
+        public var contactName: String! = "";
+        public var contactInfo: String! = "";
+    }
+    
+    
+    public struct RequestObject {
+        var time: Int! = 0;
+        var text: String! = "";
+        var attachments: [String]!;
+        var responseQuantity: Configuration.Item!;
+        var responseWaitTime: Configuration.Item!;
+        var responseAgeGroup: Configuration.Item!;
+        var responseGender: Configuration.Item!;
+        var expertiseCategory: Configuration.Item!;
+        var status: Int!;
+    }
+    
+    public class ResponseObject {
+        
+    }
+    
+    
     
     public static func getUserContext() -> UserContext! {
         return userContext;
