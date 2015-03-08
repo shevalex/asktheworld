@@ -33,21 +33,8 @@ class UIRequestTableDelegate: NSObject, UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        var selectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
-//        for (var i: Int! = 0; i < selectedItems.count; i = i.successor()) {
-//            if (selectedItem.data === selectedItems[i].data) {
-//                return;
-//            }
-//        }
-    }
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-//        var deselectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
-//        for (var i: Int! = 0; i < selectedItems.count; i = i.successor()) {
-//            if (deselectedItem.data === selectedItems[i].data) {
-//                selectedItems.removeAtIndex(i);
-//                break;
-//            }
-//        }
+        var request = dataModel.getRequest(indexPath);
+        //TODO: open details page with the request
     }
 }
 
@@ -69,8 +56,8 @@ class UIRequestDataModel: NSObject, UITableViewDataSource {
         }
         
         var request: Backend.RequestObject! = getRequest(indexPath);
-        
-        tableCell.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0);
+
+        tableCell.backgroundColor = UIColor(red: 135/255, green: 225/255, blue: 200/255, alpha: 1);
         
         var targetPrefix = AtwUiUtils.getLocalizedString("OUTGOING_REQUEST_TARGET_PREFIX");
         tableCell.textLabel!.text = "\(targetPrefix) \(Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender))";
