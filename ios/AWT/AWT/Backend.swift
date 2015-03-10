@@ -480,7 +480,7 @@ public struct Backend {
         request.responseAgeGroup = Configuration.AGE_CATEGORY_PREFERENCE[2];
         request.responseGender = Configuration.GENDER_PREFERENCE[0];
         request.time = NSDate().timeIntervalSince1970;
-        
+
         return request;
     }
     
@@ -488,10 +488,31 @@ public struct Backend {
     
     // Event Management
     
+//    class EventNotifier: NSObject
+//    {
+//        private var type: String!;
+//        private var requestId: String!;
+//        private var responseId: String!;
+//        
+//        init(type: String!, requestId: String!, responseId: String!) {
+//            super.init();
+//            
+//            self.type = type;
+//            self.requestId = requestId;
+//            self.responseId = responseId;
+//        }
+//        
+//        func schedule(delay: Double) {
+//            NSTimer.scheduledTimerWithTimeInterval(delay, target: self, selector: Selector("timerTick"), userInfo: nil, repeats: false);
+//        }
+//        
+//        func timerTick() {
+//            Backend.instance.notifyCacheListeners(type, requestId: requestId, responseId: responseId);
+//        }
+//    }
+    
     func addCacheChangeListener(listener: CacheChangeEventObserver) {
         cacheChangeListeners.add(listener);
-        
-//        NSTimer.scheduledTimerWithTimeInterval(ti: NSTimeInterval, invocation: <#NSInvocation#>, repeats: <#Bool#>);
     }
     
     func removeCacheChangeListener(listener: CacheChangeEventObserver) {
@@ -629,6 +650,16 @@ public struct Backend {
     
     
     
+    private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
+        var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
+        
+        for (index, listener) in enumerate(cacheChangeListeners.get()) {
+            listener(event: event);
+        }
+    }
+    
+    
+    
     
     private class EventListenerCollection {
         private var list: [CacheChangeEventObserver] = [];
@@ -639,6 +670,10 @@ public struct Backend {
         
         func remove(element: CacheChangeEventObserver) {
             
+        }
+        
+        func get() -> [CacheChangeEventObserver] {
+            return list;
         }
     }
     
