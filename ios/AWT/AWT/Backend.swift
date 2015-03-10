@@ -187,6 +187,9 @@ public protocol BackendCallback {
 }
 
 public struct Backend {
+    typealias CacheChangeEventObserver = (event: CacheChangeEvent) -> Void;
+    
+    
     private static let SERVER_URL: String! = "https://hidden-taiga-8809.herokuapp.com";
     
     private static let LOCATION_HEADER_KEY: String! = "_location";
@@ -485,11 +488,13 @@ public struct Backend {
     
     // Event Management
     
-    public func addCacheChangeListener(listener: (event: CacheChangeEvent) -> Void) {
+    func addCacheChangeListener(listener: CacheChangeEventObserver) {
         cacheChangeListeners.add(listener);
+        
+//        NSTimer.scheduledTimerWithTimeInterval(ti: NSTimeInterval, invocation: <#NSInvocation#>, repeats: <#Bool#>);
     }
     
-    public func removeCacheChangeListener(listener: (event: CacheChangeEvent) -> Void) {
+    func removeCacheChangeListener(listener: CacheChangeEventObserver) {
          cacheChangeListeners.remove(listener);
     }
     
@@ -626,13 +631,13 @@ public struct Backend {
     
     
     private class EventListenerCollection {
-        private var list: [(event: CacheChangeEvent) -> Void] = [];
+        private var list: [CacheChangeEventObserver] = [];
         
-        func add(element: (event: CacheChangeEvent) -> Void) {
+        func add(element: CacheChangeEventObserver) {
             list.append(element);
         }
         
-        func remove(element: (event: CacheChangeEvent) -> Void) {
+        func remove(element: CacheChangeEventObserver) {
             
         }
     }

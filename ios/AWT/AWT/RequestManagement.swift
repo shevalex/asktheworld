@@ -82,7 +82,7 @@ struct RequestManagement {
     private static var mapping: NSCache! = NSCache();
     
     class ActiveOutgoingRequestObjectProvider: RequestObjectProvider {
-        private var listener: ((event: Backend.CacheChangeEvent) -> Void)! = nil;
+        private var listener: Backend.CacheChangeEventObserver! = nil;
         
         func getRequest(index: Int!) -> Backend.RequestObject {
             var requestId = Backend.getInstance().getOutgoingRequestIds()[index];
@@ -94,7 +94,7 @@ struct RequestManagement {
         }
         
         func setChangeObserver(observer: ((index: Int?) -> Void)!) {
-            listener = {(event) -> Void in
+            listener = {(event) in
                 if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
                     observer(index: -1);
                 } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
