@@ -19,7 +19,11 @@ class HomePage: UIViewController {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true;
 
-        RequestManagement.attachRequestObjectProvider(requestTableView, requestObjectProvider: RequestManagement.ActiveOutgoingRequestObjectProvider());
+        var selectionObserver: RequestManagement.RequestSelectionObserver = { (requestId) in
+            println("Clicked \(requestId)");
+        }
+        
+        RequestManagement.attachRequestObjectProvider(requestTableView, requestObjectProvider: RequestManagement.ActiveOutgoingRequestObjectProvider(), selectionObserver);
     }
 
     override func didReceiveMemoryWarning() {
