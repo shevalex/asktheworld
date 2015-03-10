@@ -215,7 +215,7 @@ public struct Backend {
     private static var instance: Backend! = nil;
     
     private var userContext: UserContext! = nil;
-    private var cacheChangeListeners: [(event: CacheChangeEvent) -> Void] = [];
+    private var cacheChangeListeners: EventListenerCollection = EventListenerCollection();
     
     
     public class UserContext {
@@ -486,11 +486,11 @@ public struct Backend {
     // Event Management
     
     public func addCacheChangeListener(listener: (event: CacheChangeEvent) -> Void) {
-        //cacheChangeListeners.append(listener);
+        cacheChangeListeners.add(listener);
     }
     
     public func removeCacheChangeListener(listener: (event: CacheChangeEvent) -> Void) {
-        //TODO
+         cacheChangeListeners.remove(listener);
     }
     
     
@@ -624,6 +624,18 @@ public struct Backend {
     
     
     
+    
+    private class EventListenerCollection {
+        private var list: [(event: CacheChangeEvent) -> Void] = [];
+        
+        func add(element: (event: CacheChangeEvent) -> Void) {
+            list.append(element);
+        }
+        
+        func remove(element: (event: CacheChangeEvent) -> Void) {
+            
+        }
+    }
     
     
     private enum HttpMethod {

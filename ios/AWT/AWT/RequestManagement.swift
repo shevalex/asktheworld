@@ -79,10 +79,11 @@ class UIRequestDataModel: NSObject, UITableViewDataSource {
 
 
 struct RequestManagement {
-    static private var mapping: NSCache! = NSCache();
-    
+    private static var mapping: NSCache! = NSCache();
     
     class ActiveOutgoingRequestObjectProvider: RequestObjectProvider {
+        private var listener: ((event: Backend.CacheChangeEvent) -> Void)! = nil;
+        
         func getRequest(index: Int!) -> Backend.RequestObject {
             var requestId = Backend.getInstance().getOutgoingRequestIds()[index];
             return Backend.getInstance().getRequest(requestId);
@@ -93,7 +94,7 @@ struct RequestManagement {
         }
         
         func setChangeObserver(observer: ((index: Int?) -> Void)!) {
-            Backend.getInstance().addCacheChangeListener({(event) -> Void in
+            listener = {(event) -> Void in
                 if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
                     observer(index: -1);
                 } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
@@ -108,7 +109,15 @@ struct RequestManagement {
                         observer(index: -1);
                     }
                 }
-            });
+            };
+            
+            Backend.getInstance().addCacheChangeListener(listener!);
+        }
+        
+        deinit {
+            if (listener != nil) {
+                Backend.getInstance().removeCacheChangeListener(listener);
+            }
         }
     }
     
