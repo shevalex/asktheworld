@@ -39,9 +39,9 @@ class ResponsePreferencesPage: UIViewController, BackendCallback {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        AtwUiUtils.setDataChooser(amountOfInquiriesTextField, items: Configuration.INQUIRY_LIMIT_PREFERENCE).setSelectedItem(Backend.getUserContext().dailyInquiryLimit);
-        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE).setSelectedItem(Backend.getUserContext().inquiryAge);
-        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getUserContext().inquiryGender);
+        AtwUiUtils.setDataChooser(amountOfInquiriesTextField, items: Configuration.INQUIRY_LIMIT_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().dailyInquiryLimit);
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().inquiryAge);
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().inquiryGender);
     }
 
     override func didReceiveMemoryWarning() {
@@ -56,7 +56,7 @@ class ResponsePreferencesPage: UIViewController, BackendCallback {
         var ageItem = (ageTextField.inputView as SelectorView).getSelectedItems()[0];
         var genderItem = (genderTextField.inputView as SelectorView).getSelectedItems()[0];
         
-        Backend.updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: limitItem, inquiryAge: ageItem, inquiryGender: genderItem, expertises: nil, contactRequestable: nil, contactName: nil, contactDetails: nil, callback: self);
+        Backend.getInstance().updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: limitItem, inquiryAge: ageItem, inquiryGender: genderItem, expertises: nil, contactRequestable: nil, contactName: nil, contactDetails: nil, callback: self);
     }
 
     /*

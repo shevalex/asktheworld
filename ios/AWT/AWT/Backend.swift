@@ -212,9 +212,10 @@ public struct Backend {
     private static let USER_PREFERENCE_CONTACT_DETAILS: String! = "contact_info";
     
 
-    private static var userContext: UserContext! = nil;
+    private static var instance: Backend! = nil;
     
-    
+    private var userContext: UserContext! = nil;
+    private var cacheChangeListeners: [(event: CacheChangeEvent) -> Void] = [];
     
     
     public class UserContext {
@@ -261,13 +262,33 @@ public struct Backend {
         var status: String! = STATUS_ACTIVE;
     }
     
-    public class ResponseObject {
+    public struct ResponseObject {
         
+    }
+
+    
+    public struct CacheChangeEvent {
+        public static let TYPE_OUTGOING_REQUESTS_CHANGED: String = "outgoing_requests_changed";
+        public static let TYPE_INCOMING_REQUESTS_CHANGED: String = "incoming_requests_changed";
+        public static let TYPE_REQUEST_CHANGED: String = "request_changed";
+        public static let TYPE_RESPONSE_CHANGED: String = "response_changed";
+        public static let TYPE_OUTGOING_RESPONSES_CHANGED: String = "outgoing_responses_changed";
+        public static let TYPE_INCOMING_RESPONSES_CHANGED: String = "incoming_responses_changed";
+
+        var type: String!;
+        var requestId: String!;
+        var responseId: String!;
     }
     
     
     
-    public static func getUserContext() -> UserContext! {
+    public static func getInstance() -> Backend {
+        return instance;
+    }
+    
+    
+    
+    public func getUserContext() -> UserContext! {
         return userContext;
     }
     
@@ -275,12 +296,14 @@ public struct Backend {
     public static func logIn(login: String!, password: String!, callback: BackendCallback?) {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                Backend.userContext = UserContext();
-                Backend.userContext.userId = data?.valueForKey("userId") as Int;
-                Backend.userContext.login = login;
-                Backend.userContext.password = password;
+                Backend.instance = Backend();
                 
-                self.pullUserSettings(callback);
+                Backend.instance.userContext = UserContext();
+                Backend.instance.userContext.userId = data?.valueForKey("userId") as Int;
+                Backend.instance.userContext.login = login;
+                Backend.instance.userContext.password = password;
+                
+                Backend.instance.pullUserSettings(callback);
             } else if (statusCode == 401 || statusCode == 404) {
                 callback?.onFailure();
             } else {
@@ -301,7 +324,9 @@ public struct Backend {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             
             if (statusCode == 201) {
-                Backend.userContext = UserContext();
+                Backend.instance = Backend();
+                
+                Backend.instance.userContext = UserContext();
                 let location = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as String?;
                 if (location == nil) {
                     println("Error: server malformed response - no userid provided in Location header");
@@ -309,11 +334,11 @@ public struct Backend {
                     return;
                 }
                 
-                Backend.userContext.userId = location!.toInt();
-                Backend.userContext.login = login;
-                Backend.userContext.password = password;
+                Backend.instance.userContext.userId = location!.toInt();
+                Backend.instance.userContext.login = login;
+                Backend.instance.userContext.password = password;
                 
-                self.pullUserSettings(callback);
+                Backend.instance.pullUserSettings(callback);
             } else if (statusCode == 409) {
                 callback?.onFailure();
             } else {
@@ -355,12 +380,12 @@ public struct Backend {
     }
     
     
-    public static func updateUserProfile(password: String?, gender: Configuration.Item!, age: Configuration.Item!, nickname: String!, languages: [Configuration.Item]!, currentPassword: String!, callback: BackendCallback?) {
+    public func updateUserProfile(password: String?, gender: Configuration.Item!, age: Configuration.Item!, nickname: String!, languages: [Configuration.Item]!, currentPassword: String!, callback: BackendCallback?) {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             
             if (statusCode == 200) {
-                Backend.userContext.password = password != nil ? password : currentPassword;
+                self.userContext.password = password != nil ? password : currentPassword;
                 self.pullUserProfile(callback);
             } else if (statusCode == 401) {
                 callback?.onFailure();
@@ -370,23 +395,23 @@ public struct Backend {
         };
         
         var params: NSDictionary! = NSMutableDictionary();
-        params.setValue(password, forKey: USER_PROPERTY_PASSWORD);
-        params.setValue(gender.data, forKey: USER_PROPERTY_GENDER);
-        params.setValue(age.data, forKey: USER_PROPERTY_AGE);
-        params.setValue(nickname, forKey: USER_PROPERTY_NICKNAME);
+        params.setValue(password, forKey: Backend.USER_PROPERTY_PASSWORD);
+        params.setValue(gender.data, forKey: Backend.USER_PROPERTY_GENDER);
+        params.setValue(age.data, forKey: Backend.USER_PROPERTY_AGE);
+        params.setValue(nickname, forKey: Backend.USER_PROPERTY_NICKNAME);
         
         var langData: [String] = [];
         for (index, item) in enumerate(languages) {
             langData.append(item.data as String);
         }
         
-        params.setValue(langData, forKey: USER_PROPERTY_LANGUAGES);
+        params.setValue(langData, forKey: Backend.USER_PROPERTY_LANGUAGES);
         
-        let url = "user/\(Backend.userContext.userId)";
-        Backend.communicate(url, method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: Backend.userContext.login, password: currentPassword);
+        let url = "user/\(userContext.userId)";
+        Backend.communicate(url, method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: userContext.login, password: currentPassword);
     }
 
-    public static func updateUserPreferences(requestTargetAge: Configuration.Item?, requestTargetGender: Configuration.Item?, responseQuantity: Configuration.Item?, responseWaitTime: Configuration.Item?, dailyInquiryLimit: Configuration.Item?, inquiryAge: Configuration.Item?, inquiryGender: Configuration.Item?, expertises: [Configuration.Item]?, contactRequestable: Configuration.Item?, contactName: String?, contactDetails: String?, callback: BackendCallback?) {
+    public func updateUserPreferences(requestTargetAge: Configuration.Item?, requestTargetGender: Configuration.Item?, responseQuantity: Configuration.Item?, responseWaitTime: Configuration.Item?, dailyInquiryLimit: Configuration.Item?, inquiryAge: Configuration.Item?, inquiryGender: Configuration.Item?, expertises: [Configuration.Item]?, contactRequestable: Configuration.Item?, contactName: String?, contactDetails: String?, callback: BackendCallback?) {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
 
@@ -414,13 +439,13 @@ public struct Backend {
         };
         
         var params: NSDictionary! = NSMutableDictionary();
-        params.setValue(requestTargetAge?.data, forKey: USER_PREFERENCE_REQUEST_TARGET_AGE);
-        params.setValue(requestTargetGender?.data, forKey: USER_PREFERENCE_REQUEST_TARGET_GENDER);
-        params.setValue(responseQuantity?.data, forKey: USER_PREFERENCE_RESPONSE_QUANTITY);
-        params.setValue(responseWaitTime?.data, forKey: USER_PREFERENCE_RESPONSE_WAITTIME);
-        params.setValue(dailyInquiryLimit?.data, forKey: USER_PREFERENCE_INQUIRY_LIMIT);
-        params.setValue(inquiryAge?.data, forKey: USER_PREFERENCE_INQUIRY_AGE);
-        params.setValue(inquiryGender?.data, forKey: USER_PREFERENCE_INQUIRY_GENDER);
+        params.setValue(requestTargetAge?.data, forKey: Backend.USER_PREFERENCE_REQUEST_TARGET_AGE);
+        params.setValue(requestTargetGender?.data, forKey: Backend.USER_PREFERENCE_REQUEST_TARGET_GENDER);
+        params.setValue(responseQuantity?.data, forKey: Backend.USER_PREFERENCE_RESPONSE_QUANTITY);
+        params.setValue(responseWaitTime?.data, forKey: Backend.USER_PREFERENCE_RESPONSE_WAITTIME);
+        params.setValue(dailyInquiryLimit?.data, forKey: Backend.USER_PREFERENCE_INQUIRY_LIMIT);
+        params.setValue(inquiryAge?.data, forKey: Backend.USER_PREFERENCE_INQUIRY_AGE);
+        params.setValue(inquiryGender?.data, forKey: Backend.USER_PREFERENCE_INQUIRY_GENDER);
         
         
         var expertisesData: [String]?;
@@ -430,23 +455,23 @@ public struct Backend {
                 expertisesData!.append(item.data as String);
             }
         }
-        params.setValue(expertisesData, forKey: USER_PREFERENCE_EXPERTISES);
+        params.setValue(expertisesData, forKey: Backend.USER_PREFERENCE_EXPERTISES);
         
         
-        params.setValue(contactRequestable?.data, forKey: USER_PREFERENCE_CONTACT_REQUESTABLE);
-        params.setValue(contactName, forKey: USER_PREFERENCE_CONTACT_NAME);
-        params.setValue(contactDetails, forKey: USER_PREFERENCE_CONTACT_DETAILS);
+        params.setValue(contactRequestable?.data, forKey: Backend.USER_PREFERENCE_CONTACT_REQUESTABLE);
+        params.setValue(contactName, forKey: Backend.USER_PREFERENCE_CONTACT_NAME);
+        params.setValue(contactDetails, forKey: Backend.USER_PREFERENCE_CONTACT_DETAILS);
 
         
-        let url = "user/\(Backend.userContext.userId)/settings";
-        Backend.communicate(url, method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: Backend.userContext.login, password: Backend.userContext.password);
+        let url = "user/\(userContext.userId)/settings";
+        Backend.communicate(url, method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: userContext.login, password: userContext.password);
     }
     
-    public static func getOutgoingRequestIds(requestStatus: String? = nil) -> [String] {
+    public func getOutgoingRequestIds(requestStatus: String? = nil) -> [String] {
         return ["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"];
     }
     
-    public static func getRequest(requestId: String!) -> RequestObject {
+    public func getRequest(requestId: String!) -> RequestObject {
         var request: RequestObject = RequestObject();
         request.text = "Request \(requestId)";
         request.responseAgeGroup = Configuration.AGE_CATEGORY_PREFERENCE[2];
@@ -455,6 +480,23 @@ public struct Backend {
         
         return request;
     }
+    
+
+    
+    // Event Management
+    
+    public func addCacheChangeListener(listener: (event: CacheChangeEvent) -> Void) {
+        //cacheChangeListeners.append(listener);
+    }
+    
+    public func removeCacheChangeListener(listener: (event: CacheChangeEvent) -> Void) {
+        //TODO
+    }
+    
+    
+    
+    
+    
     
     
     
@@ -472,41 +514,36 @@ public struct Backend {
         }
         
         func onSuccess() {
-            Backend.pullUserPreferences(cb);
+            Backend.instance.pullUserPreferences(cb);
         }
         
         func onFailure() {
             cb?.onFailure();
         }
     }
-    static func pullUserSettings(callback: BackendCallback?) {
+    func pullUserSettings(callback: BackendCallback?) {
         pullUserProfile(ProfileCallback(callback: callback));
     }
 
     
-    static func pullUserProfile(callback: BackendCallback?) {
-        if (Backend.userContext == nil) {
-            println("Error: cannot pull user profile before logged in");
-            return;
-        }
-        
+    func pullUserProfile(callback: BackendCallback?) {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                Backend.userContext.name = data?.valueForKey(self.USER_PROPERTY_NICKNAME) as? String;
+                self.userContext.name = data?.valueForKey(Backend.USER_PROPERTY_NICKNAME) as? String;
                 
-                var languages: [Configuration.Item]? = Configuration.resolve(data?.valueForKey(self.USER_PROPERTY_LANGUAGES) as? [String], predefinedList: Configuration.LANGUAGES);
+                var languages: [Configuration.Item]? = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_LANGUAGES) as? [String], predefinedList: Configuration.LANGUAGES);
                 if (languages != nil) {
-                    Backend.userContext.languages = languages;
+                    self.userContext.languages = languages;
                 }
                 
-                var gender: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PROPERTY_GENDER), predefinedList: Configuration.GENDERS);
+                var gender: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_GENDER), predefinedList: Configuration.GENDERS);
                 if (gender != nil) {
-                    Backend.userContext.gender = gender;
+                    self.userContext.gender = gender;
                 }
                 
-                var age: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PROPERTY_AGE), predefinedList: Configuration.AGE_CATEGORIES);
+                var age: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_AGE), predefinedList: Configuration.AGE_CATEGORIES);
                 if (age != nil) {
-                    Backend.userContext.age = age;
+                    self.userContext.age = age;
                 }
 
                 callback?.onSuccess();
@@ -517,65 +554,60 @@ public struct Backend {
             }
         };
 
-        let url = "user/\(Backend.userContext.userId)";
-        Backend.communicate(url, method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: Backend.userContext.login, password: Backend.userContext.password);
+        let url = "user/\(userContext.userId)";
+        Backend.communicate(url, method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userContext.login, password: userContext.password);
     }
     
-    static func pullUserPreferences(callback: BackendCallback?) {
-        if (Backend.userContext == nil) {
-            println("Error: cannot pull user preferences before logged in");
-            return;
-        }
-        
+    func pullUserPreferences(callback: BackendCallback?) {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                var responseQuantity: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PREFERENCE_RESPONSE_QUANTITY), predefinedList: Configuration.RESPONSE_QUANTITY);
+                var responseQuantity: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_RESPONSE_QUANTITY), predefinedList: Configuration.RESPONSE_QUANTITY);
                 if (responseQuantity != nil) {
-                    Backend.userContext.responseQuantity = responseQuantity;
+                    self.userContext.responseQuantity = responseQuantity;
                 }
 
-                var responseWaitTime: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PREFERENCE_RESPONSE_WAITTIME), predefinedList: Configuration.RESPONSE_WAIT_TIME);
+                var responseWaitTime: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_RESPONSE_WAITTIME), predefinedList: Configuration.RESPONSE_WAIT_TIME);
                 if (responseWaitTime != nil) {
-                    Backend.userContext.responseWaitTime = responseWaitTime;
+                    self.userContext.responseWaitTime = responseWaitTime;
                 }
                 
-                var requestTargetAge: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PREFERENCE_REQUEST_TARGET_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
+                var requestTargetAge: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_REQUEST_TARGET_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
                 if (requestTargetAge != nil) {
-                    Backend.userContext.requestTargetAge = requestTargetAge;
+                    self.userContext.requestTargetAge = requestTargetAge;
                 }
                 
-                var requestTargetGender: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PREFERENCE_REQUEST_TARGET_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
+                var requestTargetGender: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_REQUEST_TARGET_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
                 if (requestTargetGender != nil) {
-                    Backend.userContext.requestTargetGender = requestTargetGender;
+                    self.userContext.requestTargetGender = requestTargetGender;
                 }
 
-                var dailyInquiryLimit: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PREFERENCE_INQUIRY_LIMIT), predefinedList: Configuration.INQUIRY_LIMIT_PREFERENCE);
+                var dailyInquiryLimit: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_LIMIT), predefinedList: Configuration.INQUIRY_LIMIT_PREFERENCE);
                 if (dailyInquiryLimit != nil) {
-                    Backend.userContext.dailyInquiryLimit = dailyInquiryLimit;
+                    self.userContext.dailyInquiryLimit = dailyInquiryLimit;
                 }
                 
-                var inquiryAge: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PREFERENCE_INQUIRY_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
+                var inquiryAge: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
                 if (inquiryAge != nil) {
-                    Backend.userContext.inquiryAge = inquiryAge;
+                    self.userContext.inquiryAge = inquiryAge;
                 }
                 
-                var inquiryGender: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PREFERENCE_INQUIRY_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
+                var inquiryGender: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
                 if (inquiryGender != nil) {
-                    Backend.userContext.inquiryGender = inquiryGender;
+                    self.userContext.inquiryGender = inquiryGender;
                 }
                 
-                var expertises: [Configuration.Item]? = Configuration.resolve(data?.valueForKey(self.USER_PREFERENCE_EXPERTISES) as? [String], predefinedList: Configuration.EXPERTISES);
+                var expertises: [Configuration.Item]? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_EXPERTISES) as? [String], predefinedList: Configuration.EXPERTISES);
                 if (expertises != nil) {
-                    Backend.userContext.expertises = expertises;
+                    self.userContext.expertises = expertises;
                 }
                 
-                var contactVisible: Configuration.Item? = Configuration.resolve(data?.valueForKey(self.USER_PREFERENCE_CONTACT_REQUESTABLE), predefinedList: Configuration.CONTACT_REQUESTABLE);
+                var contactVisible: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_REQUESTABLE), predefinedList: Configuration.CONTACT_REQUESTABLE);
                 if (contactVisible != nil) {
-                    Backend.userContext.contactVisible = contactVisible;
+                    self.userContext.contactVisible = contactVisible;
                 }
                 
-                Backend.userContext.contactName = data?.valueForKey(self.USER_PREFERENCE_CONTACT_NAME) as? String;
-                Backend.userContext.contactInfo = data?.valueForKey(self.USER_PREFERENCE_CONTACT_DETAILS) as? String;
+                self.userContext.contactName = data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_NAME) as? String;
+                self.userContext.contactInfo = data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_DETAILS) as? String;
                 
                 callback?.onSuccess();
             } else if (statusCode == 401 || statusCode == 404) {
@@ -585,8 +617,8 @@ public struct Backend {
             }
         };
         
-        let url = "user/\(Backend.userContext.userId)/settings";
-        Backend.communicate(url, method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: Backend.userContext.login, password: Backend.userContext.password);
+        let url = "user/\(userContext.userId)/settings";
+        Backend.communicate(url, method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userContext.login, password: userContext.password);
     }
 
     

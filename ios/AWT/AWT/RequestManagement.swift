@@ -64,7 +64,7 @@ class UIRequestDataModel: NSObject, UITableViewDataSource {
         tableCell.detailTextLabel!.text = request.text;
         tableCell.detailTextLabel!.textColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1.0)
         tableCell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
-        tableCell.imageView?.image = UIImage(named: "outgoing_arrow.png");
+//        tableCell.imageView?.image = UIImage(named: "outgoing_arrow.png");
 //        tableCell.selectionStyle = UITableViewCellSelectionStyle.Gray;
         
         return tableCell;
@@ -84,16 +84,31 @@ struct RequestManagement {
     
     class ActiveOutgoingRequestObjectProvider: RequestObjectProvider {
         func getRequest(index: Int!) -> Backend.RequestObject {
-            var requestId = Backend.getOutgoingRequestIds()[index];
-            return Backend.getRequest(requestId);
+            var requestId = Backend.getInstance().getOutgoingRequestIds()[index];
+            return Backend.getInstance().getRequest(requestId);
         }
         
         func count() -> Int {
-            return Backend.getOutgoingRequestIds().count;
+            return Backend.getInstance().getOutgoingRequestIds().count;
         }
         
         func setChangeObserver(observer: ((index: Int?) -> Void)!) {
-            
+            Backend.getInstance().addCacheChangeListener({(event) -> Void in
+                if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
+                    observer(index: -1);
+                } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
+                    if (event.requestId != nil) {
+                        for (index, requestId) in enumerate(Backend.getInstance().getOutgoingRequestIds()) {
+                            if (requestId == event.requestId) {
+                                observer(index: index);
+                                break;
+                            }
+                        }
+                    } else {
+                        observer(index: -1);
+                    }
+                }
+            });
         }
     }
     
@@ -113,6 +128,10 @@ struct RequestManagement {
         delegate = UIRequestTableDelegate(dataModel: dataModel);
         tableView.delegate = delegate as? UITableViewDelegate;
         tableView.dataSource = dataModel;
+        
+        requestObjectProvider.setChangeObserver({(index) -> Void in
+            tableView.reloadData();
+        });
         
         mapping.setObject(delegate!, forKey: tableView);
     }

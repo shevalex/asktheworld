@@ -46,17 +46,17 @@ class RequestPreferencesPage: UIViewController, BackendCallback {
         var quantityItem = (numberOfResponsesTextField.inputView as SelectorView).getSelectedItems()[0];
         var waitTimeItem = (waitTimeTextField.inputView as SelectorView).getSelectedItems()[0];
         
-        Backend.updateUserPreferences(ageItem, requestTargetGender: genderItem, responseQuantity: quantityItem, responseWaitTime: waitTimeItem, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: nil, contactRequestable: nil, contactName: nil, contactDetails: nil, callback: self);
+        Backend.getInstance().updateUserPreferences(ageItem, requestTargetGender: genderItem, responseQuantity: quantityItem, responseWaitTime: waitTimeItem, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: nil, contactRequestable: nil, contactName: nil, contactDetails: nil, callback: self);
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getUserContext().requestTargetGender);
-        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE).setSelectedItem(Backend.getUserContext().requestTargetAge);
-        AtwUiUtils.setDataChooser(numberOfResponsesTextField, items: Configuration.RESPONSE_QUANTITY).setSelectedItem(Backend.getUserContext().responseQuantity);
-        AtwUiUtils.setDataChooser(waitTimeTextField, items: Configuration.RESPONSE_WAIT_TIME).setSelectedItem(Backend.getUserContext().responseWaitTime);
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().requestTargetGender);
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().requestTargetAge);
+        AtwUiUtils.setDataChooser(numberOfResponsesTextField, items: Configuration.RESPONSE_QUANTITY).setSelectedItem(Backend.getInstance().getUserContext().responseQuantity);
+        AtwUiUtils.setDataChooser(waitTimeTextField, items: Configuration.RESPONSE_WAIT_TIME).setSelectedItem(Backend.getInstance().getUserContext().responseWaitTime);
     }
 
     override func didReceiveMemoryWarning() {

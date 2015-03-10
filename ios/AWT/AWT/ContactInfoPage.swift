@@ -39,11 +39,11 @@ class ContactInfoPage: UIViewController, BackendCallback {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        AtwUiUtils.setDataChooser(expertisesTextField, items: Configuration.EXPERTISES, multichoice: true).setSelectedItems(Backend.getUserContext().expertises);
-        AtwUiUtils.setDataChooser(contactVisibleTextField, items: Configuration.CONTACT_REQUESTABLE).setSelectedItem(Backend.getUserContext().contactVisible);
+        AtwUiUtils.setDataChooser(expertisesTextField, items: Configuration.EXPERTISES, multichoice: true).setSelectedItems(Backend.getInstance().getUserContext().expertises);
+        AtwUiUtils.setDataChooser(contactVisibleTextField, items: Configuration.CONTACT_REQUESTABLE).setSelectedItem(Backend.getInstance().getUserContext().contactVisible);
         
-        nameTextField.text = Backend.getUserContext().contactName;
-        contactInfoTextField.text = Backend.getUserContext().contactInfo;
+        nameTextField.text = Backend.getInstance().getUserContext().contactName;
+        contactInfoTextField.text = Backend.getInstance().getUserContext().contactInfo;
     }
 
     override func didReceiveMemoryWarning() {
@@ -57,7 +57,7 @@ class ContactInfoPage: UIViewController, BackendCallback {
         var expertisesItems = (expertisesTextField.inputView as SelectorView).getSelectedItems();
         var visibleItem = (contactVisibleTextField.inputView as SelectorView).getSelectedItems()[0];
         
-        Backend.updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: expertisesItems, contactRequestable: visibleItem, contactName: nameTextField.text, contactDetails: contactInfoTextField.text, callback: self);
+        Backend.getInstance().updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: expertisesItems, contactRequestable: visibleItem, contactName: nameTextField.text, contactDetails: contactInfoTextField.text, callback: self);
     }
 
     /*

@@ -42,10 +42,10 @@ class ProfilePage: UIViewController, BackendCallback {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        nicknameTextField.text = Backend.getUserContext().name;
-        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS).setSelectedItem(Backend.getUserContext().gender);
-        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES).setSelectedItem(Backend.getUserContext().age);
-        AtwUiUtils.setDataChooser(languagesTextField, items: Configuration.LANGUAGES, multichoice: true).setSelectedItems(Backend.getUserContext().languages);
+        nicknameTextField.text = Backend.getInstance().getUserContext().name;
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS).setSelectedItem(Backend.getInstance().getUserContext().gender);
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES).setSelectedItem(Backend.getInstance().getUserContext().age);
+        AtwUiUtils.setDataChooser(languagesTextField, items: Configuration.LANGUAGES, multichoice: true).setSelectedItems(Backend.getInstance().getUserContext().languages);
     }
 
     override func didReceiveMemoryWarning() {
@@ -105,7 +105,7 @@ class ProfilePage: UIViewController, BackendCallback {
         
         var newPassword = newPasswordTextField.text != "" ? newPasswordTextField.text : nil;
         
-        Backend.updateUserProfile(newPassword , gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, currentPassword: currentPasswordTextField.text, callback: self);
+        Backend.getInstance().updateUserProfile(newPassword , gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, currentPassword: currentPasswordTextField.text, callback: self);
     }
     
 
