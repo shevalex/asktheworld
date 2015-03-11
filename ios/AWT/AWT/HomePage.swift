@@ -22,9 +22,8 @@ class HomePage: UIViewController {
         self.navigationItem.hidesBackButton = true;
 
         var selectionObserver: RequestManagement.RequestSelectionObserver = { (requestId) in
-            println("Clicked \(requestId)");
-            self.requestIdtoSend = requestId
-            self.performSegueWithIdentifier("showRequestDetails", sender: self)
+            self.requestIdtoSend = requestId;
+            self.performSegueWithIdentifier("showRequestDetails", sender: self);
         }
         
         RequestManagement.attachRequestObjectProvider(requestTableView, requestObjectProvider: RequestManagement.ActiveOutgoingRequestObjectProvider(), selectionObserver);
