@@ -281,6 +281,9 @@ public struct Backend {
         public static let TYPE_OUTGOING_RESPONSES_CHANGED: String = "outgoing_responses_changed";
         public static let TYPE_INCOMING_RESPONSES_CHANGED: String = "incoming_responses_changed";
 
+        public static let TYPE_UPDATE_STARTED: String = "update_started";
+        public static let TYPE_UPDATE_FINISHED: String = "update_finished";
+
         var type: String!;
         var requestId: String!;
         var responseId: String!;
@@ -480,9 +483,11 @@ public struct Backend {
         if (ids == nil) {
             //TODO: pull the list from the server here
             self.cache.setOutgoingRequestIds([]);
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: nil, responseId: nil);
 
             var action:()->Void = {() in
-               self.cache.setOutgoingRequestIds(["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"]);
+                self.cache.setOutgoingRequestIds(["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"]);
+                self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: nil, responseId: nil);
             };
             
             CacheChangeNotifier(type: CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: nil, responseId: nil, action).schedule(5);
@@ -494,6 +499,8 @@ public struct Backend {
     public func getRequest(requestId: String!) -> RequestObject? {
         var request: RequestObject? = cache.getRequest(requestId);
         if (request == nil) {
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: nil, responseId: nil);
+            
             //TODO: pull request from the server here
             
             var action:()->Void = {() in
@@ -504,6 +511,7 @@ public struct Backend {
                 request!.time = NSDate().timeIntervalSince1970;
 
                 self.cache.setRequest(requestId, request: request!);
+                self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: nil, responseId: nil);
             };
             
             CacheChangeNotifier(type: CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId, responseId: nil, action).schedule(2);
@@ -688,7 +696,7 @@ public struct Backend {
     
     private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
         var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
-        
+
         for (index, listener) in enumerate(cacheChangeListeners.get()) {
             listener(event: event);
         }

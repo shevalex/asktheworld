@@ -39,7 +39,7 @@ public struct AtwUiUtils {
     }
     
     
-    static func showSpinner(anchor: UIView!) {
+    static func showSpinner(anchor: UIView!, disableInput: Bool! = true) {
         if (activityIndicator == nil) {
             activityIndicator = UIActivityIndicatorView();
             
@@ -52,7 +52,9 @@ public struct AtwUiUtils {
 
         anchor.addSubview(activityIndicator);
         
-        UIApplication.sharedApplication().beginIgnoringInteractionEvents();
+        if (disableInput == true) {
+            UIApplication.sharedApplication().beginIgnoringInteractionEvents();
+        }
         activityIndicator.startAnimating();
     }
     static func hideSpinner() {
@@ -64,7 +66,9 @@ public struct AtwUiUtils {
             return;
         }
         
-        UIApplication.sharedApplication().endIgnoringInteractionEvents();
+        if (UIApplication.sharedApplication().isIgnoringInteractionEvents()) {
+            UIApplication.sharedApplication().endIgnoringInteractionEvents();
+        }
         activityIndicator.stopAnimating();
         
         activityIndicator.removeFromSuperview();

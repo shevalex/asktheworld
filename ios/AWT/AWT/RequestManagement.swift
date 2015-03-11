@@ -10,8 +10,8 @@ import Foundation
 import UIKit;
 
 
-protocol RequestObjectProvider {
-    func getRequestId(index: Int!) -> String;
+protocol GenericObjectProvider {
+    func getObjectId(index: Int!) -> String;
     func count() -> Int;
     func setChangeObserver(observer: ((index: Int?) -> Void)!);
 }
@@ -47,9 +47,9 @@ struct RequestManagement {
     }
     
     class UIRequestDataModel: NSObject, UITableViewDataSource {
-        private var dataProvider: RequestObjectProvider!
+        private var dataProvider: GenericObjectProvider!
         
-        init(dataProvider: RequestObjectProvider) {
+        init(dataProvider: GenericObjectProvider) {
             self.dataProvider = dataProvider;
         }
         
@@ -84,26 +84,42 @@ struct RequestManagement {
         
         
         private func getRequestId(indexPath: NSIndexPath) -> String {
-            return dataProvider.getRequestId(indexPath.row);
+            return dataProvider.getObjectId(indexPath.row);
         }
     }
     
     
-    class ActiveOutgoingRequestObjectProvider: RequestObjectProvider {
-        private var listener: Backend.CacheChangeEventObserver! = nil;
+    class ActiveOutgoingRequestObjectProvider: GenericObjectProvider {
+        private var cacheChangeListener: Backend.CacheChangeEventObserver? = nil;
+        private var updateListener: ((finished: Bool) -> Void)? = nil;
         
-        func getRequestId(index: Int!) -> String {
+        func getObjectId(index: Int!) -> String {
             return Backend.getInstance().getOutgoingRequestIds()![index];
         }
         
         func count() -> Int {
             var requestIds = Backend.getInstance().getOutgoingRequestIds();
-            return requestIds != nil ? requestIds!.count : 0;
+            if (requestIds == nil) {
+                self.updateListener?(finished: false);
+                return 0;
+            }
+            
+            return requestIds!.count;
         }
         
         func setChangeObserver(observer: ((index: Int?) -> Void)!) {
-            listener = {(event) in
+            if (observer == nil) {
+                if (cacheChangeListener != nil) {
+                    Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
+                    cacheChangeListener = nil;
+                }
+                
+                return;
+            }
+            
+            cacheChangeListener = {(event) in
                 if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
+                    self.updateListener?(finished: true);
                     observer(index: -1);
                 } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
                     if (event.requestId != nil) {
@@ -118,19 +134,22 @@ struct RequestManagement {
                     }
                 }
             };
-            
-            Backend.getInstance().addCacheChangeListener(listener!);
+            Backend.getInstance().addCacheChangeListener(cacheChangeListener!);
+        }
+        
+        func setUpdateObserver(observer: ((finished: Bool) -> Void)!) {
+            self.updateListener = observer;
         }
         
         deinit {
-            if (listener != nil) {
-                Backend.getInstance().removeCacheChangeListener(listener);
+            if (cacheChangeListener != nil) {
+                Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
             }
         }
     }
     
     
-    static func attachRequestObjectProvider(tableView: UITableView, requestObjectProvider: RequestObjectProvider, selectionObserver: RequestSelectionObserver? = nil) {
+    static func attachRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: RequestSelectionObserver? = nil) {
 
 //        tableView.rowHeight = CGFloat(30);
         
