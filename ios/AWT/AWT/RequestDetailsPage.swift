@@ -10,12 +10,10 @@ import UIKit
 
 class RequestDetailsPage: UIViewController {
 
-    @IBOutlet weak var testLabel: UILabel!
     var requestId: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        testLabel.text = requestId
 
         // Do any additional setup after loading the view.
     }
