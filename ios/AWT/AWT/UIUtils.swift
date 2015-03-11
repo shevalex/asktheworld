@@ -11,18 +11,25 @@ import UIKit
 
 public struct AtwUiUtils {
     static let localizationBundles: NSMutableDictionary! = NSMutableDictionary();
+    static let resourceBundles: NSMutableDictionary! = NSMutableDictionary();
     
     static var activityIndicator: UIActivityIndicatorView! = nil;
     
-    static func loadLocalizationBundle(bundleName: String) -> NSDictionary! {
-        var bundleData: AnyObject? = localizationBundles.valueForKey(bundleName);
+    
+    // Resource management
+    private static func loadBundle(bundleName: String, type: String, bundleCollection: NSMutableDictionary) -> NSDictionary! {
+        var bundleData: AnyObject? = bundleCollection.valueForKey(bundleName);
         if (bundleData == nil) {
-            let bundlePath = NSBundle.mainBundle().pathForResource(bundleName, ofType: "strings")!;
+            let bundlePath = NSBundle.mainBundle().pathForResource(bundleName, ofType: type)!;
             bundleData = NSDictionary(contentsOfFile: bundlePath);
-            localizationBundles.setValue(bundleData, forKey: bundleName);
+            bundleCollection.setValue(bundleData, forKey: bundleName);
         }
         
         return bundleData as NSDictionary;
+    }
+    
+    static func loadLocalizationBundle(bundleName: String) -> NSDictionary! {
+        return loadBundle(bundleName, type: "strings", bundleCollection: localizationBundles);
     }
     
     static func getBundleLocalizedString(bundleName: String, keyName: String) -> String {
@@ -38,6 +45,36 @@ public struct AtwUiUtils {
         return getBundleLocalizedString("uiutils", keyName: keyName);
     }
     
+
+    
+    static func loadResourceBundle(bundleName: String) -> NSDictionary! {
+        return loadBundle(bundleName, type: "plist", bundleCollection: resourceBundles);
+    }
+    
+    static func getResource(bundleName: String, keyName: String) -> AnyObject? {
+        return loadResourceBundle(bundleName).valueForKey(keyName);
+    }
+    
+    static func getStyleResource(keyName: String) -> AnyObject? {
+        return loadResourceBundle("styles").valueForKey(keyName);
+    }
+    
+    static func getColor(keyName: String) -> UIColor? {
+        let value: AnyObject? = getStyleResource(keyName);
+        if (value != nil) {
+            let colorArray: Array<Int> = value as Array<Int>;
+            let red: CGFloat = CGFloat(colorArray[0]) / 255;
+            let green: CGFloat = CGFloat(colorArray[1]) / 255;
+            let blue: CGFloat = CGFloat(colorArray[2]) / 255;
+            let alpha: CGFloat = colorArray.count > 3 ? CGFloat(colorArray[3]) / 100 : 1;
+            return UIColor(red: red, green: green, blue: blue, alpha: alpha);
+        } else {
+            return nil;
+        }
+    }
+    
+
+    // UI Management
     
     static func showSpinner(anchor: UIView!, disableInput: Bool! = true) {
         if (activityIndicator == nil) {

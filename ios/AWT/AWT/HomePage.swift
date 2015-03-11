@@ -53,6 +53,7 @@ class HomePage: UIViewController {
 
     override func viewWillAppear(animated: Bool) {
         Backend.getInstance().addCacheChangeListener(updateListener);
+        requestTableView.reloadData();
     }
     
     override func viewWillDisappear(animated: Bool) {

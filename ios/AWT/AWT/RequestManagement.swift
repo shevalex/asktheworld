@@ -64,14 +64,14 @@ struct RequestManagement {
                 tableCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell");
             }
             
-            tableCell.backgroundColor = UIColor(red: 135/255, green: 225/255, blue: 200/255, alpha: 1);
+            tableCell.backgroundColor = AtwUiUtils.getColor("OUTGOING_REQUEST_BACKGROUND_COLOR");
             
             var request: Backend.RequestObject! = Backend.getInstance().getRequest(getRequestId(indexPath));
             if (request != nil) {
                 var targetPrefix = AtwUiUtils.getLocalizedString("OUTGOING_REQUEST_TARGET_PREFIX");
                 tableCell.textLabel!.text = "\(targetPrefix) \(Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender))";
                 tableCell.detailTextLabel!.text = request.text;
-                tableCell.detailTextLabel!.textColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1.0)
+                tableCell.detailTextLabel!.textColor = AtwUiUtils.getColor("OUTGOING_REQUEST_TEXT_COLOR");
                 tableCell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
                 //        tableCell.imageView?.image = UIImage(named: "outgoing_arrow.png");
                 //        tableCell.selectionStyle = UITableViewCellSelectionStyle.Gray;

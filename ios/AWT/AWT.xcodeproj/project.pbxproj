@@ -13,6 +13,7 @@
 		8236B5871AA6C16200EE3258 /* DataChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236B5861AA6C16200EE3258 /* DataChooser.swift */; };
 		82A4014D1AA01B1C00E26253 /* uiutils.strings in Resources */ = {isa = PBXBuildFile; fileRef = 82A4014C1AA01B1C00E26253 /* uiutils.strings */; };
 		82A4014F1AA158CA00E26253 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A4014E1AA158CA00E26253 /* Backend.swift */; };
+		82B94D191AB0F1B20008960E /* styles.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82B94D181AB0F1B20008960E /* styles.plist */; };
 		F719A2041AA8A60200725A5A /* ContactInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719A2031AA8A60200725A5A /* ContactInfoPage.swift */; };
 		F73D302A1AA771F800A5317A /* ProfilePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73D30291AA771F800A5317A /* ProfilePage.swift */; };
 		F73D302C1AA7F01E00A5317A /* RequestPreferencesPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */; };
@@ -48,6 +49,7 @@
 		8236B5861AA6C16200EE3258 /* DataChooser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataChooser.swift; sourceTree = "<group>"; };
 		82A4014C1AA01B1C00E26253 /* uiutils.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = uiutils.strings; sourceTree = "<group>"; };
 		82A4014E1AA158CA00E26253 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
+		82B94D181AB0F1B20008960E /* styles.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = styles.plist; sourceTree = "<group>"; };
 		F719A2031AA8A60200725A5A /* ContactInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactInfoPage.swift; sourceTree = "<group>"; };
 		F73D30291AA771F800A5317A /* ProfilePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePage.swift; sourceTree = "<group>"; };
 		F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestPreferencesPage.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				F773F3D01AA68D300053A712 /* contact_info.png */,
 				F745FE561A9E2882006E7698 /* Info.plist */,
 				82A4014C1AA01B1C00E26253 /* uiutils.strings */,
+				82B94D181AB0F1B20008960E /* styles.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 			files = (
 				F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */,
 				820418391AAB9E4D003429CC /* incoming_arrow.png in Resources */,
+				82B94D191AB0F1B20008960E /* styles.plist in Resources */,
 				F745FE621A9E2882006E7698 /* LaunchScreen.xib in Resources */,
 				82A4014D1AA01B1C00E26253 /* uiutils.strings in Resources */,
 				F773F3D11AA68D300053A712 /* contact_info.png in Resources */,

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>OUTGOING_REQUEST_BACKGROUND_COLOR</key>
+	<array>
+		<integer>135</integer>
+		<integer>225</integer>
+		<integer>200</integer>
+	</array>
+	<key>OUTGOING_REQUEST_TEXT_COLOR</key>
+	<array>
+		<integer>0</integer>
+		<integer>122</integer>
+		<integer>1</integer>
+	</array>
+</dict>
+</plist>
