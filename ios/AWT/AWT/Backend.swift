@@ -220,6 +220,9 @@ public struct Backend {
     private var userContext: UserContext! = nil;
     private var cacheChangeListeners: EventListenerCollection = EventListenerCollection();
     
+    private var cache: ObjectCache = ObjectCache();
+
+    
     
     public class UserContext {
         //Profile
@@ -470,16 +473,42 @@ public struct Backend {
         Backend.communicate(url, method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: userContext.login, password: userContext.password);
     }
     
-    public func getOutgoingRequestIds(requestStatus: String? = nil) -> [String] {
-        return ["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"];
+
+    
+    public func getOutgoingRequestIds(requestStatus: String? = nil) -> [String]? {
+        var ids: [String]? = cache.getOutgoingRequestIds();
+        if (ids == nil) {
+            //TODO: pull the list from the server here
+            self.cache.setOutgoingRequestIds([]);
+
+            var action:()->Void = {() in
+               self.cache.setOutgoingRequestIds(["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"]);
+            };
+            
+            CacheChangeNotifier(type: CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: nil, responseId: nil, action).schedule(5);
+        }
+        
+        return ids;
     }
     
-    public func getRequest(requestId: String!) -> RequestObject {
-        var request: RequestObject = RequestObject();
-        request.text = "Request \(requestId)";
-        request.responseAgeGroup = Configuration.AGE_CATEGORY_PREFERENCE[2];
-        request.responseGender = Configuration.GENDER_PREFERENCE[0];
-        request.time = NSDate().timeIntervalSince1970;
+    public func getRequest(requestId: String!) -> RequestObject? {
+        var request: RequestObject? = cache.getRequest(requestId);
+        if (request == nil) {
+            //TODO: pull request from the server here
+            
+            var action:()->Void = {() in
+                request = RequestObject();
+                request!.text = "Request \(requestId)";
+                request!.responseAgeGroup = Configuration.AGE_CATEGORY_PREFERENCE[2];
+                request!.responseGender = Configuration.GENDER_PREFERENCE[0];
+                request!.time = NSDate().timeIntervalSince1970;
+
+                self.cache.setRequest(requestId, request: request!);
+            };
+            
+            CacheChangeNotifier(type: CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId, responseId: nil, action).schedule(2);
+        }
+        
 
         return request;
     }
@@ -487,29 +516,6 @@ public struct Backend {
 
     
     // Event Management
-    
-//    class EventNotifier: NSObject
-//    {
-//        private var type: String!;
-//        private var requestId: String!;
-//        private var responseId: String!;
-//        
-//        init(type: String!, requestId: String!, responseId: String!) {
-//            super.init();
-//            
-//            self.type = type;
-//            self.requestId = requestId;
-//            self.responseId = responseId;
-//        }
-//        
-//        func schedule(delay: Double) {
-//            NSTimer.scheduledTimerWithTimeInterval(delay, target: self, selector: Selector("timerTick"), userInfo: nil, repeats: false);
-//        }
-//        
-//        func timerTick() {
-//            Backend.instance.notifyCacheListeners(type, requestId: requestId, responseId: responseId);
-//        }
-//    }
     
     func addCacheChangeListener(listener: CacheChangeEventObserver) {
         cacheChangeListeners.add(listener);
@@ -650,6 +656,36 @@ public struct Backend {
     
     
     
+    // Cache Management
+    
+    private class CacheChangeNotifier: NSObject
+    {
+        private var type: String!;
+        private var requestId: String!;
+        private var responseId: String!;
+        private var action: (()->Void)?;
+        
+        init(type: String!, requestId: String!, responseId: String!, action: (()->Void)? = nil) {
+            super.init();
+            
+            self.type = type;
+            self.requestId = requestId;
+            self.responseId = responseId;
+            
+            self.action = action;
+        }
+        
+        func schedule(delay: Double) {
+            NSTimer.scheduledTimerWithTimeInterval(delay, target: self, selector: Selector("timerTick"), userInfo: nil, repeats: false);
+        }
+        
+        @objc func timerTick() {
+            action?();
+            Backend.instance.notifyCacheListeners(type, requestId: requestId, responseId: responseId);
+        }
+    }
+    
+    
     private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
         var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
         
@@ -657,9 +693,6 @@ public struct Backend {
             listener(event: event);
         }
     }
-    
-    
-    
     
     private class EventListenerCollection {
         private var list: [CacheChangeEventObserver] = [];
@@ -674,6 +707,31 @@ public struct Backend {
         
         func get() -> [CacheChangeEventObserver] {
             return list;
+        }
+    }
+    
+    
+    private class ObjectCache {
+        private var requests: Dictionary<String, RequestObject> = Dictionary();
+        private var outgoingRequestIds: [String]?;
+        private var incomingRequestIds: [String]?;
+        private var incomingResponseIds: [String]?;
+        private var outgoingResponseIds: [String]?;
+        
+        
+        func setOutgoingRequestIds(requestIds: [String]) {
+            self.outgoingRequestIds = requestIds;
+        }
+        func getOutgoingRequestIds() -> [String]? {
+            return self.outgoingRequestIds;
+        }
+        
+        
+        func setRequest(requestId: String, request: RequestObject) {
+            requests.updateValue(request, forKey: requestId);
+        }
+        func getRequest(requestId: String) -> RequestObject? {
+            return requests[requestId];
         }
     }
     

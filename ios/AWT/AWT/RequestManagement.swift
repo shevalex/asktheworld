@@ -63,17 +63,21 @@ struct RequestManagement {
                 tableCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell");
             }
             
-            var request: Backend.RequestObject! = Backend.getInstance().getRequest(getRequestId(indexPath));
-            
             tableCell.backgroundColor = UIColor(red: 135/255, green: 225/255, blue: 200/255, alpha: 1);
             
-            var targetPrefix = AtwUiUtils.getLocalizedString("OUTGOING_REQUEST_TARGET_PREFIX");
-            tableCell.textLabel!.text = "\(targetPrefix) \(Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender))";
-            tableCell.detailTextLabel!.text = request.text;
-            tableCell.detailTextLabel!.textColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1.0)
-            tableCell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
-            //        tableCell.imageView?.image = UIImage(named: "outgoing_arrow.png");
-            //        tableCell.selectionStyle = UITableViewCellSelectionStyle.Gray;
+            var request: Backend.RequestObject! = Backend.getInstance().getRequest(getRequestId(indexPath));
+            if (request != nil) {
+                var targetPrefix = AtwUiUtils.getLocalizedString("OUTGOING_REQUEST_TARGET_PREFIX");
+                tableCell.textLabel!.text = "\(targetPrefix) \(Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender))";
+                tableCell.detailTextLabel!.text = request.text;
+                tableCell.detailTextLabel!.textColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1.0)
+                tableCell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
+                //        tableCell.imageView?.image = UIImage(named: "outgoing_arrow.png");
+                //        tableCell.selectionStyle = UITableViewCellSelectionStyle.Gray;
+            } else {
+                tableCell.textLabel!.text = "";
+                tableCell.detailTextLabel!.text = "...";
+            }
             
             return tableCell;
         }
@@ -89,11 +93,12 @@ struct RequestManagement {
         private var listener: Backend.CacheChangeEventObserver! = nil;
         
         func getRequestId(index: Int!) -> String {
-            return Backend.getInstance().getOutgoingRequestIds()[index];
+            return Backend.getInstance().getOutgoingRequestIds()![index];
         }
         
         func count() -> Int {
-            return Backend.getInstance().getOutgoingRequestIds().count;
+            var requestIds = Backend.getInstance().getOutgoingRequestIds();
+            return requestIds != nil ? requestIds!.count : 0;
         }
         
         func setChangeObserver(observer: ((index: Int?) -> Void)!) {
@@ -102,7 +107,7 @@ struct RequestManagement {
                     observer(index: -1);
                 } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
                     if (event.requestId != nil) {
-                        for (index, requestId) in enumerate(Backend.getInstance().getOutgoingRequestIds()) {
+                        for (index, requestId) in enumerate(Backend.getInstance().getOutgoingRequestIds()!) {
                             if (requestId == event.requestId) {
                                 observer(index: index);
                                 break;
