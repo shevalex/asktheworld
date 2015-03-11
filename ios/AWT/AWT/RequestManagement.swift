@@ -14,6 +14,7 @@ protocol GenericObjectProvider {
     func getObjectId(index: Int!) -> String;
     func count() -> Int;
     func setChangeObserver(observer: ((index: Int?) -> Void)!);
+    func setUpdateObserver(observer: ((finished: Bool) -> Void)!);
 }
 
 
@@ -91,7 +92,7 @@ struct RequestManagement {
     
     class ActiveOutgoingRequestObjectProvider: GenericObjectProvider {
         private var cacheChangeListener: Backend.CacheChangeEventObserver? = nil;
-        private var updateListener: ((finished: Bool) -> Void)? = nil;
+        private var updateObserver: ((finished: Bool) -> Void)? = nil;
         
         func getObjectId(index: Int!) -> String {
             return Backend.getInstance().getOutgoingRequestIds()![index];
@@ -100,7 +101,7 @@ struct RequestManagement {
         func count() -> Int {
             var requestIds = Backend.getInstance().getOutgoingRequestIds();
             if (requestIds == nil) {
-                self.updateListener?(finished: false);
+                self.updateObserver?(finished: false);
                 return 0;
             }
             
@@ -119,7 +120,7 @@ struct RequestManagement {
             
             cacheChangeListener = {(event) in
                 if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
-                    self.updateListener?(finished: true);
+                    self.updateObserver?(finished: true);
                     observer(index: -1);
                 } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
                     if (event.requestId != nil) {
@@ -138,7 +139,7 @@ struct RequestManagement {
         }
         
         func setUpdateObserver(observer: ((finished: Bool) -> Void)!) {
-            self.updateListener = observer;
+            self.updateObserver = observer;
         }
         
         deinit {
@@ -168,6 +169,11 @@ struct RequestManagement {
         requestObjectProvider.setChangeObserver({(index) -> Void in
             tableView.reloadData();
         });
+
+        requestObjectProvider.setUpdateObserver({(finished) -> Void in
+            tableView.alpha = finished ? 1 : 0;
+        });
+        
         
         mapping.setObject(delegate!, forKey: tableView);
     }
