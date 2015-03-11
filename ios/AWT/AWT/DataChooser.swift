@@ -190,7 +190,7 @@ class UIDataSelectorDataModel: NSObject, UITableViewDataSource {
         
         tableCell.textLabel?.text = getDataItem(indexPath).getDisplay();
         tableCell.textLabel?.textAlignment = .Center;
-        tableCell.textLabel?.textColor = UIColor(red: 0, green: 122/255, blue: 1, alpha: 1.0)
+        tableCell.textLabel?.textColor = AtwUiUtils.getColor("DATA_CHOOSER_TEXT_COLOR");
         
         return tableCell;
     }
