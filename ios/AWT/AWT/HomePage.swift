@@ -41,7 +41,7 @@ class HomePage: UIViewController {
         
         outgoingRequestCounter = RequestManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestManagement.ActiveOutgoingRequestObjectProvider(), responseProviderFactory: RequestManagement.ActiveResponseProviderFactory());
         outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
-            //println("Counter: #requests=\(requests), #responses=\(responses)");
+            self.numOfRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), responses, requests);
         });
     }
     
