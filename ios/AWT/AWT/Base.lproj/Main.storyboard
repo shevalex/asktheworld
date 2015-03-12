@@ -8,7 +8,7 @@
         <!--Active Requests-->
         <scene sceneID="tPF-Cu-GSG">
             <objects>
-                <viewController id="F7D-Zm-fs3" sceneMemberID="viewController">
+                <viewController id="F7D-Zm-fs3" customClass="ActiveRequestsPage" customModule="AWT" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="qI1-ul-JgW"/>
                         <viewControllerLayoutGuide type="bottom" id="zBG-zQ-xzw"/>
