@@ -11,6 +11,7 @@ import UIKit;
 
 
 typealias ObjectUpdateObserver = (finished: Bool) -> Void;
+typealias ObjectCounterObserver = (requests: Int!, responses: Int!) -> Void;
 
 protocol GenericObjectProvider {
     func getObjectId(index: Int!) -> String;
@@ -24,7 +25,7 @@ protocol GenericObjectCounter {
     func getNumberOfResponses() -> Int;
     func start();
     func stop();
-    func setUpdateObserver(observer: ObjectUpdateObserver!);
+    func setChangeObserver(observer: ObjectCounterObserver!);
 }
 
 protocol ObjectProviderFactory {
@@ -264,7 +265,7 @@ struct RequestManagement {
         private var requestUpdateObserver: ObjectUpdateObserver!;
         private var responseUpdateObserver: ObjectUpdateObserver!;
         
-        private var counterUpdateObserver: ObjectUpdateObserver?;
+        private var counterChangeObserver: ObjectCounterObserver?;
         
         private var requestCount: Int! = 0;
         private var responseCount: Int! = 0;
@@ -324,8 +325,8 @@ struct RequestManagement {
             }
         }
         
-        func setUpdateObserver(observer: ObjectUpdateObserver!) {
-            counterUpdateObserver = observer;
+        func setChangeObserver(observer: ObjectCounterObserver!) {
+            counterChangeObserver = observer;
         }
         
         deinit {
@@ -334,6 +335,9 @@ struct RequestManagement {
         
         
         private func recalculate() {
+            self.requestCount = 0;
+            self.responseCount = 0;
+
             var requestCount = requestProvider.count();
             for (var reqIndex: Int = 0; reqIndex < requestCount; reqIndex++) {
                 var requestId = requestProvider.getObjectId(reqIndex);
@@ -341,12 +345,13 @@ struct RequestManagement {
                 var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
                 
                 var responseCount = responseProvider.count();
-                for (var responseIndex = 0; responseIndex < self.requestCount; responseIndex++) {
-                    
+                if (responseCount > 0) {
+                    self.requestCount = self.requestCount + 1;
+                    self.responseCount = self.responseCount + responseCount;
                 }
             }
             
-            counterUpdateObserver?(finished: false);
+            counterChangeObserver?(requests: self.requestCount, responses: self.responseCount);
         }
     }
     

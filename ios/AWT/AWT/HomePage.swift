@@ -56,8 +56,8 @@ class HomePage: UIViewController {
         requestTableView.reloadData();
         
         var objectCounter = RequestManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestManagement.ActiveOutgoingRequestObjectProvider(), responseProviderFactory: RequestManagement.ActiveResponseProviderFactory());
-        objectCounter.setUpdateObserver({() in
-
+        objectCounter.setChangeObserver({(requests: Int!, responses: Int!) in
+            //println("Counter: #requests=\(requests), #responses=\(responses)");
         });
         objectCounter.start();
     }
