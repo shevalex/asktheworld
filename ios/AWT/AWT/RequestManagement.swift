@@ -10,18 +10,32 @@ import Foundation
 import UIKit;
 
 
+typealias ObjectUpdateObserver = (finished: Bool) -> Void;
+
 protocol GenericObjectProvider {
     func getObjectId(index: Int!) -> String;
     func count() -> Int;
     func setChangeObserver(observer: ((index: Int?) -> Void)!);
-    func setUpdateObserver(observer: ((finished: Bool) -> Void)!);
+    func setUpdateObserver(observer: ObjectUpdateObserver!);
+}
+
+protocol GenericObjectCounter {
+    func getNumberOfRequests() -> Int;
+    func getNumberOfResponses() -> Int;
+    func start();
+    func stop();
+    func setUpdateObserver(observer: ObjectUpdateObserver!);
+}
+
+protocol ObjectProviderFactory {
+    func getObjectProvider(objectId: String!) -> GenericObjectProvider;
 }
 
 
 struct RequestManagement {
-    private static var mapping: NSCache! = NSCache();
-    
     typealias RequestSelectionObserver = (requestId: String) -> Void;
+
+    private static var mapping: NSCache! = NSCache();
     
     
     class UIRequestTableDelegate: NSObject, UITableViewDelegate {
@@ -92,7 +106,7 @@ struct RequestManagement {
     
     class ActiveOutgoingRequestObjectProvider: GenericObjectProvider {
         private var cacheChangeListener: Backend.CacheChangeEventObserver? = nil;
-        private var updateObserver: ((finished: Bool) -> Void)? = nil;
+        private var updateObserver: ObjectUpdateObserver? = nil;
         
         func getObjectId(index: Int!) -> String {
             return Backend.getInstance().getOutgoingRequestIds()![index];
@@ -138,7 +152,7 @@ struct RequestManagement {
             Backend.getInstance().addCacheChangeListener(cacheChangeListener!);
         }
         
-        func setUpdateObserver(observer: ((finished: Bool) -> Void)!) {
+        func setUpdateObserver(observer: ObjectUpdateObserver!) {
             self.updateObserver = observer;
         }
         
@@ -148,6 +162,92 @@ struct RequestManagement {
             }
         }
     }
+    
+    
+    
+    class ActiveRequestsAndResponsesCounter {
+        private var requestProvider: GenericObjectProvider!;
+        private var responseProviderFactory: ObjectProviderFactory!;
+
+        private var requestUpdateObserver: ObjectUpdateObserver!;
+        private var responseUpdateObserver: ObjectUpdateObserver!;
+        
+        private var requestCount: Int! = 0;
+        private var responseCount: Int! = 0;
+        
+        init(requestProvider: GenericObjectProvider!, responseProviderFactory: ObjectProviderFactory!) {
+            self.requestProvider = requestProvider;
+            self.responseProviderFactory = responseProviderFactory;
+            
+            self.responseUpdateObserver = {(finished: Bool) in
+                if (finished) {
+                    self.recalculate();
+                }
+            }
+            
+            self.requestUpdateObserver = {(finished: Bool) in
+                if (finished) {
+                    self.requestCount = requestProvider.count();
+                    for (var requestIndex = 0; requestIndex < self.requestCount; requestIndex++) {
+                        var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex));
+                        
+                        var responseCount = responseProvider.count();
+                        for (var responseIndex = 0; responseIndex < self.requestCount; responseIndex++) {
+                            responseProvider.setUpdateObserver(self.responseUpdateObserver);
+                        }
+                    }
+                }
+            }
+        }
+        
+        func getNumberOfRequests() -> Int {
+            return requestCount;
+        }
+        
+        func getNumberOfResponses() -> Int {
+            return responseCount;
+        }
+        
+        func start() {
+            self.requestProvider.setUpdateObserver(requestUpdateObserver);
+            
+            
+        }
+        
+        func stop() {
+            self.requestProvider.setUpdateObserver(nil);
+            
+            var requestCount = requestProvider.count();
+            for (var requestIndex = 0; requestIndex < requestCount; requestIndex++) {
+                var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex));
+                
+                var responseCount = responseProvider.count();
+                for (var responseIndex = 0; responseIndex < self.requestCount; responseIndex++) {
+                    responseProvider.setUpdateObserver(nil);
+                }
+            }
+        }
+        
+        func setUpdateObserver(observer: ObjectUpdateObserver!) {
+            
+        }
+        
+        
+        private func recalculate() {
+            var requestCount = requestProvider.count();
+            for (var reqIndex: Int = 0; reqIndex < requestCount; reqIndex++) {
+                var requestId = requestProvider.getObjectId(reqIndex);
+                
+                var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
+                
+                var responseCount = responseProvider.count();
+                for (var responseIndex = 0; responseIndex < self.requestCount; responseIndex++) {
+                    responseProvider.setUpdateObserver(nil);
+                }
+            }
+        }
+    }
+    
     
     
     static func attachRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: RequestSelectionObserver? = nil) {
