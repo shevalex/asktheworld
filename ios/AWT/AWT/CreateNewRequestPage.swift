@@ -20,8 +20,8 @@ class CreateNewRequestPage: UIViewController {
         super.viewDidLoad()
         
         AtwUiUtils.setDataChooser(expertiseTextField, items: Configuration.EXPERTISES, multichoice: false)
-        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS, multichoice: false)
-        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES, multichoice: false)
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE, multichoice: false)
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE, multichoice: false)
         AtwUiUtils.setDataChooser(waitTimeTextField, items: Configuration.RESPONSE_WAIT_TIME, multichoice: false)
         AtwUiUtils.setDataChooser(numberOfResponsesTextField, items: Configuration.RESPONSE_QUANTITY, multichoice: false)
 
