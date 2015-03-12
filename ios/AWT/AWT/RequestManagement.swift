@@ -163,6 +163,88 @@ struct RequestManagement {
         }
     }
     
+    class ActiveIncomingResponseObjectProvider: GenericObjectProvider {
+        private var requestId: String!;
+        private var cacheChangeListener: Backend.CacheChangeEventObserver? = nil;
+        private var updateObserver: ObjectUpdateObserver? = nil;
+        
+        init(requestId: String!) {
+            self.requestId = requestId;
+        }
+        
+        func getObjectId(index: Int!) -> String {
+            return getResponseIds()![index];
+        }
+        
+        func count() -> Int {
+            var responseIds = getResponseIds();
+            if (responseIds == nil) {
+                self.updateObserver?(finished: false);
+                return 0;
+            }
+            
+            return responseIds!.count;
+        }
+        
+        func setChangeObserver(observer: ((index: Int?) -> Void)!) {
+            if (observer == nil) {
+                if (cacheChangeListener != nil) {
+                    Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
+                    cacheChangeListener = nil;
+                }
+                
+                return;
+            }
+            
+            cacheChangeListener = {(event) in
+                if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED && event.requestId == self.requestId) {
+                    self.updateObserver?(finished: true);
+                    observer(index: -1);
+                } else if (event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED) {
+                    if (event.requestId == self.requestId && event.responseId != nil) {
+                        for (index, responseId) in enumerate(self.getResponseIds()!) {
+                            if (responseId == event.responseId) {
+                                observer(index: index);
+                                break;
+                            }
+                        }
+                    } else {
+                        observer(index: -1);
+                    }
+                }
+            };
+            Backend.getInstance().addCacheChangeListener(cacheChangeListener!);
+        }
+        
+        func setUpdateObserver(observer: ObjectUpdateObserver!) {
+            self.updateObserver = observer;
+        }
+        
+        deinit {
+            if (cacheChangeListener != nil) {
+                Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
+            }
+        }
+        
+        private func getResponseIds() -> [String]? {
+            return Backend.getInstance().getIncomingResponseIds(requestId, responseStatus: Backend.ResponseObject.STATUS_UNREAD);
+        }
+    }
+    
+    class ActiveResponseProviderFactory: ObjectProviderFactory {
+        private var providers: Dictionary<String, GenericObjectProvider> = Dictionary();
+        
+        func getObjectProvider(objectId: String!) -> GenericObjectProvider {
+            var provider: GenericObjectProvider? = providers[objectId];
+            if (provider == nil) {
+                provider = ActiveIncomingResponseObjectProvider(requestId: objectId);
+                providers.updateValue(provider!, forKey: objectId);
+            }
+            
+            return provider!;
+        }
+    }
+    
     
     
     class ActiveRequestsAndResponsesCounter {
@@ -171,6 +253,8 @@ struct RequestManagement {
 
         private var requestUpdateObserver: ObjectUpdateObserver!;
         private var responseUpdateObserver: ObjectUpdateObserver!;
+        
+        private var counterUpdateObserver: ObjectUpdateObserver?;
         
         private var requestCount: Int! = 0;
         private var responseCount: Int! = 0;
@@ -211,7 +295,7 @@ struct RequestManagement {
         func start() {
             self.requestProvider.setUpdateObserver(requestUpdateObserver);
             
-            
+            recalculate();
         }
         
         func stop() {
@@ -229,7 +313,7 @@ struct RequestManagement {
         }
         
         func setUpdateObserver(observer: ObjectUpdateObserver!) {
-            
+            counterUpdateObserver = observer;
         }
         
         
@@ -245,6 +329,8 @@ struct RequestManagement {
                     responseProvider.setUpdateObserver(nil);
                 }
             }
+            
+            counterUpdateObserver?(finished: false);
         }
     }
     

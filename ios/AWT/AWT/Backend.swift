@@ -269,7 +269,22 @@ public struct Backend {
     }
     
     public struct ResponseObject {
+        static let STATUS_UNREAD = "unread";
+        static let STATUS_READ = "read";
+        static let CONTACT_INFO_STATUS_NOT_AVAILABLE = "no";
+        static let CONTACT_INFO_STATUS_CAN_PROVIDE = "can_provide";
+        static let CONTACT_INFO_STATUS_PROVIDED = "provided";
         
+        init() {
+        }
+
+        var time: Double! = 0;
+        var text: String! = "";
+        var attachments: [String]!;
+        var ageCategory: Configuration.Item!;
+        var gender: Configuration.Item!;
+        var status: String! = STATUS_UNREAD;
+        var contactInfoStatus: String! = CONTACT_INFO_STATUS_NOT_AVAILABLE;
     }
 
     
@@ -520,6 +535,49 @@ public struct Backend {
 
         return request;
     }
+
+    public func getIncomingResponseIds(requestId: String, responseStatus: String? = nil) -> [String]? {
+        var ids: [String]? = cache.getIncomingResponseIds(requestId);
+        if (ids == nil) {
+            //TODO: pull the list from the server here
+            self.cache.setIncomingResponseIds(requestId, responseIds: []);
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: nil);
+            
+            var action:()->Void = {() in
+                self.cache.setIncomingResponseIds(requestId, responseIds: ["\(requestId)-response1", "\(requestId)-response2", "\(requestId)-response3", "\(requestId)-response4", "\(requestId)-response5", "\(requestId)-response6"]);
+                self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: nil);
+            };
+            
+            CacheChangeNotifier(type: CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestId: requestId, responseId: nil, action).schedule(5);
+        }
+        
+        return ids;
+    }
+    
+    public func getResponse(requestId: String!, responseId: String!) -> ResponseObject? {
+        var response: ResponseObject? = cache.getResponse(requestId, responseId: responseId);
+        if (response == nil) {
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: responseId);
+            
+            //TODO: pull request from the server here
+            
+            var action:()->Void = {() in
+                response = ResponseObject();
+                response!.text = "Response \(requestId)-\(responseId)";
+                response!.time = NSDate().timeIntervalSince1970;
+                response!.gender = Configuration.GENDERS[0];
+                response!.ageCategory = Configuration.AGE_CATEGORIES[1];
+                
+                self.cache.setResponse(requestId, responseId: responseId, response: response!);
+                self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: responseId);
+            };
+            
+            CacheChangeNotifier(type: CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId, responseId: responseId, action).schedule(2);
+        }
+        
+        
+        return response;
+    }
     
 
     
@@ -721,10 +779,11 @@ public struct Backend {
     
     private class ObjectCache {
         private var requests: Dictionary<String, RequestObject> = Dictionary();
+        private var responses: Dictionary<String, ResponseObject> = Dictionary();
         private var outgoingRequestIds: [String]?;
         private var incomingRequestIds: [String]?;
-        private var incomingResponseIds: [String]?;
-        private var outgoingResponseIds: [String]?;
+        private var incomingResponseIds: Dictionary<String, [String]> = Dictionary();
+        private var outgoingResponseIds: Dictionary<String, [String]> = Dictionary();
         
         
         func setOutgoingRequestIds(requestIds: [String]) {
@@ -734,13 +793,27 @@ public struct Backend {
             return self.outgoingRequestIds;
         }
         
-        
         func setRequest(requestId: String, request: RequestObject) {
             requests.updateValue(request, forKey: requestId);
         }
         func getRequest(requestId: String) -> RequestObject? {
             return requests[requestId];
         }
+
+        func setIncomingResponseIds(requestId: String, responseIds: [String]) {
+            self.incomingResponseIds.updateValue(responseIds, forKey: requestId);
+        }
+        func getIncomingResponseIds(requestId: String) -> [String]? {
+            return self.incomingResponseIds[requestId];
+        }
+        
+        func setResponse(requestId: String, responseId: String, response: ResponseObject) {
+            responses.updateValue(response, forKey: responseId);
+        }
+        func getResponse(requestId: String, responseId: String) -> ResponseObject? {
+            return responses[requestId];
+        }
+        
     }
     
     
