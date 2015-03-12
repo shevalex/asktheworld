@@ -548,7 +548,7 @@ public struct Backend {
                 self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: nil);
             };
             
-            CacheChangeNotifier(type: CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestId: requestId, responseId: nil, action).schedule(5);
+            CacheChangeNotifier(type: CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId, responseId: nil, action).schedule(5);
         }
         
         return ids;
@@ -572,7 +572,7 @@ public struct Backend {
                 self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: responseId);
             };
             
-            CacheChangeNotifier(type: CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId, responseId: responseId, action).schedule(2);
+            CacheChangeNotifier(type: CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId, action).schedule(2);
         }
         
         

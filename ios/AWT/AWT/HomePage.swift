@@ -54,6 +54,12 @@ class HomePage: UIViewController {
     override func viewWillAppear(animated: Bool) {
         Backend.getInstance().addCacheChangeListener(updateListener);
         requestTableView.reloadData();
+        
+        var objectCounter = RequestManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestManagement.ActiveOutgoingRequestObjectProvider(), responseProviderFactory: RequestManagement.ActiveResponseProviderFactory());
+        objectCounter.setUpdateObserver({() in
+
+        });
+        objectCounter.start();
     }
     
     override func viewWillDisappear(animated: Bool) {

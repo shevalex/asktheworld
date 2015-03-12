@@ -140,11 +140,13 @@ struct RequestManagement {
                     if (event.requestId != nil) {
                         for (index, requestId) in enumerate(Backend.getInstance().getOutgoingRequestIds()!) {
                             if (requestId == event.requestId) {
+                                self.updateObserver?(finished: true);
                                 observer(index: index);
                                 break;
                             }
                         }
                     } else {
+                        self.updateObserver?(finished: true);
                         observer(index: -1);
                     }
                 }
@@ -154,6 +156,9 @@ struct RequestManagement {
         
         func setUpdateObserver(observer: ObjectUpdateObserver!) {
             self.updateObserver = observer;
+            if (cacheChangeListener == nil) {
+                setChangeObserver({(index: Int?) in /*intentionally do nothing*/});
+            }
         }
         
         deinit {
@@ -197,18 +202,20 @@ struct RequestManagement {
             }
             
             cacheChangeListener = {(event) in
-                if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED && event.requestId == self.requestId) {
+                if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED && event.requestId == self.requestId) {
                     self.updateObserver?(finished: true);
                     observer(index: -1);
                 } else if (event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED) {
                     if (event.requestId == self.requestId && event.responseId != nil) {
                         for (index, responseId) in enumerate(self.getResponseIds()!) {
                             if (responseId == event.responseId) {
+                                self.updateObserver?(finished: true);
                                 observer(index: index);
                                 break;
                             }
                         }
                     } else {
+                        self.updateObserver?(finished: true);
                         observer(index: -1);
                     }
                 }
@@ -218,6 +225,9 @@ struct RequestManagement {
         
         func setUpdateObserver(observer: ObjectUpdateObserver!) {
             self.updateObserver = observer;
+            if (cacheChangeListener == nil) {
+                setChangeObserver({(index: Int?) in /*intentionally do nothing*/});
+            }
         }
         
         deinit {
@@ -280,6 +290,8 @@ struct RequestManagement {
                             responseProvider.setUpdateObserver(self.responseUpdateObserver);
                         }
                     }
+                    
+                    self.recalculate();
                 }
             }
         }
@@ -316,6 +328,10 @@ struct RequestManagement {
             counterUpdateObserver = observer;
         }
         
+        deinit {
+            stop();
+        }
+        
         
         private func recalculate() {
             var requestCount = requestProvider.count();
@@ -326,7 +342,7 @@ struct RequestManagement {
                 
                 var responseCount = responseProvider.count();
                 for (var responseIndex = 0; responseIndex < self.requestCount; responseIndex++) {
-                    responseProvider.setUpdateObserver(nil);
+                    
                 }
             }
             
