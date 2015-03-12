@@ -258,7 +258,7 @@ struct RequestManagement {
     
     
     
-    class ActiveRequestsAndResponsesCounter {
+    class ActiveRequestsAndResponsesCounter: GenericObjectCounter {
         private var requestProvider: GenericObjectProvider!;
         private var responseProviderFactory: ObjectProviderFactory!;
 

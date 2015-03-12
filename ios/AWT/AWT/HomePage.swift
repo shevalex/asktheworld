@@ -19,6 +19,8 @@ class HomePage: UIViewController {
     
     var updateListener: Backend.CacheChangeEventObserver!;
     
+    private var outgoingRequestCounter: GenericObjectCounter!;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true;
@@ -37,6 +39,11 @@ class HomePage: UIViewController {
                 AtwUiUtils.hideSpinner();
             }
         }
+        
+        outgoingRequestCounter = RequestManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestManagement.ActiveOutgoingRequestObjectProvider(), responseProviderFactory: RequestManagement.ActiveResponseProviderFactory());
+        outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
+            //println("Counter: #requests=\(requests), #responses=\(responses)");
+        });
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -55,15 +62,13 @@ class HomePage: UIViewController {
         Backend.getInstance().addCacheChangeListener(updateListener);
         requestTableView.reloadData();
         
-        var objectCounter = RequestManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestManagement.ActiveOutgoingRequestObjectProvider(), responseProviderFactory: RequestManagement.ActiveResponseProviderFactory());
-        objectCounter.setChangeObserver({(requests: Int!, responses: Int!) in
-            //println("Counter: #requests=\(requests), #responses=\(responses)");
-        });
-        objectCounter.start();
+        outgoingRequestCounter.start();
     }
     
     override func viewWillDisappear(animated: Bool) {
         Backend.getInstance().removeCacheChangeListener(updateListener);
+        
+        outgoingRequestCounter.stop();
     }
 }
 
