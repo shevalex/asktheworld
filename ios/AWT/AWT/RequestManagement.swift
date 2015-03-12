@@ -349,19 +349,21 @@ struct RequestManagement {
             self.responseCount = 0;
 
             var requestCount = requestProvider.count();
-            for (var reqIndex: Int = 0; reqIndex < requestCount; reqIndex++) {
-                var requestId = requestProvider.getObjectId(reqIndex);
-                
-                var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
-                
-                var responseCount = responseProvider.count();
-                if (responseCount != nil && responseCount > 0) {
-                    self.requestCount = self.requestCount + 1;
-                    self.responseCount = self.responseCount + responseCount!;
+            if (requestCount != nil) {
+                for (var reqIndex: Int = 0; reqIndex < requestCount; reqIndex++) {
+                    var requestId = requestProvider.getObjectId(reqIndex);
+                    
+                    var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
+                    
+                    var responseCount = responseProvider.count();
+                    if (responseCount != nil && responseCount > 0) {
+                        self.requestCount = self.requestCount + 1;
+                        self.responseCount = self.responseCount + responseCount!;
+                    }
                 }
+
+                counterChangeObserver?(requests: self.requestCount, responses: self.responseCount);
             }
-            
-            counterChangeObserver?(requests: self.requestCount, responses: self.responseCount);
         }
     }
     

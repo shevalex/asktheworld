@@ -503,10 +503,14 @@ public struct Backend {
 
     
     public func getOutgoingRequestIds(requestStatus: String? = nil) -> [String]? {
+        if (cache.isOutgoingRequestIdsInUpdate()) {
+            return nil;
+        }
+        
         var ids: [String]? = cache.getOutgoingRequestIds();
         if (ids == nil) {
             //TODO: pull the list from the server here
-            self.cache.setOutgoingRequestIds([]);
+            self.cache.markOutgoingRequestIdsInUpdate();
             self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: nil, responseId: nil);
 
             var action:()->Void = {() in
@@ -521,8 +525,13 @@ public struct Backend {
     }
     
     public func getRequest(requestId: String!) -> RequestObject? {
+        if (cache.isRequestInUpdate(requestId)) {
+            return nil;
+        }
+        
         var request: RequestObject? = cache.getRequest(requestId);
         if (request == nil) {
+            self.cache.markRequestInUpdate(requestId);
             self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: nil, responseId: nil);
             
             //TODO: pull request from the server here
@@ -546,10 +555,14 @@ public struct Backend {
     }
 
     public func getIncomingResponseIds(requestId: String, responseStatus: String? = nil) -> [String]? {
+        if (cache.isIncomingResponseIdsInUpdate()) {
+            return nil;
+        }
+        
         var ids: [String]? = cache.getIncomingResponseIds(requestId);
         if (ids == nil) {
             //TODO: pull the list from the server here
-            self.cache.setIncomingResponseIds(requestId, responseIds: []);
+            self.cache.markIncomingResponseIdsInUpdate();
             self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: nil);
             
             var action:()->Void = {() in
@@ -564,8 +577,13 @@ public struct Backend {
     }
     
     public func getResponse(requestId: String!, responseId: String!) -> ResponseObject? {
+        if (cache.isResponseInUpdate(requestId, responseId: responseId)) {
+            return nil
+        }
+        
         var response: ResponseObject? = cache.getResponse(requestId, responseId: responseId);
         if (response == nil) {
+            self.cache.markResponseInUpdate(requestId, responseId: responseId);
             self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: responseId);
             
             //TODO: pull request from the server here
@@ -784,43 +802,82 @@ public struct Backend {
             return list;
         }
     }
-    
+
     
     private class ObjectCache {
+        private var requestsInProgress: Dictionary<String, Bool> = Dictionary();
         private var requests: Dictionary<String, RequestObject> = Dictionary();
+
+        private var responsesInProgress: Dictionary<String, Bool> = Dictionary();
         private var responses: Dictionary<String, ResponseObject> = Dictionary();
+        
+        private var outgoingRequestIdsInProgress: Bool! = false;
         private var outgoingRequestIds: [String]?;
+
+        private var incomingRequestIdsInProgress: Bool! = false;
         private var incomingRequestIds: [String]?;
+        
+        private var incomingResponseIdsInProgress: Bool! = false;
         private var incomingResponseIds: Dictionary<String, [String]> = Dictionary();
+        
+        private var outgoingResponseIdsInProgress: Bool! = false;
         private var outgoingResponseIds: Dictionary<String, [String]> = Dictionary();
         
-        
+
+        func markOutgoingRequestIdsInUpdate() {
+            outgoingRequestIdsInProgress = true;
+        }
+        func isOutgoingRequestIdsInUpdate() -> Bool {
+            return outgoingRequestIdsInProgress;
+        }
         func setOutgoingRequestIds(requestIds: [String]) {
             self.outgoingRequestIds = requestIds;
+            outgoingRequestIdsInProgress = false;
         }
         func getOutgoingRequestIds() -> [String]? {
-            return self.outgoingRequestIds;
+            return outgoingRequestIdsInProgress == false ? self.outgoingRequestIds : nil;
         }
         
+        func markRequestInUpdate(requestId: String) {
+            requestsInProgress.updateValue(true, forKey: requestId);
+        }
+        func isRequestInUpdate(requestId: String) -> Bool {
+            return requestsInProgress[requestId] != nil;
+        }
         func setRequest(requestId: String, request: RequestObject) {
             requests.updateValue(request, forKey: requestId);
+            requestsInProgress.removeValueForKey(requestId);
         }
         func getRequest(requestId: String) -> RequestObject? {
-            return requests[requestId];
+            return isRequestInUpdate(requestId) ? nil : requests[requestId];
         }
 
+        func markIncomingResponseIdsInUpdate() {
+            incomingResponseIdsInProgress = true;
+        }
+        func isIncomingResponseIdsInUpdate() -> Bool {
+            return incomingResponseIdsInProgress;
+        }
         func setIncomingResponseIds(requestId: String, responseIds: [String]) {
             self.incomingResponseIds.updateValue(responseIds, forKey: requestId);
+            incomingResponseIdsInProgress = false;
         }
         func getIncomingResponseIds(requestId: String) -> [String]? {
-            return self.incomingResponseIds[requestId];
+            return incomingResponseIdsInProgress == false ? self.incomingResponseIds[requestId] : nil;
         }
         
+        func markResponseInUpdate(requestId: String, responseId: String) {
+            responsesInProgress.updateValue(true, forKey: responseId);
+        }
+        func isResponseInUpdate(requestId: String, responseId: String) -> Bool {
+            return responsesInProgress[responseId] != nil;
+        }
         func setResponse(requestId: String, responseId: String, response: ResponseObject) {
             responses.updateValue(response, forKey: responseId);
+            responsesInProgress.removeValueForKey(responseId);
         }
         func getResponse(requestId: String, responseId: String) -> ResponseObject? {
-            return responses[requestId];
+            return isResponseInUpdate(requestId, responseId: responseId) ? nil : responses[responseId];
         }
         
     }
