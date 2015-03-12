@@ -14,8 +14,8 @@ typealias ObjectUpdateObserver = (finished: Bool) -> Void;
 typealias ObjectCounterObserver = (requests: Int!, responses: Int!) -> Void;
 
 protocol GenericObjectProvider {
-    func getObjectId(index: Int!) -> String;
-    func count() -> Int;
+    func getObjectId(index: Int!) -> String?;
+    func count() -> Int?;
     func setChangeObserver(observer: ((index: Int?) -> Void)!);
     func setUpdateObserver(observer: ObjectUpdateObserver!);
 }
@@ -58,7 +58,7 @@ struct RequestManagement {
         
         func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
             var requestId = dataModel.getRequestId(indexPath);
-            selectionObserver?(requestId: requestId);
+            selectionObserver?(requestId: requestId!);
         }
     }
     
@@ -70,7 +70,8 @@ struct RequestManagement {
         }
         
         func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return dataProvider.count();
+            var count: Int? = dataProvider.count();
+            return count != nil ? count! : 0;
         }
         
         func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -98,7 +99,7 @@ struct RequestManagement {
         }
         
         
-        private func getRequestId(indexPath: NSIndexPath) -> String {
+        private func getRequestId(indexPath: NSIndexPath) -> String? {
             return dataProvider.getObjectId(indexPath.row);
         }
     }
@@ -108,15 +109,20 @@ struct RequestManagement {
         private var cacheChangeListener: Backend.CacheChangeEventObserver? = nil;
         private var updateObserver: ObjectUpdateObserver? = nil;
         
-        func getObjectId(index: Int!) -> String {
-            return Backend.getInstance().getOutgoingRequestIds()![index];
+        func getObjectId(index: Int!) -> String? {
+            var requestIds = Backend.getInstance().getOutgoingRequestIds();
+            if (requestIds != nil) {
+                return requestIds![index];
+            } else {
+                return nil;
+            }
         }
         
-        func count() -> Int {
+        func count() -> Int? {
             var requestIds = Backend.getInstance().getOutgoingRequestIds();
             if (requestIds == nil) {
                 self.updateObserver?(finished: false);
-                return 0;
+                return nil;
             }
             
             return requestIds!.count;
@@ -177,15 +183,20 @@ struct RequestManagement {
             self.requestId = requestId;
         }
         
-        func getObjectId(index: Int!) -> String {
-            return getResponseIds()![index];
+        func getObjectId(index: Int!) -> String? {
+            var responseIds = getResponseIds();
+            if (responseIds != nil) {
+                return responseIds![index];
+            } else {
+                return nil;
+            }
         }
         
-        func count() -> Int {
+        func count() -> Int? {
             var responseIds = getResponseIds();
             if (responseIds == nil) {
                 self.updateObserver?(finished: false);
-                return 0;
+                return nil;
             }
             
             return responseIds!.count;
@@ -344,9 +355,9 @@ struct RequestManagement {
                 var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
                 
                 var responseCount = responseProvider.count();
-                if (responseCount > 0) {
+                if (responseCount != nil && responseCount > 0) {
                     self.requestCount = self.requestCount + 1;
-                    self.responseCount = self.responseCount + responseCount;
+                    self.responseCount = self.responseCount + responseCount!;
                 }
             }
             
