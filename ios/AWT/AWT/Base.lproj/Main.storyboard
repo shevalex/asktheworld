@@ -326,7 +326,7 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UE4-Wo-SyQ">
                                 <rect key="frame" x="0.0" y="64" width="320" height="460"/>
                                 <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Professional Category" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3Nk-CF-c4K">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Professional Expertise" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3Nk-CF-c4K">
                                         <rect key="frame" x="50" y="30" width="220" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
@@ -417,6 +417,13 @@
                     </view>
                     <navigationItem key="navigationItem" title="Create New Request" id="vtV-67-yyb"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="ageTextField" destination="9tZ-Dl-cta" id="B76-Tz-dfr"/>
+                        <outlet property="expertiseTextField" destination="3Nk-CF-c4K" id="A9f-nl-Ax0"/>
+                        <outlet property="genderTextField" destination="os7-HU-Lgk" id="Kh6-hH-Tyc"/>
+                        <outlet property="numberOfResponsesTextField" destination="MYY-aN-zon" id="wsq-wK-lE4"/>
+                        <outlet property="waitTimeTextField" destination="AfW-8k-dfd" id="edb-2k-atP"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KAl-JS-qrl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
