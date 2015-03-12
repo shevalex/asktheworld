@@ -10,8 +10,20 @@ import UIKit
 
 class CreateNewRequestPage: UIViewController {
 
+    @IBOutlet weak var expertiseTextField: UITextField!
+    @IBOutlet weak var genderTextField: UITextField!
+    @IBOutlet weak var ageTextField: UITextField!
+    @IBOutlet weak var waitTimeTextField: UITextField!
+    @IBOutlet weak var numberOfResponsesTextField: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        AtwUiUtils.setDataChooser(expertiseTextField, items: Configuration.EXPERTISES, multichoice: false)
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE, multichoice: false)
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE, multichoice: false)
+        AtwUiUtils.setDataChooser(waitTimeTextField, items: Configuration.RESPONSE_WAIT_TIME, multichoice: false)
+        AtwUiUtils.setDataChooser(numberOfResponsesTextField, items: Configuration.RESPONSE_QUANTITY, multichoice: false)
 
         // Do any additional setup after loading the view.
     }

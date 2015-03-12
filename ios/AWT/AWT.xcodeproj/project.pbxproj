@@ -31,6 +31,7 @@
 		F78BC7D01A9FEA65009281EF /* UIUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78BC7CF1A9FEA65009281EF /* UIUtils.swift */; };
 		F7C079A51AAFA4F300E141D9 /* RequestDetailsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C079A41AAFA4F300E141D9 /* RequestDetailsPage.swift */; };
 		F7C079A71AB1263900E141D9 /* CreateNewRequestPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C079A61AB1263900E141D9 /* CreateNewRequestPage.swift */; };
+		F7C079A91AB12E5B00E141D9 /* ActiveRequestsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C079A81AB12E5B00E141D9 /* ActiveRequestsPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		F78BC7CF1A9FEA65009281EF /* UIUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIUtils.swift; sourceTree = "<group>"; };
 		F7C079A41AAFA4F300E141D9 /* RequestDetailsPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestDetailsPage.swift; sourceTree = "<group>"; };
 		F7C079A61AB1263900E141D9 /* CreateNewRequestPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateNewRequestPage.swift; sourceTree = "<group>"; };
+		F7C079A81AB12E5B00E141D9 /* ActiveRequestsPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActiveRequestsPage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 				F745FE591A9E2882006E7698 /* HomePage.swift */,
 				F719A2031AA8A60200725A5A /* ContactInfoPage.swift */,
 				F745FE5B1A9E2882006E7698 /* Main.storyboard */,
+				F7C079A81AB12E5B00E141D9 /* ActiveRequestsPage.swift */,
 				F7C079A61AB1263900E141D9 /* CreateNewRequestPage.swift */,
 				F7C079A41AAFA4F300E141D9 /* RequestDetailsPage.swift */,
 				F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */,
@@ -287,6 +290,7 @@
 				F745FE5A1A9E2882006E7698 /* HomePage.swift in Sources */,
 				82A4014F1AA158CA00E26253 /* Backend.swift in Sources */,
 				F771DCA91AA6347F00717996 /* UserSettingsPage.swift in Sources */,
+				F7C079A91AB12E5B00E141D9 /* ActiveRequestsPage.swift in Sources */,
 				F7C079A71AB1263900E141D9 /* CreateNewRequestPage.swift in Sources */,
 				F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */,
 				F750F3341A9E6A3700D929E2 /* LoginPage.swift in Sources */,
