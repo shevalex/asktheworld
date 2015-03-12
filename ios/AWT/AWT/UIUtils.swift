@@ -28,25 +28,6 @@ public struct AtwUiUtils {
         return bundleData as NSDictionary;
     }
     
-    static func loadLocalizationBundle(bundleName: String) -> NSDictionary! {
-        return loadBundle(bundleName, type: "strings", bundleCollection: localizationBundles);
-    }
-    
-    static func getBundleLocalizedString(bundleName: String, keyName: String) -> String {
-        let value: AnyObject? = loadLocalizationBundle(bundleName).valueForKey(keyName);
-        if (value != nil) {
-            return value as String;
-        } else {
-            return keyName + "--Not Found";
-        }
-    }
-    
-    static func getLocalizedString(keyName: String) -> String {
-        return getBundleLocalizedString("uiutils", keyName: keyName);
-    }
-    
-
-    
     static func loadResourceBundle(bundleName: String) -> NSDictionary! {
         return loadBundle(bundleName, type: "plist", bundleCollection: resourceBundles);
     }
@@ -114,7 +95,7 @@ public struct AtwUiUtils {
     
     static func showPopup(anchor: UIViewController, popupTitle: String, popupError: String, okCallback: (() -> Void)? = nil) {
         var popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
-        popup.addAction(UIAlertAction(title: AtwUiUtils.getLocalizedString("OK_BUTTON"), style: .Default, handler: { action in }))
+        popup.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK Button"), style: .Default, handler: { action in }))
         anchor.presentViewController(popup, animated: true, completion: okCallback)
     }
     

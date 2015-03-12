@@ -20,7 +20,7 @@ class RequestPreferencesPage: UIViewController, BackendCallback {
     func onError() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("SERVER_ERROR_MESSSAGE");
+            self.showErrorMessage(NSLocalizedString("Server Error", comment: "Communication error message"));
         });
     }
     func onSuccess() {
@@ -32,7 +32,7 @@ class RequestPreferencesPage: UIViewController, BackendCallback {
     func onFailure() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("FAILED_TO_UPDATE_PREFERENECS_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("Preferences weren't updated", comment: "Communication error message"));
         });
     }
     
@@ -75,7 +75,7 @@ class RequestPreferencesPage: UIViewController, BackendCallback {
     }
     */
 
-    private func showErrorMessage(popupErrorKey: String) {
-        AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("PREFERENCES_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
+    private func showErrorMessage(popupMessage: String) {
+        AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Preferences Update", comment: "Preferences message title"), popupError: popupMessage);
     }
 }

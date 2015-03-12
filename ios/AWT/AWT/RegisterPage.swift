@@ -22,7 +22,7 @@ class RegisterPage: UIViewController, BackendCallback {
     func onError() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("SERVER_ERROR_MESSSAGE");
+            self.showErrorMessage(NSLocalizedString("Server Error", comment: "Register page error message"));
         });
     }
     func onSuccess() {
@@ -34,47 +34,47 @@ class RegisterPage: UIViewController, BackendCallback {
     func onFailure() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("FAILED_TO_REGISTER_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("User with such email is already registered", comment: "Register page error message"));
         });
     }
     
     @IBAction func registerButtonAction(sender: UIButton) {
         if (emailTextField.text == "") {
-            showErrorMessage("EMAIL_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("Email must be provided", comment: "Register page error message"));
             return;
         } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
-            showErrorMessage("EMAIL_NOT_VALID_MESSAGE");
+            showErrorMessage(NSLocalizedString("Provided email does not look like a valid email address", comment: "Register page error message"));
             return;
         }
 
         if (nicknameTextField.text == "") {
-            showErrorMessage("NICKNAME_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("Please provide your nickname", comment: "Register page error message"));
             return;
         }
 
         if (genderTextField.text == "") {
-            showErrorMessage("GENDER_NOT_PROVIDED_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("Please specify your gender", comment: "Register page error message"));
             return;
         }
 
         if (ageTextField.text == "") {
-            showErrorMessage("AGE_NOT_PROVIDED_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("Please specify your age category", comment: "Register page error message"));
             return;
         }
 
         if (languagesTextField.text == "") {
-            showErrorMessage("LANGUAGE_NOT_PROVIDED_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("Please specify languages that you speak", comment: "Register page error message"));
             return;
         }
         
         if (passwordTextField.text == "") {
-            showErrorMessage("PASSWORD_NOT_PROVIDED_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("Please provide your password", comment: "Register page error message"));
             return;
         } else if (!AtwUiUtils.isPasswordValid(passwordTextField.text)) {
-            showErrorMessage("PASSWORD_NOT_VALID_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("Password should be at least 5 symbols long", comment: "Register page error message"));
             return;
         } else if (passwordTextField.text != confirmPasswordTextField.text) {
-            showErrorMessage("PASSWORD_NOT_MATCH_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("Passwords do not match", comment: "Register page error message"));
             return;
         }
         
@@ -116,7 +116,7 @@ class RegisterPage: UIViewController, BackendCallback {
     }
     */
 
-    private func showErrorMessage(popupErrorKey: String) {
-        AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("REGISTRATION_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
+    private func showErrorMessage(popupMessage: String) {
+        AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Registration", comment: "Registration page message title"), popupError: popupMessage);
     }
 }

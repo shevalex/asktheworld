@@ -20,7 +20,7 @@ class ContactInfoPage: UIViewController, BackendCallback {
     func onError() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("SERVER_ERROR_MESSSAGE");
+            self.showErrorMessage(NSLocalizedString("Server Error", comment: "Contact Info page error message"));
         });
     }
     func onSuccess() {
@@ -32,7 +32,7 @@ class ContactInfoPage: UIViewController, BackendCallback {
     func onFailure() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("FAILED_TO_UPDATE_PREFERENECS_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("Failed to update contact info", comment: "Contact Info page error message"));
         });
     }
     
@@ -70,7 +70,7 @@ class ContactInfoPage: UIViewController, BackendCallback {
     }
     */
 
-    private func showErrorMessage(popupErrorKey: String) {
-        AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("PREFERENCES_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
+    private func showErrorMessage(popupMessage: String) {
+        AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Update Preferences", comment: "Contact Info page message title"), popupError: popupMessage);
     }
 }

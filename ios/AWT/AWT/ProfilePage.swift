@@ -23,7 +23,7 @@ class ProfilePage: UIViewController, BackendCallback {
     func onError() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("SERVER_ERROR_MESSSAGE");
+            self.showErrorMessage(NSLocalizedString("Server Error", comment: "Communication error message"));
         });
     }
     func onSuccess() {
@@ -35,7 +35,7 @@ class ProfilePage: UIViewController, BackendCallback {
     func onFailure() {
         AtwUiUtils.runOnMainThread({
             AtwUiUtils.hideSpinner();
-            self.showErrorMessage("FAILED_TO_UPDATE_PROFILE_MESSAGE");
+            self.showErrorMessage(NSLocalizedString("Profile was not updated. Check your password", comment: "Profile cannot update error message"));
         });
     }
     
@@ -60,40 +60,40 @@ class ProfilePage: UIViewController, BackendCallback {
     
     @IBAction func updateButtonClickAction(sender: UIButton) {
         if (nicknameTextField.text == "") {
-            showErrorMessage("NICKNAME_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("Nickname must be provided", comment: "Profile update error message"));
             return;
         }
         
         if (genderTextField.text == "") {
-            showErrorMessage("GENDER_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("Gender must be provided", comment: "Profile update error message"));
             return;
         }
         
         if (ageTextField.text == "") {
-            showErrorMessage("AGE_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("Age must be provided", comment: "Profile update error message"));
             return;
         }
         
         if (languagesTextField.text == "") {
-            showErrorMessage("LANGUAGE_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("You must choose at least one language", comment: "Profile update error message"));
             return;
         }
         
         if (newPasswordTextField.text != "") {
             if (newPasswordTextField.text != confirmPasswordTextField.text) {
-                showErrorMessage("PASSWORD_NOT_MATCH_MESSAGE");
+                showErrorMessage(NSLocalizedString("Password do not match. Please retype", comment: "Profile update error message"));
                 return;
             } else if (!AtwUiUtils.isPasswordValid(newPasswordTextField.text)) {
-                showErrorMessage("PASSWORD_NOT_VALID_MESSAGE");
+                showErrorMessage(NSLocalizedString("Password should be 5 or more symbols", comment: "Profile update error message"));
                 return;
             }
         } else if (confirmPasswordTextField.text != "") {
-            showErrorMessage("PASSWORD_NOT_MATCH_MESSAGE");
+            showErrorMessage(NSLocalizedString("Password is not provided", comment: "Profile update error message"));
             return;
         }
         
         if (currentPasswordTextField.text == "") {
-            showErrorMessage("CURRENT_PASSWORD_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("Please provide current password to confirm the change", comment: "Profile update error message"));
             return;
         }
         
@@ -119,7 +119,7 @@ class ProfilePage: UIViewController, BackendCallback {
     }
     */
 
-    private func showErrorMessage(popupErrorKey: String) {
-        AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("PROFILE_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
+    private func showErrorMessage(popupMessage: String) {
+        AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Profile Update", comment: "Update profile dialog message title"), popupError: popupMessage)
     }
 }

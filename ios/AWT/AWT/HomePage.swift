@@ -10,10 +10,9 @@ import UIKit
 
 class HomePage: UIViewController {
 
-    @IBOutlet weak var activeRequestsLabel: UILabel!
     @IBOutlet weak var requestTableView: UITableView!
-    @IBOutlet weak var activeResponsesLabel: UILabel!
     @IBOutlet weak var responseTableView: UITableView!
+    @IBOutlet weak var numOfRequestsLabel: UILabel!
     
     var requestIdtoSend: String!;
     

@@ -20,21 +20,30 @@ public struct Configuration {
         }
         
         func getDisplay() -> String {
-            return AtwUiUtils.getLocalizedString(display);
+            return display;
         }
     }
     
     
-    static let LANGUAGES: [Item] = [Item(display: "LANGUAGE_ENGLISH", data: "eng"), Item(display: "LANGUAGE_RUSSIAN", data: "rus")];
-    static let EXPERTISES: [Item] = [Item(display: "EXPERTISE_GENERAL", data: "general"), Item(display: "EXPERTISE_LAW", data: "law"), Item(display: "EXPERTISE_MEDICINE", data: "medicine"), Item(display: "EXPERTISE_CONSTRUCTION", data: "construction")];
-    static let AGE_CATEGORIES: [Item] = [Item(display: "AGE_CHILD", data: "child"), Item(display: "AGE_TEENAGER", data: "teenager"), Item(display: "AGE_YOUNG", data: "young"), Item(display: "AGE_ADULT", data: "adult"), Item(display: "AGE_SENIOR", data: "senior")];
-    static let RESPONSE_WAIT_TIME: [Item] = [Item(display: "WAIT_TIME_WEEK", data: 148), Item(display: "WAIT_TIME_DAY", data: 24), Item(display: "WAIT_TIME_HALFDAY", data: 12), Item(display: "WAIT_TIME_HOUR", data: 1)];
-    static let RESPONSE_QUANTITY: [Item] = [Item(display: "QUANTITY_ALL", data: -1), Item(display: "QUANTITY_TEN", data: 10), Item(display: "QUANTITY_FIVE", data: 5), Item(display: "QUANTITY_THREE", data: 3), Item(display: "QUANTITY_ONE", data: 1)];
-    static let GENDERS: [Item] = [Item(display: "GENDER_MALE", data: "male"), Item(display: "GENDER_FEMALE", data: "female")];
-    static let AGE_CATEGORY_PREFERENCE: [Item] = [Item(display: "AGE_PREFERENCE_ALL", data: "all"), Item(display: "AGE_PREFERENCE_CHILDREN", data: "children"), Item(display: "AGE_PREFERENCE_TEENAGERS", data: "teenagers"), Item(display: "AGE_PREFERENCE_YOUNG", data: "youngs"), Item(display: "AGE_PREFERENCE_ADULTS", data: "adults"), Item(display: "AGE_PREFERENCE_SENIORS", data: "seniors")];
-    static let GENDER_PREFERENCE: [Item] = [Item(display: "GENDER_PREFERENCE_ANY", data: "any"), Item(display: "GENDER_PREFERENCE_MALE", data: "male"), Item(display: "GENDER_PREFERENCE_FEMALE", data: "female")];
-    static let INQUIRY_LIMIT_PREFERENCE: [Item] = [Item(display: "INCOMING_LIMIT_PREFERENCE_ALL", data: -1), Item(display: "INCOMING_LIMIT_PREFERENCE_TEN", data: 10), Item(display: "INCOMING_LIMIT_PREFERENCE_FIVE", data: 5), Item(display: "INCOMING_LIMIT_PREFERENCE_NONE", data: 0)];
-    static let CONTACT_REQUESTABLE: [Item] = [Item(display: "CONTACT_REQUESTABLE_NO", data: false), Item(display: "CONTACT_REQUESTABLE_YES", data: true)];
+    static let LANGUAGES: [Item] = [Item(display: NSLocalizedString("English", comment: "Language - English"), data: "eng"), Item(display: NSLocalizedString("Russian", comment: "Language - Russian"), data: "rus")];
+    
+    static let EXPERTISES: [Item] = [Item(display: NSLocalizedString("General", comment: "Expertise - general"), data: "general"), Item(display: NSLocalizedString("Law", comment: "Expertise - law"), data: "law"), Item(display: NSLocalizedString("Medicicne", comment: "Expertise - medicicne"), data: "medicine"), Item(display: NSLocalizedString("Construction", comment: "Expertise - construction"), data: "construction")];
+
+    static let AGE_CATEGORIES: [Item] = [Item(display: NSLocalizedString("Child", comment: "Age - child"), data: "child"), Item(display: NSLocalizedString("Teenager", comment: "Age - teenager"), data: "teenager"), Item(display: NSLocalizedString("Young Adult", comment: "Age - young"), data: "young"), Item(display: NSLocalizedString("Adult", comment: "Age - adult"), data: "adult"), Item(display: NSLocalizedString("Senior", comment: "Age - senior"), data: "senior")];
+    
+    static let RESPONSE_WAIT_TIME: [Item] = [Item(display: NSLocalizedString("1 week", comment: "Wait time - week"), data: 148), Item(display: NSLocalizedString("1 day", comment: "Wait time - day"), data: 24), Item(display: NSLocalizedString("Half-day", comment: "Wait time - halfday"), data: 12), Item(display: NSLocalizedString("1 hour", comment: "Wait time - hour"), data: 1)];
+    
+    static let RESPONSE_QUANTITY: [Item] = [Item(display: NSLocalizedString("As many as arrive", comment: "Quantity - all"), data: -1), Item(display: NSLocalizedString("Ten", comment: "Quantity - ten"), data: 10), Item(display: NSLocalizedString("Five", comment: "Quantity - five"), data: 5), Item(display: NSLocalizedString("Three", comment: "Quantity - three"), data: 3), Item(display: NSLocalizedString("Just the first one", comment: "Quantity - one"), data: 1)];
+    
+    static let GENDERS: [Item] = [Item(display: NSLocalizedString("Male", comment: "Gender - male"), data: "male"), Item(display: NSLocalizedString("Female", comment: "Gender - female"), data: "female")];
+    
+    static let AGE_CATEGORY_PREFERENCE: [Item] = [Item(display: NSLocalizedString("All", comment: "Age Preference - all"), data: "all"), Item(display: NSLocalizedString("Chidlren", comment: "Age Preference - chidlren"), data: "children"), Item(display: NSLocalizedString("Teenagers", comment: "Age Preference - teenagers"), data: "teenagers"), Item(display: NSLocalizedString("Young Adults", comment: "Age Preference - youngs"), data: "youngs"), Item(display: NSLocalizedString("Adults", comment: "Age Preference - adults"), data: "adults"), Item(display: NSLocalizedString("Seniors", comment: "Age Preference - seniors"), data: "seniors")];
+    
+    static let GENDER_PREFERENCE: [Item] = [Item(display: NSLocalizedString("Any", comment: "Gender Preference - any"), data: "any"), Item(display: NSLocalizedString("Men", comment: "Male - male"), data: "male"), Item(display: NSLocalizedString("Women", comment: "Gender Preference - female"), data: "female")];
+    
+    static let INQUIRY_LIMIT_PREFERENCE: [Item] = [Item(display: NSLocalizedString("As many as possible", comment: "Incoming limit Preference - any"), data: -1), Item(display: NSLocalizedString("No more than ten", comment: "Incoming limit Preference - ten"), data: 10), Item(display: NSLocalizedString("No more than five", comment: "Incoming limit Preference - five"), data: 5), Item(display: NSLocalizedString("I don't want to get any inquiries", comment: "Incoming limit Preference - none"), data: 0)];
+    
+    static let CONTACT_REQUESTABLE: [Item] = [Item(display: NSLocalizedString("No", comment: "Contact info requestable - no"), data: false), Item(display: NSLocalizedString("Yes", comment: "Contact info requestable - yes"), data: true)];
     
     
     static func resolve(value: AnyObject?, predefinedList: [Configuration.Item]!) -> Configuration.Item? {
@@ -73,51 +82,51 @@ public struct Configuration {
     static func toTargetGroupString(ageCategory: Item, gender: Item) -> String {
         if (ageCategory.data === AGE_CATEGORY_PREFERENCE[0].data) {
             if (gender.data === GENDER_PREFERENCE[0].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL");
+                return NSLocalizedString("all people", comment: "Target group - all");
             } else if (gender.data === GENDER_PREFERENCE[1].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_MEN");
+                return NSLocalizedString("all men", comment: "Target group - men");
             } else if (gender.data === GENDER_PREFERENCE[2].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_WOMEN");
+                return NSLocalizedString("all women", comment: "Target group - women");
             }
         } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[1].data) {
             if (gender.data === GENDER_PREFERENCE[0].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_CHILDREN");
+                return NSLocalizedString("all children", comment: "Target group - children");
             } else if (gender.data === GENDER_PREFERENCE[1].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_BOYS");
+                return NSLocalizedString("all boys", comment: "Target group - boys");
             } else if (gender.data === GENDER_PREFERENCE[2].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_GIRLS");
+                return NSLocalizedString("all girls", comment: "Target group - girls");
             }
         } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[2].data) {
             if (gender.data === GENDER_PREFERENCE[0].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_TEENAGERS");
+                return NSLocalizedString("all teenagers", comment: "Target group - teenagers");
             } else if (gender.data === GENDER_PREFERENCE[1].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_TEEN_BOYS");
+                return NSLocalizedString("all teen boys", comment: "Target group - teen boys");
             } else if (gender.data === GENDER_PREFERENCE[2].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_TEEN_BOYS");
+                return NSLocalizedString("all teen girls", comment: "Target group - teen girls");
             }
         } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[3].data) {
             if (gender.data === GENDER_PREFERENCE[0].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_YOUNGS");
+                return NSLocalizedString("all young people", comment: "Target group - youngs");
             } else if (gender.data === GENDER_PREFERENCE[1].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_YOUNG_MEN");
+                return NSLocalizedString("all young men", comment: "Target group - young men");
             } else if (gender.data === GENDER_PREFERENCE[2].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_YOUNG_WOMEN");
+                return NSLocalizedString("all young women", comment: "Target group - young women");
             }
         } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[4].data) {
             if (gender.data === GENDER_PREFERENCE[0].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_ADULTS");
+                return NSLocalizedString("all adults", comment: "Target group - adults");
             } else if (gender.data === GENDER_PREFERENCE[1].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_ADULT_MEN");
+                return NSLocalizedString("all adult men", comment: "Target group - adult men");
             } else if (gender.data === GENDER_PREFERENCE[2].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_ADULT_WOMEN");
+                return NSLocalizedString("all adult women", comment: "Target group - adult women");
             }
         } else if (ageCategory.data === AGE_CATEGORY_PREFERENCE[5].data) {
             if (gender.data === GENDER_PREFERENCE[0].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_SENIORS");
+                return NSLocalizedString("all senior people", comment: "Target group - seniors");
             } else if (gender.data === GENDER_PREFERENCE[1].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_SENIOR_MEN");
+                return NSLocalizedString("all senior men", comment: "Target group - senior men");
             } else if (gender.data === GENDER_PREFERENCE[2].data) {
-                return AtwUiUtils.getLocalizedString("TARGET_GROUP_ALL_SENIOR_WOMEN");
+                return NSLocalizedString("all senior women", comment: "Target group - senior women");
             }
         }
         
@@ -128,33 +137,33 @@ public struct Configuration {
     static func toUserIdentityString(ageCategory: Item, gender: Item) -> String {
         if (ageCategory.data === AGE_CATEGORIES[0].data) {
             if (gender.data === GENDERS[0].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_BOY");
+                return NSLocalizedString("boy", comment: "User identity - boy");
             } else if (gender.data === GENDERS[1].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_GIRL");
+                return NSLocalizedString("girl", comment: "User identity - girl");
             }
         } else if (ageCategory.data === AGE_CATEGORIES[1].data) {
             if (gender.data === GENDERS[0].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_TEEN_BOY");
+                return NSLocalizedString("teen boy", comment: "User identity - teen boy");
             } else if (gender.data === GENDERS[1].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_TEEN_GIRL");
+                return NSLocalizedString("teen girl", comment: "User identity - teen girl");
             }
         } else if (ageCategory.data === AGE_CATEGORIES[2].data) {
             if (gender.data === GENDERS[0].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_YOUNG_MAN");
+                return NSLocalizedString("young man", comment: "User identity - young man");
             } else if (gender.data === GENDERS[1].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_YOUNG_WOMAN");
+                return NSLocalizedString("young woman", comment: "User identity - young woman");
             }
         } else if (ageCategory.data === AGE_CATEGORIES[3].data) {
             if (gender.data === GENDERS[0].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_ADULT_MAN");
+                return NSLocalizedString("adult man", comment: "User identity - adult man");
             } else if (gender.data === GENDERS[1].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_ADULT_WOMAN");
+                return NSLocalizedString("adult woman", comment: "User identity - adult woman");
             }
         } else if (ageCategory.data === AGE_CATEGORIES[4].data) {
             if (gender.data === GENDERS[0].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_SENIOR_MAN");
+                return NSLocalizedString("senior man", comment: "User identity - senior man");
             } else if (gender.data === GENDERS[1].data) {
-                return AtwUiUtils.getLocalizedString("USER_IDENTITY_SENOIR_WOMAN");
+                return NSLocalizedString("senior woman", comment: "User identity - senior woman");
             }
         }
         
@@ -164,13 +173,13 @@ public struct Configuration {
     
     static func toExpertiseString(expertiseCategory: Item) -> String {
         if (expertiseCategory.data === EXPERTISES[0].data) {
-            return AtwUiUtils.getLocalizedString("EXPERTISE_CATEGORY_GENERAL");
+            return NSLocalizedString("General", comment: "Expertise - general");
         } else if (expertiseCategory.data === EXPERTISES[1].data) {
-            return AtwUiUtils.getLocalizedString("EXPERTISE_CATEGORY_LAW");
+            return NSLocalizedString("Law", comment: "Expertise - law");
         } else if (expertiseCategory.data === EXPERTISES[2].data) {
-            return AtwUiUtils.getLocalizedString("EXPERTISE_CATEGORY_MEDICINE");
+            return NSLocalizedString("Medicine", comment: "Expertise - medicine");
         } else if (expertiseCategory.data === EXPERTISES[3].data) {
-            return AtwUiUtils.getLocalizedString("EXPERTISE_CATEGORY_CONSTRUCTION");
+            return NSLocalizedString("Construction", comment: "Expertise - construction");
         }
         
         println("Unexpected expertise category \(expertiseCategory.data)");

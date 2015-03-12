@@ -83,8 +83,7 @@ struct RequestManagement {
             
             var request: Backend.RequestObject! = Backend.getInstance().getRequest(getRequestId(indexPath));
             if (request != nil) {
-                var targetPrefix = AtwUiUtils.getLocalizedString("OUTGOING_REQUEST_TARGET_PREFIX");
-                tableCell.textLabel!.text = "\(targetPrefix) \(Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender))";
+                var targetPrefix = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
                 tableCell.detailTextLabel!.text = request.text;
                 tableCell.detailTextLabel!.textColor = AtwUiUtils.getColor("OUTGOING_REQUEST_TEXT_COLOR");
                 tableCell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;

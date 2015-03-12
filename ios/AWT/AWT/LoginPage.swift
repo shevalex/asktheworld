@@ -40,7 +40,7 @@ class LoginPage: UIViewController {
         func onError() {
             AtwUiUtils.runOnMainThread({
                 AtwUiUtils.hideSpinner();
-                self.page.showErrorMessage("SERVER_ERROR_MESSSAGE");
+                self.page.showErrorMessage(NSLocalizedString("Server Error", comment: "Login page error message"));
             });
         }
         func onSuccess() {
@@ -52,24 +52,24 @@ class LoginPage: UIViewController {
         func onFailure() {
             AtwUiUtils.runOnMainThread({
                 AtwUiUtils.hideSpinner();
-                self.page.showErrorMessage("FAILED_TO_LOGIN_MESSAGE");
+                self.page.showErrorMessage(NSLocalizedString("Cannot log in", comment: "Login page error message"));
             });
         }
     }
     @IBAction func loginButtonClicked(sender: UIButton) {
         if (emailTextField.text == "") {
-            showErrorMessage("EMAIL_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("Email must be provided", comment: "Login page error message"));
             return;
         } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
-            showErrorMessage("EMAIL_NOT_VALID_MESSAGE");
+            showErrorMessage(NSLocalizedString("Email does not look like a valid email address", comment: "Login page error message"));
             return;
         }
         
         if (passwordTextField.text == "") {
-            showErrorMessage("PASSWORD_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("Password must be provided", comment: "Login page error message"));
             return;
         } else if (!AtwUiUtils.isPasswordValid(passwordTextField.text)) {
-            showErrorMessage("PASSWORD_NOT_VALID_MESSAGE");
+            showErrorMessage(NSLocalizedString("Password is not valid", comment: "Login page error message"));
             return;
         }
 
@@ -89,28 +89,28 @@ class LoginPage: UIViewController {
         func onError() {
             AtwUiUtils.runOnMainThread({
                 AtwUiUtils.hideSpinner();
-                self.page.showPasswordRecoveryMessage("SERVER_ERROR_MESSSAGE");
+                self.page.showErrorMessage(NSLocalizedString("Server Error", comment: "Password recovery message"));
             });
         }
         func onSuccess() {
             AtwUiUtils.runOnMainThread({
                 AtwUiUtils.hideSpinner();
-                self.page.showPasswordRecoveryMessage("PASSWORD_RECOVERY_SENT_MESSAGE");
+                self.page.showErrorMessage(NSLocalizedString("The message was sent to your email. You may disregard it if you do not need to change your password", comment: "Password recovery message"));
             });
         }
         func onFailure() {
             AtwUiUtils.runOnMainThread({
                 AtwUiUtils.hideSpinner();
-                self.page.showPasswordRecoveryMessage("PASSWORD_RECOVERY_FAILED_MESSAGE");
+                self.page.showErrorMessage(NSLocalizedString("Password recovery failed. Make sure the email you provided is correct", comment: "Password recovery message"));
             });
         }
     }
     @IBAction func forgotPasswordClicked() {
         if (emailTextField.text == "") {
-            showPasswordRecoveryMessage("EMAIL_NOT_PROVIDED_MESSAGE");
+            showErrorMessage(NSLocalizedString("Email must be provided", comment: "Login page error message"));
             return;
         } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
-            showPasswordRecoveryMessage("EMAIL_NOT_VALID_MESSAGE");
+            showErrorMessage(NSLocalizedString("Email does not look like a valid email address", comment: "Login page error message"));
             return;
         }
         
@@ -128,12 +128,12 @@ class LoginPage: UIViewController {
     */
 
     
-    private func showErrorMessage(popupErrorKey: String) {
-        AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("LOGIN_ERROR_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupErrorKey))
+    private func showErrorMessage(popupMessage: String) {
+        AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Signing In", comment: "Login page error message title"), popupError: popupMessage);
     }
     
-    private func showPasswordRecoveryMessage(popupMessageKey: String) {
-        AtwUiUtils.showPopup(self, popupTitle: AtwUiUtils.getLocalizedString("PASSWORD_RECOVERY_MESSAGE_TTILE"), popupError: AtwUiUtils.getLocalizedString(popupMessageKey))
+    private func showPasswordRecoveryMessage(popupMessage: String) {
+        AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Password recovery failed. Please check if your email is valid", comment: "Password recovery error message title"), popupError: popupMessage);
     }
     
 }
