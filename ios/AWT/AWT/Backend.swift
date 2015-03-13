@@ -227,7 +227,6 @@ public struct Backend {
     private static var instance: Backend! = nil;
     
     private var userContext: UserContext! = nil;
-    private var cacheChangeListeners: EventListenerCollection = EventListenerCollection();
     
     private var cache: ObjectCache = ObjectCache();
 
@@ -511,14 +510,12 @@ public struct Backend {
         if (ids == nil) {
             //TODO: pull the list from the server here
             self.cache.markOutgoingRequestIdsInUpdate();
-            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: nil, responseId: nil);
 
             var action:()->Void = {() in
                 self.cache.setOutgoingRequestIds(["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"]);
-                self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: nil, responseId: nil);
             };
             
-            CacheChangeNotifier(type: CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: nil, responseId: nil, action).schedule(5);
+            DelayedNotifier(action).schedule(5);
         }
         
         return ids;
@@ -532,7 +529,6 @@ public struct Backend {
         var request: RequestObject? = cache.getRequest(requestId);
         if (request == nil) {
             self.cache.markRequestInUpdate(requestId);
-            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: nil, responseId: nil);
             
             //TODO: pull request from the server here
             
@@ -544,10 +540,9 @@ public struct Backend {
                 request!.time = NSDate().timeIntervalSince1970;
 
                 self.cache.setRequest(requestId, request: request!);
-                self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: nil, responseId: nil);
             };
             
-            CacheChangeNotifier(type: CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId, responseId: nil, action).schedule(2);
+            DelayedNotifier(action).schedule(2);
         }
         
 
@@ -563,14 +558,12 @@ public struct Backend {
         if (ids == nil) {
             //TODO: pull the list from the server here
             self.cache.markIncomingResponseIdsInUpdate(requestId);
-            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: nil);
             
             var action:()->Void = {() in
                 self.cache.setIncomingResponseIds(requestId, responseIds: ["\(requestId)-response1", "\(requestId)-response2", "\(requestId)-response3", "\(requestId)-response4", "\(requestId)-response5", "\(requestId)-response6"]);
-                self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: nil);
             };
             
-            CacheChangeNotifier(type: CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId, responseId: nil, action).schedule(5);
+            DelayedNotifier(action).schedule(3);
         }
         
         return ids;
@@ -584,7 +577,6 @@ public struct Backend {
         var response: ResponseObject? = cache.getResponse(requestId, responseId: responseId);
         if (response == nil) {
             self.cache.markResponseInUpdate(requestId, responseId: responseId);
-            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: responseId);
             
             //TODO: pull request from the server here
             
@@ -596,10 +588,9 @@ public struct Backend {
                 response!.ageCategory = Configuration.AGE_CATEGORIES[1];
                 
                 self.cache.setResponse(requestId, responseId: responseId, response: response!);
-                self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: responseId);
             };
             
-            CacheChangeNotifier(type: CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId, action).schedule(2);
+            DelayedNotifier(action).schedule(2);
         }
         
         
@@ -611,11 +602,11 @@ public struct Backend {
     // Event Management
     
     func addCacheChangeListener(listener: CacheChangeEventObserver) {
-        cacheChangeListeners.add(listener);
+        cache.addCacheChangeListener(listener);
     }
     
     func removeCacheChangeListener(listener: CacheChangeEventObserver) {
-         cacheChangeListeners.remove(listener);
+        cache.removeCacheChangeListener(listener);
     }
     
     
@@ -751,19 +742,12 @@ public struct Backend {
     
     // Cache Management
     
-    private class CacheChangeNotifier: NSObject
+    private class DelayedNotifier: NSObject
     {
-        private var type: String!;
-        private var requestId: String!;
-        private var responseId: String!;
         private var action: (()->Void)?;
         
-        init(type: String!, requestId: String!, responseId: String!, action: (()->Void)? = nil) {
+        init(action: (()->Void)? = nil) {
             super.init();
-            
-            self.type = type;
-            self.requestId = requestId;
-            self.responseId = responseId;
             
             self.action = action;
         }
@@ -774,37 +758,30 @@ public struct Backend {
         
         @objc func timerTick() {
             action?();
-            Backend.instance.notifyCacheListeners(type, requestId: requestId, responseId: responseId);
         }
     }
     
-    
-    private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
-        var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
-
-        for (index, listener) in enumerate(cacheChangeListeners.get()) {
-            listener(event: event);
-        }
-    }
-    
-    private class EventListenerCollection {
-        private var list: [CacheChangeEventObserver] = [];
-        
-        func add(element: CacheChangeEventObserver) {
-            list.append(element);
-        }
-        
-        func remove(element: CacheChangeEventObserver) {
-            
-        }
-        
-        func get() -> [CacheChangeEventObserver] {
-            return list;
-        }
-    }
-
     
     private class ObjectCache {
+        private class EventListenerCollection {
+            private var list: [CacheChangeEventObserver] = [];
+            
+            func add(element: CacheChangeEventObserver) {
+                list.append(element);
+            }
+            
+            func remove(element: CacheChangeEventObserver) {
+                
+            }
+            
+            func get() -> [CacheChangeEventObserver] {
+                return list;
+            }
+        }
+
+        private var cacheChangeListeners: EventListenerCollection = EventListenerCollection();
+        
+        
         private var requestsInProgress: Dictionary<String, Bool> = Dictionary();
         private var requests: Dictionary<String, RequestObject> = Dictionary();
 
@@ -823,9 +800,28 @@ public struct Backend {
         private var outgoingResponseIdsInProgress: Dictionary<String, Bool> = Dictionary();
         private var outgoingResponseIds: Dictionary<String, [String]> = Dictionary();
         
+        
+        func addCacheChangeListener(listener: CacheChangeEventObserver) {
+            cacheChangeListeners.add(listener);
+        }
+        
+        func removeCacheChangeListener(listener: CacheChangeEventObserver) {
+            cacheChangeListeners.remove(listener);
+        }
+        
+        
+        func isInUpdate() -> Bool {
+            return (outgoingRequestIdsInProgress == true)
+                   || !outgoingResponseIdsInProgress.isEmpty
+                   || !requestsInProgress.isEmpty
+                   || !responsesInProgress.isEmpty;
+        }
+        
 
         func markOutgoingRequestIdsInUpdate() {
             outgoingRequestIdsInProgress = true;
+            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: nil, responseId: nil);
+
 //            println("marked outgoing request ids in progress");
         }
         func isOutgoingRequestIdsInUpdate() -> Bool {
@@ -834,6 +830,9 @@ public struct Backend {
         func setOutgoingRequestIds(requestIds: [String]) {
             outgoingRequestIds = requestIds;
             outgoingRequestIdsInProgress = false;
+            
+            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: nil, responseId: nil);
+            notifyCacheListeners(CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: nil, responseId: nil);
 //            println("!!! outgoing request ids updated");
         }
         func getOutgoingRequestIds() -> [String]? {
@@ -842,6 +841,7 @@ public struct Backend {
         
         func markRequestInUpdate(requestId: String) {
             requestsInProgress.updateValue(true, forKey: requestId);
+            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: nil);
 //            println("marked request \(requestId) in progress");
         }
         func isRequestInUpdate(requestId: String) -> Bool {
@@ -850,6 +850,8 @@ public struct Backend {
         func setRequest(requestId: String, request: RequestObject) {
             requests.updateValue(request, forKey: requestId);
             requestsInProgress.removeValueForKey(requestId);
+            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: nil);
+            notifyCacheListeners(CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId, responseId: nil);
 //            println("!!! request \(requestId) updated");
         }
         func getRequest(requestId: String) -> RequestObject? {
@@ -858,6 +860,8 @@ public struct Backend {
 
         func markIncomingResponseIdsInUpdate(requestId: String) {
             incomingResponseIdsInProgress.updateValue(true, forKey: requestId);
+            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: nil);
+            
 //            println("marked incoming response ids for \(requestId) in progress");
         }
         func isIncomingResponseIdsInUpdate(requestId: String) -> Bool {
@@ -866,6 +870,8 @@ public struct Backend {
         func setIncomingResponseIds(requestId: String, responseIds: [String]) {
             incomingResponseIds.updateValue(responseIds, forKey: requestId);
             incomingResponseIdsInProgress.removeValueForKey(requestId);
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: nil);
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId, responseId: nil);
 //            println("!!! incoming response ids for \(requestId) updated");
         }
         func getIncomingResponseIds(requestId: String) -> [String]? {
@@ -874,6 +880,8 @@ public struct Backend {
         
         func markResponseInUpdate(requestId: String, responseId: String) {
             responsesInProgress.updateValue(true, forKey: responseId);
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: responseId);
+            
 //            println("marked response \(responseId) in progress");
         }
         func isResponseInUpdate(requestId: String, responseId: String) -> Bool {
@@ -882,10 +890,23 @@ public struct Backend {
         func setResponse(requestId: String, responseId: String, response: ResponseObject) {
             responses.updateValue(response, forKey: responseId);
             responsesInProgress.removeValueForKey(responseId);
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: responseId);
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId);
+            
 //            println("!!! response \(responseId) updated");
         }
         func getResponse(requestId: String, responseId: String) -> ResponseObject? {
             return isResponseInUpdate(requestId, responseId: responseId) ? nil : responses[responseId];
+        }
+        
+
+        
+        private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
+            var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
+            
+            for (index, listener) in enumerate(cacheChangeListeners.get()) {
+                listener(event: event);
+            }
         }
     }
     
