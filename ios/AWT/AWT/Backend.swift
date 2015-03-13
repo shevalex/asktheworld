@@ -800,6 +800,7 @@ public struct Backend {
         private var outgoingResponseIdsInProgress: Dictionary<String, Bool> = Dictionary();
         private var outgoingResponseIds: Dictionary<String, [String]> = Dictionary();
         
+        private var updateInProgressNotified: Bool = false;
         
         func addCacheChangeListener(listener: CacheChangeEventObserver) {
             cacheChangeListeners.add(listener);
@@ -810,18 +811,9 @@ public struct Backend {
         }
         
         
-        func isInUpdate() -> Bool {
-            return (outgoingRequestIdsInProgress == true)
-                   || !outgoingResponseIdsInProgress.isEmpty
-                   || !requestsInProgress.isEmpty
-                   || !responsesInProgress.isEmpty;
-        }
-        
-
         func markOutgoingRequestIdsInUpdate() {
             outgoingRequestIdsInProgress = true;
-            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: nil, responseId: nil);
-
+            fireUpdateEvent();
 //            println("marked outgoing request ids in progress");
         }
         func isOutgoingRequestIdsInUpdate() -> Bool {
@@ -830,9 +822,9 @@ public struct Backend {
         func setOutgoingRequestIds(requestIds: [String]) {
             outgoingRequestIds = requestIds;
             outgoingRequestIdsInProgress = false;
-            
-            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: nil, responseId: nil);
+
             notifyCacheListeners(CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: nil, responseId: nil);
+            fireUpdateEvent();
 //            println("!!! outgoing request ids updated");
         }
         func getOutgoingRequestIds() -> [String]? {
@@ -841,7 +833,8 @@ public struct Backend {
         
         func markRequestInUpdate(requestId: String) {
             requestsInProgress.updateValue(true, forKey: requestId);
-            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: nil);
+            
+            fireUpdateEvent();
 //            println("marked request \(requestId) in progress");
         }
         func isRequestInUpdate(requestId: String) -> Bool {
@@ -850,8 +843,9 @@ public struct Backend {
         func setRequest(requestId: String, request: RequestObject) {
             requests.updateValue(request, forKey: requestId);
             requestsInProgress.removeValueForKey(requestId);
-            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: nil);
+
             notifyCacheListeners(CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId, responseId: nil);
+            fireUpdateEvent();
 //            println("!!! request \(requestId) updated");
         }
         func getRequest(requestId: String) -> RequestObject? {
@@ -860,8 +854,8 @@ public struct Backend {
 
         func markIncomingResponseIdsInUpdate(requestId: String) {
             incomingResponseIdsInProgress.updateValue(true, forKey: requestId);
-            notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: nil);
-            
+
+            fireUpdateEvent();
 //            println("marked incoming response ids for \(requestId) in progress");
         }
         func isIncomingResponseIdsInUpdate(requestId: String) -> Bool {
@@ -870,8 +864,9 @@ public struct Backend {
         func setIncomingResponseIds(requestId: String, responseIds: [String]) {
             incomingResponseIds.updateValue(responseIds, forKey: requestId);
             incomingResponseIdsInProgress.removeValueForKey(requestId);
-            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: nil);
+
             self.notifyCacheListeners(CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId, responseId: nil);
+            fireUpdateEvent();
 //            println("!!! incoming response ids for \(requestId) updated");
         }
         func getIncomingResponseIds(requestId: String) -> [String]? {
@@ -880,8 +875,8 @@ public struct Backend {
         
         func markResponseInUpdate(requestId: String, responseId: String) {
             responsesInProgress.updateValue(true, forKey: responseId);
-            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: requestId, responseId: responseId);
-            
+
+            fireUpdateEvent();
 //            println("marked response \(responseId) in progress");
         }
         func isResponseInUpdate(requestId: String, responseId: String) -> Bool {
@@ -890,9 +885,9 @@ public struct Backend {
         func setResponse(requestId: String, responseId: String, response: ResponseObject) {
             responses.updateValue(response, forKey: responseId);
             responsesInProgress.removeValueForKey(responseId);
-            self.notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: requestId, responseId: responseId);
+
             self.notifyCacheListeners(CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId);
-            
+            fireUpdateEvent();
 //            println("!!! response \(responseId) updated");
         }
         func getResponse(requestId: String, responseId: String) -> ResponseObject? {
@@ -901,9 +896,30 @@ public struct Backend {
         
 
         
+        private func isInUpdate() -> Bool {
+            return (outgoingRequestIdsInProgress == true)
+                || !incomingResponseIdsInProgress.isEmpty
+                || (incomingRequestIdsInProgress == true)
+                || !outgoingResponseIdsInProgress.isEmpty
+                || !requestsInProgress.isEmpty
+                || !responsesInProgress.isEmpty;
+        }
+        
+        private func fireUpdateEvent() {
+            var isCurrentlyInUpdate = isInUpdate();
+            
+            if (!updateInProgressNotified && isCurrentlyInUpdate) {
+                updateInProgressNotified = true;
+                notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_STARTED, requestId: nil, responseId: nil);
+            } else if (updateInProgressNotified && !isCurrentlyInUpdate) {
+                updateInProgressNotified = false;
+                notifyCacheListeners(CacheChangeEvent.TYPE_UPDATE_FINISHED, requestId: nil, responseId: nil);
+            }
+        }
+        
         private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
             var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
-            
+
             for (index, listener) in enumerate(cacheChangeListeners.get()) {
                 listener(event: event);
             }
