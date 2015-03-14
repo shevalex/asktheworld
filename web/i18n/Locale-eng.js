@@ -171,7 +171,7 @@ var Locale_eng = {
       "ActiveOutgoingRequestsLinkProvider": function(linkId) { return "You can always find all your active requests in the <a id='" + linkId + "'>Active Requests</a> section."; },
       "OutgoingRequestsStatisticProvider": function(numOfRequests, numOfResponses) { return "You have " + numOfResponses + " unviewed responses for " + numOfRequests + " your requests"},
       "ActiveIncomingRequestsLinkProvider": function(linkId) { return "See all incoming inquiries in <a id='" + linkId + "'>Active Inquiries</a> section."; },
-      "IncomingRequestsStatisticProvider": function(numOfRequests) { return "You have " + numOfRequests + " unanswered requests"; }
+      "IncomingRequestsStatisticProvider": function(numOfRequests) { return "You have " + numOfRequests + " unanswered inquiries"; }
     },
     "NewRequestPage": {
       "OutlineText": "Asking The World is just that easy. You are only four steps away.",

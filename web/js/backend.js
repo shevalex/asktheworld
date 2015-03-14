@@ -817,6 +817,7 @@ Backend._createDummyRequest = function(requestId) {
   var waitTime = Math.round(Math.random() * 3);
   var age = Math.round(Math.random() * 5);
   var gender = Math.round(Math.random() * 2);
+  var numOfExtraLines = Math.round(Math.random() * 5);
 
   var status = Backend.Request.STATUS_INACTIVE;
   if (this._cache.incomingRequestIds != null) {
@@ -836,9 +837,14 @@ Backend._createDummyRequest = function(requestId) {
     }
   }
 
+  var text = "This is the request with the id " + requestId;
+  for (var i = 0; i < numOfExtraLines; i++) {
+    text += "<br>line " + (i + 2);
+  }
+  
   var request = {
     time: Date.now(),
-    text: "This is the request with the id " + requestId,
+    text: text,
     attachments: [],
     response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity].data,
     response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime].data,
@@ -856,6 +862,7 @@ Backend._createDummyResponse = function(requestId, responseId) {
   var gender = Math.round(Math.random());
   var contactStatus = Math.round(Math.random() * 2);
   var statusUnread = false;
+  var numOfExtraLines = Math.round(Math.random() * 5);
   
   var responses = null;
   if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
@@ -878,9 +885,14 @@ Backend._createDummyResponse = function(requestId, responseId) {
     contactInfoStatus = Backend.Response.CONTACT_INFO_STATUS_PROVIDED;
   }
   
+  var text = "This is the response " + responseId + " to the request " + requestId;
+  for (var i = 0; i < numOfExtraLines; i++) {
+    text += "<br>line " + (i + 2);
+  }
+  
   var response = {
     time: Date.now(),
-    text: "This is the response " + responseId + " to the request " + requestId,
+    text:  text,
     attachments: [],
     age_category: Application.Configuration.AGE_CATEGORIES[age].data,
     gender: Application.Configuration.GENDERS[gender].data,
