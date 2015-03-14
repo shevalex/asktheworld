@@ -267,7 +267,7 @@ struct RequestResponseManagement {
     
     
     
-    class ActiveRequestsAndResponsesCounter: GenericObjectCounter {
+    class RequestsAndResponsesCounter: GenericObjectCounter {
         private var requestProvider: GenericObjectProvider!;
         private var responseProviderFactory: ObjectProviderFactory!;
 
@@ -343,26 +343,47 @@ struct RequestResponseManagement {
         }
         
         
+        func calculate() -> (requestCount: Int?, responseCount: Int?) {
+            return (nil, nil);
+        }
+        
         private func recalculate() {
             self.requestCount = 0;
             self.responseCount = 0;
 
-            var requestCount = requestProvider.count();
-            if (requestCount != nil) {
-                for (var reqIndex: Int = 0; reqIndex < requestCount; reqIndex++) {
+            var result: (requestCount: Int?, responseCount: Int?) = calculate();
+
+            if (result.requestCount != nil || result.responseCount != nil) {
+                self.requestCount = result.requestCount;
+                self.responseCount = result.responseCount;
+                counterChangeObserver?(requests: self.requestCount, responses: self.responseCount);
+            }
+        }
+    }
+    
+    
+    class ActiveRequestsAndResponsesCounter: RequestsAndResponsesCounter {
+        override func calculate() -> (requestCount: Int?, responseCount: Int?) {
+            var requestCount: Int? = nil;
+            var responseCount: Int? = nil;
+            
+            var requests = requestProvider.count();
+            
+            if (requests != nil) {
+                for (var reqIndex: Int = 0; reqIndex < requests; reqIndex++) {
                     var requestId = requestProvider.getObjectId(reqIndex);
                     
                     var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
                     
-                    var responseCount = responseProvider.count();
-                    if (responseCount != nil && responseCount > 0) {
-                        self.requestCount = self.requestCount + 1;
-                        self.responseCount = self.responseCount + responseCount!;
+                    var responses = responseProvider.count();
+                    if (responses > 0) {
+                        requestCount = requestCount != nil ? requestCount! + 1 : 1;
+                        responseCount = responseCount != nil ? responseCount! + responses! : responses!;
                     }
                 }
-
-                counterChangeObserver?(requests: self.requestCount, responses: self.responseCount);
             }
+            
+            return (requestCount, responseCount);
         }
     }
     
