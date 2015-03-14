@@ -33,22 +33,22 @@ protocol ObjectProviderFactory {
 }
 
 
-struct RequestManagement {
-    typealias RequestSelectionObserver = (requestId: String) -> Void;
+struct RequestResponseManagement {
+    typealias ObjectSelectionObserver = (id: String) -> Void;
 
     private static var mapping: NSCache! = NSCache();
     
     
-    class UIRequestTableDelegate: NSObject, UITableViewDelegate {
-        private var dataModel: UIRequestDataModel!;
-        private var selectionObserver: RequestSelectionObserver?;
+    class UIObjectTableDelegate: NSObject, UITableViewDelegate {
+        private var dataModel: AbstractUIObjectDataModel!;
+        private var selectionObserver: ObjectSelectionObserver?;
         
-        init(dataModel: UIRequestDataModel, selectionObserver: RequestSelectionObserver?) {
+        init(dataModel: AbstractUIObjectDataModel, selectionObserver: ObjectSelectionObserver?) {
             self.dataModel = dataModel;
             self.selectionObserver = selectionObserver;
         }
         
-        func getDataModel() -> UIRequestDataModel! {
+        func getDataModel() -> AbstractUIObjectDataModel! {
             return dataModel;
         }
         
@@ -57,12 +57,12 @@ struct RequestManagement {
         }
         
         func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-            var requestId = dataModel.getRequestId(indexPath);
-            selectionObserver?(requestId: requestId!);
+            var objectId = dataModel.getObjectId(indexPath);
+            selectionObserver?(id: objectId!);
         }
     }
     
-    class UIRequestDataModel: NSObject, UITableViewDataSource {
+    class AbstractUIObjectDataModel: NSObject, UITableViewDataSource {
         private var dataProvider: GenericObjectProvider!
         
         init(dataProvider: GenericObjectProvider) {
@@ -80,37 +80,51 @@ struct RequestManagement {
                 tableCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell");
             }
             
-            tableCell.backgroundColor = AtwUiUtils.getColor("OUTGOING_REQUEST_BACKGROUND_COLOR");
-            
-            var request: Backend.RequestObject! = Backend.getInstance().getRequest(getRequestId(indexPath));
-            if (request != nil) {
-                tableCell.textLabel!.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
-                tableCell.detailTextLabel!.text = request.text;
-                tableCell.detailTextLabel!.textColor = AtwUiUtils.getColor("OUTGOING_REQUEST_TEXT_COLOR");
-                tableCell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
-                //        tableCell.imageView?.image = UIImage(named: "outgoing_arrow.png");
-                //        tableCell.selectionStyle = UITableViewCellSelectionStyle.Gray;
-            } else {
-                tableCell.textLabel!.text = "";
-                tableCell.detailTextLabel!.text = "...";
-            }
+            renderTableCell(tableCell, id: getObjectId(indexPath)!);
             
             return tableCell;
         }
         
+        func renderTableCell(cell: UITableViewCell, id: String) {
+        }
         
-        private func getRequestId(indexPath: NSIndexPath) -> String? {
+        
+        private func getObjectId(indexPath: NSIndexPath) -> String? {
             return dataProvider.getObjectId(indexPath.row);
         }
     }
     
     
-    class ActiveOutgoingRequestObjectProvider: GenericObjectProvider {
+    
+    
+    // Requests support
+    
+    class OutgoingRequestsDataModel: AbstractUIObjectDataModel {
+        override func renderTableCell(cell: UITableViewCell, id: String) {
+            cell.backgroundColor = AtwUiUtils.getColor("OUTGOING_REQUEST_BACKGROUND_COLOR");
+            
+            var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
+            if (request != nil) {
+                cell.textLabel!.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
+                cell.detailTextLabel!.text = request.text;
+                cell.detailTextLabel!.textColor = AtwUiUtils.getColor("OUTGOING_REQUEST_TEXT_COLOR");
+                cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
+                //        tableCell.imageView?.image = UIImage(named: "outgoing_arrow.png");
+                //        tableCell.selectionStyle = UITableViewCellSelectionStyle.Gray;
+            } else {
+                cell.textLabel!.text = "";
+                cell.detailTextLabel!.text = "...";
+            }
+        }
+    }
+    
+    
+    class AbstractObjectProvider: GenericObjectProvider {
         private var cacheChangeListener: Backend.CacheChangeEventObserver? = nil;
         private var updateObserver: ObjectUpdateObserver? = nil;
         
         func getObjectId(index: Int!) -> String? {
-            var requestIds = Backend.getInstance().getOutgoingRequestIds();
+            var requestIds = getObjectIds();
             if (requestIds != nil) {
                 return requestIds![index];
             } else {
@@ -119,7 +133,7 @@ struct RequestManagement {
         }
         
         func count() -> Int? {
-            var requestIds = Backend.getInstance().getOutgoingRequestIds();
+            var requestIds = getObjectIds();
             if (requestIds == nil) {
                 self.updateObserver?(finished: false);
                 return nil;
@@ -139,21 +153,19 @@ struct RequestManagement {
             }
             
             cacheChangeListener = {(event) in
-                if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
+                if (self.isObjectIdsChangeEvent(event)) {
                     self.updateObserver?(finished: true);
                     observer(index: -1);
-                } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
-                    if (event.requestId != nil) {
-                        for (index, requestId) in enumerate(Backend.getInstance().getOutgoingRequestIds()!) {
-                            if (requestId == event.requestId) {
+                } else {
+                    var eventObjectId: String? = self.getObjectIdForChangeEvent(event);
+                    if (eventObjectId != nil) {
+                        for (index, objectId) in enumerate(self.getObjectIds()!) {
+                            if (objectId == eventObjectId) {
                                 self.updateObserver?(finished: true);
                                 observer(index: index);
                                 break;
                             }
                         }
-                    } else {
-                        self.updateObserver?(finished: true);
-                        observer(index: -1);
                     }
                 }
             };
@@ -163,6 +175,7 @@ struct RequestManagement {
         func setUpdateObserver(observer: ObjectUpdateObserver!) {
             self.updateObserver = observer;
             if (cacheChangeListener == nil) {
+                // this is needed to trigger update notifications;
                 setChangeObserver({(index: Int?) in /*intentionally do nothing*/});
             }
         }
@@ -172,93 +185,79 @@ struct RequestManagement {
                 Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
             }
         }
+        
+        func getObjectIds() -> [String]? {
+            return nil;
+        }
+
+        func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
+            return false;
+        }
+
+        func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+            return nil;
+        }
     }
     
-    class ActiveIncomingResponseObjectProvider: GenericObjectProvider {
-        private var requestId: String!;
-        private var cacheChangeListener: Backend.CacheChangeEventObserver? = nil;
-        private var updateObserver: ObjectUpdateObserver? = nil;
+    class OutgoingRequestObjectProvider: AbstractObjectProvider {
+        override func getObjectIds() -> [String]? {
+            return Backend.getInstance().getOutgoingRequestIds();
+        }
         
-        init(requestId: String!) {
+        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
+            return event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED;
+        }
+        
+        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+            if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
+                return nil;
+            }
+            
+            return event.requestId;
+        }
+    }
+    
+    class IncomingResponseObjectProvider: AbstractObjectProvider {
+        private var requestId: String;
+        private var responseStatus: String;
+        
+        init(requestId: String, responseStatus: String) {
             self.requestId = requestId;
+            self.responseStatus = responseStatus;
         }
         
-        func getObjectId(index: Int!) -> String? {
-            var responseIds = getResponseIds();
-            if (responseIds != nil) {
-                return responseIds![index];
-            } else {
+        override func getObjectIds() -> [String]? {
+            return Backend.getInstance().getIncomingResponseIds(requestId, responseStatus: responseStatus);
+        }
+        
+        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
+            return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED;
+        }
+        
+        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+            if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
                 return nil;
             }
-        }
-        
-        func count() -> Int? {
-            var responseIds = getResponseIds();
-            if (responseIds == nil) {
-                self.updateObserver?(finished: false);
+            if (event.requestId != self.requestId) {
                 return nil;
             }
             
-            return responseIds!.count;
-        }
-        
-        func setChangeObserver(observer: ((index: Int?) -> Void)!) {
-            if (observer == nil) {
-                if (cacheChangeListener != nil) {
-                    Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
-                    cacheChangeListener = nil;
-                }
-                
-                return;
-            }
-            
-            cacheChangeListener = {(event) in
-                if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED && event.requestId == self.requestId) {
-                    self.updateObserver?(finished: true);
-                    observer(index: -1);
-                } else if (event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED) {
-                    if (event.requestId == self.requestId && event.responseId != nil) {
-                        for (index, responseId) in enumerate(self.getResponseIds()!) {
-                            if (responseId == event.responseId) {
-                                self.updateObserver?(finished: true);
-                                observer(index: index);
-                                break;
-                            }
-                        }
-                    } else {
-                        self.updateObserver?(finished: true);
-                        observer(index: -1);
-                    }
-                }
-            };
-            Backend.getInstance().addCacheChangeListener(cacheChangeListener!);
-        }
-        
-        func setUpdateObserver(observer: ObjectUpdateObserver!) {
-            self.updateObserver = observer;
-            if (cacheChangeListener == nil) {
-                setChangeObserver({(index: Int?) in /*intentionally do nothing*/});
-            }
-        }
-        
-        deinit {
-            if (cacheChangeListener != nil) {
-                Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
-            }
-        }
-        
-        private func getResponseIds() -> [String]? {
-            return Backend.getInstance().getIncomingResponseIds(requestId, responseStatus: Backend.ResponseObject.STATUS_UNREAD);
+            return event.responseId;
         }
     }
     
-    class ActiveResponseProviderFactory: ObjectProviderFactory {
+    class ResponseProviderFactory: ObjectProviderFactory {
         private var providers: Dictionary<String, GenericObjectProvider> = Dictionary();
+        private var responseStatus: String;
+        
+        init(responseStatus: String) {
+            self.responseStatus = responseStatus;
+        }
         
         func getObjectProvider(objectId: String!) -> GenericObjectProvider {
             var provider: GenericObjectProvider? = providers[objectId];
             if (provider == nil) {
-                provider = ActiveIncomingResponseObjectProvider(requestId: objectId);
+                provider = IncomingResponseObjectProvider(requestId: objectId, responseStatus: responseStatus);
                 providers.updateValue(provider!, forKey: objectId);
             }
             
@@ -369,7 +368,7 @@ struct RequestManagement {
     
     
     
-    static func attachRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: RequestSelectionObserver? = nil) {
+    static func attachRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: ObjectSelectionObserver? = nil) {
 
 //        tableView.rowHeight = CGFloat(30);
         
@@ -380,8 +379,8 @@ struct RequestManagement {
             return;
         }
 
-        var dataModel = UIRequestDataModel(dataProvider: requestObjectProvider);
-        delegate = UIRequestTableDelegate(dataModel: dataModel, selectionObserver);
+        var dataModel = OutgoingRequestsDataModel(dataProvider: requestObjectProvider);
+        delegate = UIObjectTableDelegate(dataModel: dataModel, selectionObserver);
         tableView.delegate = delegate as? UITableViewDelegate;
         tableView.dataSource = dataModel;
         

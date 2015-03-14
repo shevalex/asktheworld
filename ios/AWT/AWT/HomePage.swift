@@ -24,12 +24,12 @@ class HomePage: UIViewController {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true;
 
-        var selectionObserver: RequestManagement.RequestSelectionObserver = { (requestId) in
-            self.requestIdtoSend = requestId;
+        var selectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+            self.requestIdtoSend = id;
             self.performSegueWithIdentifier("showRequestDetails", sender: self);
         }
         
-        RequestManagement.attachRequestObjectProvider(requestTableView, requestObjectProvider: RequestManagement.ActiveOutgoingRequestObjectProvider(), selectionObserver);
+        RequestResponseManagement.attachRequestObjectProvider(requestTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), selectionObserver);
         
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_STARTED) {
@@ -39,7 +39,7 @@ class HomePage: UIViewController {
             }
         }
         
-        outgoingRequestCounter = RequestManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestManagement.ActiveOutgoingRequestObjectProvider(), responseProviderFactory: RequestManagement.ActiveResponseProviderFactory());
+        outgoingRequestCounter = RequestResponseManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.ResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
         outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
             self.numOfRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), responses, requests);
         });
