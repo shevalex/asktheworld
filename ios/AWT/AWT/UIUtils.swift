@@ -61,7 +61,6 @@ public struct AtwUiUtils {
         if (activityIndicator == nil) {
             activityIndicator = UIActivityIndicatorView();
             
-            activityIndicator.center = anchor.center;
             activityIndicator.hidesWhenStopped = true;
             activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray;
         } else {
@@ -69,6 +68,13 @@ public struct AtwUiUtils {
         }
 
         anchor.addSubview(activityIndicator);
+        
+        activityIndicator.setTranslatesAutoresizingMaskIntoConstraints(false);
+        var constX = NSLayoutConstraint(item: activityIndicator, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: anchor, attribute: NSLayoutAttribute.CenterX, multiplier: 1.0, constant: 0);
+        anchor.addConstraint(constX);
+        
+        var constY = NSLayoutConstraint(item: activityIndicator, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: anchor, attribute: NSLayoutAttribute.CenterY, multiplier: 1.0, constant: 0);
+        anchor.addConstraint(constY);
         
         if (disableInput == true) {
             UIApplication.sharedApplication().beginIgnoringInteractionEvents();
