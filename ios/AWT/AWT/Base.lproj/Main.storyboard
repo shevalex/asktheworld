@@ -117,9 +117,9 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UgN-KF-LLS">
                                 <rect key="frame" x="0.0" y="294" width="320" height="230"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Inquiries that you received" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BIR-Aa-R5h">
-                                        <rect key="frame" x="59" y="8" width="202" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fetching your inquiries..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BIR-Aa-R5h">
+                                        <rect key="frame" x="8" y="28" width="304" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -129,7 +129,7 @@
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </tableView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfK-ER-l7e">
-                                        <rect key="frame" x="79" y="26" width="163" height="30"/>
+                                        <rect key="frame" x="79" y="0.0" width="163" height="30"/>
                                         <state key="normal" title="View All Active Inquiries">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -137,13 +137,15 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
+                                    <constraint firstItem="5vk-RG-jYM" firstAttribute="top" secondItem="BIR-Aa-R5h" secondAttribute="bottom" constant="8" symbolic="YES" id="2Af-L0-Sq8"/>
                                     <constraint firstAttribute="bottom" secondItem="5vk-RG-jYM" secondAttribute="bottom" constant="2" id="2Mx-TM-8nb"/>
-                                    <constraint firstAttribute="centerX" secondItem="kfK-ER-l7e" secondAttribute="centerX" id="613-VE-Uhw"/>
-                                    <constraint firstItem="5vk-RG-jYM" firstAttribute="top" secondItem="kfK-ER-l7e" secondAttribute="bottom" constant="1" id="6wJ-vD-lGt"/>
-                                    <constraint firstItem="kfK-ER-l7e" firstAttribute="top" secondItem="UgN-KF-LLS" secondAttribute="top" constant="26" id="CHh-Sm-LBl"/>
-                                    <constraint firstItem="BIR-Aa-R5h" firstAttribute="top" secondItem="UgN-KF-LLS" secondAttribute="top" constant="8" id="Y7l-Eq-HOL"/>
-                                    <constraint firstAttribute="centerX" secondItem="BIR-Aa-R5h" secondAttribute="centerX" id="Z78-Lg-Mkq"/>
+                                    <constraint firstItem="BIR-Aa-R5h" firstAttribute="leading" secondItem="5vk-RG-jYM" secondAttribute="leading" id="Jsc-vX-cPu"/>
+                                    <constraint firstItem="BIR-Aa-R5h" firstAttribute="top" secondItem="UgN-KF-LLS" secondAttribute="top" constant="28" id="YU5-7r-L7O"/>
                                     <constraint firstItem="5vk-RG-jYM" firstAttribute="leading" secondItem="UgN-KF-LLS" secondAttribute="leading" constant="8" id="ZLN-UC-pBf"/>
+                                    <constraint firstItem="kfK-ER-l7e" firstAttribute="centerX" secondItem="BIR-Aa-R5h" secondAttribute="centerX" id="cte-pl-y3O"/>
+                                    <constraint firstItem="BIR-Aa-R5h" firstAttribute="trailing" secondItem="5vk-RG-jYM" secondAttribute="trailing" id="gXb-QO-nQD"/>
+                                    <constraint firstItem="5vk-RG-jYM" firstAttribute="top" secondItem="kfK-ER-l7e" secondAttribute="bottom" constant="27" id="mMn-gW-31s"/>
+                                    <constraint firstItem="kfK-ER-l7e" firstAttribute="top" secondItem="UgN-KF-LLS" secondAttribute="top" id="vKt-0S-yCC"/>
                                     <constraint firstAttribute="trailing" secondItem="5vk-RG-jYM" secondAttribute="trailing" constant="8" id="y07-0c-nYi"/>
                                 </constraints>
                             </view>
