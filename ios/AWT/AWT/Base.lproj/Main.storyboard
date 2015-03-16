@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -78,12 +78,6 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Z5d-50-gpj">
                                 <rect key="frame" x="0.0" y="64" width="320" height="230"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fetching your requests..." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kga-N5-kgC">
-                                        <rect key="frame" x="65" y="8" width="191" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Udk-uq-4iq">
                                         <rect key="frame" x="8" y="58" width="304" height="170"/>
                                         <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -92,7 +86,7 @@
                                         <sections/>
                                     </tableView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2uh-EZ-MCO">
-                                        <rect key="frame" x="76" y="26" width="169" height="30"/>
+                                        <rect key="frame" x="76" y="0.0" width="169" height="30"/>
                                         <state key="normal" title="View All Active Requests">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -100,23 +94,31 @@
                                             <segue destination="F7D-Zm-fs3" kind="show" id="WDK-pr-rkP"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fetching your requests..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kga-N5-kgC">
+                                        <rect key="frame" x="8" y="29" width="304" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="Udk-uq-4iq" secondAttribute="bottom" constant="2" id="7Tb-C1-X8D"/>
-                                    <constraint firstItem="Kga-N5-kgC" firstAttribute="top" secondItem="Z5d-50-gpj" secondAttribute="top" constant="8" id="92L-jv-3H4"/>
-                                    <constraint firstItem="2uh-EZ-MCO" firstAttribute="top" secondItem="Z5d-50-gpj" secondAttribute="top" constant="26" id="IIN-gH-PqX"/>
+                                    <constraint firstItem="Kga-N5-kgC" firstAttribute="leading" secondItem="Udk-uq-4iq" secondAttribute="leading" id="FTN-jR-ryS"/>
                                     <constraint firstItem="Udk-uq-4iq" firstAttribute="leading" secondItem="Z5d-50-gpj" secondAttribute="leading" constant="8" id="RmG-DP-LRI"/>
+                                    <constraint firstItem="Udk-uq-4iq" firstAttribute="top" secondItem="Kga-N5-kgC" secondAttribute="bottom" constant="8" symbolic="YES" id="U7I-VI-zXb"/>
                                     <constraint firstAttribute="trailing" secondItem="Udk-uq-4iq" secondAttribute="trailing" constant="8" id="W1y-CG-qUy"/>
-                                    <constraint firstAttribute="centerX" secondItem="2uh-EZ-MCO" secondAttribute="centerX" id="lu9-xc-5qS"/>
-                                    <constraint firstItem="Udk-uq-4iq" firstAttribute="top" secondItem="2uh-EZ-MCO" secondAttribute="bottom" constant="2" id="r3P-UZ-WCz"/>
-                                    <constraint firstAttribute="centerX" secondItem="Kga-N5-kgC" secondAttribute="centerX" id="ttv-IG-au6"/>
+                                    <constraint firstItem="2uh-EZ-MCO" firstAttribute="top" secondItem="Z5d-50-gpj" secondAttribute="top" id="hOs-HF-V0V"/>
+                                    <constraint firstItem="Kga-N5-kgC" firstAttribute="trailing" secondItem="Udk-uq-4iq" secondAttribute="trailing" id="knP-rz-I7w"/>
+                                    <constraint firstItem="Kga-N5-kgC" firstAttribute="centerX" secondItem="2uh-EZ-MCO" secondAttribute="centerX" id="nZW-wY-q0s"/>
+                                    <constraint firstItem="Kga-N5-kgC" firstAttribute="top" secondItem="Z5d-50-gpj" secondAttribute="top" constant="29" id="us1-jr-1g0"/>
+                                    <constraint firstItem="Udk-uq-4iq" firstAttribute="top" secondItem="2uh-EZ-MCO" secondAttribute="bottom" constant="28" id="wtd-hl-NSD"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UgN-KF-LLS">
                                 <rect key="frame" x="0.0" y="294" width="320" height="230"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Inquiries that you received" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BIR-Aa-R5h">
-                                        <rect key="frame" x="59" y="8" width="201.5" height="20.5"/>
+                                        <rect key="frame" x="59" y="8" width="202" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
