@@ -29,7 +29,13 @@ class HomePage: UIViewController {
             self.performSegueWithIdentifier("showRequestDetails", sender: self);
         }
         
-        RequestResponseManagement.attachRequestObjectProvider(requestTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), selectionObserver);
+        RequestResponseManagement.attachOutgoingRequestObjectProvider(requestTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), selectionObserver);
+        
+        outgoingRequestCounter = RequestResponseManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
+        outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
+            self.numOfRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), responses, requests);
+        });
+
         
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_STARTED) {
@@ -38,11 +44,6 @@ class HomePage: UIViewController {
                 AtwUiUtils.hideSpinner();
             }
         }
-        
-        outgoingRequestCounter = RequestResponseManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.ResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
-        outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
-            self.numOfRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), responses, requests);
-        });
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

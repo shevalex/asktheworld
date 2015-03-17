@@ -117,6 +117,23 @@ struct RequestResponseManagement {
             }
         }
     }
+
+    class IncomingRequestsDataModel: AbstractUIObjectDataModel {
+        override func renderTableCell(cell: UITableViewCell, id: String) {
+            cell.backgroundColor = AtwUiUtils.getColor("INCOMING_REQUEST_BACKGROUND_COLOR");
+            
+            var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
+            if (request != nil) {
+                cell.textLabel!.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
+                cell.detailTextLabel!.text = request.text;
+                cell.detailTextLabel!.textColor = AtwUiUtils.getColor("INCOMING_REQUEST_TEXT_COLOR");
+                cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
+            } else {
+                cell.textLabel!.text = "";
+                cell.detailTextLabel!.text = "...";
+            }
+        }
+    }
     
     
     class AbstractObjectProvider: GenericObjectProvider {
@@ -199,6 +216,31 @@ struct RequestResponseManagement {
         }
     }
     
+    class AbstractResponseProviderFactory: ObjectProviderFactory {
+        private var providers: Dictionary<String, GenericObjectProvider> = Dictionary();
+        private var responseStatus: String;
+        
+        init(responseStatus: String) {
+            self.responseStatus = responseStatus;
+        }
+        
+        func getObjectProvider(objectId: String!) -> GenericObjectProvider {
+            var provider: GenericObjectProvider? = providers[objectId];
+            if (provider == nil) {
+                provider = createObjectProvider(objectId, responseStatus: responseStatus);
+                providers.updateValue(provider!, forKey: objectId);
+            }
+            
+            return provider!;
+        }
+        
+        func createObjectProvider(requestId: String, responseStatus: String) -> GenericObjectProvider? {
+            return nil;
+        }
+    }
+    
+
+    
     class OutgoingRequestObjectProvider: AbstractObjectProvider {
         override func getObjectIds() -> [String]? {
             return Backend.getInstance().getOutgoingRequestIds();
@@ -246,24 +288,68 @@ struct RequestResponseManagement {
         }
     }
     
-    class ResponseProviderFactory: ObjectProviderFactory {
-        private var providers: Dictionary<String, GenericObjectProvider> = Dictionary();
+    class IncomingResponseProviderFactory: AbstractResponseProviderFactory {
+        override func createObjectProvider(requestId: String, responseStatus: String) -> GenericObjectProvider? {
+            return IncomingResponseObjectProvider(requestId: requestId, responseStatus: responseStatus);
+        }
+    }
+    
+    
+    class IncomingRequestObjectProvider: AbstractObjectProvider {
+        override func getObjectIds() -> [String]? {
+            return Backend.getInstance().getIncomingRequestIds();
+        }
+        
+        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
+            return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED;
+        }
+        
+        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+            if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
+                return nil;
+            }
+            
+            return event.requestId;
+        }
+    }
+    
+    class OutgoingResponseObjectProvider: AbstractObjectProvider {
+        private var requestId: String;
         private var responseStatus: String;
         
-        init(responseStatus: String) {
+        init(requestId: String, responseStatus: String) {
+            self.requestId = requestId;
             self.responseStatus = responseStatus;
         }
         
-        func getObjectProvider(objectId: String!) -> GenericObjectProvider {
-            var provider: GenericObjectProvider? = providers[objectId];
-            if (provider == nil) {
-                provider = IncomingResponseObjectProvider(requestId: objectId, responseStatus: responseStatus);
-                providers.updateValue(provider!, forKey: objectId);
+        override func getObjectIds() -> [String]? {
+            return Backend.getInstance().getOutgoingResponseIds(requestId, responseStatus: responseStatus);
+        }
+        
+        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
+            return event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
+        }
+        
+        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+            if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
+                return nil;
+            }
+            if (event.requestId != self.requestId) {
+                return nil;
             }
             
-            return provider!;
+            return event.responseId;
         }
     }
+    
+    class OutgoingResponseProviderFactory: AbstractResponseProviderFactory {
+        override func createObjectProvider(requestId: String, responseStatus: String) -> GenericObjectProvider? {
+            return OutgoingResponseObjectProvider(requestId: requestId, responseStatus: responseStatus);
+        }
+    }
+
+    
+    
     
     
     
@@ -389,9 +475,21 @@ struct RequestResponseManagement {
     
     
     
-    static func attachRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: ObjectSelectionObserver? = nil) {
+    static func attachOutgoingRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: ObjectSelectionObserver? = nil) {
+        
+        attachRequestObjectProvider(tableView, dataModel: OutgoingRequestsDataModel(dataProvider: requestObjectProvider), requestObjectProvider: requestObjectProvider, selectionObserver: selectionObserver);
+    }
 
-//        tableView.rowHeight = CGFloat(30);
+    static func attachIncomingRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: ObjectSelectionObserver? = nil) {
+        
+        attachRequestObjectProvider(tableView, dataModel: IncomingRequestsDataModel(dataProvider: requestObjectProvider), requestObjectProvider: requestObjectProvider, selectionObserver: selectionObserver);
+    }
+    
+    
+    
+    private static func attachRequestObjectProvider(tableView: UITableView, dataModel: AbstractUIObjectDataModel, requestObjectProvider: GenericObjectProvider, selectionObserver: ObjectSelectionObserver? = nil) {
+        
+        //        tableView.rowHeight = CGFloat(30);
         
         var delegate: AnyObject? = mapping.objectForKey(tableView);
         if (delegate != nil) {
@@ -399,8 +497,7 @@ struct RequestResponseManagement {
             tableView.dataSource = delegate!.getDataModel();
             return;
         }
-
-        var dataModel = OutgoingRequestsDataModel(dataProvider: requestObjectProvider);
+        
         delegate = UIObjectTableDelegate(dataModel: dataModel, selectionObserver);
         tableView.delegate = delegate as? UITableViewDelegate;
         tableView.dataSource = dataModel;
@@ -408,7 +505,7 @@ struct RequestResponseManagement {
         requestObjectProvider.setChangeObserver({(index) -> Void in
             tableView.reloadData();
         });
-
+        
         requestObjectProvider.setUpdateObserver({(finished) -> Void in
             tableView.alpha = finished ? 1 : 0;
         });
@@ -416,5 +513,4 @@ struct RequestResponseManagement {
         
         mapping.setObject(delegate!, forKey: tableView);
     }
-    
 }
