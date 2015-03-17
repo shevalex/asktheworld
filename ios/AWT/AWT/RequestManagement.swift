@@ -218,9 +218,9 @@ struct RequestResponseManagement {
     
     class AbstractResponseProviderFactory: ObjectProviderFactory {
         private var providers: Dictionary<String, GenericObjectProvider> = Dictionary();
-        private var responseStatus: String;
+        private var responseStatus: String?;
         
-        init(responseStatus: String) {
+        init(responseStatus: String?) {
             self.responseStatus = responseStatus;
         }
         
@@ -234,7 +234,7 @@ struct RequestResponseManagement {
             return provider!;
         }
         
-        func createObjectProvider(requestId: String, responseStatus: String) -> GenericObjectProvider? {
+        func createObjectProvider(requestId: String, responseStatus: String?) -> GenericObjectProvider? {
             return nil;
         }
     }
@@ -261,9 +261,9 @@ struct RequestResponseManagement {
     
     class IncomingResponseObjectProvider: AbstractObjectProvider {
         private var requestId: String;
-        private var responseStatus: String;
+        private var responseStatus: String?;
         
-        init(requestId: String, responseStatus: String) {
+        init(requestId: String, responseStatus: String?) {
             self.requestId = requestId;
             self.responseStatus = responseStatus;
         }
@@ -289,7 +289,7 @@ struct RequestResponseManagement {
     }
     
     class IncomingResponseProviderFactory: AbstractResponseProviderFactory {
-        override func createObjectProvider(requestId: String, responseStatus: String) -> GenericObjectProvider? {
+        override func createObjectProvider(requestId: String, responseStatus: String?) -> GenericObjectProvider? {
             return IncomingResponseObjectProvider(requestId: requestId, responseStatus: responseStatus);
         }
     }
@@ -315,9 +315,9 @@ struct RequestResponseManagement {
     
     class OutgoingResponseObjectProvider: AbstractObjectProvider {
         private var requestId: String;
-        private var responseStatus: String;
+        private var responseStatus: String?;
         
-        init(requestId: String, responseStatus: String) {
+        init(requestId: String, responseStatus: String?) {
             self.requestId = requestId;
             self.responseStatus = responseStatus;
         }
@@ -343,7 +343,7 @@ struct RequestResponseManagement {
     }
     
     class OutgoingResponseProviderFactory: AbstractResponseProviderFactory {
-        override func createObjectProvider(requestId: String, responseStatus: String) -> GenericObjectProvider? {
+        override func createObjectProvider(requestId: String, responseStatus: String?) -> GenericObjectProvider? {
             return OutgoingResponseObjectProvider(requestId: requestId, responseStatus: responseStatus);
         }
     }
@@ -448,7 +448,7 @@ struct RequestResponseManagement {
     }
     
     
-    class ActiveRequestsAndResponsesCounter: RequestsAndResponsesCounter {
+    class ActiveOutgoingRequestsAndResponsesCounter: RequestsAndResponsesCounter {
         override func calculate() -> (requestCount: Int?, responseCount: Int?) {
             var requestCount: Int? = nil;
             var responseCount: Int? = nil;
@@ -470,6 +470,29 @@ struct RequestResponseManagement {
             }
             
             return (requestCount, responseCount);
+        }
+    }
+
+    class ActiveUnansweredIncomingRequestsCounter: RequestsAndResponsesCounter {
+        override func calculate() -> (requestCount: Int?, responseCount: Int?) {
+            var requestCount: Int? = nil;
+            
+            var requests = requestProvider.count();
+            
+            if (requests != nil) {
+                for (var reqIndex: Int = 0; reqIndex < requests; reqIndex++) {
+                    var requestId = requestProvider.getObjectId(reqIndex);
+                    
+                    var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
+                    
+                    var responses = responseProvider.count();
+                    if (responses == 0) {
+                        requestCount = requestCount != nil ? requestCount! + 1 : 1;
+                    }
+                }
+            }
+            
+            return (requestCount, nil);
         }
     }
     

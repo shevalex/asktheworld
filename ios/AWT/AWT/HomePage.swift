@@ -20,6 +20,7 @@ class HomePage: UIViewController {
     var updateListener: Backend.CacheChangeEventObserver!;
     
     private var outgoingRequestCounter: GenericObjectCounter!;
+    private var incomingRequestCounter: GenericObjectCounter!;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,10 +32,17 @@ class HomePage: UIViewController {
         }
         
         RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), selectionObserver);
+
+        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestObjectProvider(), selectionObserver);
         
-        outgoingRequestCounter = RequestResponseManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
+        outgoingRequestCounter = RequestResponseManagement.ActiveOutgoingRequestsAndResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
         outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
             self.numOfOutgoingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), responses, requests);
+        });
+
+        incomingRequestCounter = RequestResponseManagement.ActiveUnansweredIncomingRequestsCounter(requestProvider: RequestResponseManagement.IncomingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.OutgoingResponseProviderFactory(responseStatus: nil));
+        incomingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
+            self.numOfIncomingRequestLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d inquiries required your attention", comment: "Home page - num of unanswered inquiries"), responses);
         });
 
         
