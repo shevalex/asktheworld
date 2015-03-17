@@ -600,7 +600,11 @@ public struct Backend {
             self.cache.markOutgoingResponseIdsInUpdate(requestId);
             
             var action:()->Void = {() in
-                self.cache.setOutgoingResponseIds(requestId, responseIds: ["\(requestId)-response100"]);
+                if (requestId == "req101" || requestId == "req103") {
+                    self.cache.setOutgoingResponseIds(requestId, responseIds: ["\(requestId)-response100"]);
+                } else {
+                    self.cache.setOutgoingResponseIds(requestId, responseIds: []);
+                }
             };
             
             DelayedNotifier(action).schedule(3);

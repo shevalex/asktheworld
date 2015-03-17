@@ -353,7 +353,7 @@ struct RequestResponseManagement {
     
     
     
-    class RequestsAndResponsesCounter: GenericObjectCounter {
+    class AbstractRequestsAndResponsesCounter: GenericObjectCounter {
         private var requestProvider: GenericObjectProvider!;
         private var responseProviderFactory: ObjectProviderFactory!;
 
@@ -378,6 +378,7 @@ struct RequestResponseManagement {
             self.requestUpdateObserver = {(finished: Bool) in
                 if (finished) {
                     self.requestCount = requestProvider.count();
+                    
                     for (var requestIndex = 0; requestIndex < self.requestCount; requestIndex++) {
                         var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex));
                         
@@ -448,7 +449,7 @@ struct RequestResponseManagement {
     }
     
     
-    class ActiveOutgoingRequestsAndResponsesCounter: RequestsAndResponsesCounter {
+    class ActiveOutgoingRequestsAndResponsesCounter: AbstractRequestsAndResponsesCounter {
         override func calculate() -> (requestCount: Int?, responseCount: Int?) {
             var requestCount: Int? = nil;
             var responseCount: Int? = nil;
@@ -473,18 +474,17 @@ struct RequestResponseManagement {
         }
     }
 
-    class ActiveUnansweredIncomingRequestsCounter: RequestsAndResponsesCounter {
+    class ActiveUnansweredIncomingRequestsCounter: AbstractRequestsAndResponsesCounter {
         override func calculate() -> (requestCount: Int?, responseCount: Int?) {
             var requestCount: Int? = nil;
-            
+
             var requests = requestProvider.count();
-            
+
             if (requests != nil) {
                 for (var reqIndex: Int = 0; reqIndex < requests; reqIndex++) {
                     var requestId = requestProvider.getObjectId(reqIndex);
                     
                     var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
-                    
                     var responses = responseProvider.count();
                     if (responses == 0) {
                         requestCount = requestCount != nil ? requestCount! + 1 : 1;

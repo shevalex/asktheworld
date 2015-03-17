@@ -42,7 +42,7 @@ class HomePage: UIViewController {
 
         incomingRequestCounter = RequestResponseManagement.ActiveUnansweredIncomingRequestsCounter(requestProvider: RequestResponseManagement.IncomingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.OutgoingResponseProviderFactory(responseStatus: nil));
         incomingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
-            self.numOfIncomingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d inquiries required your attention", comment: "Home page - num of unanswered inquiries"), responses);
+            self.numOfIncomingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d inquiries required your attention", comment: "Home page - num of unanswered inquiries"), requests);
         });
 
         
@@ -69,15 +69,19 @@ class HomePage: UIViewController {
 
     override func viewWillAppear(animated: Bool) {
         Backend.getInstance().addCacheChangeListener(updateListener);
+
         outgoingRequestsTableView.reloadData();
-        
+        incomingRequestsTableView.reloadData();
+
         outgoingRequestCounter.start();
+        incomingRequestCounter.start();
     }
     
     override func viewWillDisappear(animated: Bool) {
         Backend.getInstance().removeCacheChangeListener(updateListener);
         
         outgoingRequestCounter.stop();
+        incomingRequestCounter.stop();
     }
 }
 
