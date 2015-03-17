@@ -33,7 +33,7 @@ class HomePage: UIViewController {
         
         RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), selectionObserver);
 
-        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestObjectProvider(), selectionObserver);
+        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestWithResponsesObjectProvider(), selectionObserver);
         
         outgoingRequestCounter = RequestResponseManagement.ActiveOutgoingRequestsAndResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
         outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
