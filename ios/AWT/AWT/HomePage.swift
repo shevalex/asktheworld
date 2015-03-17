@@ -10,9 +10,10 @@ import UIKit
 
 class HomePage: UIViewController {
 
-    @IBOutlet weak var requestTableView: UITableView!
-    @IBOutlet weak var responseTableView: UITableView!
-    @IBOutlet weak var numOfRequestsLabel: UILabel!
+    @IBOutlet weak var outgoingRequestsTableView: UITableView!
+    @IBOutlet weak var incomingRequestsTableView: UITableView!
+    @IBOutlet weak var numOfOutgoingRequestsLabel: UILabel!
+    @IBOutlet weak var numOfIncomingRequestLabel: UILabel!
     
     var requestIdtoSend: String!;
     
@@ -29,11 +30,11 @@ class HomePage: UIViewController {
             self.performSegueWithIdentifier("showRequestDetails", sender: self);
         }
         
-        RequestResponseManagement.attachOutgoingRequestObjectProvider(requestTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), selectionObserver);
+        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), selectionObserver);
         
         outgoingRequestCounter = RequestResponseManagement.ActiveRequestsAndResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
         outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
-            self.numOfRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), responses, requests);
+            self.numOfOutgoingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), responses, requests);
         });
 
         
@@ -60,7 +61,7 @@ class HomePage: UIViewController {
 
     override func viewWillAppear(animated: Bool) {
         Backend.getInstance().addCacheChangeListener(updateListener);
-        requestTableView.reloadData();
+        outgoingRequestsTableView.reloadData();
         
         outgoingRequestCounter.start();
     }
