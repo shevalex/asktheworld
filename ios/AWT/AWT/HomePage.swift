@@ -13,7 +13,7 @@ class HomePage: UIViewController {
     @IBOutlet weak var outgoingRequestsTableView: UITableView!
     @IBOutlet weak var incomingRequestsTableView: UITableView!
     @IBOutlet weak var numOfOutgoingRequestsLabel: UILabel!
-    @IBOutlet weak var numOfIncomingRequestLabel: UILabel!
+    @IBOutlet weak var numOfIncomingRequestsLabel: UILabel!
     
     var requestIdtoSend: String!;
     
@@ -42,7 +42,7 @@ class HomePage: UIViewController {
 
         incomingRequestCounter = RequestResponseManagement.ActiveUnansweredIncomingRequestsCounter(requestProvider: RequestResponseManagement.IncomingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.OutgoingResponseProviderFactory(responseStatus: nil));
         incomingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
-            self.numOfIncomingRequestLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d inquiries required your attention", comment: "Home page - num of unanswered inquiries"), responses);
+            self.numOfIncomingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d inquiries required your attention", comment: "Home page - num of unanswered inquiries"), responses);
         });
 
         

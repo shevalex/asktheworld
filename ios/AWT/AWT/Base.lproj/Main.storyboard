@@ -175,7 +175,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="incomingRequestsTableView" destination="5vk-RG-jYM" id="IQo-IX-81F"/>
-                        <outlet property="numOfIncomingRequestLabel" destination="BIR-Aa-R5h" id="wCt-bc-gGE"/>
+                        <outlet property="numOfIncomingRequestsLabel" destination="BIR-Aa-R5h" id="06U-xv-a9a"/>
                         <outlet property="numOfOutgoingRequestsLabel" destination="Kga-N5-kgC" id="KuF-k8-RW7"/>
                         <outlet property="outgoingRequestsTableView" destination="Udk-uq-4iq" id="Huc-WD-lL4"/>
                         <segue destination="lJD-el-UlL" kind="show" identifier="showRequestDetails" id="7xE-kX-cnr"/>
