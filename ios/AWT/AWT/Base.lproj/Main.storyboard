@@ -264,7 +264,7 @@
         <!--Inquiry Details-->
         <scene sceneID="mZe-IY-S9g">
             <objects>
-                <viewController id="x7G-gD-Qx9" sceneMemberID="viewController">
+                <viewController id="x7G-gD-Qx9" customClass="InquiryDetailsPage" customModule="AWT" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MYq-8G-SeD"/>
                         <viewControllerLayoutGuide type="bottom" id="odI-pU-u9L"/>
