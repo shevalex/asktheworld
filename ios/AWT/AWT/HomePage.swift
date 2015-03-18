@@ -32,7 +32,7 @@ class HomePage: UIViewController {
         }
         
         var incomingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
-            
+            self.performSegueWithIdentifier("showInquiryDetails", sender: self)
         }
         
         RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), outgoingRequestSelectionObserver);
