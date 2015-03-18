@@ -26,14 +26,18 @@ class HomePage: UIViewController {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true;
 
-        var selectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+        var outgoingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
             self.requestIdtoSend = id;
             self.performSegueWithIdentifier("showRequestDetails", sender: self);
         }
         
-        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), selectionObserver);
+        var incomingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+            
+        }
+        
+        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), outgoingRequestSelectionObserver);
 
-        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestWithResponsesObjectProvider(), selectionObserver);
+        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestWithResponsesObjectProvider(), incomingRequestSelectionObserver);
         
         outgoingRequestCounter = RequestResponseManagement.ActiveOutgoingRequestsAndResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
         outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in
