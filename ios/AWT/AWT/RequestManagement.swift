@@ -101,19 +101,26 @@ struct RequestResponseManagement {
     
     class OutgoingRequestsDataModel: AbstractUIObjectDataModel {
         override func renderTableCell(cell: UITableViewCell, id: String) {
-            cell.backgroundColor = AtwUiUtils.getColor("OUTGOING_REQUEST_BACKGROUND_COLOR");
+            let tableCell: OutgoingRequestTableCell = cell as OutgoingRequestTableCell;
+
+            tableCell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
             
             var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
             if (request != nil) {
-                cell.textLabel!.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
-                cell.detailTextLabel!.text = request.text;
-                cell.detailTextLabel!.textColor = AtwUiUtils.getColor("OUTGOING_REQUEST_TEXT_COLOR");
-                cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
-                //        tableCell.imageView?.image = UIImage(named: "outgoing_arrow.png");
-                //        tableCell.selectionStyle = UITableViewCellSelectionStyle.Gray;
+                tableCell.targetLabel.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
+                tableCell.requestTextLabel.text = request.text;
+                
+                tableCell.dateLabel.text = "3/17/15";
+                tableCell.timeLabel.text = "14:55";
+
+                tableCell.counterLabel.text = "18";
+                
             } else {
-                cell.textLabel!.text = "";
-                cell.detailTextLabel!.text = "...";
+                tableCell.targetLabel.text = "";
+                tableCell.dateLabel.text = "";
+                tableCell.timeLabel.text = "";
+                tableCell.counterLabel.text = "";
+                tableCell.requestTextLabel.text = "...";
             }
         }
     }

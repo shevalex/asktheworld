@@ -9,7 +9,13 @@
 import UIKit
 
 class OutgoingRequestTableCell: UITableViewCell {
-
+    
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var targetLabel: UILabel!
+    @IBOutlet weak var requestTextLabel: UILabel!
+    @IBOutlet weak var counterLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
