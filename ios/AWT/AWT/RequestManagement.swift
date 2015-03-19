@@ -115,7 +115,13 @@ struct RequestResponseManagement {
                 dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle;
                 tableCell.timeLabel.text = dateFormatter.stringFromDate(dateTime);
 
-                tableCell.counterLabel.text = "18";
+                var numOfUnreadResponses: Int? = Backend.getInstance().getIncomingResponseIds(id, responseStatus: Backend.ResponseObject.STATUS_UNREAD)?.count;
+                
+                if (numOfUnreadResponses == nil) {
+                    tableCell.counterLabel.text = "...";
+                } else {
+                    tableCell.counterLabel.text = "\(numOfUnreadResponses!)";
+                }
                 
             } else {
                 tableCell.targetLabel.text = "";
@@ -283,6 +289,41 @@ struct RequestResponseManagement {
         }
     }
     
+    class OutgoingRequestWithResponsesObjectProvider: OutgoingRequestObjectProvider {
+        private let responseProviderFactory: AbstractResponseProviderFactory;
+        
+        override init() {
+            responseProviderFactory = IncomingResponseProviderFactory(responseStatus: nil);
+        }
+        
+        override func getObjectIds() -> [String]? {
+            let requestIds: [String]? = Backend.getInstance().getOutgoingRequestIds();
+            if (requestIds == nil) {
+                return nil;
+            }
+            
+            
+            var matchingRequestIds: [String] = [];
+            for (index, requestId) in enumerate(requestIds!) {
+                var responseProvider = responseProviderFactory.getObjectProvider(requestId);
+                var responseCount = responseProvider.count();
+                if (responseCount == nil) {
+                    return nil;
+                } else if (responseCount > 0) {
+                    matchingRequestIds.append(requestId);
+                }
+            }
+            
+            return matchingRequestIds;
+        }
+        
+        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
+            return event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED
+                || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED;
+        }
+    }
+    
+    
     class IncomingResponseObjectProvider: AbstractObjectProvider {
         private var requestId: String;
         private var responseStatus: String?;
@@ -337,7 +378,7 @@ struct RequestResponseManagement {
         }
     }
 
-    class IncomingRequestWithResponsesObjectProvider: AbstractObjectProvider {
+    class IncomingRequestWithoutResponsesObjectProvider: IncomingRequestObjectProvider {
         private let responseProviderFactory: AbstractResponseProviderFactory;
         
         override init() {
@@ -368,14 +409,6 @@ struct RequestResponseManagement {
         override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
             return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED
                    || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
-        }
-        
-        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
-            if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
-                return nil;
-            }
-            
-            return event.requestId;
         }
     }
     

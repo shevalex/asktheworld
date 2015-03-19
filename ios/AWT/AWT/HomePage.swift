@@ -35,9 +35,9 @@ class HomePage: UIViewController {
             self.performSegueWithIdentifier("showInquiryDetails", sender: self)
         }
         
-        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), outgoingRequestSelectionObserver);
+        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestWithResponsesObjectProvider(), outgoingRequestSelectionObserver);
 
-        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestWithResponsesObjectProvider(), incomingRequestSelectionObserver);
+        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestWithoutResponsesObjectProvider(), incomingRequestSelectionObserver);
         
         outgoingRequestCounter = RequestResponseManagement.ActiveOutgoingRequestsAndResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
         outgoingRequestCounter.setChangeObserver({(requests: Int!, responses: Int!) in

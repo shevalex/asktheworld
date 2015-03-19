@@ -177,11 +177,11 @@
 			isa = PBXGroup;
 			children = (
 				F78FC8821AB91F9F00B2336E /* OutgoingRequestTableCell.swift */,
+				82D128891ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift */,
 				F78BC7CF1A9FEA65009281EF /* UIUtils.swift */,
 				82A4014E1AA158CA00E26253 /* Backend.swift */,
 				8236B5861AA6C16200EE3258 /* DataChooser.swift */,
 				820418361AAAAF63003429CC /* RequestManagement.swift */,
-				82D128891ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift */,
 			);
 			name = utils;
 			sourceTree = "<group>";
