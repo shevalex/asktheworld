@@ -103,8 +103,6 @@ struct RequestResponseManagement {
         override func renderTableCell(cell: UITableViewCell, id: String) {
             let tableCell: OutgoingRequestTableCell = cell as OutgoingRequestTableCell;
 
-            tableCell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
-            
             var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
             if (request != nil) {
                 tableCell.targetLabel.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
