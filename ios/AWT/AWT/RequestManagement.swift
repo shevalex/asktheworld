@@ -110,8 +110,15 @@ struct RequestResponseManagement {
                 tableCell.targetLabel.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
                 tableCell.requestTextLabel.text = request.text;
                 
-                tableCell.dateLabel.text = "3/17/15";
-                tableCell.timeLabel.text = "14:55";
+                let dateTime = NSDate(timeIntervalSince1970: request.time);
+                let dateFormatter = NSDateFormatter();
+                dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle;
+                dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle;
+                tableCell.dateLabel.text = dateFormatter.stringFromDate(dateTime);
+
+                dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle;
+                dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle;
+                tableCell.timeLabel.text = dateFormatter.stringFromDate(dateTime);
 
                 tableCell.counterLabel.text = "18";
                 
