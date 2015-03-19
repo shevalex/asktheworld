@@ -173,13 +173,13 @@ public struct Configuration {
     
     static func toExpertiseString(expertiseCategory: Item) -> String {
         if (expertiseCategory.data === EXPERTISES[0].data) {
-            return NSLocalizedString("General", comment: "Expertise - general");
+            return NSLocalizedString("general", comment: "Expertise category - general");
         } else if (expertiseCategory.data === EXPERTISES[1].data) {
-            return NSLocalizedString("Law", comment: "Expertise - law");
+            return NSLocalizedString("waw", comment: "Expertise category - law");
         } else if (expertiseCategory.data === EXPERTISES[2].data) {
-            return NSLocalizedString("Medicine", comment: "Expertise - medicine");
+            return NSLocalizedString("medicine", comment: "Expertise category - medicine");
         } else if (expertiseCategory.data === EXPERTISES[3].data) {
-            return NSLocalizedString("Construction", comment: "Expertise - construction");
+            return NSLocalizedString("construction", comment: "Expertise category - construction");
         }
         
         println("Unexpected expertise category \(expertiseCategory.data)");
@@ -557,6 +557,7 @@ public struct Backend {
                 request!.text = "Request \(requestId)";
                 request!.responseAgeGroup = Configuration.AGE_CATEGORY_PREFERENCE[2];
                 request!.responseGender = Configuration.GENDER_PREFERENCE[0];
+                request!.expertiseCategory = Configuration.EXPERTISES[2];
                 request!.time = NSDate().timeIntervalSince1970;
 
                 self.cache.setRequest(requestId, request: request!);
