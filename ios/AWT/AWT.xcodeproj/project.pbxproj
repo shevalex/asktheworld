@@ -13,6 +13,7 @@
 		8236B5871AA6C16200EE3258 /* DataChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236B5861AA6C16200EE3258 /* DataChooser.swift */; };
 		82A4014F1AA158CA00E26253 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A4014E1AA158CA00E26253 /* Backend.swift */; };
 		82B94D191AB0F1B20008960E /* styles.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82B94D181AB0F1B20008960E /* styles.plist */; };
+		82D1288A1ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D128891ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift */; };
 		F719A2041AA8A60200725A5A /* ContactInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719A2031AA8A60200725A5A /* ContactInfoPage.swift */; };
 		F73D302A1AA771F800A5317A /* ProfilePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73D30291AA771F800A5317A /* ProfilePage.swift */; };
 		F73D302C1AA7F01E00A5317A /* RequestPreferencesPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */; };
@@ -53,6 +54,7 @@
 		8236B5861AA6C16200EE3258 /* DataChooser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataChooser.swift; sourceTree = "<group>"; };
 		82A4014E1AA158CA00E26253 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
 		82B94D181AB0F1B20008960E /* styles.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = styles.plist; sourceTree = "<group>"; };
+		82D128891ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncomingRequestTableCell.swift; sourceTree = "<group>"; };
 		F719A2031AA8A60200725A5A /* ContactInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactInfoPage.swift; sourceTree = "<group>"; };
 		F73D30291AA771F800A5317A /* ProfilePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePage.swift; sourceTree = "<group>"; };
 		F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestPreferencesPage.swift; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 				82A4014E1AA158CA00E26253 /* Backend.swift */,
 				8236B5861AA6C16200EE3258 /* DataChooser.swift */,
 				820418361AAAAF63003429CC /* RequestManagement.swift */,
+				82D128891ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift */,
 			);
 			name = utils;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 				8236B5871AA6C16200EE3258 /* DataChooser.swift in Sources */,
 				F73D302C1AA7F01E00A5317A /* RequestPreferencesPage.swift in Sources */,
 				F745FE5A1A9E2882006E7698 /* HomePage.swift in Sources */,
+				82D1288A1ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift in Sources */,
 				82A4014F1AA158CA00E26253 /* Backend.swift in Sources */,
 				F771DCA91AA6347F00717996 /* UserSettingsPage.swift in Sources */,
 				F78FC8831AB91F9F00B2336E /* OutgoingRequestTableCell.swift in Sources */,
@@ -430,9 +434,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = AWT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -440,6 +446,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = AWT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

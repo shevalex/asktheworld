@@ -76,9 +76,6 @@ struct RequestResponseManagement {
         
         func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
             var tableCell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("cell") as? UITableViewCell;
-            if (tableCell == nil) {
-                tableCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "cell");
-            }
             
             renderTableCell(tableCell, id: getObjectId(indexPath)!);
             
@@ -132,17 +129,29 @@ struct RequestResponseManagement {
 
     class IncomingRequestsDataModel: AbstractUIObjectDataModel {
         override func renderTableCell(cell: UITableViewCell, id: String) {
-            cell.backgroundColor = AtwUiUtils.getColor("INCOMING_REQUEST_BACKGROUND_COLOR");
+            
+            let tableCell: IncomingRequestTableCell = cell as IncomingRequestTableCell;
             
             var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
             if (request != nil) {
-                cell.textLabel!.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
-                cell.detailTextLabel!.text = request.text;
-                cell.detailTextLabel!.textColor = AtwUiUtils.getColor("INCOMING_REQUEST_TEXT_COLOR");
-                cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
+                tableCell.sourceLabel.text = String.localizedStringWithFormat(NSLocalizedString("The World asked you a %@ question", comment: "Incoming inquiry source"), Configuration.toExpertiseString(request.expertiseCategory));
+                tableCell.requestTextLabel.text = request.text;
+                
+                let dateTime = NSDate(timeIntervalSince1970: request.time);
+                let dateFormatter = NSDateFormatter();
+                dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle;
+                dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle;
+                tableCell.dateLabel.text = dateFormatter.stringFromDate(dateTime);
+                
+                dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle;
+                dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle;
+                tableCell.timeLabel.text = dateFormatter.stringFromDate(dateTime);
+                
             } else {
-                cell.textLabel!.text = "";
-                cell.detailTextLabel!.text = "...";
+                tableCell.sourceLabel.text = "";
+                tableCell.dateLabel.text = "";
+                tableCell.timeLabel.text = "";
+                tableCell.requestTextLabel.text = "...";
             }
         }
     }
@@ -568,8 +577,6 @@ struct RequestResponseManagement {
     
     
     private static func attachRequestObjectProvider(tableView: UITableView, dataModel: AbstractUIObjectDataModel, requestObjectProvider: GenericObjectProvider, selectionObserver: ObjectSelectionObserver? = nil) {
-        
-        //        tableView.rowHeight = CGFloat(30);
         
         var delegate: AnyObject? = mapping.objectForKey(tableView);
         if (delegate != nil) {
