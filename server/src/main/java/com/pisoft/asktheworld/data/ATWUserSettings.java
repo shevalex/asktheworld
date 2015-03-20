@@ -23,6 +23,9 @@ public class ATWUserSettings implements Serializable {
 	private int id;
 	
 	@Column
+	private String default_gender_preference;
+	//”: [“teens”, “adult”, “senior”],
+	@Column
 	private int	default_response_quantity = 5;
 	@Column
 	private int default_response_wait_time = 1; //hour  
@@ -30,13 +33,19 @@ public class ATWUserSettings implements Serializable {
 	String default_response_age_group_preference;
 	//”: [“teens”, “adult”, “senior”],  
 	@Column
-	private int inquary_quantity_per_day = 5;
+	private int inquiry_quantity_per_day = 5;
 	@Column
-	private String inquary_gender_preference = "any";
+	private String inquiry_gender_preference = "any";
 	@Column
-	private String inquary_age_group_preference;
+	private String inquiry_age_group_preference;
 	//[“teens”, “adult”, “senior”]
 
+	public String getDefault_gender_preference() {
+		return default_gender_preference;
+	}
+	public void setDefault_gender_preference(String default_gender_preference) {
+		this.default_gender_preference = default_gender_preference;
+	}
 	public int getDefault_response_quantity() {
 		return default_response_quantity;
 	}
@@ -56,23 +65,23 @@ public class ATWUserSettings implements Serializable {
 			String default_response_age_group_preference) {
 		this.default_response_age_group_preference = default_response_age_group_preference;
 	}
-	public int getInquary_quantity_per_day() {
-		return inquary_quantity_per_day;
+	public int getInquiry_quantity_per_day() {
+		return inquiry_quantity_per_day;
 	}
-	public void setInquary_quantity_per_day(int inquary_quantity_per_day) {
-		this.inquary_quantity_per_day = inquary_quantity_per_day;
+	public void setInquiry_quantity_per_day(int inquiry_quantity_per_day) {
+		this.inquiry_quantity_per_day = inquiry_quantity_per_day;
 	}
-	public String getInquary_gender_preference() {
-		return inquary_gender_preference;
+	public String getInquiry_gender_preference() {
+		return inquiry_gender_preference;
 	}
-	public void setInquary_gender_preference(String inquary_gender_preference) {
-		this.inquary_gender_preference = inquary_gender_preference;
+	public void setInquiry_gender_preference(String inquiry_gender_preference) {
+		this.inquiry_gender_preference = inquiry_gender_preference;
 	}
-	public String getInquary_age_group_preference() {
-		return inquary_age_group_preference;
+	public String getInquiry_age_group_preference() {
+		return inquiry_age_group_preference;
 	}
-	public void setInquary_age_group_preference(String inquary_age_group_preference) {
-		this.inquary_age_group_preference = inquary_age_group_preference;
+	public void setInquiry_age_group_preference(String inquiry_age_group_preference) {
+		this.inquiry_age_group_preference = inquiry_age_group_preference;
 	}
 	public int getId() {
 		return id;
@@ -80,17 +89,20 @@ public class ATWUserSettings implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}	
+	
 	public ATWUserSettings copy() {
 		ATWUserSettings userSettings = new ATWUserSettings();
 		
 		//check fields
-		if ( default_response_quantity > 0 && default_response_quantity < 1000) userSettings.setDefault_response_quantity(default_response_quantity);
-		if (default_response_wait_time > 0 ) userSettings.setDefault_response_wait_time(default_response_wait_time);
+		if ( default_response_quantity >= -1 && default_response_quantity < 1000) userSettings.setDefault_response_quantity(default_response_quantity);
+		if (default_response_wait_time >= -1 ) userSettings.setDefault_response_wait_time(default_response_wait_time);
 		userSettings.setDefault_response_age_group_preference(default_response_age_group_preference);
+		userSettings.setDefault_gender_preference(default_gender_preference);
 		//”: [“teens”, “adult”, “senior”],  
-		if (inquary_quantity_per_day > 0 ) userSettings.setInquary_quantity_per_day(inquary_quantity_per_day);
-		userSettings.setInquary_gender_preference(inquary_gender_preference);
-		userSettings.setInquary_age_group_preference(inquary_age_group_preference);	
+		if (inquiry_quantity_per_day >= -1 ) userSettings.setInquiry_quantity_per_day(inquiry_quantity_per_day);
+		userSettings.setInquiry_gender_preference(inquiry_gender_preference);
+		userSettings.setInquiry_age_group_preference(inquiry_age_group_preference);	
+		
 		//[“teens”, “adult”, “senior”]
 		
 		return userSettings;
