@@ -153,6 +153,9 @@
                     </view>
                     <navigationItem key="navigationItem" title="Active Requests" id="PVn-ZY-8HY"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <segue destination="lJD-el-UlL" kind="show" identifier="showRequestDetailsFromActive" id="kq4-hL-iH6"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H3d-kh-HAa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1823,8 +1826,9 @@
         <image name="contact_info.png" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="c75-sv-RRF"/>
         <segue reference="mv9-mT-7H4"/>
+        <segue reference="c75-sv-RRF"/>
         <segue reference="tk7-4O-lCv"/>
+        <segue reference="kq4-hL-iH6"/>
     </inferredMetricsTieBreakers>
 </document>
