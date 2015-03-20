@@ -80,8 +80,8 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PWY-HX-Utc">
-                                                    <rect key="frame" x="8" y="8" width="55" height="13"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PWY-HX-Utc">
+                                                    <rect key="frame" x="5" y="8" width="55" height="13"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="55" id="DTQ-8Z-l81"/>
                                                         <constraint firstAttribute="height" constant="13" id="VYl-gz-irg"/>
@@ -90,8 +90,8 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fgO-s8-Hh7">
-                                                    <rect key="frame" x="8" y="21" width="55" height="13"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fgO-s8-Hh7">
+                                                    <rect key="frame" x="5" y="21" width="55" height="13"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="13" id="6pB-F0-yJm"/>
                                                         <constraint firstAttribute="width" constant="55" id="cLE-mx-9KK"/>
@@ -206,8 +206,8 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sgy-1y-fCe">
-                                                            <rect key="frame" x="8" y="8" width="55" height="13"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sgy-1y-fCe">
+                                                            <rect key="frame" x="5" y="8" width="55" height="13"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="13" id="3tT-UB-mgW"/>
                                                                 <constraint firstAttribute="width" constant="55" id="OrF-J8-wBs"/>
@@ -216,8 +216,8 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V4d-Oj-gbL">
-                                                            <rect key="frame" x="8" y="21" width="55" height="13"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V4d-Oj-gbL">
+                                                            <rect key="frame" x="5" y="21" width="55" height="13"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="13" id="qkh-an-Sie"/>
                                                                 <constraint firstAttribute="width" constant="55" id="sDL-bN-ixz"/>
