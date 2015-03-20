@@ -1,0 +1,3 @@
+web/i18n/* filter=encrypt diff=encrypt
+[merge]
+    renormalize=true
