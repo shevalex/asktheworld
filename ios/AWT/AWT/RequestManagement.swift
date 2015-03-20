@@ -11,7 +11,7 @@ import UIKit;
 
 
 typealias ObjectUpdateObserver = (finished: Bool) -> Void;
-typealias ObjectCounterObserver = (requests: Int!, responses: Int!) -> Void;
+typealias ObjectCounterObserver = (requests: Int?, responses: Int?) -> Void;
 
 protocol GenericObjectProvider {
     func getObjectId(index: Int!) -> String?;
@@ -21,11 +21,11 @@ protocol GenericObjectProvider {
 }
 
 protocol GenericObjectCounter {
-    func getNumberOfRequests() -> Int;
-    func getNumberOfResponses() -> Int;
+    func getNumberOfRequests() -> Int?;
+    func getNumberOfResponses() -> Int?;
     func start();
     func stop();
-    func setChangeObserver(observer: ObjectCounterObserver!);
+    func setChangeObserver(observer: ObjectCounterObserver);
 }
 
 protocol ObjectProviderFactory {
@@ -198,8 +198,11 @@ struct RequestResponseManagement {
             
             cacheChangeListener = {(event) in
                 if (self.isObjectIdsChangeEvent(event)) {
-                    self.updateObserver?(finished: true);
-                    observer(index: -1);
+                    var objectIds: [String]? = self.getObjectIds();
+                    if (objectIds != nil) {
+                        self.updateObserver?(finished: true);
+                        observer(index: -1);
+                    }
                 } else {
                     var eventObjectId: String? = self.getObjectIdForChangeEvent(event);
                     if (eventObjectId != nil) {
@@ -302,13 +305,13 @@ struct RequestResponseManagement {
                 return nil;
             }
             
-            
             var matchingRequestIds: [String] = [];
             for (index, requestId) in enumerate(requestIds!) {
                 var responseProvider = responseProviderFactory.getObjectProvider(requestId);
                 var responseCount = responseProvider.count();
+
                 if (responseCount == nil) {
-                    return nil;
+                    //return nil;
                 } else if (responseCount > 0) {
                     matchingRequestIds.append(requestId);
                 }
@@ -397,7 +400,7 @@ struct RequestResponseManagement {
                 var responseProvider = responseProviderFactory.getObjectProvider(requestId);
                 var responseCount = responseProvider.count();
                 if (responseCount == nil) {
-                    return nil;
+                    //return nil;
                 } else if (responseCount == 0) {
                     matchingRequestIds.append(requestId);
                 }
@@ -452,7 +455,7 @@ struct RequestResponseManagement {
     
     
     
-    class AbstractRequestsAndResponsesCounter: GenericObjectCounter {
+    class RequestsResponsesCounter: GenericObjectCounter {
         private var requestProvider: GenericObjectProvider!;
         private var responseProviderFactory: ObjectProviderFactory!;
 
@@ -461,8 +464,8 @@ struct RequestResponseManagement {
         
         private var counterChangeObserver: ObjectCounterObserver?;
         
-        private var requestCount: Int! = 0;
-        private var responseCount: Int! = 0;
+        private var requestCount: Int?;
+        private var responseCount: Int?;
         
         init(requestProvider: GenericObjectProvider!, responseProviderFactory: ObjectProviderFactory!) {
             self.requestProvider = requestProvider;
@@ -492,11 +495,11 @@ struct RequestResponseManagement {
             }
         }
         
-        func getNumberOfRequests() -> Int {
+        func getNumberOfRequests() -> Int? {
             return requestCount;
         }
         
-        func getNumberOfResponses() -> Int {
+        func getNumberOfResponses() -> Int? {
             return responseCount;
         }
         
@@ -520,7 +523,7 @@ struct RequestResponseManagement {
             }
         }
         
-        func setChangeObserver(observer: ObjectCounterObserver!) {
+        func setChangeObserver(observer: ObjectCounterObserver) {
             counterChangeObserver = observer;
         }
         
@@ -530,40 +533,20 @@ struct RequestResponseManagement {
         
         
         func calculate() -> (requestCount: Int?, responseCount: Int?) {
-            return (nil, nil);
-        }
-        
-        private func recalculate() {
-            self.requestCount = 0;
-            self.responseCount = 0;
-
-            var result: (requestCount: Int?, responseCount: Int?) = calculate();
-
-            if (result.requestCount != nil || result.responseCount != nil) {
-                self.requestCount = result.requestCount;
-                self.responseCount = result.responseCount;
-                counterChangeObserver?(requests: self.requestCount, responses: self.responseCount);
-            }
-        }
-    }
-    
-    
-    class ActiveOutgoingRequestsAndResponsesCounter: AbstractRequestsAndResponsesCounter {
-        override func calculate() -> (requestCount: Int?, responseCount: Int?) {
             var requestCount: Int? = nil;
             var responseCount: Int? = nil;
             
             var requests = requestProvider.count();
             
             if (requests != nil) {
+                requestCount = requests;
+                
                 for (var reqIndex: Int = 0; reqIndex < requests; reqIndex++) {
                     var requestId = requestProvider.getObjectId(reqIndex);
                     
                     var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
-                    
                     var responses = responseProvider.count();
-                    if (responses > 0) {
-                        requestCount = requestCount != nil ? requestCount! + 1 : 1;
+                    if (responses != nil) {
                         responseCount = responseCount != nil ? responseCount! + responses! : responses!;
                     }
                 }
@@ -571,29 +554,68 @@ struct RequestResponseManagement {
             
             return (requestCount, responseCount);
         }
-    }
+        
+        private func recalculate() {
+            self.requestCount = nil;
+            self.responseCount = nil;
 
-    class ActiveUnansweredIncomingRequestsCounter: AbstractRequestsAndResponsesCounter {
-        override func calculate() -> (requestCount: Int?, responseCount: Int?) {
-            var requestCount: Int? = nil;
+            var result: (requestCount: Int?, responseCount: Int?) = calculate();
+            requestCount = result.requestCount;
+            responseCount = result.responseCount;
 
-            var requests = requestProvider.count();
-
-            if (requests != nil) {
-                for (var reqIndex: Int = 0; reqIndex < requests; reqIndex++) {
-                    var requestId = requestProvider.getObjectId(reqIndex);
-                    
-                    var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
-                    var responses = responseProvider.count();
-                    if (responses == 0) {
-                        requestCount = requestCount != nil ? requestCount! + 1 : 1;
-                    }
-                }
+            if (requestCount != nil || responseCount != nil) {
+                counterChangeObserver?(requests: requestCount, responses: responseCount);
             }
-            
-            return (requestCount, nil);
         }
     }
+    
+    
+//    class ActiveOutgoingRequestsAndResponsesCounter: AbstractRequestsAndResponsesCounter {
+//        override func calculate() -> (requestCount: Int?, responseCount: Int?) {
+//            var requestCount: Int? = nil;
+//            var responseCount: Int? = nil;
+//            
+//            var requests = requestProvider.count();
+//            
+//            if (requests != nil) {
+//                for (var reqIndex: Int = 0; reqIndex < requests; reqIndex++) {
+//                    var requestId = requestProvider.getObjectId(reqIndex);
+//                    
+//                    var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
+//                    
+//                    var responses = responseProvider.count();
+//                    if (responses > 0) {
+//                        requestCount = requestCount != nil ? requestCount! + 1 : 1;
+//                        responseCount = responseCount != nil ? responseCount! + responses! : responses!;
+//                    }
+//                }
+//            }
+//            
+//            return (requestCount, responseCount);
+//        }
+//    }
+//
+//    class ActiveUnansweredIncomingRequestsCounter: AbstractRequestsAndResponsesCounter {
+//        override func calculate() -> (requestCount: Int?, responseCount: Int?) {
+//            var requestCount: Int? = nil;
+//
+//            var requests = requestProvider.count();
+//
+//            if (requests != nil) {
+//                for (var reqIndex: Int = 0; reqIndex < requests; reqIndex++) {
+//                    var requestId = requestProvider.getObjectId(reqIndex);
+//                    
+//                    var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
+//                    var responses = responseProvider.count();
+//                    if (responses == 0) {
+//                        requestCount = requestCount != nil ? requestCount! + 1 : 1;
+//                    }
+//                }
+//            }
+//            
+//            return (requestCount, nil);
+//        }
+//    }
     
     
     
