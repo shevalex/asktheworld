@@ -32,5 +32,4 @@ public class UserSettingsController {
 		ATWUserSettings settings = db.getUserSettings(id);
 		return new ResponseEntity<ATWUserSettings>(settings, settings != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
-
 }
