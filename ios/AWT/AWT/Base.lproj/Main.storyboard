@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="55" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="R4E-ZW-F1s">
-                                <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                                <rect key="frame" x="0.0" y="101" width="320" height="470"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="cell" rowHeight="55" id="boQ-1j-1dJ" customClass="IncomingRequestTableCell" customModule="AWT" customModuleProvider="target">
@@ -83,13 +83,23 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fetching your inquiries..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k9y-eO-mFg">
+                                <rect key="frame" x="0.0" y="72" width="320" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="fjb-iT-kpG" firstAttribute="top" secondItem="R4E-ZW-F1s" secondAttribute="bottom" id="8Ml-yi-yoD"/>
+                            <constraint firstItem="fjb-iT-kpG" firstAttribute="top" secondItem="R4E-ZW-F1s" secondAttribute="bottom" constant="-3" id="8Ml-yi-yoD"/>
                             <constraint firstItem="R4E-ZW-F1s" firstAttribute="leading" secondItem="DOn-PF-H1f" secondAttribute="leadingMargin" constant="-16" id="CwY-Sd-CPF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="R4E-ZW-F1s" secondAttribute="trailing" constant="-16" id="Hay-y6-5u5"/>
-                            <constraint firstItem="R4E-ZW-F1s" firstAttribute="top" secondItem="dZe-Ak-Jhp" secondAttribute="bottom" id="xfe-OP-Nkc"/>
+                            <constraint firstItem="k9y-eO-mFg" firstAttribute="leading" secondItem="DOn-PF-H1f" secondAttribute="leadingMargin" constant="-16" id="Oj0-mS-MEm"/>
+                            <constraint firstItem="k9y-eO-mFg" firstAttribute="top" secondItem="dZe-Ak-Jhp" secondAttribute="bottom" constant="8" id="hlm-u3-i5t"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="k9y-eO-mFg" secondAttribute="trailing" constant="-16" id="r7I-Lb-BSy"/>
+                            <constraint firstItem="R4E-ZW-F1s" firstAttribute="top" secondItem="k9y-eO-mFg" secondAttribute="bottom" constant="8" id="wZ3-zA-JeG"/>
+                            <constraint firstItem="R4E-ZW-F1s" firstAttribute="top" secondItem="dZe-Ak-Jhp" secondAttribute="bottom" constant="37" id="xfe-OP-Nkc"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Active Inquiries" id="ue5-fm-pgj"/>
@@ -206,19 +216,19 @@
                                 </prototypes>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fetching your requests..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oYK-fI-5gx">
-                                <rect key="frame" x="16" y="72" width="288" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <rect key="frame" x="0.0" y="72" width="320" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="oYK-fI-5gx" firstAttribute="leading" secondItem="hKA-aL-8Jq" secondAttribute="leadingMargin" id="2sk-Oa-ExR"/>
+                            <constraint firstItem="oYK-fI-5gx" firstAttribute="leading" secondItem="hKA-aL-8Jq" secondAttribute="leadingMargin" constant="-16" id="2sk-Oa-ExR"/>
                             <constraint firstAttribute="trailingMargin" secondItem="pCu-HC-7vE" secondAttribute="trailing" constant="-16" id="HEC-0l-rRk"/>
                             <constraint firstItem="pCu-HC-7vE" firstAttribute="leading" secondItem="hKA-aL-8Jq" secondAttribute="leadingMargin" constant="-16" id="JqT-p5-Edr"/>
                             <constraint firstItem="JL7-ZN-K3n" firstAttribute="leading" secondItem="hKA-aL-8Jq" secondAttribute="leadingMargin" constant="-16" id="Kcf-EX-dTr"/>
-                            <constraint firstItem="oYK-fI-5gx" firstAttribute="trailing" secondItem="hKA-aL-8Jq" secondAttribute="trailingMargin" id="Pkf-HQ-kdN"/>
+                            <constraint firstItem="oYK-fI-5gx" firstAttribute="trailing" secondItem="hKA-aL-8Jq" secondAttribute="trailingMargin" constant="16" id="Pkf-HQ-kdN"/>
                             <constraint firstAttribute="trailingMargin" secondItem="JL7-ZN-K3n" secondAttribute="trailing" constant="-16" id="QaC-N2-ND9"/>
                             <constraint firstItem="pCu-HC-7vE" firstAttribute="top" secondItem="qI1-ul-JgW" secondAttribute="bottom" constant="37" id="gkc-0b-fdw"/>
                             <constraint firstItem="JL7-ZN-K3n" firstAttribute="top" secondItem="pCu-HC-7vE" secondAttribute="bottom" id="ktk-NZ-eAa"/>
@@ -1904,10 +1914,10 @@
         <image name="contact_info.png" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="mv9-mT-7H4"/>
+        <segue reference="Z0X-31-cgP"/>
         <segue reference="c75-sv-RRF"/>
-        <segue reference="amh-dw-tq7"/>
-        <segue reference="kq4-hL-iH6"/>
-        <segue reference="tk7-4O-lCv"/>
+        <segue reference="mv9-mT-7H4"/>
+        <segue reference="7xE-kX-cnr"/>
+        <segue reference="PsH-Jh-kRd"/>
     </inferredMetricsTieBreakers>
 </document>
