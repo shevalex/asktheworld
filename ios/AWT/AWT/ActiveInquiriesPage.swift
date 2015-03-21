@@ -44,7 +44,7 @@ class ActiveInquiriesPage: UIViewController {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "showInquiryDetails") {
-            let destView = segue.destinationViewController as RequestDetailsPage;
+            let destView = segue.destinationViewController as InquiryDetailsPage;
             destView.requestId = selectedRequestId;
         }
     }

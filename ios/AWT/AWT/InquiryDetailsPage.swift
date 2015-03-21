@@ -10,6 +10,8 @@ import UIKit
 
 class InquiryDetailsPage: UIViewController {
 
+    var requestId: String!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
