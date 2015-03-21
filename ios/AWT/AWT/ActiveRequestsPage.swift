@@ -9,11 +9,30 @@
 import UIKit
 
 class ActiveRequestsPage: UIViewController {
-
+    @IBOutlet weak var outgoingRequestsTableView: UITableView!
+    
+    var updateListener: Backend.CacheChangeEventObserver!;
+    var requestIdtoSend: String!;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        let outgoingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+            self.requestIdtoSend = id;
+            self.performSegueWithIdentifier("showRequestDetails", sender: self);
+        }
+        
+        
+        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), outgoingRequestSelectionObserver);
+        
+        
+        updateListener = { (event: Backend.CacheChangeEvent) in
+            if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_STARTED) {
+                AtwUiUtils.showSpinner(self.view, disableInput: false);
+            } else if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED) {
+                AtwUiUtils.hideSpinner();
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -21,15 +40,22 @@ class ActiveRequestsPage: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    
+    override func viewWillAppear(animated: Bool) {
+        Backend.getInstance().addCacheChangeListener(updateListener);
+        
+        outgoingRequestsTableView.reloadData();
     }
-    */
+    
+    override func viewWillDisappear(animated: Bool) {
+        Backend.getInstance().removeCacheChangeListener(updateListener);
+    }
+    
 
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if (segue.identifier == "showRequestDetails") {
+            let destView = segue.destinationViewController as RequestDetailsPage;
+            destView.requestId = requestIdtoSend;
+        }
+    }
 }

@@ -26,7 +26,7 @@ class HomePage: UIViewController {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true;
 
-        var outgoingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+        let outgoingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
             self.requestIdtoSend = id;
             self.performSegueWithIdentifier("showRequestDetails", sender: self);
         }
@@ -63,8 +63,8 @@ class HomePage: UIViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "showRequestDetails") {
-            let destView = segue.destinationViewController as RequestDetailsPage
-            destView.requestId = requestIdtoSend
+            let destView = segue.destinationViewController as RequestDetailsPage;
+            destView.requestId = requestIdtoSend;
         }
     }
 

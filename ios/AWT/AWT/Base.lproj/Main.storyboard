@@ -154,7 +154,8 @@
                     <navigationItem key="navigationItem" title="Active Requests" id="PVn-ZY-8HY"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <segue destination="lJD-el-UlL" kind="show" identifier="showRequestDetailsFromActive" id="kq4-hL-iH6"/>
+                        <outlet property="outgoingRequestsTableView" destination="pCu-HC-7vE" id="ELj-AY-mHG"/>
+                        <segue destination="lJD-el-UlL" kind="show" identifier="showRequestDetails" id="kq4-hL-iH6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H3d-kh-HAa" userLabel="First Responder" sceneMemberID="firstResponder"/>
