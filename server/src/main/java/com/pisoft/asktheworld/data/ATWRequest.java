@@ -2,6 +2,7 @@ package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.CollectionTable;
@@ -13,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -29,6 +31,7 @@ public class ATWRequest implements Serializable {
 	@JsonIgnore
 	@Column(name="request_id")
 	private int id;
+
 	@Column
 	private int user_id;
 	@Column
@@ -52,6 +55,16 @@ public class ATWRequest implements Serializable {
 	private String response_age_group;
 	@Column
 	private String response_gender;
+	@Column
+	private String status;
+	
+
+	@Version
+	@Column(name="UPDATE_TS")
+	private Calendar modificationDate;
+		     
+	@Column(name="CREATION_TS", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
+	private Calendar creationDate;
 	
 	public int getId() {
 		return id;
@@ -107,6 +120,10 @@ public class ATWRequest implements Serializable {
 	public void setResponse_gender(String response_gender) {
 		this.response_gender = response_gender;
 	}
-	
-	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
