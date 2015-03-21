@@ -55,8 +55,8 @@ public class AuthFilter extends GenericFilterBean {
         if(token != null) {
             // validate the token
             String cr[] = token.split(":");
-            System.out.println("User "+cr[0] +"  Pass: "+cr[1]);
-            if (db.findUser(cr[0]) != null && db.findUser(cr[0]).getPassword().equals(cr[1])) 
+            if (cr.length > 1) System.out.println("User "+cr[0] +"  Pass: "+cr[1]);
+            if (cr.length > 1 && db.findUser(cr[0]) != null && db.findUser(cr[0]).getPassword().equals(cr[1])) 
             {
             	//User exist in DB and has uses correct password
 
