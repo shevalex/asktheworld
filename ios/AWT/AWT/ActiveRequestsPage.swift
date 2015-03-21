@@ -29,7 +29,7 @@ class ActiveRequestsPage: UIViewController {
         
         outgoingRequestCounter = RequestResponseManagement.RequestsResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
         outgoingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
-            self.numOfOutgoingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), (responses != nil ? responses : 0)!, (requests != nil ? requests : 0)!);
+            self.numOfOutgoingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Active requests page - num of active requests"), (responses != nil ? responses : 0)!, (requests != nil ? requests : 0)!);
         });
         
         updateListener = { (event: Backend.CacheChangeEvent) in
