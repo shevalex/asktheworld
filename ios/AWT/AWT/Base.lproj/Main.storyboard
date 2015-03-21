@@ -127,7 +127,7 @@
                                 </items>
                             </toolbar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="55" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="pCu-HC-7vE">
-                                <rect key="frame" x="0.0" y="64" width="320" height="460"/>
+                                <rect key="frame" x="0.0" y="101" width="320" height="423"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="cell" rowHeight="55" id="WXI-wc-45B" customClass="OutgoingRequestTableCell" customModule="AWT" customModuleProvider="target">
@@ -205,16 +205,26 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fetching your requests..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oYK-fI-5gx">
+                                <rect key="frame" x="16" y="72" width="288" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="oYK-fI-5gx" firstAttribute="leading" secondItem="hKA-aL-8Jq" secondAttribute="leadingMargin" id="2sk-Oa-ExR"/>
                             <constraint firstAttribute="trailingMargin" secondItem="pCu-HC-7vE" secondAttribute="trailing" constant="-16" id="HEC-0l-rRk"/>
                             <constraint firstItem="pCu-HC-7vE" firstAttribute="leading" secondItem="hKA-aL-8Jq" secondAttribute="leadingMargin" constant="-16" id="JqT-p5-Edr"/>
                             <constraint firstItem="JL7-ZN-K3n" firstAttribute="leading" secondItem="hKA-aL-8Jq" secondAttribute="leadingMargin" constant="-16" id="Kcf-EX-dTr"/>
+                            <constraint firstItem="oYK-fI-5gx" firstAttribute="trailing" secondItem="hKA-aL-8Jq" secondAttribute="trailingMargin" id="Pkf-HQ-kdN"/>
                             <constraint firstAttribute="trailingMargin" secondItem="JL7-ZN-K3n" secondAttribute="trailing" constant="-16" id="QaC-N2-ND9"/>
-                            <constraint firstItem="pCu-HC-7vE" firstAttribute="top" secondItem="qI1-ul-JgW" secondAttribute="bottom" id="gkc-0b-fdw"/>
+                            <constraint firstItem="pCu-HC-7vE" firstAttribute="top" secondItem="qI1-ul-JgW" secondAttribute="bottom" constant="37" id="gkc-0b-fdw"/>
                             <constraint firstItem="JL7-ZN-K3n" firstAttribute="top" secondItem="pCu-HC-7vE" secondAttribute="bottom" id="ktk-NZ-eAa"/>
+                            <constraint firstItem="pCu-HC-7vE" firstAttribute="top" secondItem="oYK-fI-5gx" secondAttribute="bottom" constant="8" id="nDu-87-d34"/>
                             <constraint firstItem="zBG-zQ-xzw" firstAttribute="top" secondItem="JL7-ZN-K3n" secondAttribute="bottom" id="nEV-E4-Kff"/>
+                            <constraint firstItem="oYK-fI-5gx" firstAttribute="top" secondItem="qI1-ul-JgW" secondAttribute="bottom" constant="8" id="uax-1e-pGT"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Active Requests" id="PVn-ZY-8HY"/>
@@ -1895,8 +1905,8 @@
     <inferredMetricsTieBreakers>
         <segue reference="mv9-mT-7H4"/>
         <segue reference="c75-sv-RRF"/>
+        <segue reference="amh-dw-tq7"/>
         <segue reference="kq4-hL-iH6"/>
         <segue reference="tk7-4O-lCv"/>
-        <segue reference="PsH-Jh-kRd"/>
     </inferredMetricsTieBreakers>
 </document>
