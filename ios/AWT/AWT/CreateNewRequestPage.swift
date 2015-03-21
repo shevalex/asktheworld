@@ -17,31 +17,7 @@ class CreateNewRequestPage: UIViewController {
     @IBOutlet weak var numberOfResponsesTextField: UITextField!
     
     @IBAction func attachButtonPressed(sender: AnyObject) {
-        
-        let imageController = UIImagePickerController()
-        imageController.editing = false
-        
-        let attachSheet: UIAlertController = UIAlertController(title: "Please Choose", message: "", preferredStyle: UIAlertControllerStyle.ActionSheet)
-        
-        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel) { action -> Void in
-        }
-        
-        let takePictureAction: UIAlertAction = UIAlertAction(title: "Take Picture", style: .Default) { action -> Void in
-            println("Camera is not available in simulator")
-            // imageController.sourceType = UIImagePickerControllerSourceType.Camera
-            // self.presentViewController(imageController, animated: true, completion: nil)
-        }
-        
-        let choosePictureAction: UIAlertAction = UIAlertAction(title: "Choose From Gallery", style: .Default) { action -> Void in
-            imageController.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-            self.presentViewController(imageController, animated: true, completion: nil)
-        }
-        
-        attachSheet.addAction(cancelAction)
-        attachSheet.addAction(takePictureAction)
-        attachSheet.addAction(choosePictureAction)
-        
-        self.presentViewController(attachSheet, animated: true, completion: nil)
+        AtwUiUtils.setImagePicker(self);
     }
     
     override func viewDidLoad() {
