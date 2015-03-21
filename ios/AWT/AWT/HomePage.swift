@@ -15,7 +15,7 @@ class HomePage: UIViewController {
     @IBOutlet weak var numOfOutgoingRequestsLabel: UILabel!
     @IBOutlet weak var numOfIncomingRequestsLabel: UILabel!
     
-    var requestIdtoSend: String!;
+    var selectedRequestId: String!;
     
     var updateListener: Backend.CacheChangeEventObserver!;
     
@@ -27,11 +27,12 @@ class HomePage: UIViewController {
         self.navigationItem.hidesBackButton = true;
 
         let outgoingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
-            self.requestIdtoSend = id;
+            self.selectedRequestId = id;
             self.performSegueWithIdentifier("showRequestDetails", sender: self);
         }
         
         var incomingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+            self.selectedRequestId = id;
             self.performSegueWithIdentifier("showInquiryDetails", sender: self)
         }
         
@@ -64,7 +65,7 @@ class HomePage: UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "showRequestDetails") {
             let destView = segue.destinationViewController as RequestDetailsPage;
-            destView.requestId = requestIdtoSend;
+            destView.requestId = selectedRequestId;
         }
     }
 
