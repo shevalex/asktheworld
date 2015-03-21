@@ -581,7 +581,11 @@ public struct Backend {
             self.cache.markIncomingResponseIdsInUpdate(requestId);
             
             var action:()->Void = {() in
-                self.cache.setIncomingResponseIds(requestId, responseIds: ["\(requestId)-response1", "\(requestId)-response2", "\(requestId)-response3", "\(requestId)-response4", "\(requestId)-response5", "\(requestId)-response6"]);
+                if (requestId == "req2" || requestId == "req6") {
+                    self.cache.setIncomingResponseIds(requestId, responseIds: []);
+                } else {
+                    self.cache.setIncomingResponseIds(requestId, responseIds: ["\(requestId)-response1", "\(requestId)-response2", "\(requestId)-response3", "\(requestId)-response4", "\(requestId)-response5", "\(requestId)-response6"]);
+                }
             };
             
             DelayedNotifier(action).schedule(3);

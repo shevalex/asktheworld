@@ -10,8 +10,8 @@
 	</array>
 	<key>OUTGOING_REQUEST_NO_RESPONSES_BACKGROUND_COLOR</key>
 	<array>
-		<integer>135</integer>
-		<integer>100</integer>
+		<integer>235</integer>
+		<integer>225</integer>
 		<integer>200</integer>
 	</array>
 	<key>OUTGOING_REQUEST_TEXT_COLOR</key>
