@@ -10,9 +10,11 @@ import UIKit
 
 class ActiveRequestsPage: UIViewController {
     @IBOutlet weak var outgoingRequestsTableView: UITableView!
+    @IBOutlet weak var numOfOutgoingRequestsLabel: UILabel!
     
-    var updateListener: Backend.CacheChangeEventObserver!;
-    var requestIdtoSend: String!;
+    private var outgoingRequestCounter: GenericObjectCounter!;
+    private var updateListener: Backend.CacheChangeEventObserver!;
+    private var requestIdtoSend: String!;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +27,10 @@ class ActiveRequestsPage: UIViewController {
         
         RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), outgoingRequestSelectionObserver);
         
+        outgoingRequestCounter = RequestResponseManagement.RequestsResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
+        outgoingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
+            self.numOfOutgoingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), (responses != nil ? responses : 0)!, (requests != nil ? requests : 0)!);
+        });
         
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_STARTED) {
@@ -45,10 +51,14 @@ class ActiveRequestsPage: UIViewController {
         Backend.getInstance().addCacheChangeListener(updateListener);
         
         outgoingRequestsTableView.reloadData();
+        
+        outgoingRequestCounter.start();
     }
     
     override func viewWillDisappear(animated: Bool) {
         Backend.getInstance().removeCacheChangeListener(updateListener);
+        
+        outgoingRequestCounter.stop();
     }
     
 

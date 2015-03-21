@@ -15,10 +15,8 @@ class HomePage: UIViewController {
     @IBOutlet weak var numOfOutgoingRequestsLabel: UILabel!
     @IBOutlet weak var numOfIncomingRequestsLabel: UILabel!
     
-    var selectedRequestId: String!;
-    
-    var updateListener: Backend.CacheChangeEventObserver!;
-    
+    private var selectedRequestId: String!;
+    private var updateListener: Backend.CacheChangeEventObserver!;
     private var outgoingRequestCounter: GenericObjectCounter!;
     private var incomingRequestCounter: GenericObjectCounter!;
     
