@@ -123,6 +123,13 @@ struct RequestResponseManagement {
                     tableCell.counterLabel.text = "\(numOfUnreadResponses!)";
                 }
                 
+                
+                let responseIds = Backend.getInstance().getIncomingResponseIds(id, responseStatus: nil);
+                if (responseIds == nil || responseIds!.count == 0) {
+                    tableCell.backgroundColor = AtwUiUtils.getColor("OUTGOING_REQUEST_NO_RESPONSES_BACKGROUND_COLOR");
+                } else {
+                    tableCell.backgroundColor = AtwUiUtils.getColor("OUTGOING_REQUEST_WITH_RESPONSES_BACKGROUND_COLOR");
+                }
             } else {
                 tableCell.targetLabel.text = "";
                 tableCell.dateLabel.text = "";
@@ -152,7 +159,13 @@ struct RequestResponseManagement {
                 dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle;
                 dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle;
                 tableCell.timeLabel.text = dateFormatter.stringFromDate(dateTime);
-                
+
+                let responseIds = Backend.getInstance().getOutgoingResponseIds(id, responseStatus: nil);
+                if (responseIds == nil || responseIds!.count == 0) {
+                    tableCell.backgroundColor = AtwUiUtils.getColor("INCOMING_REQUEST_NO_RESPONSE_BACKGROUND_COLOR");
+                } else {
+                    tableCell.backgroundColor = AtwUiUtils.getColor("INCOMING_REQUEST_WITH_RESPONSE_BACKGROUND_COLOR");
+                }
             } else {
                 tableCell.sourceLabel.text = "";
                 tableCell.dateLabel.text = "";
@@ -284,10 +297,6 @@ struct RequestResponseManagement {
         }
         
         override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
-            if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
-                return nil;
-            }
-            
             return event.requestId;
         }
     }
@@ -298,6 +307,7 @@ struct RequestResponseManagement {
         override init() {
             responseProviderFactory = IncomingResponseProviderFactory(responseStatus: nil);
         }
+        
         
         override func getObjectIds() -> [String]? {
             let requestIds: [String]? = Backend.getInstance().getOutgoingRequestIds();
@@ -318,11 +328,6 @@ struct RequestResponseManagement {
             }
             
             return matchingRequestIds;
-        }
-        
-        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
-            return event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED
-                || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED;
         }
     }
     
@@ -371,16 +376,13 @@ struct RequestResponseManagement {
         override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
             return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED;
         }
-        
+
         override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
-            if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
-                return nil;
-            }
-            
             return event.requestId;
         }
     }
-
+    
+    
     class IncomingRequestWithoutResponsesObjectProvider: IncomingRequestObjectProvider {
         private let responseProviderFactory: AbstractResponseProviderFactory;
         
@@ -388,6 +390,7 @@ struct RequestResponseManagement {
             responseProviderFactory = OutgoingResponseProviderFactory(responseStatus: nil);
         }
         
+
         override func getObjectIds() -> [String]? {
             let requestIds: [String]? = Backend.getInstance().getIncomingRequestIds();
             if (requestIds == nil) {
@@ -407,11 +410,6 @@ struct RequestResponseManagement {
             }
             
             return matchingRequestIds;
-        }
-        
-        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
-            return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED
-                   || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
         }
     }
     

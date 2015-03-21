@@ -8,10 +8,10 @@
 		<integer>122</integer>
 		<integer>255</integer>
 	</array>
-	<key>OUTGOING_REQUEST_BACKGROUND_COLOR</key>
+	<key>OUTGOING_REQUEST_NO_RESPONSES_BACKGROUND_COLOR</key>
 	<array>
 		<integer>135</integer>
-		<integer>225</integer>
+		<integer>100</integer>
 		<integer>200</integer>
 	</array>
 	<key>OUTGOING_REQUEST_TEXT_COLOR</key>
@@ -19,6 +19,24 @@
 		<integer>0</integer>
 		<integer>122</integer>
 		<integer>255</integer>
+	</array>
+	<key>OUTGOING_REQUEST_WITH_RESPONSES_BACKGROUND_COLOR</key>
+	<array>
+		<integer>135</integer>
+		<integer>225</integer>
+		<integer>200</integer>
+	</array>
+	<key>INCOMING_REQUEST_WITH_RESPONSE_BACKGROUND_COLOR</key>
+	<array>
+		<integer>235</integer>
+		<integer>200</integer>
+		<integer>200</integer>
+	</array>
+	<key>INCOMING_REQUEST_NO_RESPONSE_BACKGROUND_COLOR</key>
+	<array>
+		<integer>125</integer>
+		<integer>200</integer>
+		<integer>225</integer>
 	</array>
 </dict>
 </plist>
