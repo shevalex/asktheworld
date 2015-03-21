@@ -128,17 +128,23 @@ public class DB {
 		return existRequest;
 	}
 	
-	public List<ATWRequest> findUserRequests(int id) {
+	public List<ATWRequest> findUserOutgoingRequests(int id, String status, String sorting) {
+		//test it here not necessary but leave it for protection now
 		ATWUser existUser = getUser(id);
 		List<ATWRequest> list = null;
 		if(existUser != null) {
-			list = requests.findRequestsByUserId(id);
+			if (status != null) {
+				list = requests.findOutgoingRequestsByUserId(id, status, sorting);
+			} else {
+				list = requests.findOutgoingRequestsByUserId(id, sorting);
+			}
 		}
 		return list;
 	}
-	public List<Integer> getUserRequestsIDs(int id) {
+	
+	public List<Integer> getUserOutgoingRequestsIDs(int id, String status, String sorting) {
 		List<Integer> listIDs = null;
-		List<ATWRequest> listRequests = findUserRequests(id);
+		List<ATWRequest> listRequests = findUserOutgoingRequests(id, status, sorting);
 		if(listRequests != null) {
 			listIDs = new ArrayList<Integer>();
 			for(Iterator<ATWRequest> it = listRequests.iterator(); it.hasNext(); listIDs.add(it.next().getId()));
