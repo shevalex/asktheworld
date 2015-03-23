@@ -14,6 +14,10 @@ body {
   white-space: nowrap;
   text-align: center;
   background: rgb(254, 251, 233);
+  
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: green;
 }
 #Title-Label {
   font-size: 50px;
