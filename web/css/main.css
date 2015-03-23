@@ -2,8 +2,6 @@ body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  
-  background: rgb(253, 244, 196);
 }
 
 #Title {
@@ -13,7 +11,6 @@ body {
   padding-bottom: 5px;
   white-space: nowrap;
   text-align: center;
-  background: rgb(254, 251, 233);
   
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -53,19 +50,20 @@ body {
   padding-top: 5px;
   padding-bottom: 5px;
   white-space: nowrap;
-  text-align: center;
   background: rgb(100, 100, 170);
 }
 
 #Footer-Label {
+  padding-left: 20px;
+  
   font-size: 15px;
   color: rgb(255, 255, 255);
 }
 
 #Footer-ContactUs {
-  position: absolute;
-  margin-left: 100px;
-  padding: 0px;
+  float: right;
+  margin-right: 20px;
+  margin-top: -2px;
   
   font-size: 13px;
   color: rgb(255, 255, 255);

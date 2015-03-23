@@ -32,7 +32,8 @@
 }
 
 .menupage-menuitem:hover {
-  background: gray;
+  color: white;
+  background: rgb(70, 150, 110);
 }
 
 .menupage-menuitem-selected {
