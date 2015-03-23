@@ -24,9 +24,19 @@ body {
 #Title-Language {
   position: absolute;
   right: 30px;
-  top: 20px;
+  top: 10px;
 }
 #Title-Language-Text {
+  font-size: 15px;
+  font-style: italic;
+}
+
+#Title-User {
+  position: absolute;
+  right: 30px;
+  top: 30px;
+}
+#Title-User-Text {
   font-size: 15px;
   font-style: italic;
 }

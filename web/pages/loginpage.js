@@ -83,6 +83,7 @@ LoginPage.prototype._appendLoginPanel = function(root) {
       var backendCallback = {
         success: function() {
           this._onCompletion();
+          Application.setupUserMenuChooser();
           Application.showMenuPage(HomePage.name);
         },
         failure: function() {

@@ -122,16 +122,6 @@ MenuPage.prototype._appendMenuPanel = function(root) {
   
   this._appendMenuItem(menuPanel, ActiveIncomingRequestsPage.name, this.getLocale().ActiveIncomingRequestsItem, null, clickListener);
   this._appendMenuItem(menuPanel, AllIncomingRequestsPage.name, this.getLocale().AllIncomingRequestsItem, null, clickListener);
-  menuPanel.appendChild(this._createMenuSeparator());
-  
-  this._appendMenuItem(menuPanel, UserProfilePage.name, this.getLocale().ProfileItem, null, clickListener);
-  this._appendMenuItem(menuPanel, UserPreferencesPage.name, this.getLocale().PreferencesItem, null, clickListener);
-  menuPanel.appendChild(this._createMenuSeparator());
-
-  this._appendMenuItem(menuPanel, "logout", this.getLocale().LogOutItem, null, function() {
-    Application.reset();
-    Application.showPage(LoginPage.name);
-  });
   
   return menuPanel;
 }

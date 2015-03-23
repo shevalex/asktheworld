@@ -149,7 +149,6 @@ Application.start = function() {
   });
   
   Application._setupLanguageChooser();
-  
 
   this.showPage(LoginPage.name);
 }
@@ -163,6 +162,8 @@ Application.reset = function() {
   this.hideMessage();
   this.hideSpinningWheel();
   this.hideDialog();
+  
+  $("#Title-User-Text").html("");
   
   Backend.logOut();
 }
@@ -314,6 +315,51 @@ Application._getPage = function(pageId) {
 }
 
 
+Application.setupUserMenuChooser = function() {
+  $("#Title-User-Text").click(function() {
+    if ($(".user-menu-popup").length > 0) {
+      return;
+    }
+    
+    var popup = UIUtils.appendBlock($("#Title-User").get(0), "Title-User-Popup");
+    UIUtils.addClass(popup, "user-menu-popup");
+    
+    
+    var popupCloser = function() {
+      var container = UIUtils.get$(popup);
+      container.fadeOut("fast", function() {
+        container.remove();
+      });
+    };
+    
+    var item = UIUtils.appendLink(popup, "ProfileItem", I18n.getLocale().literals.ProfileItem);
+    UIUtils.addClass(item, "user-menu-item");
+    UIUtils.setClickListener(item, function(lr) {
+      popupCloser();
+      Application.showPage(UserProfilePage.name);
+    });
+    
+    var item = UIUtils.appendLink(popup, "PreferencesItem", I18n.getLocale().literals.PreferencesItem);
+    UIUtils.addClass(item, "user-menu-item");
+    UIUtils.setClickListener(item, function(lr) {
+      popupCloser();
+      Application.showPage(UserPreferencesPage.name);
+    });
+    
+    var item = UIUtils.appendLink(popup, "LogOutItem", I18n.getLocale().literals.LogOutItem);
+    UIUtils.addClass(item, "user-menu-item");
+    UIUtils.setClickListener(item, function(lr) {
+      popupCloser();
+      Application.reset();
+      Application.showPage(LoginPage.name);
+    });
+    
+    Application._setPopupCloser("user-menu-popup");
+  }.bind(this));
+  
+  $("#Title-User-Text").html(Backend.getUserProfile().name);
+}
+
 
 Application.isEqualBundle = function(bundle1, bundle2) {
   if (bundle1 == null && bundle2 == null) {
@@ -452,6 +498,7 @@ Application._setupLanguageChooser = function() {
   }
   $("#Title-Language-Text").html(displayLanguage);
 }
+
 
 
 Application._setPopupCloser = function(popupClass) {
