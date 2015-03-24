@@ -17,7 +17,10 @@ class CreateNewRequestPage: UIViewController {
     @IBOutlet weak var numberOfResponsesTextField: UITextField!
     
     @IBAction func attachButtonPressed(sender: AnyObject) {
-        AtwUiUtils.setImagePicker(self);
+        var imagePickObserver: ImagePickObserver = {(image: UIImage) in
+            println("Chosen image \(image)");
+        }
+        AtwUiUtils.setImagePicker(self, imagePickObserver);
     }
     
     override func viewDidLoad() {

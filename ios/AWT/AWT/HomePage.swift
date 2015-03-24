@@ -87,6 +87,8 @@ class HomePage: UIViewController {
         
         outgoingRequestCounter.stop();
         incomingRequestCounter.stop();
+        
+        AtwUiUtils.hideSpinner();
     }
 }
 

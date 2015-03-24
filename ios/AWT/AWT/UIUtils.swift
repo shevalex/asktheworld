@@ -129,33 +129,7 @@ public struct AtwUiUtils {
         return chooserView;
     }
     
-    
-    //TODO will need to pass in an observer when it is defined in this code how an observer should look like
-    static func setImagePicker(viewController: UIViewController) {
-        let imageController = UIImagePickerController();
-        imageController.editing = false;
-        
-        let attachSheet: UIAlertController = UIAlertController(title: NSLocalizedString("Please Choose", comment: "Image Chooser Title"), message: "", preferredStyle: UIAlertControllerStyle.ActionSheet);
-        
-        let cancelAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel action"), style: .Cancel) { (action) -> Void in
-        }
-        
-        let takePictureAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("Take Picture", comment: "Take Picture action"), style: .Default) { (action) -> Void in
-            println("Camera is not available in simulator")
-            // imageController.sourceType = UIImagePickerControllerSourceType.Camera
-            // self.presentViewController(imageController, animated: true, completion: nil)
-        }
-        
-        let choosePictureAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("Choose From Gallery", comment: "Choose picture action"), style: .Default) { (action) -> Void in
-            
-            imageController.sourceType = UIImagePickerControllerSourceType.PhotoLibrary;
-            viewController.presentViewController(imageController, animated: true, completion: nil);
-        }
-        
-        attachSheet.addAction(cancelAction)
-        attachSheet.addAction(takePictureAction)
-        attachSheet.addAction(choosePictureAction)
-        
-        viewController.presentViewController(attachSheet, animated: true, completion: nil);
+    static func setImagePicker(viewController: UIViewController, imagePickObserver: ImagePickObserver? = nil) {
+        ImageChooserFactory.setImagePicker(viewController, imagePickObserver: imagePickObserver);
     }
 }
