@@ -15,10 +15,20 @@ class CreateNewRequestPage: UIViewController {
     @IBOutlet weak var ageTextField: UITextField!
     @IBOutlet weak var waitTimeTextField: UITextField!
     @IBOutlet weak var numberOfResponsesTextField: UITextField!
+    @IBOutlet weak var imageScrollView: UIScrollView!
+    
+    var imageArray: Array<UIImage> = [];
+    var xCoordinate: Int = 0;
     
     @IBAction func attachButtonPressed(sender: AnyObject) {
         var imagePickObserver: ImagePickObserver = {(image: UIImage) in
-            println("Chosen image \(image)");
+            self.imageArray.append(image)
+            self.imageScrollView.contentSize = CGSizeMake(CGFloat(Int(self.imageScrollView.frame.size.height + 5) * self.imageArray.count), self.imageScrollView.frame.size.height)
+            self.xCoordinate = 5 + Int(self.imageScrollView.frame.size.height + 5) * (self.imageArray.count - 1)
+            let newImageView = UIImageView(frame: CGRectMake(CGFloat(self.xCoordinate), 0, self.imageScrollView.frame.size.height, self.imageScrollView.frame.size.height))
+            newImageView.image = image
+            newImageView.contentMode = UIViewContentMode.ScaleToFill
+            self.imageScrollView.addSubview(newImageView)
         }
         AtwUiUtils.setImagePicker(self, imagePickObserver);
     }

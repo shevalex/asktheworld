@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -868,6 +868,7 @@
                         <outlet property="ageTextField" destination="9tZ-Dl-cta" id="B76-Tz-dfr"/>
                         <outlet property="expertiseTextField" destination="3Nk-CF-c4K" id="A9f-nl-Ax0"/>
                         <outlet property="genderTextField" destination="os7-HU-Lgk" id="Kh6-hH-Tyc"/>
+                        <outlet property="imageScrollView" destination="HWF-Qg-hav" id="5tp-Hm-wj6"/>
                         <outlet property="numberOfResponsesTextField" destination="MYY-aN-zon" id="wsq-wK-lE4"/>
                         <outlet property="waitTimeTextField" destination="AfW-8k-dfd" id="edb-2k-atP"/>
                     </connections>
