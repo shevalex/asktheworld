@@ -803,7 +803,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HWF-Qg-hav">
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HWF-Qg-hav" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="402" width="320" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="zXB-j4-k3F"/>
