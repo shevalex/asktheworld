@@ -847,7 +847,11 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="cbi-lG-mOF"/>
-                                    <barButtonItem title="Send" id="DRm-VF-4y8"/>
+                                    <barButtonItem title="Send" id="DRm-VF-4y8">
+                                        <connections>
+                                            <action selector="sendButtonClickedAction:" destination="sVD-6i-eXR" id="Gww-dY-fi0"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                         </subviews>
@@ -1916,10 +1920,10 @@
         <image name="contact_info.png" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Z0X-31-cgP"/>
         <segue reference="c75-sv-RRF"/>
         <segue reference="mv9-mT-7H4"/>
         <segue reference="7xE-kX-cnr"/>
-        <segue reference="PsH-Jh-kRd"/>
+        <segue reference="Z0X-31-cgP"/>
+        <segue reference="amh-dw-tq7"/>
     </inferredMetricsTieBreakers>
 </document>

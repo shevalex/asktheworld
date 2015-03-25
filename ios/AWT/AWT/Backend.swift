@@ -196,6 +196,7 @@ public protocol BackendCallback {
 }
 
 public struct Backend {
+    public typealias CompletionObserver = () -> Void;
     typealias CacheChangeEventObserver = (event: CacheChangeEvent) -> Void;
     
     
@@ -646,16 +647,35 @@ public struct Backend {
         return response;
     }
     
+    public func createRequest(request: RequestObject, observer: CompletionObserver) {
+        var ids: [String]? = self.cache.getOutgoingRequestIds();
+        var requestId = "req\(ids?.count)";
+        self.cache.markRequestInUpdate(requestId);
+        self.cache.markOutgoingRequestIdsInUpdate();
+        
+        var action:()->Void = {() in
+            ids?.append(requestId);
+            
+            self.cache.setRequest(requestId, request: request);
+            self.cache.setOutgoingRequestIds(ids!);
+            self.cache.setIncomingResponseIds(requestId, responseIds: []);
+            observer();
+        };
+        
+        DelayedNotifier(action).schedule(2);
+    }
+    
+    
 
     
     // Event Management
     
-    func addCacheChangeListener(listener: CacheChangeEventObserver) {
-        cache.addCacheChangeListener(listener);
+    func addCacheChangeListener(listener: CacheChangeEventObserver) -> String {
+        return cache.addCacheChangeListener(listener);
     }
     
-    func removeCacheChangeListener(listener: CacheChangeEventObserver) {
-        cache.removeCacheChangeListener(listener);
+    func removeCacheChangeListener(listenerId: String) {
+        cache.removeCacheChangeListener(listenerId);
     }
     
     
@@ -813,17 +833,22 @@ public struct Backend {
     
     private class ObjectCache {
         private class EventListenerCollection {
-            private var list: [CacheChangeEventObserver] = [];
+            private var counter: Int! = 0;
+            private var list: Dictionary<String, CacheChangeEventObserver> = Dictionary();
             
-            func add(element: CacheChangeEventObserver) {
-                list.append(element);
-            }
-            
-            func remove(element: CacheChangeEventObserver) {
+            func add(element: CacheChangeEventObserver) -> String {
+                counter = counter + 1;
+                let id = "listener-\(counter)";
+                list.updateValue(element, forKey: id);
                 
+                return id;
             }
             
-            func get() -> [CacheChangeEventObserver] {
+            func remove(elementId: String) {
+                list.removeValueForKey(elementId);
+            }
+            
+            func get() -> Dictionary<String, CacheChangeEventObserver> {
                 return list;
             }
         }
@@ -851,12 +876,12 @@ public struct Backend {
         
         private var updateInProgressNotified: Bool = false;
         
-        func addCacheChangeListener(listener: CacheChangeEventObserver) {
-            cacheChangeListeners.add(listener);
+        func addCacheChangeListener(listener: CacheChangeEventObserver) -> String {
+            return cacheChangeListeners.add(listener);
         }
         
-        func removeCacheChangeListener(listener: CacheChangeEventObserver) {
-            cacheChangeListeners.remove(listener);
+        func removeCacheChangeListener(listenerId: String) {
+            cacheChangeListeners.remove(listenerId);
         }
         
         
@@ -1010,7 +1035,7 @@ public struct Backend {
         private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
             var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
 
-            for (index, listener) in enumerate(cacheChangeListeners.get()) {
+            for (key, listener) in cacheChangeListeners.get() {
                 listener(event: event);
             }
         }

@@ -8,12 +8,11 @@
 
 import UIKit
 
-class ActiveRequestsPage: UIViewController {
+class ActiveRequestsPage: UIViewControllerWithSpinner {
     @IBOutlet weak var outgoingRequestsTableView: UITableView!
     @IBOutlet weak var numOfOutgoingRequestsLabel: UILabel!
     
     private var outgoingRequestCounter: GenericObjectCounter!;
-    private var updateListener: Backend.CacheChangeEventObserver!;
     private var requestIdtoSend: String!;
     
     override func viewDidLoad() {
@@ -31,14 +30,6 @@ class ActiveRequestsPage: UIViewController {
         outgoingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
             self.numOfOutgoingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Active requests page - num of active requests"), (responses != nil ? responses : 0)!, (requests != nil ? requests : 0)!);
         });
-        
-        updateListener = { (event: Backend.CacheChangeEvent) in
-            if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_STARTED) {
-                AtwUiUtils.showSpinner(self.view, disableInput: false);
-            } else if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED) {
-                AtwUiUtils.hideSpinner();
-            }
-        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -48,7 +39,7 @@ class ActiveRequestsPage: UIViewController {
     
     
     override func viewWillAppear(animated: Bool) {
-        Backend.getInstance().addCacheChangeListener(updateListener);
+        super.viewWillAppear(animated);
         
         outgoingRequestsTableView.reloadData();
         
@@ -56,7 +47,7 @@ class ActiveRequestsPage: UIViewController {
     }
     
     override func viewWillDisappear(animated: Bool) {
-        Backend.getInstance().removeCacheChangeListener(updateListener);
+        super.viewWillDisappear(animated);
         
         outgoingRequestCounter.stop();
     }

@@ -8,12 +8,11 @@
 
 import UIKit
 
-class ActiveInquiriesPage: UIViewController {
+class ActiveInquiriesPage: UIViewControllerWithSpinner {
     @IBOutlet weak var incomingRequestsTableView: UITableView!
     @IBOutlet weak var numOfIncomingRequestsLabel: UILabel!
 
     private var selectedRequestId: String!;
-    private var updateListener: Backend.CacheChangeEventObserver!;
     private var incomingRequestCounter: GenericObjectCounter!;
 
     override func viewDidLoad() {
@@ -32,14 +31,6 @@ class ActiveInquiriesPage: UIViewController {
         incomingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
             self.numOfIncomingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d active inquiries", comment: "Active Inquiries page - num of active inquiries"), (requests != nil ? requests : 0)!);
         });
-
-        updateListener = { (event: Backend.CacheChangeEvent) in
-            if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_STARTED) {
-                AtwUiUtils.showSpinner(self.view, disableInput: false);
-            } else if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED) {
-                AtwUiUtils.hideSpinner();
-            }
-        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -56,7 +47,7 @@ class ActiveInquiriesPage: UIViewController {
     }
 
     override func viewWillAppear(animated: Bool) {
-        Backend.getInstance().addCacheChangeListener(updateListener);
+        super.viewWillAppear(animated);
         
         incomingRequestsTableView.reloadData();
         
@@ -64,7 +55,7 @@ class ActiveInquiriesPage: UIViewController {
     }
     
     override func viewWillDisappear(animated: Bool) {
-        Backend.getInstance().removeCacheChangeListener(updateListener);
+        super.viewWillDisappear(animated);
         
         incomingRequestCounter.stop();
     }

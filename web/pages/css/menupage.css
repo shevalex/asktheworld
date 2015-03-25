@@ -61,12 +61,12 @@
   display: block;
   border-bottom-style: solid;
   border-bottom-width: 1px;
-  border-bottom-color: black;
+  border-bottom-color: rgb(86, 108, 17);
 }
 
 .menupage-menu-thick-separator {
   display: block;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: black;
+  border-bottom-color: rgb(86, 108, 17);
 }

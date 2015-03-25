@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CreateNewRequestPage: UIViewController {
+class CreateNewRequestPage: UIViewControllerWithSpinner {
 
     @IBOutlet weak var expertiseTextField: UITextField!
     @IBOutlet weak var genderTextField: UITextField!
@@ -16,12 +16,6 @@ class CreateNewRequestPage: UIViewController {
     @IBOutlet weak var waitTimeTextField: UITextField!
     @IBOutlet weak var numberOfResponsesTextField: UITextField!
     @IBOutlet weak var imageScrollView: AttachmentBarView!
-    
-    @IBAction func attachButtonPressed(sender: AnyObject) {
-        AtwUiUtils.setImagePicker(self, {(image: UIImage) in
-            self.imageScrollView.addImage(image);
-        });
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,12 +29,28 @@ class CreateNewRequestPage: UIViewController {
         // Do any additional setup after loading the view.
     }
 
+    @IBAction func attachButtonPressed(sender: AnyObject) {
+        AtwUiUtils.setImagePicker(self, {(image: UIImage) in
+            self.imageScrollView.addImage(image);
+        });
+    }
+    
+    @IBAction func sendButtonClickedAction(sender: UIBarButtonItem) {
+        var request = Backend.RequestObject();
+        
+        Backend.getInstance().createRequest(request, observer: {() -> Void in
+            println("PLace a segue to close the screen");
+        });
+    }
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
 
+    
     /*
     // MARK: - Navigation
 

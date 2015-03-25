@@ -177,7 +177,7 @@ struct RequestResponseManagement {
     
     
     class AbstractObjectProvider: GenericObjectProvider {
-        private var cacheChangeListener: Backend.CacheChangeEventObserver? = nil;
+        private var cacheChangeListenerId: String? = nil;
         private var updateObserver: ObjectUpdateObserver? = nil;
         
         func getObjectId(index: Int!) -> String? {
@@ -201,15 +201,15 @@ struct RequestResponseManagement {
         
         func setChangeObserver(observer: ((index: Int?) -> Void)!) {
             if (observer == nil) {
-                if (cacheChangeListener != nil) {
-                    Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
-                    cacheChangeListener = nil;
+                if (cacheChangeListenerId != nil) {
+                    Backend.getInstance().removeCacheChangeListener(cacheChangeListenerId!);
+                    cacheChangeListenerId = nil;
                 }
                 
                 return;
             }
             
-            cacheChangeListener = {(event) in
+            let cacheChangeListener: Backend.CacheChangeEventObserver = {(event) in
                 if (self.isObjectIdsChangeEvent(event)) {
                     var objectIds: [String]? = self.getObjectIds();
                     if (objectIds != nil) {
@@ -232,20 +232,20 @@ struct RequestResponseManagement {
                     }
                 }
             };
-            Backend.getInstance().addCacheChangeListener(cacheChangeListener!);
+            cacheChangeListenerId = Backend.getInstance().addCacheChangeListener(cacheChangeListener);
         }
         
         func setUpdateObserver(observer: ObjectUpdateObserver!) {
             self.updateObserver = observer;
-            if (cacheChangeListener == nil) {
+            if (cacheChangeListenerId == nil) {
                 // this is needed to trigger update notifications;
                 setChangeObserver({(index: Int?) in /*intentionally do nothing*/});
             }
         }
         
         deinit {
-            if (cacheChangeListener != nil) {
-                Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
+            if (cacheChangeListenerId != nil) {
+                Backend.getInstance().removeCacheChangeListener(cacheChangeListenerId!);
             }
         }
         

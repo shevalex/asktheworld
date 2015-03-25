@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomePage: UIViewController {
+class HomePage: UIViewControllerWithSpinner {
 
     @IBOutlet weak var outgoingRequestsTableView: UITableView!
     @IBOutlet weak var incomingRequestsTableView: UITableView!
@@ -16,12 +16,11 @@ class HomePage: UIViewController {
     @IBOutlet weak var numOfIncomingRequestsLabel: UILabel!
     
     private var selectedRequestId: String!;
-    private var updateListener: Backend.CacheChangeEventObserver!;
     private var outgoingRequestCounter: GenericObjectCounter!;
     private var incomingRequestCounter: GenericObjectCounter!;
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad();
         self.navigationItem.hidesBackButton = true;
 
         let outgoingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
@@ -49,15 +48,6 @@ class HomePage: UIViewController {
         incomingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
             self.numOfIncomingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d inquiries required your attention", comment: "Home page - num of unanswered inquiries"), (requests != nil ? requests : 0)!);
         });
-
-        
-        updateListener = { (event: Backend.CacheChangeEvent) in
-            if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_STARTED) {
-                AtwUiUtils.showSpinner(self.view, disableInput: false);
-            } else if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED) {
-                AtwUiUtils.hideSpinner();
-            }
-        }
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
@@ -73,7 +63,7 @@ class HomePage: UIViewController {
     }
 
     override func viewWillAppear(animated: Bool) {
-        Backend.getInstance().addCacheChangeListener(updateListener);
+        super.viewWillAppear(animated);
 
         outgoingRequestsTableView.reloadData();
         incomingRequestsTableView.reloadData();
@@ -83,12 +73,10 @@ class HomePage: UIViewController {
     }
     
     override func viewWillDisappear(animated: Bool) {
-        Backend.getInstance().removeCacheChangeListener(updateListener);
+        super.viewWillDisappear(animated);
         
         outgoingRequestCounter.stop();
         incomingRequestCounter.stop();
-        
-        AtwUiUtils.hideSpinner();
     }
 }
 
