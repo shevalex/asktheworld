@@ -216,13 +216,21 @@ class SelectorView: UITableView {
         super.init(frame: frame, style: style);
     }
     
-    func getSelectedItems() -> [Configuration.Item]! {
-        return delegateHolder.getSelectedItems();
+    func getSelectedItem() -> Configuration.Item? {
+        var selection = delegateHolder.getSelectedItems();
+        if (selection.count == 0) {
+            return nil;
+        } else {
+            return selection[0];
+        }
     }
     func setSelectedItem(selectedItem: Configuration.Item!)  {
         setSelectedItems([selectedItem]);
     }
     
+    func getSelectedItems() -> [Configuration.Item]! {
+        return delegateHolder.getSelectedItems();
+    }
     func setSelectedItems(selectedItems: [Configuration.Item]!)  {
         delegateHolder.setSelectedItems(selectedItems);
 

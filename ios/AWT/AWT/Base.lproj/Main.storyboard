@@ -874,6 +874,7 @@
                         <outlet property="genderTextField" destination="os7-HU-Lgk" id="Kh6-hH-Tyc"/>
                         <outlet property="imageScrollView" destination="HWF-Qg-hav" id="5tp-Hm-wj6"/>
                         <outlet property="numberOfResponsesTextField" destination="MYY-aN-zon" id="wsq-wK-lE4"/>
+                        <outlet property="requestTextField" destination="CKG-jm-zOf" id="KLw-1P-RYY"/>
                         <outlet property="waitTimeTextField" destination="AfW-8k-dfd" id="edb-2k-atP"/>
                     </connections>
                 </viewController>

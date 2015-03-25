@@ -253,7 +253,7 @@ public struct Backend {
         public var inquiryAge: Configuration.Item! = Configuration.AGE_CATEGORY_PREFERENCE[0];
         public var inquiryGender: Configuration.Item! = Configuration.GENDER_PREFERENCE[0];
         public var expertises: [Configuration.Item]! = [Configuration.EXPERTISES[0]];
-        public var contactVisible: Configuration.Item!! = Configuration.CONTACT_REQUESTABLE[0];
+        public var contactVisible: Configuration.Item! = Configuration.CONTACT_REQUESTABLE[0];
         public var contactName: String! = "";
         public var contactInfo: String! = "";
     }
@@ -266,9 +266,18 @@ public struct Backend {
         init() {
         }
         
-        var time: Double! = 0;
+        init(userContext: UserContext) {
+            responseQuantity = userContext.responseQuantity;
+            responseWaitTime = userContext.responseWaitTime;
+            responseAgeGroup = userContext.inquiryAge;
+            responseGender = userContext.inquiryGender;
+            expertiseCategory = Configuration.EXPERTISES[0];
+        }
+
+        
+        var time: Double! = NSDate().timeIntervalSince1970;
         var text: String! = "";
-        var attachments: [String]!;
+        var attachments: [String]! = [];
         var responseQuantity: Configuration.Item!;
         var responseWaitTime: Configuration.Item!;
         var responseAgeGroup: Configuration.Item!;
