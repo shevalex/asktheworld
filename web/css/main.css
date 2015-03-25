@@ -75,10 +75,10 @@ body {
 }
 
 #RootContainer {
-  width: calc(100% - 10px);
-  height: calc(100% - 125px);
+  width: calc(100% - 0px);
+  height: calc(100% - 115px);
   overflow: auto;
-  padding: 5px;
+/*  padding: 5px;*/
 }
 
 
