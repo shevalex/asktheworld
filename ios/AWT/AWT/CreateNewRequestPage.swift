@@ -39,6 +39,7 @@ class CreateNewRequestPage: UIViewControllerWithSpinner {
         var request = Backend.RequestObject();
         
         Backend.getInstance().createRequest(request, observer: {() -> Void in
+            self.navigationController?.popViewControllerAnimated(true)
             println("PLace a segue to close the screen");
         });
     }
