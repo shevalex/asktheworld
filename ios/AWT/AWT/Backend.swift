@@ -658,6 +658,11 @@ public struct Backend {
     
     public func createRequest(request: RequestObject, observer: CompletionObserver) {
         var ids: [String]? = self.cache.getOutgoingRequestIds();
+        if (ids == nil) {
+            println("The list of requests hasn't yet been read - cannot create new");
+            return;
+        }
+        
         var requestId = "req\(ids?.count)";
         self.cache.markRequestInUpdate(requestId);
         self.cache.markOutgoingRequestIdsInUpdate();
