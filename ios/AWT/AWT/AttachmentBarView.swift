@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 class AttachmentBarView: UIScrollView {
+    private let IMAGE_INSET: CGFloat = 5;
     private var imageArray: Array<UIImage> = [];
-    
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
@@ -20,10 +20,11 @@ class AttachmentBarView: UIScrollView {
     func addImage(image: UIImage) {
         imageArray.append(image);
         
-        contentSize = CGSizeMake(CGFloat(Int(frame.size.height + 5) * self.imageArray.count), frame.size.height);
+        contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
         
-        let x = 5 + Int(frame.size.height + 5) * (imageArray.count - 1);
-        let newImageView = UIImageView(frame: CGRectMake(CGFloat(x), 0, frame.size.height, frame.size.height));
+        
+        let x = (frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count - 1) + IMAGE_INSET;
+        let newImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
         newImageView.image = image;
         newImageView.contentMode = UIViewContentMode.ScaleToFill;
 
