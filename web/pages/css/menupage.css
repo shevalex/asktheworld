@@ -50,7 +50,6 @@
 .menupage-menuitem-selected {
   background: rgb(56, 124, 44);
   color: white;
-  font-weight: bold;
   
   border-color: white;
 }
