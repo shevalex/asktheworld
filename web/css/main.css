@@ -17,28 +17,29 @@ body {
 }
 #Title-Image {
   float: right;
-  margin-right: 200px;
+  margin-right: 20px;
   margin-top: 10px;
   content: url(../imgs/AskTheWorld.png);
 }
-#Title-Language {
-  position: absolute;
-  right: 30px;
+#Title-Options {
+  text-align: right;
+  padding-right: 20px;
   top: 10px;
-}
-#Title-Language-Text {
-  font-size: 15px;
-  font-style: italic;
-}
 
-#Title-User {
-  position: absolute;
-  right: 30px;
-  top: 50px;
+  font-size: 12px;
 }
-#Title-User-Text {
-  font-size: 15px;
-  font-style: italic;
+#Title-Options-Language-Button {
+  position: relative;
+  font-size: inherit;
+}
+#Title-Options-Separator {
+  display: none;
+  font-size: inherit;
+}
+#Title-Options-User-Button {
+  position: relative;
+  display: none;
+  font-size: inherit;
 }
 
 #Footer {

@@ -71,7 +71,7 @@
 .language-selection-popup {
   position: absolute;
   right: 0px;
-  top: 20px;
+  top: 25px;
   width: 100px;
   height: 200px;
   
@@ -96,7 +96,7 @@
 .user-menu-popup {
   position: absolute;
   right: 0px;
-  top: 20px;
+  top: 25px;
   width: 100px;
   height: 90px;
   

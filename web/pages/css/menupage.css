@@ -2,7 +2,7 @@
 }
 
 #MenuPage-MenuPanel {
-  width: 250;
+  width: 220;
   vertical-align: top;
   margin-left: 0px;
   margin-right: 50px;
@@ -36,7 +36,8 @@
   border-bottom-width: 1px;
   border-bottom-color: transparent;
 
-  font-size: 20px;
+  font-size: 15px;
+  font-family: Verdana;
 }
 
 .menupage-menuitem:hover {

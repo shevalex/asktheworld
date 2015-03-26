@@ -316,12 +316,12 @@ Application._getPage = function(pageId) {
 
 
 Application.setupUserMenuChooser = function() {
-  $("#Title-User-Text").click(function() {
+  $("#Title-Options-User-Button").click(function() {
     if ($(".user-menu-popup").length > 0) {
       return;
     }
     
-    var popup = UIUtils.appendBlock($("#Title-User").get(0), "Title-User-Popup");
+    var popup = UIUtils.appendBlock($("#Title-Options-User-Button").get(0), "Title-User-Popup");
     UIUtils.addClass(popup, "user-menu-popup");
     
     
@@ -352,6 +352,9 @@ Application.setupUserMenuChooser = function() {
     UIUtils.addClass(item, "user-menu-item");
     UIUtils.setClickListener(item, function(lr) {
       popupCloser();
+      $("#Title-Options-Separator").css("display", "none");
+      $("#Title-Options-User-Button").css("display", "none");
+      
       Application.reset();
       Application.showPage(LoginPage.name);
     });
@@ -359,7 +362,9 @@ Application.setupUserMenuChooser = function() {
     Application._setPopupCloser("user-menu-popup");
   }.bind(this));
   
-  $("#Title-User-Text").html(Backend.getUserProfile().name);
+  $("#Title-Options-Separator").css("display", "inline-block");
+  $("#Title-Options-User-Button").css("display", "inline-block");
+  $("#Title-Options-User-Button").html(Backend.getUserProfile().name);
 }
 
 
@@ -459,12 +464,12 @@ Application._deserialize = function(ser) {
 
 
 Application._setupLanguageChooser = function() {
-  $("#Title-Language-Text").click(function() {
+  $("#Title-Options-Language-Button").click(function() {
     if ($(".language-selection-popup").length > 0) {
       return;
     }
     
-    var popup = UIUtils.appendBlock($("#Title-Language").get(0), "Title-Language-Popup");
+    var popup = UIUtils.appendBlock($("#Title-Options-Language-Button").get(0), "Title-Language-Popup");
     UIUtils.addClass(popup, "language-selection-popup");
     
     for (var index in Application.Configuration.LANGUAGES) {
@@ -474,7 +479,7 @@ Application._setupLanguageChooser = function() {
       UIUtils.addClass(item, "language-selection-item");
       
       UIUtils.setClickListener(item, function(lr) {
-        $("#Title-Language-Text").html(lr.display);
+        $("#Title-Options-Language-Button").html(lr.display);
         I18n.setCurrentLanguage(lr.data);
         window.localStorage.menuLanguage = lr.data;
         
@@ -498,7 +503,7 @@ Application._setupLanguageChooser = function() {
       break;
     }
   }
-  $("#Title-Language-Text").html(displayLanguage);
+  $("#Title-Options-Language-Button").html(displayLanguage);
 }
 
 
