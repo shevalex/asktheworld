@@ -2,7 +2,7 @@
 }
 
 #MenuPage-MenuPanel {
-  width: 220;
+  width: 200px;
   vertical-align: top;
   margin-left: 0px;
   margin-right: 50px;
@@ -14,12 +14,11 @@
 }
 
 #MenuPage-ContentPanel {
-  width: calc(100% - 250px - 80px);
-  height: calc(100% - 20px);
+  width: calc(100% - 200px - 60px);
+  height: calc(100% - 10px);
   overflow: auto;
-  margin-left: 10px;
-  margin-top: 20px;
   padding-right: 10px;
+  padding-top: 10px;
   display: inline-block;
 }
 
@@ -36,7 +35,7 @@
   border-bottom-width: 1px;
   border-bottom-color: transparent;
 
-  font-size: 15px;
+  font-size: 14px;
   font-family: Verdana;
 }
 
