@@ -163,7 +163,7 @@ Application.reset = function() {
   this.hideSpinningWheel();
   this.hideDialog();
   
-  $("#Title-User-Text").html("");
+  $("#Title-User-Text").text("");
   
   Backend.logOut();
 }
@@ -357,6 +357,8 @@ Application.setupUserMenuChooser = function() {
       
       Application.reset();
       Application.showPage(LoginPage.name);
+      
+      return false;
     });
     
     Application._setPopupCloser("user-menu-popup");
@@ -364,7 +366,7 @@ Application.setupUserMenuChooser = function() {
   
   $("#Title-Options-Separator").css("display", "inline-block");
   $("#Title-Options-User-Button").css("display", "inline-block");
-  $("#Title-Options-User-Button").html(Backend.getUserProfile().name);
+  $("#Title-Options-User-Button").text(Backend.getUserProfile().name);
 }
 
 
@@ -477,18 +479,15 @@ Application._setupLanguageChooser = function() {
       
       var item = UIUtils.appendLink(popup, languageRecord.data, languageRecord.display);
       UIUtils.addClass(item, "language-selection-item");
-      
+
       UIUtils.setClickListener(item, function(lr) {
-        $("#Title-Options-Language-Button").html(lr.display);
+        $("#Title-Options-Language-Button").text(lr.display);
         I18n.setCurrentLanguage(lr.data);
         window.localStorage.menuLanguage = lr.data;
-        
+
         Application.reload();
         
-        var container = UIUtils.get$(popup);
-        container.fadeOut("fast", function() {
-          container.remove();
-        });
+        return false;
       }.bind(this, languageRecord));
     }
     
@@ -503,7 +502,7 @@ Application._setupLanguageChooser = function() {
       break;
     }
   }
-  $("#Title-Options-Language-Button").html(displayLanguage);
+  $("#Title-Options-Language-Button").text(displayLanguage);
 }
 
 
