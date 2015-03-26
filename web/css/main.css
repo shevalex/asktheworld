@@ -13,7 +13,7 @@ body {
   
   border-bottom-style: solid;
   border-bottom-width: 1px;
-  border-bottom-color: rgb(86, 108, 17);
+  border-bottom-color: rgb(56, 124, 44);
 }
 #Title-Image {
   float: right;
@@ -28,19 +28,19 @@ body {
 
   font-size: 12px;
 }
+#Title-Options-Language-Button, #Title-Options-Separator, #Title-Options-User-Button {
+  display: none;
+  position: relative;
+  font-size: inherit;
+  color: rgb(75, 75, 75);
+}
 #Title-Options-Language-Button {
-  position: relative;
-  font-size: inherit;
+  display: inline-block;
 }
-#Title-Options-Separator {
-  display: none;
-  font-size: inherit;
+#Title-Options-Language-Button:hover, #Title-Options-User-Button:hover {
+  color: rgb(17, 77, 7);
 }
-#Title-Options-User-Button {
-  position: relative;
-  display: none;
-  font-size: inherit;
-}
+
 
 #Footer {
   width: 100%;
@@ -50,7 +50,7 @@ body {
   padding-top: 5px;
   padding-bottom: 5px;
   white-space: nowrap;
-  background: rgb(86, 108, 17);
+  background: rgb(56, 124, 44);
 }
 
 #Footer-Label {
@@ -69,10 +69,10 @@ body {
   color: white;
 }
 #Footer-ContactUs:hover {
-  color: rgb(255, 0, 0);
+  color: rgb(17, 77, 7);
 }
 #Footer-ContactUs:active {
-  color: rgb(255, 255, 0);
+  color: rgb(17, 77, 7);
 }
 
 #RootContainer {
