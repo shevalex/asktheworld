@@ -29,6 +29,10 @@ class UIViewControllerWithSpinner: UIViewController {
         super.viewWillAppear(animated);
         
         updateListenerId = Backend.getInstance().addCacheChangeListener(updateListener);
+        
+        if (Backend.getInstance().isCacheInUpdate()) {
+            AtwUiUtils.showSpinner(self.view, disableInput: false);
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {

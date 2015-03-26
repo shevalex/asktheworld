@@ -684,12 +684,16 @@ public struct Backend {
     
     // Event Management
     
-    func addCacheChangeListener(listener: CacheChangeEventObserver) -> String {
-        return cache.addCacheChangeListener(listener);
+    func addCacheChangeListener(listener: CacheChangeEventObserver, listenerId: String? = nil) -> String {
+        return cache.addCacheChangeListener(listener, listenerId: listenerId);
     }
     
     func removeCacheChangeListener(listenerId: String) {
         cache.removeCacheChangeListener(listenerId);
+    }
+    
+    func isCacheInUpdate() -> Bool {
+        return cache.isInUpdate();
     }
     
     
@@ -850,9 +854,9 @@ public struct Backend {
             private var counter: Int! = 0;
             private var list: Dictionary<String, CacheChangeEventObserver> = Dictionary();
             
-            func add(element: CacheChangeEventObserver) -> String {
+            func add(element: CacheChangeEventObserver, elementId: String?) -> String {
                 counter = counter + 1;
-                let id = "listener-\(counter)";
+                let id: String = elementId != nil ? elementId! : "listener-\(counter)";
                 list.updateValue(element, forKey: id);
                 
                 return id;
@@ -890,8 +894,8 @@ public struct Backend {
         
         private var updateInProgressNotified: Bool = false;
         
-        func addCacheChangeListener(listener: CacheChangeEventObserver) -> String {
-            return cacheChangeListeners.add(listener);
+        func addCacheChangeListener(listener: CacheChangeEventObserver, listenerId: String?) -> String {
+            return cacheChangeListeners.add(listener, elementId: listenerId);
         }
         
         func removeCacheChangeListener(listenerId: String) {

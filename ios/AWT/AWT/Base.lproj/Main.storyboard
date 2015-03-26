@@ -653,6 +653,9 @@
                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="previousResponseClickAction:" destination="lJD-el-UlL" eventType="touchUpInside" id="fAW-tz-fd4"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XCm-Zm-iUx">
                                         <rect key="frame" x="280" y="200" width="32" height="30"/>
@@ -660,6 +663,9 @@
                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="nextResponseClickAction:" destination="lJD-el-UlL" eventType="touchUpInside" id="gE8-er-vXJ"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I4h-UX-raz">
                                         <rect key="frame" x="113" y="200" width="95" height="30"/>
@@ -667,15 +673,18 @@
                                             <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="markReadClickAction:" destination="lJD-el-UlL" eventType="touchUpInside" id="lnB-np-9rU"/>
+                                        </connections>
                                     </button>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4ou-kY-1Fm">
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4ou-kY-1Fm" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="152" width="320" height="50"/>
                                         <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="5FM-62-jk8"/>
                                         </constraints>
                                     </scrollView>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Text of response" translatesAutoresizingMaskIntoConstraints="NO" id="HHe-d2-RZg">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HHe-d2-RZg">
                                         <rect key="frame" x="8" y="8" width="304" height="136"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -703,7 +712,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cfP-O6-XsK">
                                 <rect key="frame" x="0.0" y="64" width="320" height="230"/>
                                 <subviews>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X60-qX-ge6">
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X60-qX-ge6" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="180" width="320" height="50"/>
                                         <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
@@ -711,7 +720,7 @@
                                             <constraint firstAttribute="height" constant="50" id="s6n-0H-a89"/>
                                         </constraints>
                                     </scrollView>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Text of request" translatesAutoresizingMaskIntoConstraints="NO" id="8Fi-A2-Gw6">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Fi-A2-Gw6">
                                         <rect key="frame" x="8" y="8" width="304" height="164"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -749,6 +758,15 @@
                     </view>
                     <navigationItem key="navigationItem" title="Request Details" id="SPu-Iu-MFz"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="markReadButton" destination="I4h-UX-raz" id="THK-Qa-tAe"/>
+                        <outlet property="nextResponseButton" destination="XCm-Zm-iUx" id="Ief-do-R3x"/>
+                        <outlet property="previousResponseButton" destination="wBB-z0-Odd" id="ypH-5k-Neq"/>
+                        <outlet property="requestAttachmentsView" destination="X60-qX-ge6" id="DHi-Vd-iP3"/>
+                        <outlet property="requestTextField" destination="8Fi-A2-Gw6" id="90V-om-Ck3"/>
+                        <outlet property="responseAttachmentsView" destination="4ou-kY-1Fm" id="zFV-Ef-Nkc"/>
+                        <outlet property="responseTextField" destination="HHe-d2-RZg" id="3Nb-dB-4WH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eZc-8g-puk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
