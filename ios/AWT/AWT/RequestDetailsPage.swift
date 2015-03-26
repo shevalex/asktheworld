@@ -15,15 +15,12 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     @IBOutlet weak var responseTextField: UITextView!
     
     @IBOutlet weak var requestAttachmentsView: AttachmentBarView!
-    
     @IBOutlet weak var responseAttachmentsView: AttachmentBarView!
-    
     
     @IBOutlet weak var nextResponseButton: UIButton!
     @IBOutlet weak var previousResponseButton: UIButton!
     @IBOutlet weak var markReadButton: UIButton!
     
-    private var request: Backend.RequestObject!
     private var responseIds: [String]?
     private var currentResponseId: String?
     
@@ -57,7 +54,7 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
                     }
                 }
                 
-                // TBD - close the page - we have no this request any more
+                self.navigationController?.popViewControllerAnimated(true);
             } else if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED && event.requestId == self.requestId) {
                 self.updateRequestFields();
             }
@@ -95,7 +92,6 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         updateRequestFields();
     }
     
-    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated);
         
@@ -103,12 +99,17 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     }
 
     private func updateRequestFields() {
-        request = Backend.getInstance().getRequest(requestId);
+        let request = Backend.getInstance().getRequest(requestId);
         if (request == nil) {
+            requestTextField.text = NSLocalizedString("Retreiving...", comment: "Request text is not available - pulling");
+
+            currentResponseId = nil;
+            updateResponseFields();
+            
             return;
         }
         
-        requestTextField.text = request.text;
+        requestTextField.text = request!.text;
         
         responseIds = Backend.getInstance().getIncomingResponseIds(requestId, responseStatus: nil);
         if (responseIds != nil && responseIds?.count > 0) {

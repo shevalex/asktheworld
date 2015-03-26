@@ -54,6 +54,9 @@ class HomePage: UIViewControllerWithSpinner {
         if (segue.identifier == "showRequestDetails") {
             let destView = segue.destinationViewController as RequestDetailsPage;
             destView.requestId = selectedRequestId;
+        } else if (segue.identifier == "showInquiryDetails") {
+            let destView = segue.destinationViewController as InquiryDetailsPage;
+            destView.requestId = selectedRequestId;
         }
     }
 
