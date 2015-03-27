@@ -196,7 +196,7 @@ public protocol BackendCallback {
 }
 
 public struct Backend {
-    public typealias CompletionObserver = () -> Void;
+    public typealias CompletionObserver = (id: String) -> Void;
     typealias CacheChangeEventObserver = (event: CacheChangeEvent) -> Void;
     
     
@@ -679,7 +679,7 @@ public struct Backend {
             self.cache.setRequest(requestId, request: request);
             self.cache.setOutgoingRequestIds(ids!);
             self.cache.setIncomingResponseIds(requestId, responseIds: []);
-            observer();
+            observer(id: requestId);
         };
         
         DelayedNotifier(action).schedule(2);
@@ -701,7 +701,7 @@ public struct Backend {
             
             self.cache.setResponse(requestId, responseId: responseId, response: response);
             self.cache.setOutgoingResponseIds(requestId, responseIds: ids!);
-            observer();
+            observer(id: responseId);
         };
         
         DelayedNotifier(action).schedule(3);

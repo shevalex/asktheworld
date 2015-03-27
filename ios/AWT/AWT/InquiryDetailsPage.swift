@@ -63,7 +63,7 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
         //        response.attachments;
         response.text = responseTextField.text;
         
-        Backend.getInstance().createResponse(requestId, response: response, observer: {() -> Void in
+        Backend.getInstance().createResponse(requestId, response: response, observer: {(id) -> Void in
             self.navigationController?.popViewControllerAnimated(true);
             return;
         });

@@ -56,7 +56,7 @@ class CreateNewRequestPage: UIViewControllerWithSpinner {
         request.responseWaitTime = waitTimeSelector.getSelectedItem();
         request.text = requestTextField.text;
         
-        Backend.getInstance().createRequest(request, observer: {() -> Void in
+        Backend.getInstance().createRequest(request, observer: {(id) -> Void in
             self.navigationController?.popViewControllerAnimated(true);
             return;
         });
