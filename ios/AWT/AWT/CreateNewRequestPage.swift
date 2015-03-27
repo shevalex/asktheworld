@@ -46,6 +46,14 @@ class CreateNewRequestPage: UIViewControllerWithSpinner {
     }
     
     @IBAction func sendButtonClickedAction(sender: UIBarButtonItem) {
+        if (requestTextField.text == "") {
+            AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Error", comment: "Error title"), popupError: NSLocalizedString("Please enter a message", comment: "Cannot send empty request"), okCallback: { () -> Void in
+            });
+            
+            return;
+        }
+        
+        
         var request = Backend.RequestObject();
         
 //        request.attachments;
@@ -76,6 +84,8 @@ class CreateNewRequestPage: UIViewControllerWithSpinner {
         ageSelector.setSelectedItem(Backend.getInstance().getUserContext().requestTargetAge);
         waitTimeSelector.setSelectedItem(Backend.getInstance().getUserContext().responseWaitTime);
         numOfResponsesSelector.setSelectedItem(Backend.getInstance().getUserContext().responseQuantity);
+        
+        requestTextField.text = "";
     }
     
 
