@@ -948,7 +948,7 @@
         <!--Edit Request-->
         <scene sceneID="fT7-jH-koX">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Cdn-Yv-poz" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="Cdn-Yv-poz" customClass="EditRequestPage" customModule="AWT" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="RwL-O3-evX"/>
                         <viewControllerLayoutGuide type="bottom" id="GpM-YK-1sR"/>
@@ -960,9 +960,17 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TK7-jL-fpD">
                                 <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                                 <items>
-                                    <barButtonItem title="Attach" id="nmN-m3-pgu"/>
+                                    <barButtonItem title="Attach" id="nmN-m3-pgu">
+                                        <connections>
+                                            <action selector="attachButtonClickAction:" destination="Cdn-Yv-poz" id="VUQ-4c-JbQ"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="n91-2z-lv7"/>
-                                    <barButtonItem title="Send" id="281-Lr-1sc"/>
+                                    <barButtonItem title="Send" id="281-Lr-1sc">
+                                        <connections>
+                                            <action selector="sendButtonClickAction:" destination="Cdn-Yv-poz" id="ble-s1-WwN"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bIX-kF-4b4">
@@ -1000,13 +1008,12 @@
                                         </constraints>
                                     </scrollView>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Type you request here" translatesAutoresizingMaskIntoConstraints="NO" id="dLi-Bv-hWE">
-                                        <rect key="frame" x="8" y="220" width="304" height="164"/>
+                                        <rect key="frame" x="8" y="220" width="304" height="174"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="hng-GO-O9S" firstAttribute="centerX" secondItem="bIX-kF-4b4" secondAttribute="centerX" id="4ml-Wt-7jN"/>
                                     <constraint firstItem="qr8-Kd-pWh" firstAttribute="top" secondItem="lN6-l6-VBu" secondAttribute="bottom" constant="8" symbolic="YES" id="9l3-IH-ZQT"/>
@@ -1019,7 +1026,7 @@
                                     <constraint firstItem="a30-bX-e5p" firstAttribute="top" secondItem="eOD-A3-sA9" secondAttribute="bottom" constant="8" symbolic="YES" id="PH5-wu-z3N"/>
                                     <constraint firstItem="hng-GO-O9S" firstAttribute="trailing" secondItem="lN6-l6-VBu" secondAttribute="trailing" id="VUY-nN-IGG"/>
                                     <constraint firstItem="hng-GO-O9S" firstAttribute="leading" secondItem="qr8-Kd-pWh" secondAttribute="leading" id="WVq-HZ-2Xh"/>
-                                    <constraint firstItem="Stq-TU-HQ2" firstAttribute="top" secondItem="dLi-Bv-hWE" secondAttribute="bottom" constant="18" id="X2i-1W-VsX"/>
+                                    <constraint firstItem="Stq-TU-HQ2" firstAttribute="top" secondItem="dLi-Bv-hWE" secondAttribute="bottom" constant="8" symbolic="YES" id="X2i-1W-VsX"/>
                                     <constraint firstItem="a30-bX-e5p" firstAttribute="centerX" secondItem="dLi-Bv-hWE" secondAttribute="centerX" id="Y9b-1b-l6T"/>
                                     <constraint firstItem="hng-GO-O9S" firstAttribute="top" secondItem="bIX-kF-4b4" secondAttribute="top" constant="20" id="aRN-Nn-5OZ"/>
                                     <constraint firstItem="dLi-Bv-hWE" firstAttribute="top" secondItem="a30-bX-e5p" secondAttribute="bottom" constant="8" symbolic="YES" id="bQ1-67-0Qr"/>
@@ -1048,6 +1055,15 @@
                     </view>
                     <navigationItem key="navigationItem" title="Edit Request" id="pdk-iK-5Fh"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="ageTextField" destination="qr8-Kd-pWh" id="aCJ-OC-QUt"/>
+                        <outlet property="attachmentsView" destination="Stq-TU-HQ2" id="ynq-NI-ZFd"/>
+                        <outlet property="expertiseTextField" destination="hng-GO-O9S" id="XmK-sa-0lU"/>
+                        <outlet property="genderTextField" destination="lN6-l6-VBu" id="z0h-YR-hd3"/>
+                        <outlet property="numOfResponsesTextField" destination="a30-bX-e5p" id="ZLV-DD-Nb6"/>
+                        <outlet property="requestTextField" destination="dLi-Bv-hWE" id="0bt-sS-eoW"/>
+                        <outlet property="waitTimeTextField" destination="eOD-A3-sA9" id="EAB-fS-G5e"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eJa-XD-Ckv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -2006,11 +2022,11 @@
         <image name="contact_info.png" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="amh-dw-tq7"/>
         <segue reference="c75-sv-RRF"/>
         <segue reference="mv9-mT-7H4"/>
         <segue reference="Llv-VC-fNS"/>
         <segue reference="kq4-hL-iH6"/>
         <segue reference="tk7-4O-lCv"/>
+        <segue reference="PsH-Jh-kRd"/>
     </inferredMetricsTieBreakers>
 </document>
