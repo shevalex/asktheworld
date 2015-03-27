@@ -20,6 +20,8 @@ class AttachmentBarView: UIScrollView {
     func addImage(image: UIImage) {
         imageArray.append(image);
         
+        var tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
+        
         contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
         
         
@@ -27,11 +29,17 @@ class AttachmentBarView: UIScrollView {
         let newImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
         newImageView.image = image;
         newImageView.contentMode = UIViewContentMode.ScaleToFill;
+        newImageView.userInteractionEnabled = true;
+        newImageView.addGestureRecognizer(tapRecognizer)
 
         addSubview(newImageView);
     }
 
     func removeImage(imageIndex: Int) {
         
+    }
+    
+    func imagePressedAction(image: UIImage) {
+        println("My action");
     }
 }
