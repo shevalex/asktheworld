@@ -58,6 +58,14 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
     
 
     @IBAction func sendButtonClickAction(sender: AnyObject) {
+        if (responseTextField.text == "") {
+            AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Error", comment: "Error title"), popupError: NSLocalizedString("Please enter a message", comment: "Cannot send empty response"), okCallback: { () -> Void in
+            });
+            
+            return;
+        }
+        
+        
         var response = Backend.ResponseObject(userContext: Backend.getInstance().getUserContext());
         
         //        response.attachments;
