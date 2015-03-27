@@ -557,9 +557,14 @@
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Text of request" translatesAutoresizingMaskIntoConstraints="NO" id="kfp-6W-JVb">
                                         <rect key="frame" x="8" y="8" width="304" height="164"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </textView>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n3P-Ra-KIg" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="180" width="320" height="50"/>
@@ -568,7 +573,6 @@
                                         </constraints>
                                     </scrollView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="kfp-6W-JVb" firstAttribute="top" secondItem="7kk-SH-7sX" secondAttribute="top" constant="8" id="6nu-Ej-aRb"/>
                                     <constraint firstItem="n3P-Ra-KIg" firstAttribute="leading" secondItem="7kk-SH-7sX" secondAttribute="leading" id="KAP-Z8-VFt"/>
@@ -585,9 +589,16 @@
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Text of response" translatesAutoresizingMaskIntoConstraints="NO" id="cdW-iT-4D6">
                                         <rect key="frame" x="8" y="8" width="304" height="164"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                <integer key="value" value="1"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </textView>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="biZ-t1-7OJ" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="180" width="320" height="50"/>
@@ -596,7 +607,6 @@
                                         </constraints>
                                     </scrollView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.76812702489999996" green="0.92135793519999998" blue="0.93264678030000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="cdW-iT-4D6" firstAttribute="top" secondItem="Ce3-Q4-W1G" secondAttribute="top" constant="8" id="0QI-BT-bzd"/>
                                     <constraint firstItem="biZ-t1-7OJ" firstAttribute="leading" secondItem="Ce3-Q4-W1G" secondAttribute="leading" id="Dc9-EZ-6K8"/>
@@ -704,19 +714,22 @@
                                     </button>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4ou-kY-1Fm" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="152" width="320" height="50"/>
-                                        <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="5FM-62-jk8"/>
                                         </constraints>
                                     </scrollView>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HHe-d2-RZg">
                                         <rect key="frame" x="8" y="8" width="304" height="136"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </textView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="4ou-kY-1Fm" secondAttribute="bottom" constant="28" id="8Gs-Ol-Bl6"/>
                                     <constraint firstItem="4ou-kY-1Fm" firstAttribute="top" secondItem="HHe-d2-RZg" secondAttribute="bottom" constant="8" id="AMr-dC-cPo"/>
@@ -731,7 +744,6 @@
                                     <constraint firstAttribute="trailing" secondItem="4ou-kY-1Fm" secondAttribute="trailing" id="uVm-Ch-kQh"/>
                                     <constraint firstItem="HHe-d2-RZg" firstAttribute="leading" secondItem="wBB-z0-Odd" secondAttribute="leading" id="wLG-rD-znV"/>
                                     <constraint firstItem="4ou-kY-1Fm" firstAttribute="leading" secondItem="83N-cE-9m1" secondAttribute="leading" id="xSW-Tf-Yss"/>
-                                    <constraint firstItem="4ou-kY-1Fm" firstAttribute="top" secondItem="HHe-d2-RZg" secondAttribute="bottom" constant="8" symbolic="YES" id="yk5-sc-ajA"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cfP-O6-XsK">
@@ -739,7 +751,6 @@
                                 <subviews>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X60-qX-ge6" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="180" width="320" height="50"/>
-                                        <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="QNw-2u-svw"/>
                                             <constraint firstAttribute="height" constant="50" id="s6n-0H-a89"/>
@@ -747,12 +758,16 @@
                                     </scrollView>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Fi-A2-Gw6">
                                         <rect key="frame" x="8" y="8" width="304" height="164"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </textView>
                                 </subviews>
-                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="X60-qX-ge6" firstAttribute="leading" secondItem="cfP-O6-XsK" secondAttribute="leading" id="4BN-r0-LLc"/>
                                     <constraint firstAttribute="bottom" secondItem="X60-qX-ge6" secondAttribute="bottom" id="Bnv-Cz-jcD"/>
@@ -2008,7 +2023,7 @@
         <segue reference="mv9-mT-7H4"/>
         <segue reference="Uoe-4F-0Nn"/>
         <segue reference="amh-dw-tq7"/>
-        <segue reference="Z0X-31-cgP"/>
-        <segue reference="7xE-kX-cnr"/>
+        <segue reference="kq4-hL-iH6"/>
+        <segue reference="tk7-4O-lCv"/>
     </inferredMetricsTieBreakers>
 </document>
