@@ -23,7 +23,7 @@ class AttachmentBarView: UIScrollView {
         contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
         
         
-        let x = (frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count - 1) + IMAGE_INSET;
+        let x = (frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count - 1);
         let newImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
         newImageView.image = image;
         newImageView.contentMode = UIViewContentMode.ScaleToFill;

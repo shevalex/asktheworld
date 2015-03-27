@@ -86,7 +86,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fetching your inquiries..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k9y-eO-mFg">
                                 <rect key="frame" x="0.0" y="72" width="320" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -219,7 +219,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fetching your requests..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oYK-fI-5gx">
                                 <rect key="frame" x="0.0" y="72" width="320" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -557,7 +557,7 @@
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Text of request" translatesAutoresizingMaskIntoConstraints="NO" id="kfp-6W-JVb">
                                         <rect key="frame" x="8" y="8" width="304" height="164"/>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         <userDefinedRuntimeAttributes>
@@ -720,7 +720,7 @@
                                     </scrollView>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HHe-d2-RZg">
                                         <rect key="frame" x="8" y="8" width="304" height="136"/>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         <userDefinedRuntimeAttributes>
@@ -758,7 +758,7 @@
                                     </scrollView>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Fi-A2-Gw6">
                                         <rect key="frame" x="8" y="8" width="304" height="164"/>
-                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         <userDefinedRuntimeAttributes>
@@ -887,7 +887,7 @@
                                         </variation>
                                     </textView>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HWF-Qg-hav" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="402" width="320" height="50"/>
+                                        <rect key="frame" x="5" y="402" width="310" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="JAX-Kz-hAz"/>
                                             <constraint firstAttribute="height" constant="50" id="zXB-j4-k3F"/>
@@ -905,14 +905,14 @@
                                     <constraint firstItem="3Nk-CF-c4K" firstAttribute="trailing" secondItem="AfW-8k-dfd" secondAttribute="trailing" id="7lq-C7-g6H"/>
                                     <constraint firstItem="3Nk-CF-c4K" firstAttribute="leading" secondItem="os7-HU-Lgk" secondAttribute="leading" id="9gp-S3-Pr6"/>
                                     <constraint firstItem="CKG-jm-zOf" firstAttribute="top" secondItem="MYY-aN-zon" secondAttribute="bottom" constant="8" symbolic="YES" id="BTZ-T1-y5Z"/>
-                                    <constraint firstAttribute="trailing" secondItem="HWF-Qg-hav" secondAttribute="trailing" id="DOt-cg-aQx"/>
+                                    <constraint firstAttribute="trailing" secondItem="HWF-Qg-hav" secondAttribute="trailing" constant="5" id="DOt-cg-aQx"/>
                                     <constraint firstItem="MYY-aN-zon" firstAttribute="top" secondItem="AfW-8k-dfd" secondAttribute="bottom" constant="8" symbolic="YES" id="DkT-bo-ymi"/>
                                     <constraint firstItem="3Nk-CF-c4K" firstAttribute="leading" secondItem="MYY-aN-zon" secondAttribute="leading" id="Dwj-Y1-aIz"/>
                                     <constraint firstItem="3Nk-CF-c4K" firstAttribute="trailing" secondItem="os7-HU-Lgk" secondAttribute="trailing" id="Dwn-ji-5g1"/>
                                     <constraint firstAttribute="trailing" secondItem="3Nk-CF-c4K" secondAttribute="trailing" constant="20" id="HFQ-ZT-JI1"/>
                                     <constraint firstItem="HWF-Qg-hav" firstAttribute="top" secondItem="CKG-jm-zOf" secondAttribute="bottom" constant="8" symbolic="YES" id="Pc2-UI-wIZ"/>
                                     <constraint firstItem="CKG-jm-zOf" firstAttribute="leading" secondItem="shR-7K-hJQ" secondAttribute="leading" constant="8" id="QGE-DR-TYQ"/>
-                                    <constraint firstItem="HWF-Qg-hav" firstAttribute="leading" secondItem="shR-7K-hJQ" secondAttribute="leading" id="SpQ-DM-Zwc"/>
+                                    <constraint firstItem="HWF-Qg-hav" firstAttribute="leading" secondItem="shR-7K-hJQ" secondAttribute="leading" constant="5" id="SpQ-DM-Zwc"/>
                                     <constraint firstItem="3Nk-CF-c4K" firstAttribute="trailing" secondItem="MYY-aN-zon" secondAttribute="trailing" id="T3c-cs-5tJ"/>
                                     <constraint firstItem="3Nk-CF-c4K" firstAttribute="top" secondItem="shR-7K-hJQ" secondAttribute="top" constant="20" symbolic="YES" id="bgV-Eu-yOp"/>
                                     <constraint firstItem="3Nk-CF-c4K" firstAttribute="leading" secondItem="shR-7K-hJQ" secondAttribute="leading" constant="20" id="c1d-Cq-7zF"/>
@@ -1001,13 +1001,13 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Stq-TU-HQ2">
-                                        <rect key="frame" x="0.0" y="392" width="320" height="50"/>
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Stq-TU-HQ2">
+                                        <rect key="frame" x="0.0" y="402" width="320" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="INu-gg-Rgj"/>
                                         </constraints>
                                     </scrollView>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Type you request here" translatesAutoresizingMaskIntoConstraints="NO" id="dLi-Bv-hWE">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" text="Type you request here" translatesAutoresizingMaskIntoConstraints="NO" id="dLi-Bv-hWE">
                                         <rect key="frame" x="8" y="220" width="304" height="164"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -1027,7 +1027,7 @@
                                     <constraint firstAttribute="bottom" secondItem="Stq-TU-HQ2" secondAttribute="bottom" constant="8" id="EnZ-dq-QtG"/>
                                     <constraint firstItem="dLi-Bv-hWE" firstAttribute="leading" secondItem="bIX-kF-4b4" secondAttribute="leadingMargin" id="Exz-DJ-kxz"/>
                                     <constraint firstItem="hng-GO-O9S" firstAttribute="trailing" secondItem="eOD-A3-sA9" secondAttribute="trailing" id="F7E-DI-Dll"/>
-                                    <constraint firstItem="Stq-TU-HQ2" firstAttribute="top" secondItem="dLi-Bv-hWE" secondAttribute="bottom" constant="8" symbolic="YES" id="IUb-lZ-FUD"/>
+                                    <constraint firstItem="Stq-TU-HQ2" firstAttribute="top" secondItem="dLi-Bv-hWE" secondAttribute="bottom" constant="18" id="IUb-lZ-FUD"/>
                                     <constraint firstItem="qr8-Kd-pWh" firstAttribute="centerX" secondItem="dLi-Bv-hWE" secondAttribute="centerX" id="Mpd-bN-naE"/>
                                     <constraint firstItem="hng-GO-O9S" firstAttribute="leading" secondItem="bIX-kF-4b4" secondAttribute="leading" constant="20" id="OgL-sV-jce"/>
                                     <constraint firstItem="a30-bX-e5p" firstAttribute="top" secondItem="eOD-A3-sA9" secondAttribute="bottom" constant="8" symbolic="YES" id="PH5-wu-z3N"/>
