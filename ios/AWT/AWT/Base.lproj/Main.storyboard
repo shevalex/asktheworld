@@ -845,7 +845,7 @@
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Type you request here" translatesAutoresizingMaskIntoConstraints="NO" id="CKG-jm-zOf">
-                                        <rect key="frame" x="8" y="210" width="304" height="172"/>
+                                        <rect key="frame" x="8" y="210" width="304" height="184"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="164" id="agP-m5-dId"/>
                                             <constraint firstAttribute="height" constant="164" id="zsy-5g-MRg"/>
@@ -868,7 +868,7 @@
                                         </variation>
                                     </textView>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HWF-Qg-hav" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="390" width="320" height="50"/>
+                                        <rect key="frame" x="0.0" y="402" width="320" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="JAX-Kz-hAz"/>
                                             <constraint firstAttribute="height" constant="50" id="zXB-j4-k3F"/>
@@ -903,7 +903,7 @@
                                     <constraint firstItem="9tZ-Dl-cta" firstAttribute="top" secondItem="os7-HU-Lgk" secondAttribute="bottom" constant="8" symbolic="YES" id="iXT-yh-FAP"/>
                                     <constraint firstItem="3Nk-CF-c4K" firstAttribute="leading" secondItem="AfW-8k-dfd" secondAttribute="leading" id="iZz-Tv-zUj"/>
                                     <constraint firstItem="os7-HU-Lgk" firstAttribute="top" secondItem="3Nk-CF-c4K" secondAttribute="bottom" constant="8" symbolic="YES" id="tKj-ad-unn"/>
-                                    <constraint firstAttribute="bottom" secondItem="HWF-Qg-hav" secondAttribute="bottom" constant="20" symbolic="YES" id="tfi-Zc-JaR"/>
+                                    <constraint firstAttribute="bottom" secondItem="HWF-Qg-hav" secondAttribute="bottom" constant="8" id="tfi-Zc-JaR"/>
                                 </constraints>
                             </view>
                         </subviews>
