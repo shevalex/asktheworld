@@ -97,6 +97,14 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         
         Backend.getInstance().removeCacheChangeListener(updateListenerId);
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if (segue.identifier == "showEditRequestPage") {
+            let destView = segue.destinationViewController as EditRequestPage;
+            destView.requestId = requestId;
+        }
+    }
+    
 
     private func updateRequestFields() {
         let request = Backend.getInstance().getRequest(requestId);
@@ -154,15 +162,4 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         
         return -1;
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

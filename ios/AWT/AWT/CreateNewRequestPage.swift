@@ -10,19 +10,19 @@ import UIKit
 
 class CreateNewRequestPage: UIViewControllerWithSpinner {
     @IBOutlet weak var expertiseTextField: UITextField!
-    var expertiseSelector: SelectorView!;
+    var expertiseSelector: SelectorView!
     
     @IBOutlet weak var genderTextField: UITextField!
-    var genderSelector: SelectorView!;
+    var genderSelector: SelectorView!
     
     @IBOutlet weak var ageTextField: UITextField!
-    var ageSelector: SelectorView!;
+    var ageSelector: SelectorView!
     
     @IBOutlet weak var waitTimeTextField: UITextField!
-    var waitTimeSelector: SelectorView!;
+    var waitTimeSelector: SelectorView!
     
     @IBOutlet weak var numberOfResponsesTextField: UITextField!
-    var numOfResponsesSelector: SelectorView!;
+    var numOfResponsesSelector: SelectorView!
     
     @IBOutlet weak var imageScrollView: AttachmentBarView!
     @IBOutlet weak var requestTextField: UITextView!
@@ -35,8 +35,6 @@ class CreateNewRequestPage: UIViewControllerWithSpinner {
         ageSelector = AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE, multichoice: false);
         waitTimeSelector = AtwUiUtils.setDataChooser(waitTimeTextField, items: Configuration.RESPONSE_WAIT_TIME, multichoice: false);
         numOfResponsesSelector = AtwUiUtils.setDataChooser(numberOfResponsesTextField, items: Configuration.RESPONSE_QUANTITY, multichoice: false);
-
-        // Do any additional setup after loading the view.
     }
 
     @IBAction func attachButtonPressed(sender: AnyObject) {

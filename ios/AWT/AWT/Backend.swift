@@ -569,12 +569,8 @@ public struct Backend {
             //TODO: pull request from the server here
             
             var action:()->Void = {() in
-                request = RequestObject();
+                request = RequestObject(userContext: Backend.getInstance().getUserContext());
                 request!.text = "Request \(requestId)";
-                request!.responseAgeGroup = Configuration.AGE_CATEGORY_PREFERENCE[2];
-                request!.responseGender = Configuration.GENDER_PREFERENCE[0];
-                request!.expertiseCategory = Configuration.EXPERTISES[2];
-                request!.time = NSDate().timeIntervalSince1970;
 
                 self.cache.setRequest(requestId, request: request!);
             };
@@ -679,6 +675,18 @@ public struct Backend {
             self.cache.setRequest(requestId, request: request);
             self.cache.setOutgoingRequestIds(ids!);
             self.cache.setIncomingResponseIds(requestId, responseIds: []);
+            observer(id: requestId);
+        };
+        
+        DelayedNotifier(action).schedule(2);
+    }
+    
+    public func updateRequest(requestId:String, request: RequestObject, observer: CompletionObserver) {
+
+        self.cache.markRequestInUpdate(requestId);
+        
+        var action:()->Void = {() in
+            self.cache.setRequest(requestId, request: request);
             observer(id: requestId);
         };
         
