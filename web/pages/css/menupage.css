@@ -40,13 +40,13 @@
 
 .menupage-menuitem:hover {
   color: white;
-  background: rgb(56, 124, 44);
+  background: rgb(0, 133, 63);
   
   border-color: white;
 }
 
 .menupage-menuitem-selected {
-  background: rgb(56, 124, 44);
+  background: rgb(0, 133, 63);
   color: white;
   
   border-color: white;
@@ -59,7 +59,7 @@
   display: block;
   border-bottom-style: solid;
   border-bottom-width: 1px;
-  border-bottom-color: rgb(56, 124, 44);
+  border-bottom-color: rgb(0, 133, 63);
 }
 .menupage-menu-thick-separator {
   border-bottom-width: 2px;
