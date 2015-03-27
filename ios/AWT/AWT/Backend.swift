@@ -295,6 +295,12 @@ public struct Backend {
         
         init() {
         }
+        
+        
+        init(userContext: UserContext) {
+            ageCategory = userContext.age;
+            gender = userContext.gender;
+        }
 
         var time: Double! = 0;
         var text: String! = "";
@@ -677,6 +683,28 @@ public struct Backend {
         };
         
         DelayedNotifier(action).schedule(2);
+    }
+    
+    public func createResponse(requestId: String, response: ResponseObject, observer: CompletionObserver) {
+        var ids: [String]? = self.cache.getOutgoingResponseIds(requestId);
+        if (ids == nil) {
+            println("The list of responses hasn't yet been read - cannot create new");
+            return;
+        }
+        
+        var responseId = "\(requestId)-response\(ids?.count)";
+        self.cache.markResponseInUpdate(requestId, responseId: responseId);
+        self.cache.markOutgoingResponseIdsInUpdate(requestId);
+        
+        var action:()->Void = {() in
+            ids?.append(responseId);
+            
+            self.cache.setResponse(requestId, responseId: responseId, response: response);
+            self.cache.setOutgoingResponseIds(requestId, responseIds: ids!);
+            observer();
+        };
+        
+        DelayedNotifier(action).schedule(3);
     }
     
     

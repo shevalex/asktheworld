@@ -58,9 +58,21 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
     
 
     @IBAction func sendButtonClickAction(sender: AnyObject) {
+        var response = Backend.ResponseObject(userContext: Backend.getInstance().getUserContext());
+        
+        //        response.attachments;
+        response.text = responseTextField.text;
+        
+        Backend.getInstance().createResponse(requestId, response: response, observer: {() -> Void in
+            self.navigationController?.popViewControllerAnimated(true);
+            return;
+        });
     }
     
     @IBAction func attachButtonClickAction(sender: AnyObject) {
+        AtwUiUtils.setImagePicker(self, {(image: UIImage) in
+            self.responseAttachmentsView.addImage(image);
+        });
     }
     
 
