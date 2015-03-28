@@ -21,6 +21,9 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     @IBOutlet weak var previousResponseButton: UIButton!
     @IBOutlet weak var markReadButton: UIButton!
     
+    @IBOutlet weak var requestContactInfoButton: UIBarButtonItem!
+    
+    
     private var responseIds: [String]?
     private var currentResponseId: String?
     
@@ -39,6 +42,8 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
                         return;
                     }
                     self.currentResponseId = self.responseIds![0];
+                } else if (self.responseIds?.count == 0) {
+                    self.currentResponseId = "";
                 } else {
                     self.currentResponseId = nil;
                 }
@@ -83,6 +88,8 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     @IBAction func markReadClickAction(sender: UIButton) {
     }
     
+    @IBAction func requestCOntactInfoButtonClickAction(sender: AnyObject) {
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);
@@ -122,6 +129,8 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         responseIds = Backend.getInstance().getIncomingResponseIds(requestId, responseStatus: nil);
         if (responseIds != nil && responseIds?.count > 0) {
             currentResponseId = responseIds![0];
+        } else if (responseIds?.count == 0) {
+            currentResponseId = "";
         } else {
             currentResponseId = nil;
         }
@@ -130,7 +139,7 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     }
     
     private func updateResponseFields() {
-        if (currentResponseId != nil) {
+        if (currentResponseId != nil && currentResponseId != "") {
             var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId);
             if (response != nil) {
                 responseTextField.text = response!.text;
@@ -139,15 +148,20 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
                 previousResponseButton.enabled = currentIndex > 0;
                 nextResponseButton.enabled = currentIndex != -1 && currentIndex + 1 < responseIds?.count;
                 markReadButton.enabled = true;
+                requestContactInfoButton.enabled = response?.contactInfoStatus == Backend.ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE;
                 
                 return;
             }
+        } else if (currentResponseId == "") {
+            responseTextField.text = "";
+        } else {
+            responseTextField.text = NSLocalizedString("Retreiving...", comment: "Response text is not available - pulling");
         }
         
-        responseTextField.text = NSLocalizedString("Retreiving...", comment: "Response text is not available - pulling");
         nextResponseButton.enabled = false;
         previousResponseButton.enabled = false;
         markReadButton.enabled = false;
+        requestContactInfoButton.enabled = false;
     }
     
     

@@ -719,7 +719,11 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p1D-tZ-Pmj">
                                 <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                                 <items>
-                                    <barButtonItem title="Request Contact Info" id="7x3-gp-XMW"/>
+                                    <barButtonItem title="Request Contact Info" id="7x3-gp-XMW">
+                                        <connections>
+                                            <action selector="requestCOntactInfoButtonClickAction:" destination="lJD-el-UlL" id="m5b-Qj-uX1"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="hXF-0H-Mr6"/>
                                     <barButtonItem title="Edit Request" id="fd1-TA-WnD">
                                         <connections>
@@ -852,6 +856,7 @@
                         <outlet property="nextResponseButton" destination="XCm-Zm-iUx" id="Ief-do-R3x"/>
                         <outlet property="previousResponseButton" destination="wBB-z0-Odd" id="ypH-5k-Neq"/>
                         <outlet property="requestAttachmentsView" destination="X60-qX-ge6" id="DHi-Vd-iP3"/>
+                        <outlet property="requestContactInfoButton" destination="7x3-gp-XMW" id="ZbY-UD-OXG"/>
                         <outlet property="requestTextField" destination="8Fi-A2-Gw6" id="90V-om-Ck3"/>
                         <outlet property="responseAttachmentsView" destination="4ou-kY-1Fm" id="zFV-Ef-Nkc"/>
                         <outlet property="responseTextField" destination="HHe-d2-RZg" id="3Nb-dB-4WH"/>
