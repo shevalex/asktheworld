@@ -9,20 +9,47 @@
 import Foundation
 import UIKit
 
-class AttachmentBarView: UIScrollView {
-    private let IMAGE_INSET: CGFloat = 5;
-    private var imageArray: Array<UIImage> = [];
+class AttachmentBarView: UIControl {
+    private let IMAGE_INSET: CGFloat = 5
+    private let imageScollView: UIScrollView = UIScrollView(frame: CGRectZero);
+    private let clipView: UIImageView = UIImageView(frame: CGRectZero);
+    
+    private var imageArray: Array<UIImage> = []
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
+
+        backgroundColor = UIColor.lightGrayColor();
+        layer.cornerRadius = 5;
+
+        
+        clipView.image = UIImage(named: "paper-clip.jpg");
+        addSubview(clipView);
+        clipView.setTranslatesAutoresizingMaskIntoConstraints(false);
+        addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 5));
+        addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30));
+        addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0));
+        addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0));
+        
+        addSubview(imageScollView);
+        imageScollView.setTranslatesAutoresizingMaskIntoConstraints(false);
+        addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: imageScollView, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: -5));
+        addConstraint(NSLayoutConstraint(item: imageScollView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0));
+        addConstraint(NSLayoutConstraint(item: imageScollView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0));
+        addConstraint(NSLayoutConstraint(item: imageScollView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0));
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews();
+    }
+    
     
     func addImage(image: UIImage) {
         imageArray.append(image);
         
         var tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
         
-        contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
+        imageScollView.contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
         
         
         let x = (frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count - 1);
@@ -32,7 +59,7 @@ class AttachmentBarView: UIScrollView {
         newImageView.userInteractionEnabled = true;
         newImageView.addGestureRecognizer(tapRecognizer)
 
-        addSubview(newImageView);
+        imageScollView.addSubview(newImageView);
     }
 
     func removeImage(imageIndex: Int) {
