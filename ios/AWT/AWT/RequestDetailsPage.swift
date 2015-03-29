@@ -88,7 +88,25 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     @IBAction func markReadClickAction(sender: UIButton) {
     }
     
-    @IBAction func requestCOntactInfoButtonClickAction(sender: AnyObject) {
+    @IBAction func requestContactInfoButtonClickAction(sender: UIBarButtonItem) {
+        if (currentResponseId == nil) {
+            return;
+        }
+        
+        var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId);
+        if (response == nil) {
+            return;
+        }
+        
+        if (response!.contactInfo != nil) {
+            updateResponseFields();
+        } else if (response!.contactInfoStatus == Backend.ResponseObject.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
+            return;
+        } else {
+            Backend.getInstance().getContactInfo(requestId, responseId: currentResponseId!, observer: { (id) -> Void in
+                self.updateResponseFields();
+            })
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -142,6 +160,12 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         if (currentResponseId != nil && currentResponseId != "") {
             var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId);
             if (response != nil) {
+                if (response?.contactInfo != nil) {
+                    responseTextField.text = "\(response?.contactInfo?.contactName)\n\(response?.contactInfo?.contactInfo)\n---\n\(response!.text)";
+                } else {
+                    responseTextField.text = response!.text;
+                }
+                
                 responseTextField.text = response!.text;
                 
                 var currentIndex = getCurrentResponseIdIndex();

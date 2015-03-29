@@ -721,7 +721,7 @@
                                 <items>
                                     <barButtonItem title="Request Contact Info" id="7x3-gp-XMW">
                                         <connections>
-                                            <action selector="requestCOntactInfoButtonClickAction:" destination="lJD-el-UlL" id="m5b-Qj-uX1"/>
+                                            <action selector="requestContactInfoButtonClickAction:" destination="lJD-el-UlL" id="oVx-hz-xwJ"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="hXF-0H-Mr6"/>
@@ -2087,9 +2087,9 @@
     <inferredMetricsTieBreakers>
         <segue reference="c75-sv-RRF"/>
         <segue reference="mv9-mT-7H4"/>
-        <segue reference="amh-dw-tq7"/>
-        <segue reference="Uoe-4F-0Nn"/>
         <segue reference="7xE-kX-cnr"/>
         <segue reference="Z0X-31-cgP"/>
+        <segue reference="PsH-Jh-kRd"/>
+        <segue reference="avt-Nc-DFb"/>
     </inferredMetricsTieBreakers>
 </document>

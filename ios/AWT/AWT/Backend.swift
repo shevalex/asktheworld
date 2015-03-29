@@ -293,6 +293,12 @@ public struct Backend {
         static let CONTACT_INFO_STATUS_CAN_PROVIDE = "can_provide";
         static let CONTACT_INFO_STATUS_PROVIDED = "provided";
         
+        public struct ContactInfo {
+            var contactName: String;
+            var contactInfo: String;
+        }
+        
+        
         init() {
         }
         
@@ -309,6 +315,7 @@ public struct Backend {
         var gender: Configuration.Item!;
         var status: String! = STATUS_UNREAD;
         var contactInfoStatus: String! = CONTACT_INFO_STATUS_NOT_AVAILABLE;
+        var contactInfo: ContactInfo? = nil;
     }
 
     
@@ -632,7 +639,7 @@ public struct Backend {
     
     public func getResponse(requestId: String!, responseId: String!) -> ResponseObject? {
         if (cache.isResponseInUpdate(requestId, responseId: responseId)) {
-            return nil
+            return nil;
         }
         
         var response: ResponseObject? = cache.getResponse(requestId, responseId: responseId);
@@ -714,6 +721,37 @@ public struct Backend {
         
         DelayedNotifier(action).schedule(3);
     }
+    
+    
+    public func getContactInfo(requestId: String, responseId: String, observer: CompletionObserver) -> ResponseObject.ContactInfo? {
+        var response = getResponse(requestId, responseId: responseId);
+        if (response == nil) {
+            return nil;
+        }
+        
+        if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
+            observer(id: responseId);
+            return nil;
+        } else if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_PROVIDED) {
+            observer(id: responseId);            
+            return response!.contactInfo;
+        } else {
+            self.cache.markContactInfoInUpdate(requestId, responseId: responseId);
+            
+            var action:()->Void = {() in
+                var contactInfo = ResponseObject.ContactInfo(contactName: "Anton", contactInfo: "(678) 967-3445");
+                
+                self.cache.setContactInfo(requestId, responseId: responseId, contactInfo: contactInfo);
+                observer(id: responseId);
+            };
+            
+            DelayedNotifier(action).schedule(2);
+            
+            return nil;
+        }
+    }
+    
+    
     
     
 
@@ -928,6 +966,9 @@ public struct Backend {
         private var outgoingResponseIdsInProgress: Dictionary<String, Bool> = Dictionary();
         private var outgoingResponseIds: Dictionary<String, [String]> = Dictionary();
         
+        private var contactInfosInProgress: Dictionary<String, Bool> = Dictionary();
+
+        
         private var updateInProgressNotified: Bool = false;
         
         func addCacheChangeListener(listener: CacheChangeEventObserver, listenerId: String?) -> String {
@@ -1063,6 +1104,24 @@ public struct Backend {
             return isResponseInUpdate(requestId, responseId: responseId) ? nil : responses[responseId];
         }
         
+        func markContactInfoInUpdate(requestId: String, responseId: String) {
+            contactInfosInProgress.updateValue(true, forKey: responseId);
+            
+            fireUpdateEvent();
+            //            println("marked response's contact info \(responseId) in progress");
+        }
+        func isContactInfoInUpdate(requestId: String, responseId: String) -> Bool {
+            return contactInfosInProgress[responseId] != nil;
+        }
+        func setContactInfo(requestId: String, responseId: String, contactInfo: ResponseObject.ContactInfo) {
+            var response = getResponse(requestId, responseId: responseId);
+            response!.contactInfo = contactInfo;
+            contactInfosInProgress.removeValueForKey(responseId);
+            
+            self.notifyCacheListeners(CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId);
+            fireUpdateEvent();
+            //            println("!!! response \(responseId) updated");
+        }
 
         
         private func isInUpdate() -> Bool {
