@@ -1141,7 +1141,8 @@ public struct Backend {
                 || (incomingRequestIdsInProgress == true)
                 || !outgoingResponseIdsInProgress.isEmpty
                 || !requestsInProgress.isEmpty
-                || !responsesInProgress.isEmpty;
+                || !responsesInProgress.isEmpty
+                || !contactInfosInProgress.isEmpty;
         }
         
         private func fireUpdateEvent() {
