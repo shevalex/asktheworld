@@ -161,12 +161,10 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
             var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId);
             if (response != nil) {
                 if (response?.contactInfo != nil) {
-                    responseTextField.text = "\(response?.contactInfo?.contactName)\n\(response?.contactInfo?.contactInfo)\n---\n\(response!.text)";
+                    responseTextField.text = "\(response!.contactInfo!.contactName)\n\(response!.contactInfo!.contactInfo)\n---\n\(response!.text)";
                 } else {
                     responseTextField.text = response!.text;
                 }
-                
-                responseTextField.text = response!.text;
                 
                 var currentIndex = getCurrentResponseIdIndex();
                 previousResponseButton.enabled = currentIndex > 0;

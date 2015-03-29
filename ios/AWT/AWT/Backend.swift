@@ -654,6 +654,7 @@ public struct Backend {
                 response!.time = NSDate().timeIntervalSince1970;
                 response!.gender = Configuration.GENDERS[0];
                 response!.ageCategory = Configuration.AGE_CATEGORIES[1];
+                response!.contactInfoStatus = ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE;
                 
                 self.cache.setResponse(requestId, responseId: responseId, response: response!);
             };
@@ -740,8 +741,8 @@ public struct Backend {
             
             var action:()->Void = {() in
                 var contactInfo = ResponseObject.ContactInfo(contactName: "Anton", contactInfo: "(678) 967-3445");
-                
                 self.cache.setContactInfo(requestId, responseId: responseId, contactInfo: contactInfo);
+                
                 observer(id: responseId);
             };
             
@@ -1116,11 +1117,10 @@ public struct Backend {
         func setContactInfo(requestId: String, responseId: String, contactInfo: ResponseObject.ContactInfo) {
             var response = getResponse(requestId, responseId: responseId);
             response!.contactInfo = contactInfo;
+            response!.contactInfoStatus = ResponseObject.CONTACT_INFO_STATUS_PROVIDED;
             contactInfosInProgress.removeValueForKey(responseId);
             
-            self.notifyCacheListeners(CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId);
-            fireUpdateEvent();
-            //            println("!!! response \(responseId) updated");
+            setResponse(requestId, responseId: responseId, response: response!);
         }
 
         
