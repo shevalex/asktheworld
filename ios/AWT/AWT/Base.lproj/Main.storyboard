@@ -721,7 +721,7 @@
                                 <items>
                                     <barButtonItem title="Request Contact Info" id="7x3-gp-XMW">
                                         <connections>
-                                            <action selector="requestCOntactInfoButtonClickAction:" destination="lJD-el-UlL" id="m5b-Qj-uX1"/>
+                                            <action selector="requestContactInfoButtonClickAction:" destination="lJD-el-UlL" id="oVx-hz-xwJ"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="hXF-0H-Mr6"/>
@@ -738,7 +738,6 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wBB-z0-Odd">
                                         <rect key="frame" x="8" y="200" width="59" height="30"/>
                                         <state key="normal" title="Previous">
-                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
@@ -748,21 +747,10 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XCm-Zm-iUx">
                                         <rect key="frame" x="280" y="200" width="32" height="30"/>
                                         <state key="normal" title="Next">
-                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="nextResponseClickAction:" destination="lJD-el-UlL" eventType="touchUpInside" id="gE8-er-vXJ"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I4h-UX-raz">
-                                        <rect key="frame" x="113" y="200" width="95" height="30"/>
-                                        <state key="normal" title="Mark as Read">
-                                            <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="markReadClickAction:" destination="lJD-el-UlL" eventType="touchUpInside" id="lnB-np-9rU"/>
                                         </connections>
                                     </button>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4ou-kY-1Fm" customClass="AttachmentBarView" customModule="AWT" customModuleProvider="target">
@@ -787,13 +775,11 @@
                                     <constraint firstAttribute="bottom" secondItem="4ou-kY-1Fm" secondAttribute="bottom" constant="28" id="8Gs-Ol-Bl6"/>
                                     <constraint firstItem="4ou-kY-1Fm" firstAttribute="top" secondItem="HHe-d2-RZg" secondAttribute="bottom" constant="8" id="AMr-dC-cPo"/>
                                     <constraint firstItem="4ou-kY-1Fm" firstAttribute="centerX" secondItem="HHe-d2-RZg" secondAttribute="centerX" id="EKg-im-LoX"/>
-                                    <constraint firstItem="4ou-kY-1Fm" firstAttribute="centerX" secondItem="I4h-UX-raz" secondAttribute="centerX" id="UwA-QJ-eJf"/>
                                     <constraint firstItem="wBB-z0-Odd" firstAttribute="leading" secondItem="83N-cE-9m1" secondAttribute="leading" constant="8" id="aKt-QF-jIt"/>
                                     <constraint firstAttribute="bottom" secondItem="wBB-z0-Odd" secondAttribute="bottom" id="cNU-m0-Kla"/>
                                     <constraint firstAttribute="trailing" secondItem="XCm-Zm-iUx" secondAttribute="trailing" constant="8" id="d2t-vM-hlr"/>
                                     <constraint firstItem="HHe-d2-RZg" firstAttribute="top" secondItem="83N-cE-9m1" secondAttribute="topMargin" id="lcf-Hb-khD"/>
                                     <constraint firstAttribute="bottom" secondItem="XCm-Zm-iUx" secondAttribute="bottom" id="oM2-gw-wSY"/>
-                                    <constraint firstItem="I4h-UX-raz" firstAttribute="baseline" secondItem="XCm-Zm-iUx" secondAttribute="baseline" id="obH-xz-htq"/>
                                     <constraint firstAttribute="trailing" secondItem="4ou-kY-1Fm" secondAttribute="trailing" id="uVm-Ch-kQh"/>
                                     <constraint firstItem="HHe-d2-RZg" firstAttribute="leading" secondItem="wBB-z0-Odd" secondAttribute="leading" id="wLG-rD-znV"/>
                                     <constraint firstItem="4ou-kY-1Fm" firstAttribute="leading" secondItem="83N-cE-9m1" secondAttribute="leading" id="xSW-Tf-Yss"/>
@@ -852,7 +838,6 @@
                     <navigationItem key="navigationItem" title="Request Details" id="SPu-Iu-MFz"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <outlet property="markReadButton" destination="I4h-UX-raz" id="THK-Qa-tAe"/>
                         <outlet property="nextResponseButton" destination="XCm-Zm-iUx" id="Ief-do-R3x"/>
                         <outlet property="previousResponseButton" destination="wBB-z0-Odd" id="ypH-5k-Neq"/>
                         <outlet property="requestAttachmentsView" destination="X60-qX-ge6" id="DHi-Vd-iP3"/>
@@ -2087,9 +2072,9 @@
     <inferredMetricsTieBreakers>
         <segue reference="c75-sv-RRF"/>
         <segue reference="mv9-mT-7H4"/>
-        <segue reference="amh-dw-tq7"/>
-        <segue reference="Uoe-4F-0Nn"/>
         <segue reference="7xE-kX-cnr"/>
         <segue reference="Z0X-31-cgP"/>
+        <segue reference="PsH-Jh-kRd"/>
+        <segue reference="avt-Nc-DFb"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -19,7 +19,6 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     
     @IBOutlet weak var nextResponseButton: UIButton!
     @IBOutlet weak var previousResponseButton: UIButton!
-    @IBOutlet weak var markReadButton: UIButton!
     
     @IBOutlet weak var requestContactInfoButton: UIBarButtonItem!
     
@@ -85,10 +84,25 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         updateResponseFields();
     }
     
-    @IBAction func markReadClickAction(sender: UIButton) {
-    }
-    
-    @IBAction func requestCOntactInfoButtonClickAction(sender: AnyObject) {
+    @IBAction func requestContactInfoButtonClickAction(sender: UIBarButtonItem) {
+        if (currentResponseId == nil) {
+            return;
+        }
+        
+        var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId);
+        if (response == nil) {
+            return;
+        }
+        
+        if (response!.contactInfo != nil) {
+            updateResponseFields();
+        } else if (response!.contactInfoStatus == Backend.ResponseObject.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
+            return;
+        } else {
+            Backend.getInstance().getContactInfo(requestId, responseId: currentResponseId!, observer: { (id) -> Void in
+                self.updateResponseFields();
+            })
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -142,13 +156,23 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         if (currentResponseId != nil && currentResponseId != "") {
             var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId);
             if (response != nil) {
-                responseTextField.text = response!.text;
+                if (response?.contactInfo != nil) {
+                    responseTextField.text = "\(response!.contactInfo!.contactName)\n\(response!.contactInfo!.contactInfo)\n---\n\(response!.text)";
+                } else {
+                    responseTextField.text = response!.text;
+                }
                 
                 var currentIndex = getCurrentResponseIdIndex();
                 previousResponseButton.enabled = currentIndex > 0;
                 nextResponseButton.enabled = currentIndex != -1 && currentIndex + 1 < responseIds?.count;
-                markReadButton.enabled = true;
                 requestContactInfoButton.enabled = response?.contactInfoStatus == Backend.ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE;
+
+                if (response!.status == Backend.ResponseObject.STATUS_UNREAD) {
+                    response!.status = Backend.ResponseObject.STATUS_READ;
+                    
+                    Backend.getInstance().updateResponse(requestId, responseId: currentResponseId!, response: response!, observer: { (id) -> Void in
+                    });
+                }
                 
                 return;
             }
@@ -160,7 +184,6 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         
         nextResponseButton.enabled = false;
         previousResponseButton.enabled = false;
-        markReadButton.enabled = false;
         requestContactInfoButton.enabled = false;
     }
     
