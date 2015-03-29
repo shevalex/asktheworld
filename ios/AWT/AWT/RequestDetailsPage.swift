@@ -19,7 +19,6 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     
     @IBOutlet weak var nextResponseButton: UIButton!
     @IBOutlet weak var previousResponseButton: UIButton!
-    @IBOutlet weak var markReadButton: UIButton!
     
     @IBOutlet weak var requestContactInfoButton: UIBarButtonItem!
     
@@ -83,9 +82,6 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         currentResponseId = responseIds![currentIndex - 1];
         
         updateResponseFields();
-    }
-    
-    @IBAction func markReadClickAction(sender: UIButton) {
     }
     
     @IBAction func requestContactInfoButtonClickAction(sender: UIBarButtonItem) {
@@ -169,8 +165,14 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
                 var currentIndex = getCurrentResponseIdIndex();
                 previousResponseButton.enabled = currentIndex > 0;
                 nextResponseButton.enabled = currentIndex != -1 && currentIndex + 1 < responseIds?.count;
-                markReadButton.enabled = true;
                 requestContactInfoButton.enabled = response?.contactInfoStatus == Backend.ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE;
+
+                if (response!.status == Backend.ResponseObject.STATUS_UNREAD) {
+                    response!.status = Backend.ResponseObject.STATUS_READ;
+                    
+                    Backend.getInstance().updateResponse(requestId, responseId: currentResponseId!, response: response!, observer: { (id) -> Void in
+                    });
+                }
                 
                 return;
             }
@@ -182,7 +184,6 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         
         nextResponseButton.enabled = false;
         previousResponseButton.enabled = false;
-        markReadButton.enabled = false;
         requestContactInfoButton.enabled = false;
     }
     

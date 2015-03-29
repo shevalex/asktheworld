@@ -689,8 +689,7 @@ public struct Backend {
         DelayedNotifier(action).schedule(2);
     }
     
-    public func updateRequest(requestId:String, request: RequestObject, observer: CompletionObserver) {
-
+    public func updateRequest(requestId: String, request: RequestObject, observer: CompletionObserver) {
         self.cache.markRequestInUpdate(requestId);
         
         var action:()->Void = {() in
@@ -722,6 +721,18 @@ public struct Backend {
         
         DelayedNotifier(action).schedule(3);
     }
+    
+    public func updateResponse(requestId: String, responseId: String, response: ResponseObject, observer: CompletionObserver) {
+        self.cache.markResponseInUpdate(requestId, responseId: responseId);
+        
+        var action:()->Void = {() in
+            self.cache.setResponse(requestId, responseId: responseId, response: response);
+            observer(id: responseId);
+        };
+        
+        DelayedNotifier(action).schedule(2);
+    }
+    
     
     
     public func getContactInfo(requestId: String, responseId: String, observer: CompletionObserver) -> ResponseObject.ContactInfo? {
