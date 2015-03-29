@@ -71,7 +71,7 @@ class EditRequestPage: UIViewControllerWithSpinner {
     
     @IBAction func attachButtonClickAction(sender: AnyObject) {
         AtwUiUtils.setImagePicker(self, {(image: UIImage) in
-            self.attachmentsView.addImage(image, view: self);
+            self.attachmentsView.addImage(image);
         });
     }
     
