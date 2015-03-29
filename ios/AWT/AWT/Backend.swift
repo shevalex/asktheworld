@@ -539,9 +539,23 @@ public struct Backend {
             };
             
             DelayedNotifier(action).schedule(5);
+            
+            return nil;
+        } else {
+            var requestIds: [String] = [];
+            for (index, id) in enumerate(ids!) {
+                var request = self.cache.getRequest(id);
+                if (requestStatus == nil
+                    || request != nil && request!.status == requestStatus
+                    || request == nil && (requestStatus == RequestObject.STATUS_ACTIVE && index < 4
+                        || requestStatus == RequestObject.STATUS_INACTIVE && index >= 4)) {
+                        
+                    requestIds.append(id);
+                }
+            }
+            
+            return requestIds;
         }
-        
-        return ids;
     }
 
     public func getIncomingRequestIds(requestStatus: String? = nil) -> [String]? {
@@ -559,9 +573,23 @@ public struct Backend {
             };
             
             DelayedNotifier(action).schedule(5);
+            
+            return nil;
+        } else {
+            var requestIds: [String] = [];
+            for (index, id) in enumerate(ids!) {
+                var request = self.cache.getRequest(id);
+                if (requestStatus == nil
+                    || request != nil && request!.status == requestStatus
+                    || request == nil && (requestStatus == RequestObject.STATUS_ACTIVE && index < 4
+                        || requestStatus == RequestObject.STATUS_INACTIVE && index >= 4)) {
+                        
+                    requestIds.append(id);
+                }
+            }
+            
+            return requestIds;
         }
-        
-        return ids;
     }
     
     public func getRequest(requestId: String!) -> RequestObject? {
@@ -608,9 +636,23 @@ public struct Backend {
             };
             
             DelayedNotifier(action).schedule(3);
+            
+            return nil;
+        } else {
+            var responseIds: [String] = [];
+            for (index, id) in enumerate(ids!) {
+                var response = self.cache.getResponse(requestId, responseId: id);
+                if (responseStatus == nil
+                    || response != nil && response!.status == responseStatus
+                    || response == nil && (responseStatus == ResponseObject.STATUS_READ && index < 3
+                                           || responseStatus == ResponseObject.STATUS_UNREAD && index >= 3)) {
+
+                    responseIds.append(id);
+                }
+            }
+            
+            return responseIds;
         }
-        
-        return ids;
     }
     
     public func getOutgoingResponseIds(requestId: String, responseStatus: String? = nil) -> [String]? {
@@ -632,9 +674,23 @@ public struct Backend {
             };
             
             DelayedNotifier(action).schedule(3);
+            
+            return nil;
+        } else {
+            var responseIds: [String] = [];
+            for (index, id) in enumerate(ids!) {
+                var response = self.cache.getResponse(requestId, responseId: id);
+                if (responseStatus == nil
+                    || response != nil && response!.status == responseStatus
+                    || response == nil && (responseStatus == ResponseObject.STATUS_READ && index < 3
+                                           || responseStatus == ResponseObject.STATUS_UNREAD && index >= 3)) {
+                        
+                    responseIds.append(id);
+                }
+            }
+            
+            return responseIds;
         }
-        
-        return ids;
     }
     
     public func getResponse(requestId: String!, responseId: String!) -> ResponseObject? {

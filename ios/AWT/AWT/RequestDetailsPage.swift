@@ -51,7 +51,7 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
             } else if (event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED && event.requestId == self.requestId) {
                 self.updateResponseFields();
             } else if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
-                var requestIds = Backend.getInstance().getOutgoingRequestIds(requestStatus: nil);
+                var requestIds = Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
                 for (index, id) in enumerate(requestIds!) {
                     if (id == self.requestId) {
                         return;

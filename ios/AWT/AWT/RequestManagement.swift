@@ -289,7 +289,7 @@ struct RequestResponseManagement {
     
     class OutgoingRequestObjectProvider: AbstractObjectProvider {
         override func getObjectIds() -> [String]? {
-            return Backend.getInstance().getOutgoingRequestIds();
+            return Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
         }
         
         override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
@@ -304,13 +304,13 @@ struct RequestResponseManagement {
     class OutgoingRequestWithResponsesObjectProvider: OutgoingRequestObjectProvider {
         private let responseProviderFactory: AbstractResponseProviderFactory;
         
-        override init() {
-            responseProviderFactory = IncomingResponseProviderFactory(responseStatus: nil);
+        init(responseStatus: String) {
+            responseProviderFactory = IncomingResponseProviderFactory(responseStatus: responseStatus);
         }
         
         
         override func getObjectIds() -> [String]? {
-            let requestIds: [String]? = Backend.getInstance().getOutgoingRequestIds();
+            let requestIds: [String]? = Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
                 return nil;
             }
@@ -370,7 +370,7 @@ struct RequestResponseManagement {
     
     class IncomingRequestObjectProvider: AbstractObjectProvider {
         override func getObjectIds() -> [String]? {
-            return Backend.getInstance().getIncomingRequestIds();
+            return Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
         }
         
         override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
@@ -392,7 +392,7 @@ struct RequestResponseManagement {
         
 
         override func getObjectIds() -> [String]? {
-            let requestIds: [String]? = Backend.getInstance().getIncomingRequestIds();
+            let requestIds: [String]? = Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
                 return nil;
             }

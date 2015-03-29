@@ -30,7 +30,7 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
 
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
-                var requestIds = Backend.getInstance().getIncomingRequestIds();
+                var requestIds = Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
                 for (index, id) in enumerate(requestIds!) {
                     if (id == self.requestId) {
                         return;
