@@ -57,6 +57,7 @@ class ActiveRequestsPage: UIViewControllerWithSpinner {
         if (segue.identifier == "showRequestDetails") {
             let destView = segue.destinationViewController as RequestDetailsPage;
             destView.requestId = requestIdtoSend;
+            destView.responseStatus = nil;
         }
     }
 }

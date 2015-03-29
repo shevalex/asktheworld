@@ -10,6 +10,7 @@ import UIKit
 
 class RequestDetailsPage: UIViewControllerWithSpinner {
     var requestId: String! //this is set from the outside before the page is brought up
+    var responseStatus: String! //this is set from the outside before the page is brought up
     
     @IBOutlet weak var requestTextField: UITextView!
     @IBOutlet weak var responseTextField: UITextView!
@@ -34,7 +35,7 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
 
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED && event.requestId == self.requestId) {
-                self.responseIds = Backend.getInstance().getIncomingResponseIds(self.requestId, responseStatus: nil);
+                self.responseIds = Backend.getInstance().getIncomingResponseIds(self.requestId, responseStatus: self.responseStatus);
                 if (self.responseIds != nil && self.responseIds?.count > 0) {
                     var currentIndex = self.getCurrentResponseIdIndex();
                     if (currentIndex != -1) {
@@ -140,7 +141,7 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         
         requestTextField.text = request!.text;
         
-        responseIds = Backend.getInstance().getIncomingResponseIds(requestId, responseStatus: nil);
+        responseIds = Backend.getInstance().getIncomingResponseIds(requestId, responseStatus: responseStatus);
         if (responseIds != nil && responseIds?.count > 0) {
             currentResponseId = responseIds![0];
         } else if (responseIds?.count == 0) {

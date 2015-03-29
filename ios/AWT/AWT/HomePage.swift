@@ -54,6 +54,7 @@ class HomePage: UIViewControllerWithSpinner {
         if (segue.identifier == "showRequestDetails") {
             let destView = segue.destinationViewController as RequestDetailsPage;
             destView.requestId = selectedRequestId;
+            destView.responseStatus = Backend.ResponseObject.STATUS_UNREAD;
         } else if (segue.identifier == "showInquiryDetails") {
             let destView = segue.destinationViewController as InquiryDetailsPage;
             destView.requestId = selectedRequestId;
