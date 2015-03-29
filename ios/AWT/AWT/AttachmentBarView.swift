@@ -14,8 +14,6 @@ class AttachmentBarView: UIControl {
     private let imageScollView: UIScrollView = UIScrollView(frame: CGRectZero);
     private let clipView: UIImageView = UIImageView(frame: CGRectZero);
     
-    private var viewToShow: UIViewControllerWithSpinner = UIViewControllerWithSpinner()
-    
     private var imageArray: Array<UIImage> = []
     
     required init(coder aDecoder: NSCoder) {
@@ -46,9 +44,7 @@ class AttachmentBarView: UIControl {
     }
     
     
-    func addImage(image: UIImage, view: UIViewControllerWithSpinner) {
-        
-        viewToShow = view
+    func addImage(image: UIImage) {
         
         imageArray.append(image);
         
@@ -72,23 +68,6 @@ class AttachmentBarView: UIControl {
     }
     
     func imagePressedAction(image: UIImage) {
-        let attachSheet: UIAlertController = UIAlertController(title: NSLocalizedString("Please Choose", comment: "View Action Chooser Title"), message: "", preferredStyle: UIAlertControllerStyle.ActionSheet);
-        
-        let cancelAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel action"), style: .Cancel) { (action) -> Void in
-        }
-        attachSheet.addAction(cancelAction)
-        
-        let viewAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("View", comment: "View action"), style: .Default) { (action) -> Void in
-            println("View pressed")
-        }
-        attachSheet.addAction(viewAction)
-        
-        let deleteAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("Delete", comment: "Delete action"), style: .Default) { (action) -> Void in
-            println("Delete pressed")
-        }
-        attachSheet.addAction(deleteAction)
-        
-        viewToShow.presentViewController(attachSheet, animated: true, completion: nil)
         
     }
 }
