@@ -3,7 +3,8 @@ LoginPage = ClassUtils.defineClass(AbstractPage, function LoginPage() {
   
   this._loginElement;
   this._passwordElement;
-  this._signInButton;
+  
+  this._signing = false;
 });
 
 LoginPage.prototype.definePageContent = function(root) {
@@ -33,6 +34,10 @@ LoginPage.prototype.definePageContent = function(root) {
   var buttonsPanel = UIUtils.appendBlock(controlPanel, "ButtonsPanel");
   this._signInButton = UIUtils.appendButton(buttonsPanel, "SignInButton", this.getLocale().SignInButton);
   UIUtils.setClickListener(this._signInButton, function() {
+    if (this._signing) {
+      return;
+    }
+    
     var login = this._loginElement.getValue();
     var isEmailValid = ValidationUtils.isValidEmail(login);
     if (!isEmailValid) {
@@ -51,6 +56,7 @@ LoginPage.prototype.definePageContent = function(root) {
       window.localStorage.password = null;
     }
     
+    var page = this;
     if (isEmailValid && password != "") {
       var backendCallback = {
         success: function() {
@@ -60,7 +66,7 @@ LoginPage.prototype.definePageContent = function(root) {
         },
         failure: function() {
           this._onCompletion();
-          Application.showMessage(this.getLocale().InvalidCredentialsMessage);
+          Application.showMessage(page.getLocale().InvalidCredentialsMessage);
         },
         error: function() {
           this._onCompletion();
@@ -68,12 +74,12 @@ LoginPage.prototype.definePageContent = function(root) {
         },
         
         _onCompletion: function() {
-          UIUtils.setEnabled(this._signInButton, true);
+          this._signing = false;
           Application.hideSpinningWheel();
         }.bind(this)
       }
       
-      UIUtils.setEnabled(this._signInButton, false);
+      this._signing = true;
       Application.showSpinningWheel();
       
       Backend.logIn(login, password, backendCallback);
@@ -95,8 +101,15 @@ LoginPage.prototype.definePageContent = function(root) {
   UIUtils.appendLabel(downloadsPanel, "DownloadAppsLabel", this.getLocale().DownloadAppsLabel);
   
   var downloadButtonsPanel = UIUtils.appendBlock(downloadsPanel, "DownloadButtonsPanel");
-  UIUtils.appendButton(downloadButtonsPanel, "DownloadAndroidButton", "");
-  UIUtils.appendButton(downloadButtonsPanel, "DownloadiOSButton", "");
+  var androidButton = UIUtils.appendButton(downloadButtonsPanel, "DownloadAndroidButton", "");
+  UIUtils.setClickListener(androidButton, function() {
+    window.open("https://play.google.com/store", "_blank");
+  });
+  
+  var iOSButton = UIUtils.appendButton(downloadButtonsPanel, "DownloadiOSButton", "");
+  UIUtils.setClickListener(iOSButton, function() {
+    window.open("http://store.apple.com/us", "_blank");
+  });
 }
 
 LoginPage.prototype.onShow = function() {
@@ -114,10 +127,11 @@ LoginPage.prototype.onShow = function() {
   } else {
     this._passwordElement.setValue("");
   }
+  
+  this._signing = false;
 }
 
 LoginPage.prototype.onHide = function() {
-    UIUtils.setEnabled(this._signInButton, true);
 }
 
 
