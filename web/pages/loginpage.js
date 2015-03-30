@@ -3,9 +3,15 @@ LoginPage = ClassUtils.defineClass(AbstractPage, function LoginPage() {
   
   this._loginElement;
   this._passwordElement;
+  this._rememberCheckbox;
   
   this._signing = false;
 });
+
+
+LoginPage.disableAutoLogin = function() {
+  window.localStorage.remember = "no";
+}
 
 LoginPage.prototype.definePageContent = function(root) {
   var leftDescription = UIUtils.appendBlock(root, "Description-Left");
@@ -20,11 +26,11 @@ LoginPage.prototype.definePageContent = function(root) {
   var controlPanel = UIUtils.appendBlock(contentPanel, "ControlPanel");
   this._loginElement = UIUtils.appendTextInput(controlPanel, "Login");
   
-  var rememberCheckbox = UIUtils.appendCheckbox(controlPanel, "RememberLoginCheck", this.getLocale().RememberLoginLabel);
-  rememberCheckbox.setValue(window.localStorage.remember == "yes");
-  UIUtils.get$(rememberCheckbox).change(function() {
-    window.localStorage.remember = rememberCheckbox.getValue() ? "yes" : "no";
-  });
+  this._rememberCheckbox = UIUtils.appendCheckbox(controlPanel, "RememberLoginCheck", this.getLocale().RememberLoginLabel);
+  this._rememberCheckbox.setValue(window.localStorage.remember == "yes");
+  UIUtils.get$(this._rememberCheckbox).change(function() {
+    window.localStorage.remember = this._rememberCheckbox.getValue() ? "yes" : "no";
+  }.bind(this));
   
   this._passwordElement = UIUtils.appendPasswordInput(controlPanel, "Password");
   
@@ -34,60 +40,7 @@ LoginPage.prototype.definePageContent = function(root) {
   var buttonsPanel = UIUtils.appendBlock(controlPanel, "ButtonsPanel");
   var signInButton = UIUtils.appendButton(buttonsPanel, "SignInButton", this.getLocale().SignInButton);
   UIUtils.setClickListener(signInButton, function() {
-    if (this._signing) {
-      return;
-    }
-    
-    var login = this._loginElement.getValue();
-    var isEmailValid = ValidationUtils.isValidEmail(login);
-    if (!isEmailValid) {
-      UIUtils.indicateInvalidInput(this._loginElement);
-    } else if (rememberCheckbox.getValue()) {
-      window.localStorage.login = login;
-    } else {
-      window.localStorage.login = null;
-    }
-    var password = this._passwordElement.getValue();
-    if (password == "") {
-      UIUtils.indicateInvalidInput(this._passwordElement);
-    } else if (rememberCheckbox.getValue()) {
-      window.localStorage.password = password;
-    } else {
-      window.localStorage.password = null;
-    }
-    
-    var page = this;
-    if (isEmailValid && password != "") {
-      var backendCallback = {
-        success: function() {
-          this._onCompletion();
-          Application.setupUserMenuChooser();
-          Application.showMenuPage(HomePage.name);
-        },
-        failure: function() {
-          this._onCompletion();
-          Application.showMessage(page.getLocale().InvalidCredentialsMessage);
-        },
-        error: function() {
-          this._onCompletion();
-          Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
-        },
-        
-        _onCompletion: function() {
-          this._signing = false;
-          Application.hideSpinningWheel();
-        }.bind(this)
-      }
-      
-      this._signing = true;
-      Application.showSpinningWheel();
-      
-      Backend.logIn(login, password, backendCallback);
-    } else if (!isEmailValid) {
-      Application.showMessage(this.getLocale().InvalidLoginMessage);
-    } else {
-      Application.showMessage(this.getLocale().ProvideLoginPasswordMessage);
-    }
+    this._signIn();
   }.bind(this));
 
   
@@ -129,6 +82,10 @@ LoginPage.prototype.onShow = function() {
   }
   
   this._signing = false;
+  
+  if (remember && this._loginElement.getValue() != "" && this._passwordElement.getValue() != "") {
+    this._signIn();
+  }
 }
 
 LoginPage.prototype.onHide = function() {
@@ -155,5 +112,62 @@ LoginPage.prototype._restorePassword = function() {
     Backend.resetUserPassword(login, callback);
   } else {
     Application.showMessage(this.getLocale().IncorectEmailMessage);
+  }
+}
+
+LoginPage.prototype._signIn = function() {
+  if (this._signing) {
+    return;
+  }
+
+  var login = this._loginElement.getValue();
+  var isEmailValid = ValidationUtils.isValidEmail(login);
+  if (!isEmailValid) {
+    UIUtils.indicateInvalidInput(this._loginElement);
+  } else if (this._rememberCheckbox.getValue()) {
+    window.localStorage.login = login;
+  } else {
+    window.localStorage.login = null;
+  }
+  var password = this._passwordElement.getValue();
+  if (password == "") {
+    UIUtils.indicateInvalidInput(this._passwordElement);
+  } else if (this._rememberCheckbox.getValue()) {
+    window.localStorage.password = password;
+  } else {
+    window.localStorage.password = null;
+  }
+
+  var page = this;
+  if (isEmailValid && password != "") {
+    var backendCallback = {
+      success: function() {
+        this._onCompletion();
+        Application.setupUserMenuChooser();
+        Application.showMenuPage(HomePage.name);
+      },
+      failure: function() {
+        this._onCompletion();
+        Application.showMessage(page.getLocale().InvalidCredentialsMessage);
+      },
+      error: function() {
+        this._onCompletion();
+        Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      },
+
+      _onCompletion: function() {
+        this._signing = false;
+        Application.hideSpinningWheel();
+      }.bind(this)
+    }
+
+    this._signing = true;
+    Application.showSpinningWheel();
+
+    Backend.logIn(login, password, backendCallback);
+  } else if (!isEmailValid) {
+    Application.showMessage(this.getLocale().InvalidLoginMessage);
+  } else {
+    Application.showMessage(this.getLocale().ProvideLoginPasswordMessage);
   }
 }

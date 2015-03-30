@@ -355,6 +355,7 @@ Application.setupUserMenuChooser = function() {
       $("#Title-Options-Separator").css("display", "none");
       $("#Title-Options-User-Button").css("display", "none");
       
+      LoginPage.disableAutoLogin();
       Application.reset();
       Application.showPage(LoginPage.name);
       
