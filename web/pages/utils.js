@@ -175,10 +175,17 @@ UIUtils.createSpan = function(width, margin, blockId) {
 UIUtils.createTextInput = function(inputFieldId) {
   return UIUtils._createInputField(inputFieldId, "text");
 }
+UIUtils.appendTextInput = function(root, inputFieldId) {
+  return root.appendChild(UIUtils.createTextInput(UIUtils.createId(root, inputFieldId)));
+}
 
 UIUtils.createPasswordInput = function(inputFieldId) {
   return UIUtils._createInputField(inputFieldId, "password");
 }
+UIUtils.appendPasswordInput = function(root, inputFieldId) {
+  return root.appendChild(UIUtils.createPasswordInput(UIUtils.createId(root, inputFieldId)));
+}
+
 
 UIUtils.createTextArea = function(textAreaId, rows, defaultText) {
   var textAreaElement = document.createElement("textarea");
@@ -297,13 +304,17 @@ UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
   
   if (text != null) {
     var combo = UIUtils.appendBlock(root, cbId + "-Container");
+    combo.style.textAlign = "left";
+    combo.style.font = "inherit";
     combo.appendChild(checkboxElement);
     
     var label = UIUtils.createLabel(cbId + "-Container-Label", text);
     label.style.padding = "5px 5px 5px 10px";
     label.style.textAlign = "left";
     label.style.display = "inline-block";
+    label.style.font = "inherit";
     combo.appendChild(label);
+    UIUtils.addClass(label, "notselectable");
     
     label.onclick = function() {
       if (exclusive) {

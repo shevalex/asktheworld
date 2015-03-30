@@ -10,56 +10,28 @@ LoginPage.prototype.definePageContent = function(root) {
   var leftDescription = UIUtils.appendBlock(root, "Description-Left");
   leftDescription.innerHTML = this.getLocale().ProjectDescriptionHtml;
 
-  var rightDescription = UIUtils.appendBlock(root, "Description-Right");
-  rightDescription.innerHTML = this.getLocale().DownloadMobileAppsHtml;
-  
-  this._appendLoginPanel(root);
-}
-
-LoginPage.prototype.onShow = function() {
-  //Eventually we may need to read the login info from local storage and initialize the fileds
-  var remember = window.localStorage.remember == "yes";
-  
-  if (remember && window.localStorage.login != null) {
-    this._loginElement.setValue(window.localStorage.login);
-  } else {
-    this._loginElement.setValue("");
-  }
-  
-  if (remember && window.localStorage.password != null) {
-    this._passwordElement.setValue(window.localStorage.password);
-  } else {
-    this._passwordElement.setValue("");
-  }
-}
-
-LoginPage.prototype.onHide = function() {
-    UIUtils.setEnabled(this._signInButton, true);
-}
-
-LoginPage.prototype._appendLoginPanel = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
+
+  var labelPanel = UIUtils.appendBlock(contentPanel, "LabelPanel");
+  UIUtils.appendLabel(labelPanel, "EmailLabel", this.getLocale().EmailLoginLabel);
+  UIUtils.appendLabel(labelPanel, "PasswordLabel", this.getLocale().PasswordLabel);
   
-  this._loginElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Login"), this.getLocale().EmailLoginLabel, "10px")).getInputElement();
+  var controlPanel = UIUtils.appendBlock(contentPanel, "ControlPanel");
+  this._loginElement = UIUtils.appendTextInput(controlPanel, "Login");
   
-  this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), this.getLocale().PasswordLabel, "10px")).getInputElement();
-  
-  var rememberCheckbox = UIUtils.appendCheckbox(contentPanel, "RememberLogin", this.getLocale().RememberLoginLabel);
+  var rememberCheckbox = UIUtils.appendCheckbox(controlPanel, "RememberLogin", this.getLocale().RememberLoginLabel);
   rememberCheckbox.setValue(window.localStorage.remember == "yes");
   UIUtils.get$(rememberCheckbox).change(function() {
     window.localStorage.remember = rememberCheckbox.getValue() ? "yes" : "no";
   });
   
-  this._signInButton = UIUtils.appendButton(contentPanel, "SignInButton", this.getLocale().SignInButton);
-
-  var forgotPasswordLink = UIUtils.appendLink(contentPanel, "ForgotPasswordLink", this.getLocale().ForgotPassowrdLink);
+  this._passwordElement = UIUtils.appendPasswordInput(controlPanel, "Password");
+  
+  var forgotPasswordLink = UIUtils.appendLink(controlPanel, "ForgotPasswordLink", this.getLocale().ForgotPassowrdLink);
   UIUtils.setClickListener(forgotPasswordLink, this._restorePassword.bind(this));
   
-  var signUpLink = UIUtils.appendLink(contentPanel, "SignUpLink", this.getLocale().RegisterLink);
-  UIUtils.setClickListener(signUpLink, function() {
-    Application.showPage(RegisterPage.name);
-  });
-
+  var buttonsPanel = UIUtils.appendBlock(controlPanel, "ButtonsPanel");
+  this._signInButton = UIUtils.appendButton(buttonsPanel, "SignInButton", this.getLocale().SignInButton);
   UIUtils.setClickListener(this._signInButton, function() {
     var login = this._loginElement.getValue();
     var isEmailValid = ValidationUtils.isValidEmail(login);
@@ -111,7 +83,43 @@ LoginPage.prototype._appendLoginPanel = function(root) {
       Application.showMessage(this.getLocale().ProvideLoginPasswordMessage);
     }
   }.bind(this));
+
+  
+  var signUpLink = UIUtils.appendLink(buttonsPanel, "SignUpLink", this.getLocale().RegisterLink);
+  UIUtils.setClickListener(signUpLink, function() {
+    Application.showPage(RegisterPage.name);
+  });
+  
+  
+  var downloadsPanel = UIUtils.appendBlock(controlPanel, "DownloadsPanel");
+  UIUtils.appendLabel(downloadsPanel, "DownloadAppsLabel", this.getLocale().DownloadAppsLabel);
+  
+  var downloadButtonsPanel = UIUtils.appendBlock(downloadsPanel, "DownloadButtonsPanel");
+  UIUtils.appendButton(downloadButtonsPanel, "DownloadAndroidButton", "");
+  UIUtils.appendButton(downloadButtonsPanel, "DownloadiOSButton", "");
 }
+
+LoginPage.prototype.onShow = function() {
+  //Eventually we may need to read the login info from local storage and initialize the fileds
+  var remember = window.localStorage.remember == "yes";
+  
+  if (remember && window.localStorage.login != null) {
+    this._loginElement.setValue(window.localStorage.login);
+  } else {
+    this._loginElement.setValue("");
+  }
+  
+  if (remember && window.localStorage.password != null) {
+    this._passwordElement.setValue(window.localStorage.password);
+  } else {
+    this._passwordElement.setValue("");
+  }
+}
+
+LoginPage.prototype.onHide = function() {
+    UIUtils.setEnabled(this._signInButton, true);
+}
+
 
 LoginPage.prototype._restorePassword = function() {
   var login = this._loginElement.getValue();
