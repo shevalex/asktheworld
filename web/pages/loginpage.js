@@ -32,8 +32,8 @@ LoginPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(forgotPasswordLink, this._restorePassword.bind(this));
   
   var buttonsPanel = UIUtils.appendBlock(controlPanel, "ButtonsPanel");
-  this._signInButton = UIUtils.appendButton(buttonsPanel, "SignInButton", this.getLocale().SignInButton);
-  UIUtils.setClickListener(this._signInButton, function() {
+  var signInButton = UIUtils.appendButton(buttonsPanel, "SignInButton", this.getLocale().SignInButton);
+  UIUtils.setClickListener(signInButton, function() {
     if (this._signing) {
       return;
     }
