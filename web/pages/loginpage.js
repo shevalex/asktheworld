@@ -19,7 +19,7 @@ LoginPage.prototype.definePageContent = function(root) {
   var controlPanel = UIUtils.appendBlock(contentPanel, "ControlPanel");
   this._loginElement = UIUtils.appendTextInput(controlPanel, "Login");
   
-  var rememberCheckbox = UIUtils.appendCheckbox(controlPanel, "RememberLogin", this.getLocale().RememberLoginLabel);
+  var rememberCheckbox = UIUtils.appendCheckbox(controlPanel, "RememberLoginCheck", this.getLocale().RememberLoginLabel);
   rememberCheckbox.setValue(window.localStorage.remember == "yes");
   UIUtils.get$(rememberCheckbox).change(function() {
     window.localStorage.remember = rememberCheckbox.getValue() ? "yes" : "no";

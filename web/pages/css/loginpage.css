@@ -72,11 +72,17 @@
   font: inherit;
 }
 
+#LoginPage-ContentPanel-ControlPanel-RememberLoginCheck {
+  font: inherit;
+  font-size: 12px;
+}
+
 #LoginPage-ContentPanel-ControlPanel-ForgotPasswordLink {
   margin-top: 5px;
   text-align: left;
   
   font: inherit;
+  font-size: 12px;
 }
 
 #LoginPage-ContentPanel-ControlPanel-Password {
