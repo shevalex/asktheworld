@@ -18,7 +18,7 @@ body {
 #Title-Image {
   float: right;
   margin-right: 20px;
-  margin-top: 0px;
+  margin-top: 20px;
   content: url(../imgs/AskTheWorld.png);
 }
 #Title-Options {
