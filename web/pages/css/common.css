@@ -89,7 +89,7 @@ select {
   cursor: pointer;
   outline: none;  
   
-  color: rgb(0, 133, 63);
+  color: rgb(0, 102, 51);
 }
 
 .link-button:hover {

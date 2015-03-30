@@ -126,15 +126,22 @@
   height: 40px;
   background-size: contain;
   background-repeat: no-repeat;
+  background-color: transparent;
   
   border-width: 0px;
 }
 #LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadAndroidButton {
   background-image: url(../../imgs/Android.png);
 }
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadAndroidButton:active {
+  background-image: url(../../imgs/Android-pushed.png);
+}
 #LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadiOSButton {
   float: right;
   background-image: url(../../imgs/iOS.png);
+}
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadiOSButton:active {
+  background-image: url(../../imgs/iOS-pushed.png);
 }
 
 

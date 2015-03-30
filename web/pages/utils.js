@@ -324,6 +324,10 @@ UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
       }
     }
     
+    checkboxElement.getLabel = function() {
+      return label;
+    }
+    
     return checkboxElement;
   } else {
     var checkboxElement = UIUtils.createCheckbox(UIUtils.createId(root, cbId), exclusive);
