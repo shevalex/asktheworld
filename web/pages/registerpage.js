@@ -1,163 +1,172 @@
 RegisterPage = ClassUtils.defineClass(AbstractPage, function RegisterPage() {
   AbstractPage.call(this, RegisterPage.name);
   
+  this._emailElement;
+  this._nameElement;
+  this._genderElement;
+  this._ageElement;
+  this._languagesElement;
   this._passwordElement;
   this._retypePasswordElement;
-  this._acceptCheckbox;
-  this._registerButton;
+  this._termsAndCondsCheckbox;
+  this._appropriateAgeCheckbox;
+  
+  this._signing = false;
 });
 
 RegisterPage.prototype.definePageContent = function(root) {
-  var leftSideDescriptionElement = UIUtils.appendBlock(root, "Description-Left");
-  leftSideDescriptionElement.innerHTML = this.getLocale().ProjectDescriptionHtml;
-
-  var rightSideDescriptionElement = UIUtils.appendBlock(root, "Description-Right");
-  var signInLinkId = UIUtils.createId(rightSideDescriptionElement, "SignInLink");
-  rightSideDescriptionElement.innerHTML = this.getLocale().SignInProvider(signInLinkId);
-  UIUtils.setClickListener(signInLinkId, function() {
-    Application.showPage(LoginPage.name);
-  })
+  var signUpPanel = UIUtils.appendBlock(root, "SignUpPanel");
+  UIUtils.appendLabel(signUpPanel, "SignUpLabel", this.getLocale().SignUpLabel);
   
-  this._appendContentPanel(root);
+  this._emailElement = signUpPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(signUpPanel, "Email"), this.getLocale().EmailLoginLabel)).getInputElement();
+  this._nameElement = signUpPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(signUpPanel, "Nickname"), this.getLocale().NicknameLabel)).getInputElement();
+  
+  var genderAgeLanguagePanel = UIUtils.appendBlock(signUpPanel, "GenderAgeLanguagePanel");
+  this._genderElement = signUpPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Gender"), this.getLocale().GenderLabel, Application.Configuration.GENDERS)).getInputElement();
+  this._ageElement = signUpPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Age"), this.getLocale().AgeLabel, Application.Configuration.AGE_CATEGORIES)).getInputElement();
+  this._languagesElement = signUpPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(genderAgeLanguagePanel, "Language"), this.getLocale().LanguageLabel, Application.Configuration.LANGUAGES)).getInputElement();
+  
+  this._passwordElement = signUpPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(signUpPanel, "Password"), this.getLocale().PasswordLabel)).getInputElement();
+  this._retypePasswordElement = signUpPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(signUpPanel, "RetypePassword"), this.getLocale().RetypePasswordLabel)).getInputElement();
+  UIUtils.get$(this._passwordElement).on("input", function() {
+    this._retypePasswordElement.setValue("");
+  }.bind(this));
+
+  this._appropriateAgeCheckbox = UIUtils.appendCheckbox(signUpPanel, "AppropriateAgeCheckbox", this.getLocale().AppropriateAgeCheckbox);
+  
+  var licenseLinkId = UIUtils.createId(signUpPanel, "TermsAndCondsLink");
+  this._termsAndCondsCheckbox = UIUtils.appendCheckbox(signUpPanel, "TermsAndCondsCheckbox", this.getLocale().AcceptTermsProvider(licenseLinkId));
+  UIUtils.setClickListener(licenseLinkId, function() {
+    this._showLicenseAgreement();
+    setTimeout(this._termsAndCondsCheckbox.setValue.bind(this, false), 0);
+  }.bind(this));
+
+  var buttonsPanel = UIUtils.appendBlock(signUpPanel, "ButtonsPanel");
+  var signUpButton = UIUtils.appendButton(buttonsPanel, "SignUpButton", "");
+  UIUtils.setClickListener(signUpButton, function() {
+    this._signUp();
+  }.bind(this));
+  
+  var passwordRequirementsPanel = UIUtils.appendBlock(root, "PasswordRequirementsPanel");
+  passwordRequirementsPanel.innerHTML = this.getLocale().PasswordRequirements;
 }
 
 RegisterPage.prototype.onShow = function() {
   this._passwordElement.setValue("");
   this._retypePasswordElement.setValue("");
-  this._acceptCheckbox.setValue(false);
+  this._termsAndCondsCheckbox.setValue(false);
+  this._appropriateAgeCheckbox.setValue(false);
 }
 
 RegisterPage.prototype.onHide = function() {
-  UIUtils.setEnabled(this._registerButton, true);
 }
 
 
-RegisterPage.prototype._appendContentPanel = function(root) {
-  var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
+RegisterPage.prototype._signUp = function() {
+  if (this._signing) {
+    return;
+  }
   
-  var emailElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Email"), I18n.getLocale().literals.YourEmailLabel, "10px")).getInputElement();
-  
-  var nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), I18n.getLocale().literals.YourNicknameLabel, "10px")).getInputElement();
+  var email = this._emailElement.getValue();
+  var isValidEmail = ValidationUtils.isValidEmail(email);
+  if (!isValidEmail) {
+    UIUtils.indicateInvalidInput(this._emailElement);
+    Application.showMessage(this.getLocale().ProvideLoginMessage);
+    return;
+  }
 
-  var genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), I18n.getLocale().literals.YourGenderLabel, Application.Configuration.GENDERS, "10px")).getInputElement();
-  
-  var ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), I18n.getLocale().literals.YourAgeCategoryLabel, Application.Configuration.AGE_CATEGORIES, "10px")).getInputElement();
-  
-  var languagesElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Languages"), I18n.getLocale().literals.YourLanguagesLabel, Application.Configuration.LANGUAGES, "10px")).getInputElement();
-  
-  this._passwordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "Password"), this.getLocale().PasswordLabel, "10px")).getInputElement();
-  
-  this._retypePasswordElement = contentPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(contentPanel, "RetypePassword"), this.getLocale().RetypePasswordLabel, "10px")).getInputElement();
-  
-  var licenseLinkId = UIUtils.createId(contentPanel, "TermsAndConds-Link");
-  this._acceptCheckbox = UIUtils.appendCheckbox(contentPanel, "TermsAndConds", this.getLocale().AcceptTermsProvider(licenseLinkId));
-  UIUtils.setClickListener(licenseLinkId, function() {
-    this._showLicenseAgreement();
-    setTimeout(this._acceptCheckbox.setValue.bind(this, false), 0);
-  }.bind(this));
-  
-  this._registerButton = UIUtils.appendButton(contentPanel, "RegisterButton", this.getLocale().RegisterButton);
-  
-  UIUtils.get$(this._passwordElement).on("input", function() {
-    this._retypePasswordElement.setValue("");
-  }.bind(this));
-  
-  UIUtils.setClickListener(this._registerButton, function() {
-    var email = emailElement.getValue();
-    var isValidEmail = ValidationUtils.isValidEmail(email);
-    if (!isValidEmail) {
-      UIUtils.indicateInvalidInput(emailElement);
-      Application.showMessage(this.getLocale().ProvideLoginMessage);
-      return;
-    }
-    
-    var name = nameElement.getValue();
-    if (name == "") {
-      UIUtils.indicateInvalidInput(nameElement);
-      Application.showMessage(this.getLocale().ProvideNicknameMessage);
-      return;
-    }
-    
-    var languages = languagesElement.getSelectedChoices();
-    if (languages.length == 0) {
-      languagesElement.indicateInvalidInput();
-      Application.showMessage(this.getLocale().ProvideLanguageMessage);
-      return;
-    }
+  var name = this._nameElement.getValue();
+  if (name == "") {
+    UIUtils.indicateInvalidInput(this._nameElement);
+    Application.showMessage(this.getLocale().ProvideNicknameMessage);
+    return;
+  }
 
-    var password = this._passwordElement.getValue();
-    if (password == "" || password.length < 5) {
-      UIUtils.indicateInvalidInput(this._passwordElement);
-      Application.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
-      return;
-    }
-    
-    var retypePassword = this._retypePasswordElement.getValue();
-    if (retypePassword == "" || retypePassword != password) {
-      UIUtils.indicateInvalidInput(this._retypePasswordElement);
-      Application.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
-      return;
-    }
+  var languages = this._languagesElement.getSelectedChoices();
+  if (languages.length == 0) {
+    this._languagesElement.indicateInvalidInput();
+    Application.showMessage(this.getLocale().ProvideLanguageMessage);
+    return;
+  }
 
-    if (!this._acceptCheckbox.getValue()) {
-      var popupTermsLink = UIUtils.createId(root, "TermsLink");
-      Application.showMessage(this.getLocale().MustAcceptTermsMessageProvider(popupTermsLink));
-      UIUtils.setClickListener(popupTermsLink, function() {
-        this._showLicenseAgreement();
-      }.bind(this));
-      
-      return;
-    }
+  var password = this._passwordElement.getValue();
+  if (password == "" || password.length < 5) {
+    UIUtils.indicateInvalidInput(this._passwordElement);
+    Application.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
+    return;
+  }
+
+  var retypePassword = this._retypePasswordElement.getValue();
+  if (retypePassword == "" || retypePassword != password) {
+    UIUtils.indicateInvalidInput(this._retypePasswordElement);
+    Application.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
+    return;
+  }
+
+  if (!this._appropriateAgeCheckbox.getValue()) {
+    Application.showMessage(this.getLocale().MustBeOver18Message);
+    return;
+  }
+
+  if (!this._termsAndCondsCheckbox.getValue()) {
+    var licenseLinkId = UIUtils.createId(this._termsAndCondsCheckbox.parentElement, "TermsLink");
+    Application.showMessage(this.getLocale().MustAcceptTermsMessageProvider(licenseLinkId));
+    UIUtils.setClickListener(licenseLinkId, function() {
+      Application.hideMessage();
+      this._showLicenseAgreement();
+    }.bind(this));
+
+    return;
+  }
 
 
-    var backendCallback = {
-      success: function() {
-        backendCallback._onCompletion();
+  var backendCallback = {
+    success: function() {
+      backendCallback._onCompletion();
 
-        emailElement.setValue("");
-        nameElement.setValue("");
-        genderElement.clearChoices();
-        ageElement.clearChoices();
-        languagesElement.clearChoices();
-        this._passwordElement.setValue("");
-        this._retypePasswordElement.setValue("");
-        
-        Application.setupUserMenuChooser();
-        Application.showPage(WelcomePage.name);
-      }.bind(this),
-      failure: function() {
-        backendCallback._onCompletion();
-        Application.showMessage(this.getLocale().AccountCreationFailedMessage);
-      }.bind(this),
-      conflict: function() {
-        backendCallback._onCompletion();
-        Application.showMessage(this.getLocale().AccountAlreadyExistsMessage);
-      }.bind(this),
-      error: function() {
-        backendCallback._onCompletion();
-        Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
-      },
+      this._emailElement.setValue("");
+      this._nameElement.setValue("");
+      this._genderElement.clearChoices();
+      this._ageElement.clearChoices();
+      this._languagesElement.clearChoices();
+      this._passwordElement.setValue("");
+      this._retypePasswordElement.setValue("");
 
-      _onCompletion: function() {
-        UIUtils.setEnabled(this._registerButton, true);
-        Application.hideSpinningWheel();
-      }.bind(this)
-    }
+      Application.setupUserMenuChooser();
+      Application.showPage(WelcomePage.name);
+    }.bind(this),
+    failure: function() {
+      backendCallback._onCompletion();
+      Application.showMessage(this.getLocale().AccountCreationFailedMessage);
+    }.bind(this),
+    conflict: function() {
+      backendCallback._onCompletion();
+      Application.showMessage(this.getLocale().AccountAlreadyExistsMessage);
+    }.bind(this),
+    error: function() {
+      backendCallback._onCompletion();
+      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+    },
 
-    var userProfile = {
-      login: email,
-      password: password,
-      name: name,
-      gender: genderElement.getSelectedData(),
-      languages: languagesElement.getSelectedData(),
-      age: ageElement.getSelectedData(),
-    };
+    _onCompletion: function() {
+      this._signing = false;
+      Application.hideSpinningWheel();
+    }.bind(this)
+  }
 
-    UIUtils.setEnabled(this._registerButton, false);
-    Application.showSpinningWheel();
+  var userProfile = {
+    login: email,
+    password: password,
+    name: name,
+    gender: this._genderElement.getSelectedData(),
+    languages: this._languagesElement.getSelectedData(),
+    age: this._ageElement.getSelectedData(),
+  };
 
-    Backend.registerUser(userProfile, backendCallback);
-  }.bind(this));
+  this._signing = true;
+  Application.showSpinningWheel();
+
+  Backend.registerUser(userProfile, backendCallback);
 }
 
 RegisterPage.prototype._showLicenseAgreement = function() {

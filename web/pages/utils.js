@@ -484,6 +484,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     var checkbox = UIUtils.appendCheckbox(itemElement, listId + "-" + index + "-cb", choice.display, exclusive);
     checkbox.style.width = "20px";
     checkbox.getLabel().style.width = "calc(100% - 45px)";
+    checkbox.getLabel().style.color = "inherit";
     
     
     checkbox.setAttribute("name", listId);
@@ -969,17 +970,16 @@ UIUtils.getOneLine = function(text) {
 
 
 UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, margin) {
-  var compoundElement = document.createElement("div");
+  var compoundElement = UIUtils.createBlock(inputFieldId);
   compoundElement.style.textAlign = "left";
   compoundElement.style.whiteSpace = "nowrap";
 
-  compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "Compound-Label", labelText));
+  compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "-Label", labelText));
   compoundElement.appendChild(UIUtils.createLineBreak());
 
+  inputElement.setAttribute("id", UIUtils.createId(inputFieldId + "-Input"));
   compoundElement.appendChild(inputElement);
-  if (margin != null) {
-    inputElement.style.marginTop = margin;
-  }
+  inputElement.style.marginTop = margin != null ? margin : "2px";
 
   compoundElement.getInputElement = function() {
     return inputElement;

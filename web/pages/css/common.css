@@ -1,5 +1,7 @@
 label {
   color: rgb(75, 75, 75);
+  
+  font: inherit;
 }
 
 button {
@@ -52,6 +54,8 @@ input {
   border-color: rgb(166, 166, 166);
   
   color: rgb(75, 75, 75);
+  
+  font: inherit;
 }
 
 /*
@@ -279,13 +283,12 @@ select {
 .multichoicelist-selector {
   background-color: rgb(248, 248, 248);
   
-  border-radius: 5px;
   border-style: solid;
   border-width: 1px;
   border-color: rgb(166, 166, 166);
 }
 .multichoicelist-selector-text {
-  padding: 5px;
+  padding: 2px 1px 2px 1px;
   display: inline-block;
   max-width: calc(100% - 40px);
 
@@ -327,6 +330,6 @@ select {
   border-radius: 5px;
 }
 .multichoicelist-dropdown-item:hover {
-  background-color: blue;
+  background-color: red;
   color: white;
 }
