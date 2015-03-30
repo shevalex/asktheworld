@@ -300,20 +300,19 @@ UIUtils.createCheckbox = function(cbId, exclusive) {
 }
 
 UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
-  var comboId = UIUtils.createId(root, cbId);
-  var checkboxElement = UIUtils.createCheckbox(comboId, exclusive);
-  
   if (text != null) {
-    var combo = UIUtils.appendBlock(root, comboId + "-Container");
+    var combo = UIUtils.appendBlock(root, cbId);
     combo.style.textAlign = "left";
-    combo.style.font = "inherit";
+    
+    var checkboxElement = UIUtils.createCheckbox(UIUtils.createId(root, cbId + "-Check"), exclusive);
     combo.appendChild(checkboxElement);
     
-    var label = UIUtils.createLabel(comboId + "-Container-Label", text);
+    var label = UIUtils.createLabel(UIUtils.createId(root, cbId + "-Label"), text);
     label.style.padding = "5px 5px 5px 5px";
     label.style.textAlign = "left";
     label.style.display = "inline-block";
     label.style.font = "inherit";
+    
     combo.appendChild(label);
     UIUtils.addClass(label, "notselectable");
     
@@ -324,16 +323,14 @@ UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
         checkboxElement.setValue(!checkboxElement.getValue());
       }
     }
+    
+    return checkboxElement;
   } else {
+    var checkboxElement = UIUtils.createCheckbox(UIUtils.createId(root, cbId), exclusive);
     root.appendChild(checkboxElement);
+    
+    return checkboxElement;
   }
-  
-  
-  checkboxElement.getLabel = function() {
-    return label;
-  }
-  
-  return checkboxElement;
 }
 
 

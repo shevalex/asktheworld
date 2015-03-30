@@ -28,7 +28,7 @@
 
 #LoginPage-ContentPanel {
   float: right;
-  width: 400px;
+  width: 320px;
   display: inline-block;
   margin-top: 50px;
   margin-right: 100px;
@@ -38,7 +38,7 @@
 }
 
 #LoginPage-ContentPanel-LabelPanel {
-  width: 100px;
+  width: 70px;
   display: inline-block;
   text-align: left;
   
@@ -61,7 +61,7 @@
 
 #LoginPage-ContentPanel-ControlPanel {
   float: right;
-  width: 300px;
+  width: 250px;
   display: inline-block;
   text-align: left;
   
