@@ -94,24 +94,24 @@ LoginPage.prototype.onHide = function() {
 
 LoginPage.prototype._restorePassword = function() {
   var login = this._loginElement.getValue();
-  
+
   if (ValidationUtils.isValidEmail(login)) {
     callback = {
       success: function() {
         Application.hideSpinningWheel();
-        Application.showMessage(this.getLocale().PasswordResetMessage, Application.MESSAGE_TIMEOUT_SLOW);
+        Application.showMessage(this.getLocale().PasswordResetRequestMessage, Application.MESSAGE_TIMEOUT_SLOW);
       }.bind(this),
       error: function() {
         Application.hideSpinningWheel();
         Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       }
     }
-    
+
     Application.showMessage(this.getLocale().PasswordResetRequestMessage);
     Application.showSpinningWheel();
     Backend.resetUserPassword(login, callback);
   } else {
-    Application.showMessage(this.getLocale().IncorectEmailMessage);
+    Application.showMessage(this.getLocale().IncorrectEmailMessage);
   }
 }
 
