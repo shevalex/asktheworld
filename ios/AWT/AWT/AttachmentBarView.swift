@@ -16,6 +16,8 @@ class AttachmentBarView: UIControl {
     
     private var imageArray: Array<UIImage> = []
     
+    private var hostingView: UIViewControllerWithSpinner = UIViewControllerWithSpinner()
+    
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
 
@@ -43,6 +45,10 @@ class AttachmentBarView: UIControl {
         super.layoutSubviews();
     }
     
+    func setHostingView(view: UIViewControllerWithSpinner) {
+        hostingView = view
+    }
+    
     
     func addImage(image: UIImage) {
         
@@ -68,6 +74,6 @@ class AttachmentBarView: UIControl {
     }
     
     func imagePressedAction(image: UIImage) {
-        
+        hostingView.performSegueWithIdentifier("imageView", sender: self)
     }
 }

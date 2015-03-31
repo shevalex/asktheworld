@@ -30,6 +30,8 @@ class CreateNewRequestPage: UIViewControllerWithSpinner {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        imageScrollView.setHostingView(self)
+        
         expertiseSelector = AtwUiUtils.setDataChooser(expertiseTextField, items: Configuration.EXPERTISES, multichoice: false);
         genderSelector = AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE, multichoice: false);
         ageSelector = AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE, multichoice: false);
