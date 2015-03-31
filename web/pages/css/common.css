@@ -82,7 +82,8 @@ select {
   display: block;
   padding: 0px;
   width: calc(100% - 0px);
-  height: calc(100% - 0px);
+  height: calc(100% - 10px);
+  padding-bottom: 10px;
   overflow: auto;
 }
 
