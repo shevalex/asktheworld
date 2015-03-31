@@ -30,7 +30,7 @@ class CreateNewRequestPage: UIViewControllerWithSpinner {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        imageScrollView.setHostingView(self)
+        imageScrollView.setHostingView(self);
         
         expertiseSelector = AtwUiUtils.setDataChooser(expertiseTextField, items: Configuration.EXPERTISES, multichoice: false);
         genderSelector = AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE, multichoice: false);
@@ -41,7 +41,7 @@ class CreateNewRequestPage: UIViewControllerWithSpinner {
 
     @IBAction func attachButtonPressed(sender: AnyObject) {
         AtwUiUtils.setImagePicker(self, {(image: UIImage) in
-            self.imageScrollView.addImage(image);
+            self.imageScrollView.addAttachment(image);
         });
     }
     

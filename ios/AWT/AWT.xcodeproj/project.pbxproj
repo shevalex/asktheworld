@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		820418371AAAAF63003429CC /* RequestManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820418361AAAAF63003429CC /* RequestManagement.swift */; };
 		8212F27E1AC64CA600EA5F01 /* paper-clip.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8212F27D1AC64CA600EA5F01 /* paper-clip.jpg */; };
+		8212F2801ACB4E6000EA5F01 /* ImagePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212F27F1ACB4E6000EA5F01 /* ImagePage.swift */; };
 		8236B5871AA6C16200EE3258 /* DataChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236B5861AA6C16200EE3258 /* DataChooser.swift */; };
 		82A4014F1AA158CA00E26253 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A4014E1AA158CA00E26253 /* Backend.swift */; };
 		82B94D191AB0F1B20008960E /* styles.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82B94D181AB0F1B20008960E /* styles.plist */; };
@@ -53,6 +54,7 @@
 /* Begin PBXFileReference section */
 		820418361AAAAF63003429CC /* RequestManagement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestManagement.swift; sourceTree = "<group>"; };
 		8212F27D1AC64CA600EA5F01 /* paper-clip.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "paper-clip.jpg"; path = "imgs/paper-clip.jpg"; sourceTree = SOURCE_ROOT; };
+		8212F27F1ACB4E6000EA5F01 /* ImagePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePage.swift; sourceTree = "<group>"; };
 		8236B5861AA6C16200EE3258 /* DataChooser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataChooser.swift; sourceTree = "<group>"; };
 		82A4014E1AA158CA00E26253 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
 		82B94D181AB0F1B20008960E /* styles.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = styles.plist; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 				F745FE551A9E2882006E7698 /* Supporting Files */,
 				F750F3391A9E6E3600D929E2 /* RegisterPage.swift */,
 				82E9E1941AC60A330010D757 /* EditRequestPage.swift */,
+				8212F27F1ACB4E6000EA5F01 /* ImagePage.swift */,
 			);
 			path = AWT;
 			sourceTree = "<group>";
@@ -318,6 +321,7 @@
 				F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */,
 				F750F3341A9E6A3700D929E2 /* LoginPage.swift in Sources */,
 				82E9E1911AC113C00010D757 /* AttachmentBarView.swift in Sources */,
+				8212F2801ACB4E6000EA5F01 /* ImagePage.swift in Sources */,
 				F719A2041AA8A60200725A5A /* ContactInfoPage.swift in Sources */,
 				F73D302E1AA809DE00A5317A /* ResponsePreferencesPage.swift in Sources */,
 				F750F33A1A9E6E3600D929E2 /* RegisterPage.swift in Sources */,

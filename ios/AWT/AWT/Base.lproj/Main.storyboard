@@ -978,7 +978,6 @@
                         <outlet property="numberOfResponsesTextField" destination="MYY-aN-zon" id="wsq-wK-lE4"/>
                         <outlet property="requestTextField" destination="CKG-jm-zOf" id="KLw-1P-RYY"/>
                         <outlet property="waitTimeTextField" destination="AfW-8k-dfd" id="edb-2k-atP"/>
-                        <segue destination="6mB-9A-qQN" kind="show" identifier="imageView" id="pOu-JW-bQo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KAl-JS-qrl" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -988,7 +987,7 @@
         <!--Image-->
         <scene sceneID="L9m-xO-gN4">
             <objects>
-                <viewController id="6mB-9A-qQN" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImagePage" useStoryboardIdentifierAsRestorationIdentifier="YES" id="6mB-9A-qQN" customClass="ImagePage" customModule="AWT" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="bPI-fn-7Sz"/>
                         <viewControllerLayoutGuide type="bottom" id="g1t-OV-5uH"/>
@@ -1020,6 +1019,9 @@
                     </view>
                     <navigationItem key="navigationItem" title="Image" id="54d-a0-vC3"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="imageView" destination="qgM-hS-mmO" id="SBO-3W-PcB"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mYq-zS-sLm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

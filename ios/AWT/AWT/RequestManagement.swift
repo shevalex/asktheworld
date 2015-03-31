@@ -61,31 +61,30 @@ struct RequestResponseManagement {
             selectionObserver?(id: objectId!);
         }
         
-        
 
         
-        func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-            
-            return UITableViewCellEditingStyle.Delete;
-        }
-//        func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+//        func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
 //            
-//            return "Jopa";
+//            return UITableViewCellEditingStyle.Delete;
 //        }
-        
-        func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-            let ackAction:UITableViewRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Ack", handler: {(action, path) in
-                
-            });
-            ackAction.backgroundColor = UIColor.orangeColor()
-            
-            let closeAction:UITableViewRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Close", handler: {(action, path) in
-                
-            });
-            closeAction.backgroundColor = UIColor.blackColor()
-            
-            return [closeAction, ackAction];
-        }
+////        func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+////            
+////            return "Jopa";
+////        }
+//        
+//        func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+//            let ackAction:UITableViewRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Ack", handler: {(action, path) in
+//                
+//            });
+//            ackAction.backgroundColor = UIColor.orangeColor()
+//            
+//            let closeAction:UITableViewRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Close", handler: {(action, path) in
+//                
+//            });
+//            closeAction.backgroundColor = UIColor.blackColor()
+//            
+//            return [closeAction, ackAction];
+//        }
     }
     
     class AbstractUIObjectDataModel: NSObject, UITableViewDataSource {
@@ -677,7 +676,7 @@ struct RequestResponseManagement {
             tableView.alpha = finished ? 1 : 0;
         });
         
-        tableView.setEditing(true, animated: false);
+//        tableView.setEditing(true, animated: false);
         
         mapping.setObject(delegate!, forKey: tableView);
     }

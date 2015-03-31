@@ -26,7 +26,9 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
     private var responseId: String?;
 
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad();
+        
+        responseAttachmentsView.setHostingView(self);
 
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
@@ -79,7 +81,7 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
     
     @IBAction func attachButtonClickAction(sender: AnyObject) {
         AtwUiUtils.setImagePicker(self, {(image: UIImage) in
-            self.responseAttachmentsView.addImage(image);
+            self.responseAttachmentsView.addAttachment(image);
         });
     }
     
