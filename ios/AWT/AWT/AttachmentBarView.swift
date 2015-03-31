@@ -16,7 +16,7 @@ class AttachmentBarView: UIControl {
     
     private var imageArray: Array<UIImage> = []
     
-    private var hostingView: UIViewControllerWithSpinner = UIViewControllerWithSpinner()
+    private var hostingView: UIViewController?
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
@@ -46,27 +46,24 @@ class AttachmentBarView: UIControl {
     }
     
     func setHostingView(view: UIViewControllerWithSpinner) {
-        hostingView = view
+        hostingView = view;
     }
     
     
     func addImage(image: UIImage) {
-        
         imageArray.append(image);
         
-        var tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
-        
         imageScollView.contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
-        
         
         let x = (frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count - 1);
         let newImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
         newImageView.image = image;
         newImageView.contentMode = UIViewContentMode.ScaleToFill;
         newImageView.userInteractionEnabled = true;
-        newImageView.addGestureRecognizer(tapRecognizer)
-
         imageScollView.addSubview(newImageView);
+        
+        var tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
+        newImageView.addGestureRecognizer(tapRecognizer);
     }
 
     func removeImage(imageIndex: Int) {
@@ -74,6 +71,6 @@ class AttachmentBarView: UIControl {
     }
     
     func imagePressedAction(image: UIImage) {
-        hostingView.performSegueWithIdentifier("imageView", sender: self)
+        hostingView?.performSegueWithIdentifier("imageView", sender: self);
     }
 }
