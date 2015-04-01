@@ -3,54 +3,74 @@
   min-width: 900px;
 }
 
-#RegisterPage-Description-Left {
-  vertical-align: top;
-  float: left;
-  margin-top: 100px;
-  margin-left: 100px;
+#RegisterPage-SignUpPanel {
+  width: 500px;
   display: inline-block;
-  width: 20%;
-  
-  font-size: 25px;
-}
-
-#RegisterPage-Description-Right {
-  vertical-align: top;
-  float: right;
-  margin-top: 100px;
-  margin-right: 100px;
-  display: inline-block;
-  width: 20%;
-  
-  font-size: 25px;
-}
-
-#RegisterPage-ContentPanel {
-  width: 30%;
-  display: inline-block;
-  margin-top: 50px;
-  font-size: 20px;
-}
-
-#RegisterPage-ContentPanel-Email, #RegisterPage-ContentPanel-Name, #RegisterPage-ContentPanel-Gender, #RegisterPage-ContentPanel-AgeCategory, #RegisterPage-ContentPanel-Languages, #RegisterPage-ContentPanel-Password, #RegisterPage-ContentPanel-RetypePassword {
-  margin-bottom: 20px;
-  font-size: inherit;
-}
-
-#RegisterPage-ContentPanel-Gender, #RegisterPage-ContentPanel-AgeCategory {
-  border-color: #999;
-}
-
-#RegisterPage-ContentPanel-TermsAndConds {
-  font-size: inherit;
-}
-
-
-#RegisterPage-ContentPanel-RegisterButton {
-  width: 100%;
   margin-top: 10px;
-  font-size: 20px;
+  
+  font-family: Verdana;
+  font-size: 13px;
 }
 
+#RegisterPage-SignUpPanel-SignUpLabel {
+  display: block;
+  font-size: 20px;
+  text-align: left;
+  
+  color: rgb(0, 133, 63);
+}
 
+#RegisterPage-SignUpPanel-Email, #RegisterPage-SignUpPanel-Nickname, #RegisterPage-SignUpPanel-Password, #RegisterPage-SignUpPanel-RetypePassword, #RegisterPage-SignUpPanel-GenderAgeLanguagePanel {
+  margin-top: 10px;
+  font: inherit;
+}
 
+#RegisterPage-SignUpPanel-GenderAgeLanguagePanel-Gender, #RegisterPage-SignUpPanel-GenderAgeLanguagePanel-Age, #RegisterPage-SignUpPanel-GenderAgeLanguagePanel-Language {
+  display: inline-block;
+  font: inherit;
+}
+#RegisterPage-SignUpPanel-GenderAgeLanguagePanel-Gender {
+  width: 120px;
+}
+#RegisterPage-SignUpPanel-GenderAgeLanguagePanel-Age {
+  width: 120px;
+
+  margin-left: 25px;
+  margin-right: 25px;
+}
+#RegisterPage-SignUpPanel-GenderAgeLanguagePanel-Language {
+  width: calc(100% - 240px - 50px);
+}
+
+#RegisterPage-SignUpPanel-AppropriateAgeCheckbox {
+  margin-top: 10px;
+  font: inherit;
+}
+
+#RegisterPage-SignUpPanel-TermsAndCondsCheckbox {
+  margin-top: 0px;
+  font: inherit;
+}
+#RegisterPage-SignUpPanel-TermsAndCondsLink {
+  font: inherit;  
+}
+
+#RegisterPage-SignUpPanel-ButtonsPanel {
+  margin-top: 30px;
+  text-align: center;
+}
+
+#RegisterPage-SignUpPanel-ButtonsPanel-SignUpButton {
+  width: 85px;
+  height: 35px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  
+  border-width: 0px;
+  
+  background-image: url(../../imgs/SignUp.png);
+}
+#RegisterPage-SignUpPanel-ButtonsPanel-SignUpButton:active {
+  background-image: url(../../imgs/SignUp.png);
+}

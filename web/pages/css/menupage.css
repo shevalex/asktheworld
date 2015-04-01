@@ -2,67 +2,65 @@
 }
 
 #MenuPage-MenuPanel {
-  width: 250;
+  width: 200px;
   vertical-align: top;
   margin-left: 0px;
-  margin-right: 50px;
-  margin-top: 20px;
+  margin-right: 40px;
+  margin-top: 0px;
   display: inline-block;
   
   overflow: hidden;
   white-space: nowrap;
-
-  border-top-style: solid;
-  border-top-width: 3px;
-  border-top-color: black;
-  border-bottom-style: solid;
-  border-bottom-width: 3px;
-  border-bottom-color: black;
-  border-left-style: solid;
-  border-left-width: 3px;
-  border-left-color: black;
 }
 
 #MenuPage-ContentPanel {
-  width: calc(100% - 250px - 80px);
-  height: calc(100% - 20px);
+  width: calc(100% - 200px - 40px - 10px - 10px);
+  height: calc(100% - 10px - 10px);
   overflow: auto;
-  margin-left: 10px;
-  margin-top: 20px;
-  padding-right: 10px;
+  padding: 10px;
   display: inline-block;
 }
 
 .menupage-menuitem {
   display: block;
   padding: 10px 20px 10px 20px;
+  color: rgb(75, 75, 75);
+  
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: transparent;
+
   border-bottom-style: solid;
   border-bottom-width: 1px;
-  border-bottom-color: black;
-  background: rgb(170, 55, 3);
-  color: white;
-  
-  font-size: 20px;
+  border-bottom-color: transparent;
+
+  font-size: 14px;
+  font-family: Verdana;
 }
 
 .menupage-menuitem:hover {
-  background: gray;
+  color: white;
+  background: rgb(0, 133, 63);
+  
+  border-color: white;
 }
 
 .menupage-menuitem-selected {
-  background: transparent;
-  color: black;
-  font-weight: bold;
+  background: rgb(0, 133, 63);
+  color: white;
+  
+  border-color: white;
 }
 
 .menupage-menuitem-selected:hover {
-  background: transparent;
 }
 
-.menupage-menuseparator {
+.menupage-menu-thin-separator, .menupage-menu-thick-separator {
   display: block;
   border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: rgb(0, 133, 63);
+}
+.menupage-menu-thick-separator {
   border-bottom-width: 2px;
-  border-bottom-color: black;
-  background: rgb(100, 100, 200);
 }

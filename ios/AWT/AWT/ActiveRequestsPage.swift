@@ -8,12 +8,28 @@
 
 import UIKit
 
-class ActiveRequestsPage: UIViewController {
-
+class ActiveRequestsPage: UIViewControllerWithSpinner {
+    @IBOutlet weak var outgoingRequestsTableView: UITableView!
+    @IBOutlet weak var numOfOutgoingRequestsLabel: UILabel!
+    
+    private var outgoingRequestCounter: GenericObjectCounter!;
+    private var requestIdtoSend: String!;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        let outgoingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+            self.requestIdtoSend = id;
+            self.performSegueWithIdentifier("showRequestDetails", sender: self);
+        }
+        
+        
+        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), outgoingRequestSelectionObserver);
+        
+        outgoingRequestCounter = RequestResponseManagement.RequestsResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
+        outgoingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
+            self.numOfOutgoingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Active requests page - num of active requests"), (responses != nil ? responses : 0)!, (requests != nil ? requests : 0)!);
+        });
     }
 
     override func didReceiveMemoryWarning() {
@@ -21,15 +37,27 @@ class ActiveRequestsPage: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated);
+        
+        outgoingRequestsTableView.reloadData();
+        
+        outgoingRequestCounter.start();
     }
-    */
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated);
+        
+        outgoingRequestCounter.stop();
+    }
+    
 
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if (segue.identifier == "showRequestDetails") {
+            let destView = segue.destinationViewController as RequestDetailsPage;
+            destView.requestId = requestIdtoSend;
+            destView.responseStatus = nil;
+        }
+    }
 }

@@ -7,9 +7,9 @@ var Application = {
     AGE_CATEGORIES: [{data: "child", display: I18n.getLocale().literals.AgeChild}, {data: "teenager", display: I18n.getLocale().literals.AgeTeenager}, {data: "young", display: I18n.getLocale().literals.AgeYoung}, {data: "adult", display: I18n.getLocale().literals.AgeAdult}, {data: "senior", display: I18n.getLocale().literals.AgeSenior}],
     RESPONSE_WAIT_TIME: [{data: 148, display: I18n.getLocale().literals.WaitTimeWeek}, {data: 24, display: I18n.getLocale().literals.WaitTimeDay}, {data: 12, display: I18n.getLocale().literals.WaitTimeHalfDay}, {data: 1, display: I18n.getLocale().literals.WaitTimeHour}],
     RESPONSE_QUANTITY: [{data: -1, display: I18n.getLocale().literals.QuantityAll}, {data: 10, display: I18n.getLocale().literals.QuantityTen}, {data: 5, display: I18n.getLocale().literals.QuantityFive}, {data: 3, display: I18n.getLocale().literals.QuantityThree}, {data: 1, display: I18n.getLocale().literals.QuantityOne}],
-    GENDERS: [{data: "male", display: I18n.getLocale().literals.GenderMale}, {data: "female", display: I18n.getLocale().literals.GenderFemale}],
+    GENDERS: [{data: "female", display: I18n.getLocale().literals.GenderFemale}, {data: "male", display: I18n.getLocale().literals.GenderMale}],
     AGE_CATEGORY_PREFERENCE: [{data: "all", display: I18n.getLocale().literals.AgePreferenceAll}, {data: "children", display: I18n.getLocale().literals.AgePreferenceChildren}, {data: "teenagers", display: I18n.getLocale().literals.AgePreferenceTeenagers}, {data: "youngs", display: I18n.getLocale().literals.AgePreferenceYoungs}, {data: "adults", display: I18n.getLocale().literals.AgePreferenceAdults}, {data: "seniors", display: I18n.getLocale().literals.AgePreferenceSeniors}],
-    GENDER_PREFERENCE: [{data: "any", display: I18n.getLocale().literals.GenderPreferenceAny}, {data: "male", display: I18n.getLocale().literals.GenderPreferenceMale}, {data: "female", display: I18n.getLocale().literals.GenderPreferenceFemale}],
+    GENDER_PREFERENCE: [{data: "any", display: I18n.getLocale().literals.GenderPreferenceAny}, {data: "female", display: I18n.getLocale().literals.GenderPreferenceFemale}, {data: "male", display: I18n.getLocale().literals.GenderPreferenceMale}],
     INQUIRY_LIMIT_PREFERENCE: [{data: -1, display: I18n.getLocale().literals.IncomingLimitPreferenceAll}, {data: 10, display: I18n.getLocale().literals.IncomingLimitPreferenceTen}, {data: 5, display: I18n.getLocale().literals.IncomingLimitPreferenceFive}, {data: 0, display: I18n.getLocale().literals.IncomingLimitPreferenceNone}],
     
     toTargetGroupString: function (ageCategory, gender) {
@@ -149,9 +149,8 @@ Application.start = function() {
   });
   
   Application._setupLanguageChooser();
-  
 
-  this.showPage(LoginPage.name);
+  this.showPage(LoginPage.name, {autoLogin: "true"});
 }
 
 Application.reset = function() {
@@ -163,8 +162,14 @@ Application.reset = function() {
   this.hideMessage();
   this.hideSpinningWheel();
   this.hideDialog();
-  
-  Backend.logOut();
+
+  this.logOut();
+}
+
+Application.logOut = function() {
+  Backend.logOut(function() {
+    $("#Title-User-Text").text("");
+  });
 }
 
 Application.reload = function() {
@@ -314,6 +319,60 @@ Application._getPage = function(pageId) {
 }
 
 
+Application.setupUserMenuChooser = function() {
+  $("#Title-Options-User-Button").click(function() {
+    if ($(".user-menu-popup").length > 0) {
+      return;
+    }
+    
+    var popup = UIUtils.appendBlock($("#Title-Options-User-Button").get(0), "Title-User-Popup");
+    UIUtils.addClass(popup, "user-menu-popup");
+    
+    
+    var popupCloser = function() {
+      var container = UIUtils.get$(popup);
+      container.fadeOut("fast", function() {
+        container.remove();
+      });
+    };
+    
+    var item = UIUtils.appendLink(popup, "ProfileItem", I18n.getLocale().literals.ProfileItem);
+    UIUtils.addClass(item, "user-menu-item");
+    UIUtils.setClickListener(item, function(lr) {
+      popupCloser();
+      Application.showPage(UserProfilePage.name);
+    });
+    
+    var item = UIUtils.appendLink(popup, "PreferencesItem", I18n.getLocale().literals.PreferencesItem);
+    UIUtils.addClass(item, "user-menu-item");
+    UIUtils.setClickListener(item, function(lr) {
+      popupCloser();
+      Application.showPage(UserPreferencesPage.name);
+    });
+    
+    popup.appendChild(UIUtils.createSeparator());
+    
+    var item = UIUtils.appendLink(popup, "LogOutItem", I18n.getLocale().literals.LogOutItem);
+    UIUtils.addClass(item, "user-menu-item");
+    UIUtils.setClickListener(item, function(lr) {
+      popupCloser();
+      $("#Title-Options-Separator").css("display", "none");
+      $("#Title-Options-User-Button").css("display", "none");
+      
+      Application.reset();
+      Application.showPage(LoginPage.name);
+      
+      return false;
+    });
+    
+    Application._setPopupCloser("user-menu-popup");
+  }.bind(this));
+  
+  $("#Title-Options-Separator").css("display", "inline-block");
+  $("#Title-Options-User-Button").css("display", "inline-block");
+  $("#Title-Options-User-Button").text(Backend.getUserProfile().name);
+}
+
 
 Application.isEqualBundle = function(bundle1, bundle2) {
   if (bundle1 == null && bundle2 == null) {
@@ -359,7 +418,8 @@ Application.restoreFromHistory = function(hash) {
     if (historyBundle.page != null) {
       Application.showPage(historyBundle.page, historyBundle);
     } else {
-      console.error("Incorrect hash - no page:" + hash);
+      //console.error("Incorrect hash - no page:" + hash);
+      Application.showPage(LoginPage.name);
     }
   }
 }
@@ -387,6 +447,10 @@ Application._serialize = function(parcel) {
 Application._deserialize = function(ser) {
   var parcel = {};
   
+  if (ser == null || ser == "") {
+    return parcel;
+  }
+  
   var tags = ser.split(":");
   for (var index in tags) {
     var tag = tags[index];
@@ -411,12 +475,12 @@ Application._deserialize = function(ser) {
 
 
 Application._setupLanguageChooser = function() {
-  $("#Title-Language-Text").click(function() {
+  $("#Title-Options-Language-Button").click(function() {
     if ($(".language-selection-popup").length > 0) {
       return;
     }
     
-    var popup = UIUtils.appendBlock($("#Title-Language").get(0), "Title-Language-Popup");
+    var popup = UIUtils.appendBlock($("#Title-Options-Language-Button").get(0), "Title-Language-Popup");
     UIUtils.addClass(popup, "language-selection-popup");
     
     for (var index in Application.Configuration.LANGUAGES) {
@@ -424,18 +488,15 @@ Application._setupLanguageChooser = function() {
       
       var item = UIUtils.appendLink(popup, languageRecord.data, languageRecord.display);
       UIUtils.addClass(item, "language-selection-item");
-      
+
       UIUtils.setClickListener(item, function(lr) {
-        $("#Title-Language-Text").html(lr.display);
+        $("#Title-Options-Language-Button").text(lr.display);
         I18n.setCurrentLanguage(lr.data);
         window.localStorage.menuLanguage = lr.data;
-        
+
         Application.reload();
         
-        var container = UIUtils.get$(popup);
-        container.fadeOut("fast", function() {
-          container.remove();
-        });
+        return false;
       }.bind(this, languageRecord));
     }
     
@@ -450,8 +511,9 @@ Application._setupLanguageChooser = function() {
       break;
     }
   }
-  $("#Title-Language-Text").html(displayLanguage);
+  $("#Title-Options-Language-Button").text(displayLanguage);
 }
+
 
 
 Application._setPopupCloser = function(popupClass) {

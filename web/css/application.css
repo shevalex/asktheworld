@@ -71,7 +71,7 @@
 .language-selection-popup {
   position: absolute;
   right: 0px;
-  top: 20px;
+  top: 25px;
   width: 100px;
   height: 200px;
   
@@ -86,10 +86,33 @@
   border-width: 1px;
   border-radius: 5px;
 
-  color: white;
-  background: rgba(100, 100, 100, 0.9);
+  background: rgba(255, 255, 255, 0.9);
 }
 .language-selection-item {
+  display: block;
+  font-size: 15px;
+}
+
+.user-menu-popup {
+  position: absolute;
+  right: 0px;
+  top: 25px;
+  width: 100px;
+  height: 90px;
+  
+  z-index: 1;
+  
+  padding: 5px;
+  overflow: hidden;
+  
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 5px;
+
+  background: rgba(255, 255, 255, 0.9);
+}
+.user-menu-item {
   display: block;
   font-size: 15px;
 }

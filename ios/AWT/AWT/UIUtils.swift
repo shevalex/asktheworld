@@ -128,4 +128,8 @@ public struct AtwUiUtils {
         
         return chooserView;
     }
+    
+    static func setImagePicker(viewController: UIViewController, imagePickObserver: ImagePickObserver? = nil) {
+        ImageChooserFactory.setImagePicker(viewController, imagePickObserver: imagePickObserver);
+    }
 }

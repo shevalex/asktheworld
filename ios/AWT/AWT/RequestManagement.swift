@@ -60,6 +60,31 @@ struct RequestResponseManagement {
             var objectId = dataModel.getObjectId(indexPath);
             selectionObserver?(id: objectId!);
         }
+        
+
+        
+//        func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+//            
+//            return UITableViewCellEditingStyle.Delete;
+//        }
+////        func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+////            
+////            return "Jopa";
+////        }
+//        
+//        func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+//            let ackAction:UITableViewRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Ack", handler: {(action, path) in
+//                
+//            });
+//            ackAction.backgroundColor = UIColor.orangeColor()
+//            
+//            let closeAction:UITableViewRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Close", handler: {(action, path) in
+//                
+//            });
+//            closeAction.backgroundColor = UIColor.blackColor()
+//            
+//            return [closeAction, ackAction];
+//        }
     }
     
     class AbstractUIObjectDataModel: NSObject, UITableViewDataSource {
@@ -81,6 +106,7 @@ struct RequestResponseManagement {
             
             return tableCell;
         }
+        
         
         func renderTableCell(cell: UITableViewCell, id: String) {
         }
@@ -123,6 +149,13 @@ struct RequestResponseManagement {
                     tableCell.counterLabel.text = "\(numOfUnreadResponses!)";
                 }
                 
+                
+                let responseIds = Backend.getInstance().getIncomingResponseIds(id, responseStatus: nil);
+                if (responseIds == nil || responseIds!.count == 0) {
+                    tableCell.backgroundColor = AtwUiUtils.getColor("OUTGOING_REQUEST_NO_RESPONSES_BACKGROUND_COLOR");
+                } else {
+                    tableCell.backgroundColor = AtwUiUtils.getColor("OUTGOING_REQUEST_WITH_RESPONSES_BACKGROUND_COLOR");
+                }
             } else {
                 tableCell.targetLabel.text = "";
                 tableCell.dateLabel.text = "";
@@ -152,7 +185,13 @@ struct RequestResponseManagement {
                 dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle;
                 dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle;
                 tableCell.timeLabel.text = dateFormatter.stringFromDate(dateTime);
-                
+
+                let responseIds = Backend.getInstance().getOutgoingResponseIds(id, responseStatus: nil);
+                if (responseIds == nil || responseIds!.count == 0) {
+                    tableCell.backgroundColor = AtwUiUtils.getColor("INCOMING_REQUEST_NO_RESPONSE_BACKGROUND_COLOR");
+                } else {
+                    tableCell.backgroundColor = AtwUiUtils.getColor("INCOMING_REQUEST_WITH_RESPONSE_BACKGROUND_COLOR");
+                }
             } else {
                 tableCell.sourceLabel.text = "";
                 tableCell.dateLabel.text = "";
@@ -164,7 +203,7 @@ struct RequestResponseManagement {
     
     
     class AbstractObjectProvider: GenericObjectProvider {
-        private var cacheChangeListener: Backend.CacheChangeEventObserver? = nil;
+        private var cacheChangeListenerId: String? = nil;
         private var updateObserver: ObjectUpdateObserver? = nil;
         
         func getObjectId(index: Int!) -> String? {
@@ -188,15 +227,15 @@ struct RequestResponseManagement {
         
         func setChangeObserver(observer: ((index: Int?) -> Void)!) {
             if (observer == nil) {
-                if (cacheChangeListener != nil) {
-                    Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
-                    cacheChangeListener = nil;
+                if (cacheChangeListenerId != nil) {
+                    Backend.getInstance().removeCacheChangeListener(cacheChangeListenerId!);
+                    cacheChangeListenerId = nil;
                 }
                 
                 return;
             }
             
-            cacheChangeListener = {(event) in
+            let cacheChangeListener: Backend.CacheChangeEventObserver = {(event) in
                 if (self.isObjectIdsChangeEvent(event)) {
                     var objectIds: [String]? = self.getObjectIds();
                     if (objectIds != nil) {
@@ -219,20 +258,20 @@ struct RequestResponseManagement {
                     }
                 }
             };
-            Backend.getInstance().addCacheChangeListener(cacheChangeListener!);
+            cacheChangeListenerId = Backend.getInstance().addCacheChangeListener(cacheChangeListener);
         }
         
         func setUpdateObserver(observer: ObjectUpdateObserver!) {
             self.updateObserver = observer;
-            if (cacheChangeListener == nil) {
+            if (cacheChangeListenerId == nil) {
                 // this is needed to trigger update notifications;
                 setChangeObserver({(index: Int?) in /*intentionally do nothing*/});
             }
         }
         
         deinit {
-            if (cacheChangeListener != nil) {
-                Backend.getInstance().removeCacheChangeListener(cacheChangeListener!);
+            if (cacheChangeListenerId != nil) {
+                Backend.getInstance().removeCacheChangeListener(cacheChangeListenerId!);
             }
         }
         
@@ -276,7 +315,7 @@ struct RequestResponseManagement {
     
     class OutgoingRequestObjectProvider: AbstractObjectProvider {
         override func getObjectIds() -> [String]? {
-            return Backend.getInstance().getOutgoingRequestIds();
+            return Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
         }
         
         override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
@@ -284,10 +323,6 @@ struct RequestResponseManagement {
         }
         
         override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
-            if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
-                return nil;
-            }
-            
             return event.requestId;
         }
     }
@@ -295,12 +330,13 @@ struct RequestResponseManagement {
     class OutgoingRequestWithResponsesObjectProvider: OutgoingRequestObjectProvider {
         private let responseProviderFactory: AbstractResponseProviderFactory;
         
-        override init() {
-            responseProviderFactory = IncomingResponseProviderFactory(responseStatus: nil);
+        init(responseStatus: String) {
+            responseProviderFactory = IncomingResponseProviderFactory(responseStatus: responseStatus);
         }
         
+        
         override func getObjectIds() -> [String]? {
-            let requestIds: [String]? = Backend.getInstance().getOutgoingRequestIds();
+            let requestIds: [String]? = Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
                 return nil;
             }
@@ -318,11 +354,6 @@ struct RequestResponseManagement {
             }
             
             return matchingRequestIds;
-        }
-        
-        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
-            return event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED
-                || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED;
         }
     }
     
@@ -365,22 +396,19 @@ struct RequestResponseManagement {
     
     class IncomingRequestObjectProvider: AbstractObjectProvider {
         override func getObjectIds() -> [String]? {
-            return Backend.getInstance().getIncomingRequestIds();
+            return Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
         }
         
         override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
             return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED;
         }
-        
+
         override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
-            if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
-                return nil;
-            }
-            
             return event.requestId;
         }
     }
-
+    
+    
     class IncomingRequestWithoutResponsesObjectProvider: IncomingRequestObjectProvider {
         private let responseProviderFactory: AbstractResponseProviderFactory;
         
@@ -388,8 +416,9 @@ struct RequestResponseManagement {
             responseProviderFactory = OutgoingResponseProviderFactory(responseStatus: nil);
         }
         
+
         override func getObjectIds() -> [String]? {
-            let requestIds: [String]? = Backend.getInstance().getIncomingRequestIds();
+            let requestIds: [String]? = Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
                 return nil;
             }
@@ -407,11 +436,6 @@ struct RequestResponseManagement {
             }
             
             return matchingRequestIds;
-        }
-        
-        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
-            return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED
-                   || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
         }
     }
     
@@ -652,6 +676,7 @@ struct RequestResponseManagement {
             tableView.alpha = finished ? 1 : 0;
         });
         
+//        tableView.setEditing(true, animated: false);
         
         mapping.setObject(delegate!, forKey: tableView);
     }

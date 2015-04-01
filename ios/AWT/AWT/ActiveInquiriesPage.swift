@@ -8,12 +8,29 @@
 
 import UIKit
 
-class ActiveInquiriesPage: UIViewController {
+class ActiveInquiriesPage: UIViewControllerWithSpinner {
+    @IBOutlet weak var incomingRequestsTableView: UITableView!
+    @IBOutlet weak var numOfIncomingRequestsLabel: UILabel!
+
+    private var selectedRequestId: String!;
+    private var incomingRequestCounter: GenericObjectCounter!;
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        var incomingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+            self.selectedRequestId = id;
+            self.performSegueWithIdentifier("showInquiryDetails", sender: self)
+        }
+        
+        
+        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestObjectProvider(), incomingRequestSelectionObserver);
+        
+        
+        incomingRequestCounter = RequestResponseManagement.RequestsResponsesCounter(requestProvider: RequestResponseManagement.IncomingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.OutgoingResponseProviderFactory(responseStatus: nil));
+        incomingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
+            self.numOfIncomingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d active inquiries", comment: "Active Inquiries page - num of active inquiries"), (requests != nil ? requests : 0)!);
+        });
     }
 
     override func didReceiveMemoryWarning() {
@@ -22,14 +39,24 @@ class ActiveInquiriesPage: UIViewController {
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if (segue.identifier == "showInquiryDetails") {
+            let destView = segue.destinationViewController as InquiryDetailsPage;
+            destView.requestId = selectedRequestId;
+        }
     }
-    */
 
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated);
+        
+        incomingRequestsTableView.reloadData();
+        
+        incomingRequestCounter.start();
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated);
+        
+        incomingRequestCounter.stop();
+    }
 }

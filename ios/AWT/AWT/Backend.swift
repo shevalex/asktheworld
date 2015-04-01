@@ -196,6 +196,7 @@ public protocol BackendCallback {
 }
 
 public struct Backend {
+    public typealias CompletionObserver = (id: String) -> Void;
     typealias CacheChangeEventObserver = (event: CacheChangeEvent) -> Void;
     
     
@@ -252,7 +253,7 @@ public struct Backend {
         public var inquiryAge: Configuration.Item! = Configuration.AGE_CATEGORY_PREFERENCE[0];
         public var inquiryGender: Configuration.Item! = Configuration.GENDER_PREFERENCE[0];
         public var expertises: [Configuration.Item]! = [Configuration.EXPERTISES[0]];
-        public var contactVisible: Configuration.Item!! = Configuration.CONTACT_REQUESTABLE[0];
+        public var contactVisible: Configuration.Item! = Configuration.CONTACT_REQUESTABLE[0];
         public var contactName: String! = "";
         public var contactInfo: String! = "";
     }
@@ -265,9 +266,18 @@ public struct Backend {
         init() {
         }
         
-        var time: Double! = 0;
+        init(userContext: UserContext) {
+            responseQuantity = userContext.responseQuantity;
+            responseWaitTime = userContext.responseWaitTime;
+            responseAgeGroup = userContext.inquiryAge;
+            responseGender = userContext.inquiryGender;
+            expertiseCategory = Configuration.EXPERTISES[0];
+        }
+
+        
+        var time: Double! = NSDate().timeIntervalSince1970;
         var text: String! = "";
-        var attachments: [String]!;
+        var attachments: [String]! = [];
         var responseQuantity: Configuration.Item!;
         var responseWaitTime: Configuration.Item!;
         var responseAgeGroup: Configuration.Item!;
@@ -283,7 +293,19 @@ public struct Backend {
         static let CONTACT_INFO_STATUS_CAN_PROVIDE = "can_provide";
         static let CONTACT_INFO_STATUS_PROVIDED = "provided";
         
+        public struct ContactInfo {
+            var contactName: String;
+            var contactInfo: String;
+        }
+        
+        
         init() {
+        }
+        
+        
+        init(userContext: UserContext) {
+            ageCategory = userContext.age;
+            gender = userContext.gender;
         }
 
         var time: Double! = 0;
@@ -293,6 +315,7 @@ public struct Backend {
         var gender: Configuration.Item!;
         var status: String! = STATUS_UNREAD;
         var contactInfoStatus: String! = CONTACT_INFO_STATUS_NOT_AVAILABLE;
+        var contactInfo: ContactInfo? = nil;
     }
 
     
@@ -516,9 +539,23 @@ public struct Backend {
             };
             
             DelayedNotifier(action).schedule(5);
+            
+            return nil;
+        } else {
+            var requestIds: [String] = [];
+            for (index, id) in enumerate(ids!) {
+                var request = self.cache.getRequest(id);
+                if (requestStatus == nil
+                    || request != nil && request!.status == requestStatus
+                    || request == nil && (requestStatus == RequestObject.STATUS_ACTIVE && index < 4
+                        || requestStatus == RequestObject.STATUS_INACTIVE && index >= 4)) {
+                        
+                    requestIds.append(id);
+                }
+            }
+            
+            return requestIds;
         }
-        
-        return ids;
     }
 
     public func getIncomingRequestIds(requestStatus: String? = nil) -> [String]? {
@@ -536,9 +573,23 @@ public struct Backend {
             };
             
             DelayedNotifier(action).schedule(5);
+            
+            return nil;
+        } else {
+            var requestIds: [String] = [];
+            for (index, id) in enumerate(ids!) {
+                var request = self.cache.getRequest(id);
+                if (requestStatus == nil
+                    || request != nil && request!.status == requestStatus
+                    || request == nil && (requestStatus == RequestObject.STATUS_ACTIVE && index < 4
+                        || requestStatus == RequestObject.STATUS_INACTIVE && index >= 4)) {
+                        
+                    requestIds.append(id);
+                }
+            }
+            
+            return requestIds;
         }
-        
-        return ids;
     }
     
     public func getRequest(requestId: String!) -> RequestObject? {
@@ -553,12 +604,8 @@ public struct Backend {
             //TODO: pull request from the server here
             
             var action:()->Void = {() in
-                request = RequestObject();
+                request = RequestObject(userContext: Backend.getInstance().getUserContext());
                 request!.text = "Request \(requestId)";
-                request!.responseAgeGroup = Configuration.AGE_CATEGORY_PREFERENCE[2];
-                request!.responseGender = Configuration.GENDER_PREFERENCE[0];
-                request!.expertiseCategory = Configuration.EXPERTISES[2];
-                request!.time = NSDate().timeIntervalSince1970;
 
                 self.cache.setRequest(requestId, request: request!);
             };
@@ -581,13 +628,31 @@ public struct Backend {
             self.cache.markIncomingResponseIdsInUpdate(requestId);
             
             var action:()->Void = {() in
-                self.cache.setIncomingResponseIds(requestId, responseIds: ["\(requestId)-response1", "\(requestId)-response2", "\(requestId)-response3", "\(requestId)-response4", "\(requestId)-response5", "\(requestId)-response6"]);
+                if (requestId == "req2" || requestId == "req6") {
+                    self.cache.setIncomingResponseIds(requestId, responseIds: []);
+                } else {
+                    self.cache.setIncomingResponseIds(requestId, responseIds: ["\(requestId)-response1", "\(requestId)-response2", "\(requestId)-response3", "\(requestId)-response4", "\(requestId)-response5", "\(requestId)-response6"]);
+                }
             };
             
             DelayedNotifier(action).schedule(3);
+            
+            return nil;
+        } else {
+            var responseIds: [String] = [];
+            for (index, id) in enumerate(ids!) {
+                var response = self.cache.getResponse(requestId, responseId: id);
+                if (responseStatus == nil
+                    || response != nil && response!.status == responseStatus
+                    || response == nil && (responseStatus == ResponseObject.STATUS_READ && index < 3
+                                           || responseStatus == ResponseObject.STATUS_UNREAD && index >= 3)) {
+
+                    responseIds.append(id);
+                }
+            }
+            
+            return responseIds;
         }
-        
-        return ids;
     }
     
     public func getOutgoingResponseIds(requestId: String, responseStatus: String? = nil) -> [String]? {
@@ -609,14 +674,28 @@ public struct Backend {
             };
             
             DelayedNotifier(action).schedule(3);
+            
+            return nil;
+        } else {
+            var responseIds: [String] = [];
+            for (index, id) in enumerate(ids!) {
+                var response = self.cache.getResponse(requestId, responseId: id);
+                if (responseStatus == nil
+                    || response != nil && response!.status == responseStatus
+                    || response == nil && (responseStatus == ResponseObject.STATUS_READ && index < 3
+                                           || responseStatus == ResponseObject.STATUS_UNREAD && index >= 3)) {
+                        
+                    responseIds.append(id);
+                }
+            }
+            
+            return responseIds;
         }
-        
-        return ids;
     }
     
     public func getResponse(requestId: String!, responseId: String!) -> ResponseObject? {
         if (cache.isResponseInUpdate(requestId, responseId: responseId)) {
-            return nil
+            return nil;
         }
         
         var response: ResponseObject? = cache.getResponse(requestId, responseId: responseId);
@@ -631,6 +710,7 @@ public struct Backend {
                 response!.time = NSDate().timeIntervalSince1970;
                 response!.gender = Configuration.GENDERS[0];
                 response!.ageCategory = Configuration.AGE_CATEGORIES[1];
+                response!.contactInfoStatus = ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE;
                 
                 self.cache.setResponse(requestId, responseId: responseId, response: response!);
             };
@@ -642,16 +722,120 @@ public struct Backend {
         return response;
     }
     
+    public func createRequest(request: RequestObject, observer: CompletionObserver) {
+        var ids: [String]? = self.cache.getOutgoingRequestIds();
+        if (ids == nil) {
+            println("The list of requests hasn't yet been read - cannot create new");
+            return;
+        }
+        
+        var requestId = "req\(ids?.count)";
+        self.cache.markRequestInUpdate(requestId);
+        self.cache.markOutgoingRequestIdsInUpdate();
+        
+        var action:()->Void = {() in
+            ids?.append(requestId);
+            
+            self.cache.setRequest(requestId, request: request);
+            self.cache.setOutgoingRequestIds(ids!);
+            self.cache.setIncomingResponseIds(requestId, responseIds: []);
+            observer(id: requestId);
+        };
+        
+        DelayedNotifier(action).schedule(2);
+    }
+    
+    public func updateRequest(requestId: String, request: RequestObject, observer: CompletionObserver) {
+        self.cache.markRequestInUpdate(requestId);
+        
+        var action:()->Void = {() in
+            self.cache.setRequest(requestId, request: request);
+            observer(id: requestId);
+        };
+        
+        DelayedNotifier(action).schedule(2);
+    }
+    
+    public func createResponse(requestId: String, response: ResponseObject, observer: CompletionObserver) {
+        var ids: [String]? = self.cache.getOutgoingResponseIds(requestId);
+        if (ids == nil) {
+            println("The list of responses hasn't yet been read - cannot create new");
+            return;
+        }
+        
+        var responseId = "\(requestId)-response\(ids?.count)";
+        self.cache.markResponseInUpdate(requestId, responseId: responseId);
+        self.cache.markOutgoingResponseIdsInUpdate(requestId);
+        
+        var action:()->Void = {() in
+            ids?.append(responseId);
+            
+            self.cache.setResponse(requestId, responseId: responseId, response: response);
+            self.cache.setOutgoingResponseIds(requestId, responseIds: ids!);
+            observer(id: responseId);
+        };
+        
+        DelayedNotifier(action).schedule(3);
+    }
+    
+    public func updateResponse(requestId: String, responseId: String, response: ResponseObject, observer: CompletionObserver) {
+        self.cache.markResponseInUpdate(requestId, responseId: responseId);
+        
+        var action:()->Void = {() in
+            self.cache.setResponse(requestId, responseId: responseId, response: response);
+            observer(id: responseId);
+        };
+        
+        DelayedNotifier(action).schedule(2);
+    }
+    
+    
+    
+    public func getContactInfo(requestId: String, responseId: String, observer: CompletionObserver) -> ResponseObject.ContactInfo? {
+        var response = getResponse(requestId, responseId: responseId);
+        if (response == nil) {
+            return nil;
+        }
+        
+        if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
+            observer(id: responseId);
+            return nil;
+        } else if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_PROVIDED) {
+            observer(id: responseId);            
+            return response!.contactInfo;
+        } else {
+            self.cache.markContactInfoInUpdate(requestId, responseId: responseId);
+            
+            var action:()->Void = {() in
+                var contactInfo = ResponseObject.ContactInfo(contactName: "Anton", contactInfo: "(678) 967-3445");
+                self.cache.setContactInfo(requestId, responseId: responseId, contactInfo: contactInfo);
+                
+                observer(id: responseId);
+            };
+            
+            DelayedNotifier(action).schedule(2);
+            
+            return nil;
+        }
+    }
+    
+    
+    
+    
 
     
     // Event Management
     
-    func addCacheChangeListener(listener: CacheChangeEventObserver) {
-        cache.addCacheChangeListener(listener);
+    func addCacheChangeListener(listener: CacheChangeEventObserver, listenerId: String? = nil) -> String {
+        return cache.addCacheChangeListener(listener, listenerId: listenerId);
     }
     
-    func removeCacheChangeListener(listener: CacheChangeEventObserver) {
-        cache.removeCacheChangeListener(listener);
+    func removeCacheChangeListener(listenerId: String) {
+        cache.removeCacheChangeListener(listenerId);
+    }
+    
+    func isCacheInUpdate() -> Bool {
+        return cache.isInUpdate();
     }
     
     
@@ -809,17 +993,22 @@ public struct Backend {
     
     private class ObjectCache {
         private class EventListenerCollection {
-            private var list: [CacheChangeEventObserver] = [];
+            private var counter: Int! = 0;
+            private var list: Dictionary<String, CacheChangeEventObserver> = Dictionary();
             
-            func add(element: CacheChangeEventObserver) {
-                list.append(element);
-            }
-            
-            func remove(element: CacheChangeEventObserver) {
+            func add(element: CacheChangeEventObserver, elementId: String?) -> String {
+                counter = counter + 1;
+                let id: String = elementId != nil ? elementId! : "listener-\(counter)";
+                list.updateValue(element, forKey: id);
                 
+                return id;
             }
             
-            func get() -> [CacheChangeEventObserver] {
+            func remove(elementId: String) {
+                list.removeValueForKey(elementId);
+            }
+            
+            func get() -> Dictionary<String, CacheChangeEventObserver> {
                 return list;
             }
         }
@@ -845,14 +1034,17 @@ public struct Backend {
         private var outgoingResponseIdsInProgress: Dictionary<String, Bool> = Dictionary();
         private var outgoingResponseIds: Dictionary<String, [String]> = Dictionary();
         
+        private var contactInfosInProgress: Dictionary<String, Bool> = Dictionary();
+
+        
         private var updateInProgressNotified: Bool = false;
         
-        func addCacheChangeListener(listener: CacheChangeEventObserver) {
-            cacheChangeListeners.add(listener);
+        func addCacheChangeListener(listener: CacheChangeEventObserver, listenerId: String?) -> String {
+            return cacheChangeListeners.add(listener, elementId: listenerId);
         }
         
-        func removeCacheChangeListener(listener: CacheChangeEventObserver) {
-            cacheChangeListeners.remove(listener);
+        func removeCacheChangeListener(listenerId: String) {
+            cacheChangeListeners.remove(listenerId);
         }
         
         
@@ -980,6 +1172,23 @@ public struct Backend {
             return isResponseInUpdate(requestId, responseId: responseId) ? nil : responses[responseId];
         }
         
+        func markContactInfoInUpdate(requestId: String, responseId: String) {
+            contactInfosInProgress.updateValue(true, forKey: responseId);
+            
+            fireUpdateEvent();
+            //            println("marked response's contact info \(responseId) in progress");
+        }
+        func isContactInfoInUpdate(requestId: String, responseId: String) -> Bool {
+            return contactInfosInProgress[responseId] != nil;
+        }
+        func setContactInfo(requestId: String, responseId: String, contactInfo: ResponseObject.ContactInfo) {
+            var response = getResponse(requestId, responseId: responseId);
+            response!.contactInfo = contactInfo;
+            response!.contactInfoStatus = ResponseObject.CONTACT_INFO_STATUS_PROVIDED;
+            contactInfosInProgress.removeValueForKey(responseId);
+            
+            setResponse(requestId, responseId: responseId, response: response!);
+        }
 
         
         private func isInUpdate() -> Bool {
@@ -988,7 +1197,8 @@ public struct Backend {
                 || (incomingRequestIdsInProgress == true)
                 || !outgoingResponseIdsInProgress.isEmpty
                 || !requestsInProgress.isEmpty
-                || !responsesInProgress.isEmpty;
+                || !responsesInProgress.isEmpty
+                || !contactInfosInProgress.isEmpty;
         }
         
         private func fireUpdateEvent() {
@@ -1006,7 +1216,7 @@ public struct Backend {
         private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
             var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
 
-            for (index, listener) in enumerate(cacheChangeListeners.get()) {
+            for (key, listener) in cacheChangeListeners.get() {
                 listener(event: event);
             }
         }

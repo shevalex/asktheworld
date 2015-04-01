@@ -390,8 +390,7 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     this._cache.outgoingResponseIds[requestId].unviewed.push(newResponseId);
     
     response.time = Date.now();
-    response.pictures = [];
-    response.audios = [];
+    response.attachments = [];
     response.age_category = Backend.UserProfile.age;
     response.gender = Backend.UserProfile.gender;
     response.status = Backend.Response.STATUS_UNREAD;

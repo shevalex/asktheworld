@@ -27,30 +27,121 @@
 
 
 #LoginPage-ContentPanel {
-  width: 20%;
+  float: right;
+  width: 320px;
   display: inline-block;
   margin-top: 50px;
-  font-size: 20px;
+  margin-right: 100px;
+
+  font-family: Verdana;
+  font-size: 13px;
 }
 
-#LoginPage-ContentPanel-Login, #LoginPage-ContentPanel-Password, #LoginPage-ContentPanel-RememberLogin {
-  margin-bottom: 15px;
-  font-size: inherit;
+#LoginPage-ContentPanel-LabelPanel {
+  width: 70px;
+  display: inline-block;
+  text-align: left;
+  
+  font: inherit;
 }
 
-#LoginPage-ContentPanel-SignInButton {
-  width: 100%;
+#LoginPage-ContentPanel-LabelPanel-EmailLabel {
+  display: block;
+  margin-top: 5px;
+  
+  font: inherit;
+}
+#LoginPage-ContentPanel-LabelPanel-PasswordLabel {
+  display: block;
+  margin-top: 40px;
+  
+  font: inherit;
+}
+
+
+#LoginPage-ContentPanel-ControlPanel {
+  float: right;
+  width: 250px;
+  display: inline-block;
+  text-align: left;
+  
+  font: inherit;
+}
+
+#LoginPage-ContentPanel-ControlPanel-Login {
+  font: inherit;
+}
+
+#LoginPage-ContentPanel-ControlPanel-RememberLoginCheck {
+  font: inherit;
+  font-size: 12px;
+}
+
+#LoginPage-ContentPanel-ControlPanel-ForgotPasswordLink {
+  margin-top: 5px;
+  text-align: left;
+  
+  font: inherit;
+  font-size: 12px;
+}
+
+#LoginPage-ContentPanel-ControlPanel-Password {
   margin-top: 10px;
-  font-size: 20px;
+  
+  font: inherit;
 }
 
-#LoginPage-ContentPanel-ForgotPasswordLink {
-  margin-top: 15px;
-  font-size: 15px;
+
+#LoginPage-ContentPanel-ControlPanel-ButtonsPanel {
+  margin-top: 10px;
+  font: inherit;
 }
 
-#LoginPage-ContentPanel-SignUpLink {
-  margin-top: 25px;
-  font-size: 30px;
+#LoginPage-ContentPanel-ControlPanel-ButtonsPanel-SignInButton {
+  font: inherit;
 }
+
+#LoginPage-ContentPanel-ControlPanel-ButtonsPanel-SignUpLink {
+  margin-left: 20px;
+  font: inherit;
+}
+
+
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel {
+  margin-top: 40px;
+  font: inherit;
+}
+
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadAppsLabel {
+  font: inherit;
+}
+
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel {
+  margin-top: 10px;
+  font: inherit;
+}
+
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadAndroidButton, #LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadiOSButton  {
+  width: 85px;
+  height: 40px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  
+  border-width: 0px;
+}
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadAndroidButton {
+  background-image: url(../../imgs/Android.png);
+}
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadAndroidButton:active {
+  background-image: url(../../imgs/Android-pushed.png);
+}
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadiOSButton {
+  float: right;
+  background-image: url(../../imgs/iOS.png);
+}
+#LoginPage-ContentPanel-ControlPanel-DownloadsPanel-DownloadButtonsPanel-DownloadiOSButton:active {
+  background-image: url(../../imgs/iOS-pushed.png);
+}
+
 

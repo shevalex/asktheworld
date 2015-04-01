@@ -113,25 +113,19 @@ MenuPage.prototype._appendMenuPanel = function(root) {
   
   
   this._appendMenuItem(menuPanel, HomePage.name, this.getLocale().HomeMenuItem, null, clickListener);
-  menuPanel.appendChild(this._createMenuSeparator());
+  menuPanel.appendChild(this._createThickMenuSeparator());
 
   this._appendMenuItem(menuPanel, NewRequestPage.name, this.getLocale().CreateNewRequestItem, null, clickListener);
+  menuPanel.appendChild(this._createThinMenuSeparator());
   this._appendMenuItem(menuPanel, ActiveOutgoingRequestsPage.name, this.getLocale().ActiveOutgoingRequestsItem, null, clickListener);
+  menuPanel.appendChild(this._createThinMenuSeparator());
   this._appendMenuItem(menuPanel, AllOutgoingRequestsPage.name, this.getLocale().AllOutgoingRequestsItem, null, clickListener);
-  menuPanel.appendChild(this._createMenuSeparator());
+  menuPanel.appendChild(this._createThickMenuSeparator());
   
   this._appendMenuItem(menuPanel, ActiveIncomingRequestsPage.name, this.getLocale().ActiveIncomingRequestsItem, null, clickListener);
+  menuPanel.appendChild(this._createThinMenuSeparator());
   this._appendMenuItem(menuPanel, AllIncomingRequestsPage.name, this.getLocale().AllIncomingRequestsItem, null, clickListener);
-  menuPanel.appendChild(this._createMenuSeparator());
-  
-  this._appendMenuItem(menuPanel, UserProfilePage.name, this.getLocale().ProfileItem, null, clickListener);
-  this._appendMenuItem(menuPanel, UserPreferencesPage.name, this.getLocale().PreferencesItem, null, clickListener);
-  menuPanel.appendChild(this._createMenuSeparator());
-
-  this._appendMenuItem(menuPanel, "logout", this.getLocale().LogOutItem, null, function() {
-    Application.reset();
-    Application.showPage(LoginPage.name);
-  });
+  menuPanel.appendChild(this._createThickMenuSeparator());
   
   return menuPanel;
 }
@@ -145,9 +139,16 @@ MenuPage.prototype._appendMenuItem = function(root, itemId, text, icon, clickCal
   itemElement.onclick = clickCallback.bind(this, itemId);
 }
 
-MenuPage.prototype._createMenuSeparator = function() {
+MenuPage.prototype._createThickMenuSeparator = function() {
   var separatorElement = UIUtils.createBlock();
-  separatorElement.setAttribute("class", "menupage-menuseparator");
+  separatorElement.setAttribute("class", "menupage-menu-thick-separator");
+
+  return separatorElement;
+}
+
+MenuPage.prototype._createThinMenuSeparator = function() {
+  var separatorElement = UIUtils.createBlock();
+  separatorElement.setAttribute("class", "menupage-menu-thin-separator");
 
   return separatorElement;
 }

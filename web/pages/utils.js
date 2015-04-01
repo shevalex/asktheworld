@@ -175,10 +175,17 @@ UIUtils.createSpan = function(width, margin, blockId) {
 UIUtils.createTextInput = function(inputFieldId) {
   return UIUtils._createInputField(inputFieldId, "text");
 }
+UIUtils.appendTextInput = function(root, inputFieldId) {
+  return root.appendChild(UIUtils.createTextInput(UIUtils.createId(root, inputFieldId)));
+}
 
 UIUtils.createPasswordInput = function(inputFieldId) {
   return UIUtils._createInputField(inputFieldId, "password");
 }
+UIUtils.appendPasswordInput = function(root, inputFieldId) {
+  return root.appendChild(UIUtils.createPasswordInput(UIUtils.createId(root, inputFieldId)));
+}
+
 
 UIUtils.createTextArea = function(textAreaId, rows, defaultText) {
   var textAreaElement = document.createElement("textarea");
@@ -293,17 +300,21 @@ UIUtils.createCheckbox = function(cbId, exclusive) {
 }
 
 UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
-  var checkboxElement = UIUtils.createCheckbox(UIUtils.createId(root, cbId), exclusive);
-  
   if (text != null) {
-    var combo = UIUtils.appendBlock(root, cbId + "-Container");
+    var combo = UIUtils.appendBlock(root, cbId);
+    combo.style.textAlign = "left";
+    
+    var checkboxElement = UIUtils.createCheckbox(UIUtils.createId(root, cbId + "-Check"), exclusive);
     combo.appendChild(checkboxElement);
     
-    var label = UIUtils.createLabel(cbId + "-Container-Label", text);
-    label.style.padding = "5px 5px 5px 10px";
+    var label = UIUtils.createLabel(UIUtils.createId(root, cbId + "-Label"), text);
+    label.style.padding = "5px 5px 5px 5px";
     label.style.textAlign = "left";
     label.style.display = "inline-block";
+    label.style.font = "inherit";
+    
     combo.appendChild(label);
+    UIUtils.addClass(label, "notselectable");
     
     label.onclick = function() {
       if (exclusive) {
@@ -312,16 +323,18 @@ UIUtils.appendCheckbox = function(root, cbId, text, exclusive) {
         checkboxElement.setValue(!checkboxElement.getValue());
       }
     }
+    
+    checkboxElement.getLabel = function() {
+      return label;
+    }
+    
+    return checkboxElement;
   } else {
+    var checkboxElement = UIUtils.createCheckbox(UIUtils.createId(root, cbId), exclusive);
     root.appendChild(checkboxElement);
+    
+    return checkboxElement;
   }
-  
-  
-  checkboxElement.getLabel = function() {
-    return label;
-  }
-  
-  return checkboxElement;
 }
 
 
@@ -471,6 +484,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
     var checkbox = UIUtils.appendCheckbox(itemElement, listId + "-" + index + "-cb", choice.display, exclusive);
     checkbox.style.width = "20px";
     checkbox.getLabel().style.width = "calc(100% - 45px)";
+    checkbox.getLabel().style.color = "inherit";
     
     
     checkbox.setAttribute("name", listId);
@@ -956,17 +970,16 @@ UIUtils.getOneLine = function(text) {
 
 
 UIUtils._createLabeledCombo = function(inputFieldId, labelText, inputElement, margin) {
-  var compoundElement = document.createElement("div");
+  var compoundElement = UIUtils.createBlock(inputFieldId);
   compoundElement.style.textAlign = "left";
   compoundElement.style.whiteSpace = "nowrap";
 
-  compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "Compound-Label", labelText));
+  compoundElement.appendChild(UIUtils.createLabel(inputFieldId + "-Label", labelText));
   compoundElement.appendChild(UIUtils.createLineBreak());
 
+  inputElement.setAttribute("id", UIUtils.createId(inputFieldId + "-Input"));
   compoundElement.appendChild(inputElement);
-  if (margin != null) {
-    inputElement.style.marginTop = margin;
-  }
+  inputElement.style.marginTop = margin != null ? margin : "2px";
 
   compoundElement.getInputElement = function() {
     return inputElement;

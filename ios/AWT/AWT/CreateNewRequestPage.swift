@@ -8,60 +8,88 @@
 
 import UIKit
 
-class CreateNewRequestPage: UIViewController {
-
+class CreateNewRequestPage: UIViewControllerWithSpinner {
     @IBOutlet weak var expertiseTextField: UITextField!
-    @IBOutlet weak var genderTextField: UITextField!
-    @IBOutlet weak var ageTextField: UITextField!
-    @IBOutlet weak var waitTimeTextField: UITextField!
-    @IBOutlet weak var numberOfResponsesTextField: UITextField!
+    var expertiseSelector: SelectorView!
     
-    @IBAction func attachButtonPressed(sender: AnyObject) {
-        
-        let imageController = UIImagePickerController()
-        imageController.editing = false
-        
-        let attachSheet: UIAlertController = UIAlertController(title: "Please Choose", message: "", preferredStyle: UIAlertControllerStyle.ActionSheet)
-        
-        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel) { action -> Void in
-        }
-        
-        let takePictureAction: UIAlertAction = UIAlertAction(title: "Take Picture", style: .Default) { action -> Void in
-            println("Camera is not available in simulator")
-            // imageController.sourceType = UIImagePickerControllerSourceType.Camera
-            // self.presentViewController(imageController, animated: true, completion: nil)
-        }
-        
-        let choosePictureAction: UIAlertAction = UIAlertAction(title: "Choose From Gallery", style: .Default) { action -> Void in
-            imageController.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-            self.presentViewController(imageController, animated: true, completion: nil)
-        }
-        
-        attachSheet.addAction(cancelAction)
-        attachSheet.addAction(takePictureAction)
-        attachSheet.addAction(choosePictureAction)
-        
-        self.presentViewController(attachSheet, animated: true, completion: nil)
-    }
+    @IBOutlet weak var genderTextField: UITextField!
+    var genderSelector: SelectorView!
+    
+    @IBOutlet weak var ageTextField: UITextField!
+    var ageSelector: SelectorView!
+    
+    @IBOutlet weak var waitTimeTextField: UITextField!
+    var waitTimeSelector: SelectorView!
+    
+    @IBOutlet weak var numberOfResponsesTextField: UITextField!
+    var numOfResponsesSelector: SelectorView!
+    
+    @IBOutlet weak var imageScrollView: AttachmentBarView!
+    @IBOutlet weak var requestTextField: UITextView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        AtwUiUtils.setDataChooser(expertiseTextField, items: Configuration.EXPERTISES, multichoice: false)
-        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE, multichoice: false)
-        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE, multichoice: false)
-        AtwUiUtils.setDataChooser(waitTimeTextField, items: Configuration.RESPONSE_WAIT_TIME, multichoice: false)
-        AtwUiUtils.setDataChooser(numberOfResponsesTextField, items: Configuration.RESPONSE_QUANTITY, multichoice: false)
-
-        // Do any additional setup after loading the view.
+        imageScrollView.setHostingView(self);
+        
+        expertiseSelector = AtwUiUtils.setDataChooser(expertiseTextField, items: Configuration.EXPERTISES, multichoice: false);
+        genderSelector = AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE, multichoice: false);
+        ageSelector = AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE, multichoice: false);
+        waitTimeSelector = AtwUiUtils.setDataChooser(waitTimeTextField, items: Configuration.RESPONSE_WAIT_TIME, multichoice: false);
+        numOfResponsesSelector = AtwUiUtils.setDataChooser(numberOfResponsesTextField, items: Configuration.RESPONSE_QUANTITY, multichoice: false);
     }
 
+    @IBAction func attachButtonPressed(sender: AnyObject) {
+        AtwUiUtils.setImagePicker(self, {(image: UIImage) in
+            self.imageScrollView.addAttachment(image);
+        });
+    }
+    
+    @IBAction func sendButtonClickedAction(sender: UIBarButtonItem) {
+        if (requestTextField.text == "") {
+            AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Error", comment: "Error title"), popupError: NSLocalizedString("Please enter a message", comment: "Cannot send empty request"), okCallback: { () -> Void in
+            });
+            
+            return;
+        }
+        
+        
+        var request = Backend.RequestObject();
+        
+//        request.attachments;
+        request.expertiseCategory = expertiseSelector.getSelectedItem();
+        request.responseAgeGroup = ageSelector.getSelectedItem();
+        request.responseGender = genderSelector.getSelectedItem();
+        request.responseQuantity = numOfResponsesSelector.getSelectedItem();
+        request.responseWaitTime = waitTimeSelector.getSelectedItem();
+        request.text = requestTextField.text;
+        
+        Backend.getInstance().createRequest(request, observer: {(id) -> Void in
+            self.navigationController?.popViewControllerAnimated(true);
+            return;
+        });
+    }
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated);
+
+        expertiseSelector.setSelectedItem(Configuration.EXPERTISES[0]);
+        genderSelector.setSelectedItem(Backend.getInstance().getUserContext().requestTargetGender);
+        ageSelector.setSelectedItem(Backend.getInstance().getUserContext().requestTargetAge);
+        waitTimeSelector.setSelectedItem(Backend.getInstance().getUserContext().responseWaitTime);
+        numOfResponsesSelector.setSelectedItem(Backend.getInstance().getUserContext().responseQuantity);
+        
+        requestTextField.text = "";
+    }
     
 
+    
     /*
     // MARK: - Navigation
 
