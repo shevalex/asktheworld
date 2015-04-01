@@ -9,10 +9,6 @@ LoginPage = ClassUtils.defineClass(AbstractPage, function LoginPage() {
 });
 
 
-LoginPage.disableAutoLogin = function() {
-  window.localStorage.remember = "no";
-}
-
 LoginPage.prototype.definePageContent = function(root) {
   var leftDescription = UIUtils.appendBlock(root, "Description-Left");
   leftDescription.innerHTML = this.getLocale().ProjectDescriptionHtml;
@@ -65,7 +61,9 @@ LoginPage.prototype.definePageContent = function(root) {
   });
 }
 
-LoginPage.prototype.onShow = function() {
+LoginPage.prototype.onShow = function(root, paramBundle) {
+  Application.logOut();
+  
   var remember = window.localStorage.remember == "yes";
   
   if (remember && window.localStorage.login != null) {
@@ -82,12 +80,17 @@ LoginPage.prototype.onShow = function() {
   
   this._signing = false;
   
-  if (remember && this._loginElement.getValue() != "" && this._passwordElement.getValue() != "") {
+  var autoSignAllowed = paramBundle != null && paramBundle.autoLogin == "true";
+  if (autoSignAllowed && remember && this._loginElement.getValue() != "" && this._passwordElement.getValue() != "") {
     this._signIn();
   }
 }
 
 LoginPage.prototype.onHide = function() {
+}
+
+LoginPage.prototype.hasHistory = function() {
+  return false;
 }
 
 

@@ -150,7 +150,7 @@ Application.start = function() {
   
   Application._setupLanguageChooser();
 
-  this.showPage(LoginPage.name);
+  this.showPage(LoginPage.name, {autoLogin: "true"});
 }
 
 Application.reset = function() {
@@ -162,10 +162,14 @@ Application.reset = function() {
   this.hideMessage();
   this.hideSpinningWheel();
   this.hideDialog();
-  
-  $("#Title-User-Text").text("");
-  
-  Backend.logOut();
+
+  this.logOut();
+}
+
+Application.logOut = function() {
+  Backend.logOut(function() {
+    $("#Title-User-Text").text("");
+  });
 }
 
 Application.reload = function() {
@@ -355,7 +359,6 @@ Application.setupUserMenuChooser = function() {
       $("#Title-Options-Separator").css("display", "none");
       $("#Title-Options-User-Button").css("display", "none");
       
-      LoginPage.disableAutoLogin();
       Application.reset();
       Application.showPage(LoginPage.name);
       
@@ -415,7 +418,8 @@ Application.restoreFromHistory = function(hash) {
     if (historyBundle.page != null) {
       Application.showPage(historyBundle.page, historyBundle);
     } else {
-      console.error("Incorrect hash - no page:" + hash);
+      //console.error("Incorrect hash - no page:" + hash);
+      Application.showPage(LoginPage.name);
     }
   }
 }
@@ -442,6 +446,10 @@ Application._serialize = function(parcel) {
 
 Application._deserialize = function(ser) {
   var parcel = {};
+  
+  if (ser == null || ser == "") {
+    return parcel;
+  }
   
   var tags = ser.split(":");
   for (var index in tags) {
