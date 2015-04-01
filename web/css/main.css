@@ -69,10 +69,8 @@ body {
 #Footer-ContactUs {
   float: right;
   margin-right: 20px;
-  margin-top: -2px; 
   
-  font-size: inherit;
-  font-family: inherit;
+  font: inherit;
   color: inherit;
 }
 #Footer-ContactUs:hover {

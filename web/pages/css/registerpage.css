@@ -6,6 +6,7 @@
 #RegisterPage-SignUpPanel {
   width: 500px;
   display: inline-block;
+  margin-top: 10px;
   
   font-family: Verdana;
   font-size: 13px;
