@@ -12,6 +12,7 @@ import UIKit
 
 protocol AttachmentHandler {
     func getSelectedAttachment() -> AnyObject?;
+    func getAttachments() -> [AnyObject];
     func addAttachment(attachment: AnyObject);
     func removeAttachment(attachment: AnyObject);
 }
@@ -58,6 +59,10 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         hostingView = view;
     }
     
+    
+    func getAttachments() -> [AnyObject] {
+        return imageArray;
+    }
     
     func getSelectedAttachment() -> AnyObject? {
         return lastClickedAttachment;
