@@ -996,31 +996,49 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5mh-bM-78X">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qx8-u4-civ">
                                 <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                                 <items>
-                                    <barButtonItem title="Delete" id="QNP-oa-mK0"/>
+                                    <barButtonItem title="Item" id="5Ye-VC-c77"/>
                                 </items>
                             </toolbar>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qgM-hS-mmO">
-                                <rect key="frame" x="0.0" y="64" width="320" height="460"/>
-                            </imageView>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qh3-tZ-iJJ">
+                                <rect key="frame" x="0.0" y="28" width="320" height="446"/>
+                                <subviews>
+                                    <imageView autoresizesSubviews="NO" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="opX-mh-RC0">
+                                        <rect key="frame" x="20" y="20" width="280" height="406"/>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <accessibilityTraits key="traits" none="YES" notEnabled="YES"/>
+                                        </accessibility>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" notEnabled="YES"/>
+                                </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="opX-mh-RC0" secondAttribute="bottom" constant="20" symbolic="YES" id="4hv-Yv-gds"/>
+                                    <constraint firstItem="opX-mh-RC0" firstAttribute="leading" secondItem="qh3-tZ-iJJ" secondAttribute="leading" constant="20" symbolic="YES" id="Nw5-k6-pwQ"/>
+                                    <constraint firstItem="opX-mh-RC0" firstAttribute="top" secondItem="qh3-tZ-iJJ" secondAttribute="top" constant="20" symbolic="YES" id="jmx-4F-jc6"/>
+                                    <constraint firstAttribute="trailing" secondItem="opX-mh-RC0" secondAttribute="trailing" constant="20" symbolic="YES" id="m53-ib-kzO"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="qgM-hS-mmO" firstAttribute="leading" secondItem="hNd-TM-wAu" secondAttribute="leadingMargin" constant="-16" id="3DX-cq-bJe"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="qgM-hS-mmO" secondAttribute="trailing" constant="-16" id="AEF-PT-mxU"/>
-                            <constraint firstItem="5mh-bM-78X" firstAttribute="leading" secondItem="hNd-TM-wAu" secondAttribute="leadingMargin" constant="-16" id="Keb-3n-Ue6"/>
-                            <constraint firstItem="g1t-OV-5uH" firstAttribute="top" secondItem="5mh-bM-78X" secondAttribute="bottom" id="NpU-Cp-9hp"/>
-                            <constraint firstItem="qgM-hS-mmO" firstAttribute="top" secondItem="bPI-fn-7Sz" secondAttribute="bottom" id="TEc-ln-hVJ"/>
-                            <constraint firstItem="5mh-bM-78X" firstAttribute="top" secondItem="qgM-hS-mmO" secondAttribute="bottom" id="XWy-qN-qda"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="5mh-bM-78X" secondAttribute="trailing" constant="-16" id="pJe-jg-Jcn"/>
+                            <constraint firstItem="Qx8-u4-civ" firstAttribute="leading" secondItem="hNd-TM-wAu" secondAttribute="leadingMargin" constant="-16" id="3Cg-dU-asW"/>
+                            <constraint firstItem="g1t-OV-5uH" firstAttribute="top" secondItem="Qx8-u4-civ" secondAttribute="bottom" id="4vB-kf-VRr"/>
+                            <constraint firstItem="qh3-tZ-iJJ" firstAttribute="leading" secondItem="hNd-TM-wAu" secondAttribute="leadingMargin" constant="-16" id="K9z-E5-fuD"/>
+                            <constraint firstItem="qh3-tZ-iJJ" firstAttribute="top" secondItem="bPI-fn-7Sz" secondAttribute="bottom" constant="8" symbolic="YES" id="Pa5-5s-dLy"/>
+                            <constraint firstItem="Qx8-u4-civ" firstAttribute="top" secondItem="qh3-tZ-iJJ" secondAttribute="bottom" constant="50" id="gMy-lj-r9i"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="qh3-tZ-iJJ" secondAttribute="trailing" constant="-16" id="lLu-aK-miE"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Qx8-u4-civ" secondAttribute="trailing" constant="-16" id="uM5-eO-DsO"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Image" id="54d-a0-vC3"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <outlet property="imageView" destination="qgM-hS-mmO" id="SBO-3W-PcB"/>
+                        <outlet property="imageView" destination="opX-mh-RC0" id="5rq-Cx-992"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mYq-zS-sLm" userLabel="First Responder" sceneMemberID="firstResponder"/>

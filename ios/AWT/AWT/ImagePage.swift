@@ -10,15 +10,14 @@ import UIKit
 
 class ImagePage: UIViewController {
     var attachmentHandler: AttachmentHandler! // this is set from the outside
-    
     @IBOutlet weak var imageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad();
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated);
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated);
         
         var image = attachmentHandler.getSelectedAttachment() as? UIImage;
         if (image != nil) {
