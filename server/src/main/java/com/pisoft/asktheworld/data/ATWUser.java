@@ -1,12 +1,18 @@
 package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -73,6 +79,12 @@ public class ATWUser implements Serializable {
 		this.name = name;
 	}
 	
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(name="USER_INC_REQ",
+	      joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="id")},
+	      inverseJoinColumns={@JoinColumn(name="REQ_ID", referencedColumnName="request_id")})
+	private List<ATWRequest> incommingRequets;
 	
 	
 	public ATWUser createCopy() {
@@ -100,5 +112,14 @@ public class ATWUser implements Serializable {
 	     final ATWUser other = (ATWUser) obj;
 	     if (login != null && login.equals(other.getLogin()))  return true;
 	     return false;
+	}
+	public void addRequets(ATWRequest request) {
+		incommingRequets.add(request);
+	}
+	
+	public List<Integer> getIncommingRequests(){
+		List<Integer> reqstsIds = new ArrayList<Integer>();
+		for(Iterator<ATWRequest> it =incommingRequets.iterator(); it.hasNext(); reqstsIds.add(it.next().getId()));
+		return reqstsIds;
 	}
 }

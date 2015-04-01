@@ -152,6 +152,51 @@ public class DB {
 		return listIDs;
 	}
 	
+	public List<Integer> getUserIncommingRequestsIDs(int id, String status,
+			String sorting) {
+		ATWUser user = getUser(id);
+		//get already assigned requests
+		List<Integer> userIncommingRequests = getIncommingRequestsByUser(id);
+		//get number of requests per day
+		List<Integer> userNewIncommingRequests = getNewIncommingRequests(user);
+		for(Iterator<Integer> it = userNewIncommingRequests.iterator(); it.hasNext(); ){
+			int rID = it.next();
+			user.addRequets(getRequest(rID));
+			userIncommingRequests.add(rID);
+		}
+		
+		updateUser(user);
+		return userIncommingRequests;
+	}
+	
+	//I am not sure that we need this function
+	//public void addRequestToUser(int userId, int requestId){}
+	public List<Integer> getIncommingRequestsByUser(int userId){
+		return getUser(userId).getIncommingRequests();
+	}
+	
+	public List<Integer> getNewIncommingRequests(ATWUser user){
+		int id = user.getId();
+		List<Integer> userIncommingRequests = getIncommingRequestsByUser(id);
+		//List should not be empty
+		userIncommingRequests.add(0);
+		List<String> userAges = new ArrayList<String>(); 
+		userAges.add(user.getAge_category());
+		userAges.add("All");
+		List<String> userGenders = new ArrayList<String>();
+		userGenders.add(user.getGender());
+		userGenders.add("All");
+		List<ATWRequest> newIncommingRequests = requests.findNewIncommingRequets(id, userIncommingRequests, userAges, userGenders);
+		List<Integer> listIDs = null;
+		if(newIncommingRequests != null) {
+			listIDs = new ArrayList<Integer>();
+			for(Iterator<ATWRequest> it = newIncommingRequests.iterator(); it.hasNext(); listIDs.add(it.next().getId()));
+		} else {
+			System.out.println("LIST EMPTY");
+		}
+		return listIDs;
+	}
+	
 	
 
 }
