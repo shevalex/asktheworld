@@ -46,9 +46,6 @@ RegisterPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(signUpButton, function() {
     this._signUp();
   }.bind(this));
-  
-  var passwordRequirementsPanel = UIUtils.appendBlock(root, "PasswordRequirementsPanel");
-  passwordRequirementsPanel.innerHTML = this.getLocale().PasswordRequirements;
 }
 
 RegisterPage.prototype.onShow = function() {

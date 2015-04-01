@@ -66,7 +66,6 @@ LoginPage.prototype.definePageContent = function(root) {
 }
 
 LoginPage.prototype.onShow = function() {
-  //Eventually we may need to read the login info from local storage and initialize the fileds
   var remember = window.localStorage.remember == "yes";
   
   if (remember && window.localStorage.login != null) {
