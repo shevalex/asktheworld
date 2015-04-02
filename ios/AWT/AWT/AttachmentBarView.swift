@@ -90,28 +90,36 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     private func addImage(image: UIImage) {
         imageArray.append(image);
         
-        imageScollView.contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
-        
-        let x = (frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count - 1);
-        let newImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
-        newImageView.image = image;
-        newImageView.contentMode = UIViewContentMode.ScaleToFill;
-        newImageView.userInteractionEnabled = true;
-        imageScollView.addSubview(newImageView);
-        
-        var tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
-        newImageView.addGestureRecognizer(tapRecognizer);
+        rebuildScrollView();
     }
     
     private func removeImage(imageToRemove: UIImage) {
         for (index, image) in enumerate(imageArray) {
             if (image === imageToRemove) {
-                for (index, imageView) in enumerate (imageScollView.subviews) {
-                    if ((imageView as UIImageView).image === imageToRemove) {
-                        imageView.removeFromSuperview();
-                    }
-                }
+                imageArray.removeAtIndex(index);
+                rebuildScrollView();
+                return;
             }
+        }
+    }
+    
+    private func rebuildScrollView() {
+        for (index, child) in enumerate(imageScollView.subviews) {
+            child.removeFromSuperview();
+        }
+        
+        imageScollView.contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
+        
+        for (index, image) in enumerate(imageArray) {
+            let x = (frame.size.height + IMAGE_INSET) * CGFloat(index);
+            let nextImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
+            nextImageView.image = image;
+            nextImageView.contentMode = UIViewContentMode.ScaleToFill;
+            nextImageView.userInteractionEnabled = true;
+            imageScollView.addSubview(nextImageView);
+            
+            var tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
+            nextImageView.addGestureRecognizer(tapRecognizer);
         }
     }
 }
