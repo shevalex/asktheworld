@@ -40,9 +40,7 @@ class CreateNewRequestPage: UIViewControllerWithSpinner {
     }
 
     @IBAction func attachButtonPressed(sender: AnyObject) {
-        AtwUiUtils.setImagePicker(self, {(image: UIImage) in
-            self.imageScrollView.addAttachment(image);
-        });
+        imageScrollView.showAttachAction();
     }
     
     @IBAction func sendButtonClickedAction(sender: UIBarButtonItem) {

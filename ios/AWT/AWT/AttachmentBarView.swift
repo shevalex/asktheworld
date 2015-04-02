@@ -43,6 +43,11 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0));
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0));
         
+        var clipTapRecognizer = UITapGestureRecognizer(target: self, action: "clipPressedAction:");
+        clipView.addGestureRecognizer(clipTapRecognizer);
+
+        
+        
         addSubview(imageScollView);
         imageScollView.setTranslatesAutoresizingMaskIntoConstraints(false);
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: imageScollView, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: -5));
@@ -84,6 +89,16 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         }
     }
     
+
+    func showAttachAction() {
+        AtwUiUtils.setImagePicker(hostingViewController!, {(image: UIImage) in
+            self.addAttachment(image);
+        });
+    }
+    
+    func clipPressedAction(gestureRecognizer: UITapGestureRecognizer) {
+        showAttachAction();
+    }
     
     func imagePressedAction(gestureRecognizer: UITapGestureRecognizer) {
         lastClickedAttachment = (gestureRecognizer.view as UIImageView).image;

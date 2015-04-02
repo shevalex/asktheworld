@@ -80,9 +80,7 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
     }
     
     @IBAction func attachButtonClickAction(sender: AnyObject) {
-        AtwUiUtils.setImagePicker(self, {(image: UIImage) in
-            self.responseAttachmentsView.addAttachment(image);
-        });
+        responseAttachmentsView.showAttachAction();
     }
     
 
