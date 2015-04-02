@@ -19,8 +19,8 @@ protocol AttachmentHandler {
 
 class AttachmentBarView: UIControl, AttachmentHandler {
     private let IMAGE_INSET: CGFloat = 5
-    private let imageScollView: UIScrollView = UIScrollView(frame: CGRectZero);
-    private let clipView: UIImageView = UIImageView(frame: CGRectZero);
+    private let imageScollView: UIScrollView = UIScrollView(frame: CGRectZero)
+    private let clipView: UIImageView = UIImageView(frame: CGRectZero)
     
     private var isMutable = true;
     
@@ -28,7 +28,9 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     
     private var hostingViewController: UIViewController?
     
-    private var lastClickedAttachment: UIImage?;
+    private var lastClickedAttachment: UIImage?
+    
+    private var storyboard: UIStoryboard!;
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
@@ -36,8 +38,8 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         backgroundColor = UIColor.lightGrayColor();
         layer.cornerRadius = 5;
 
+        setMutable(true);
         
-        clipView.image = UIImage(named: "paper-clip.jpg");
         addSubview(clipView);
         clipView.setTranslatesAutoresizingMaskIntoConstraints(false);
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 5));
@@ -49,7 +51,6 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         var clipTapRecognizer = UITapGestureRecognizer(target: self, action: "clipPressedAction:");
         clipView.addGestureRecognizer(clipTapRecognizer);
 
-        
         
         addSubview(imageScollView);
         imageScollView.setTranslatesAutoresizingMaskIntoConstraints(false);
@@ -69,7 +70,10 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     
     func setMutable(mutable: Bool) {
         isMutable = mutable;
-        clipView.userInteractionEnabled = false;
+        
+        clipView.userInteractionEnabled = mutable;
+        clipView.image = mutable ? UIImage(named: "paper-clip.jpg") : nil;
+
     }
     
     func getAttachments() -> [AnyObject] {
@@ -123,7 +127,9 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     func imagePressedAction(gestureRecognizer: UITapGestureRecognizer) {
         lastClickedAttachment = (gestureRecognizer.view as UIImageView).image;
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil);
+        if (storyboard == nil) {
+            storyboard = UIStoryboard(name: "Main", bundle: nil);
+        }
         let imagePage = storyboard.instantiateViewControllerWithIdentifier("ImagePage") as ImagePage;
         imagePage.attachmentHandler = self;
         
