@@ -22,9 +22,9 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     private let imageScollView: UIScrollView = UIScrollView(frame: CGRectZero);
     private let clipView: UIImageView = UIImageView(frame: CGRectZero);
     
-    private var imageArray: Array<UIImage> = []
+    private var attachmentArray: Array<AnyObject> = []
     
-    private var hostingView: UIViewController?
+    private var hostingViewController: UIViewController?
     
     private var lastClickedAttachment: UIImage?;
     
@@ -55,13 +55,13 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         super.layoutSubviews();
     }
     
-    func setHostingView(view: UIViewControllerWithSpinner) {
-        hostingView = view;
+    func setHostingViewController(viewController: UIViewControllerWithSpinner) {
+        hostingViewController = viewController;
     }
     
     
     func getAttachments() -> [AnyObject] {
-        return imageArray;
+        return attachmentArray;
     }
     
     func getSelectedAttachment() -> AnyObject? {
@@ -69,11 +69,19 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     }
     
     func addAttachment(attachment: AnyObject) {
-        addImage(attachment as UIImage);
+        attachmentArray.append(attachment);
+        
+        rebuildScrollView();
     }
     
     func removeAttachment(attachment: AnyObject) {
-        removeImage(attachment as UIImage);
+        for (index, att) in enumerate(attachmentArray) {
+            if (att === attachment) {
+                attachmentArray.removeAtIndex(index);
+                rebuildScrollView();
+                return;
+            }
+        }
     }
     
     
@@ -84,23 +92,7 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         let imagePage = storyboard.instantiateViewControllerWithIdentifier("ImagePage") as ImagePage;
         imagePage.attachmentHandler = self;
         
-        hostingView?.navigationController?.pushViewController(imagePage, animated: true);
-    }
-    
-    private func addImage(image: UIImage) {
-        imageArray.append(image);
-        
-        rebuildScrollView();
-    }
-    
-    private func removeImage(imageToRemove: UIImage) {
-        for (index, image) in enumerate(imageArray) {
-            if (image === imageToRemove) {
-                imageArray.removeAtIndex(index);
-                rebuildScrollView();
-                return;
-            }
-        }
+        hostingViewController?.navigationController?.pushViewController(imagePage, animated: true);
     }
     
     private func rebuildScrollView() {
@@ -108,12 +100,17 @@ class AttachmentBarView: UIControl, AttachmentHandler {
             child.removeFromSuperview();
         }
         
-        imageScollView.contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
+        imageScollView.contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(attachmentArray.count), frame.size.height);
         
-        for (index, image) in enumerate(imageArray) {
+        for (index, att) in enumerate(attachmentArray) {
             let x = (frame.size.height + IMAGE_INSET) * CGFloat(index);
             let nextImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
-            nextImageView.image = image;
+            
+            if (att.isKindOfClass(UIImage)) {
+                nextImageView.image = att as? UIImage;
+            } else {
+                nextImageView.image = UIImage(named: "paper-clip.jpg");
+            }
             nextImageView.contentMode = UIViewContentMode.ScaleToFill;
             nextImageView.userInteractionEnabled = true;
             imageScollView.addSubview(nextImageView);

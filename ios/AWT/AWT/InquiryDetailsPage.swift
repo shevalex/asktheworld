@@ -28,7 +28,7 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
     override func viewDidLoad() {
         super.viewDidLoad();
         
-        responseAttachmentsView.setHostingView(self);
+        responseAttachmentsView.setHostingViewController(self);
 
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
