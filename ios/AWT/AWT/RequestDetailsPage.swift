@@ -33,6 +33,12 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        requestAttachmentsView.setHostingViewController(self);
+        requestAttachmentsView.setMutable(false);
+        
+        responseAttachmentsView.setHostingViewController(self);
+        responseAttachmentsView.setMutable(false);
+        
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED && event.requestId == self.requestId) {
                 self.responseIds = Backend.getInstance().getIncomingResponseIds(self.requestId, responseStatus: self.responseStatus);

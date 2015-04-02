@@ -13,14 +13,16 @@ import UIKit
 protocol AttachmentHandler {
     func getSelectedAttachment() -> AnyObject?;
     func getAttachments() -> [AnyObject];
-    func addAttachment(attachment: AnyObject);
-    func removeAttachment(attachment: AnyObject);
+    func addAttachment(attachment: AnyObject) -> Bool;
+    func removeAttachment(attachment: AnyObject) -> Bool;
 }
 
 class AttachmentBarView: UIControl, AttachmentHandler {
     private let IMAGE_INSET: CGFloat = 5
     private let imageScollView: UIScrollView = UIScrollView(frame: CGRectZero);
     private let clipView: UIImageView = UIImageView(frame: CGRectZero);
+    
+    private var isMutable = true;
     
     private var attachmentArray: Array<AnyObject> = []
     
@@ -43,6 +45,7 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0));
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0));
         
+        clipView.userInteractionEnabled = true;
         var clipTapRecognizer = UITapGestureRecognizer(target: self, action: "clipPressedAction:");
         clipView.addGestureRecognizer(clipTapRecognizer);
 
@@ -64,6 +67,10 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         hostingViewController = viewController;
     }
     
+    func setMutable(mutable: Bool) {
+        isMutable = mutable;
+        clipView.userInteractionEnabled = false;
+    }
     
     func getAttachments() -> [AnyObject] {
         return attachmentArray;
@@ -73,26 +80,39 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         return lastClickedAttachment;
     }
     
-    func addAttachment(attachment: AnyObject) {
+    func addAttachment(attachment: AnyObject) -> Bool {
+        if (!isMutable) {
+            return false;
+        }
+        
         attachmentArray.append(attachment);
         
         rebuildScrollView();
+        
+        return true;
     }
     
-    func removeAttachment(attachment: AnyObject) {
+    func removeAttachment(attachment: AnyObject) -> Bool {
+        if (!isMutable) {
+            return false;
+        }
+        
         for (index, att) in enumerate(attachmentArray) {
             if (att === attachment) {
                 attachmentArray.removeAtIndex(index);
                 rebuildScrollView();
-                return;
+                return true;
             }
         }
+        
+        return false;
     }
     
 
     func showAttachAction() {
         AtwUiUtils.setImagePicker(hostingViewController!, {(image: UIImage) in
             self.addAttachment(image);
+            return;
         });
     }
     

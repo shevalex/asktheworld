@@ -53,7 +53,10 @@ class ImagePage: UIViewController {
     }
     
     @IBAction func deleteButtonClickAction(sender: AnyObject) {
-        attachmentHandler.removeAttachment(attachmentHandler.getAttachments()[pageControl.currentPage]);
+        if (!attachmentHandler.removeAttachment(attachmentHandler.getAttachments()[pageControl.currentPage])) {
+            return;
+        }
+        
         if (pageControl.numberOfPages == 1) {
             self.navigationController?.popViewControllerAnimated(true);
         } else {
