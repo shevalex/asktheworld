@@ -1009,11 +1009,11 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="aC8-XX-wLh">
+                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="aC8-XX-wLh">
                                 <rect key="frame" x="0.0" y="20" width="320" height="504"/>
                             </imageView>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" hidesForSinglePage="YES" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="cke-uf-lg2">
-                                <rect key="frame" x="16" y="0.0" width="288" height="524"/>
+                                <rect key="frame" x="16" y="487" width="288" height="37"/>
                                 <color key="pageIndicatorTintColor" red="0.54161119950000003" green="0.73127677199999996" blue="0.81194760099999996" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="currentPageIndicatorTintColor" red="0.33333333329999998" green="0.15742623789999999" blue="0.14256752189999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
@@ -1040,6 +1040,9 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="1Rn-CA-WxY"/>
+                                <exclude reference="A12-7a-czy"/>
+                                <exclude reference="FQg-10-Drm"/>
                                 <exclude reference="RBU-br-Grk"/>
                             </mask>
                         </variation>

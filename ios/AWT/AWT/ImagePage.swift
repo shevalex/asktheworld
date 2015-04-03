@@ -17,13 +17,13 @@ class ImagePage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad();
 
-//        var swipeRightRecognizer = UISwipeGestureRecognizer(target: self, action: "imageSwipedRightAction:");
-//        swipeRightRecognizer.direction = UISwipeGestureRecognizerDirection.Right;
-//        imageView.addGestureRecognizer(swipeRightRecognizer);
-//        
-//        var swipeLeftRecognizer = UISwipeGestureRecognizer(target: self, action: "imageSwipedLeftAction:");
-//        swipeRightRecognizer.direction = UISwipeGestureRecognizerDirection.Left;
-//        imageView.addGestureRecognizer(swipeLeftRecognizer);
+        var swipeRightRecognizer = UISwipeGestureRecognizer(target: self, action: "imageSwipedRightAction:");
+        swipeRightRecognizer.direction = UISwipeGestureRecognizerDirection.Right;
+        imageView.addGestureRecognizer(swipeRightRecognizer);
+        
+        var swipeLeftRecognizer = UISwipeGestureRecognizer(target: self, action: "imageSwipedLeftAction:");
+        swipeRightRecognizer.direction = UISwipeGestureRecognizerDirection.Left;
+        imageView.addGestureRecognizer(swipeLeftRecognizer);
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -72,16 +72,16 @@ class ImagePage: UIViewController {
         imageView.image = attachmentHandler.getAttachments()[pageControl.currentPage] as? UIImage;
     }
 
-//    func imageSwipedRightAction(gestureRecognizer: UISwipeGestureRecognizer) {
-//        if (pageControl.currentPage + 1 < pageControl.numberOfPages) {
-//            pageControl.currentPage = pageControl.currentPage + 1;
-//            pageChanged(pageControl);
-//        }
-//    }
-//    func imageSwipedLeftAction(gestureRecognizer: UISwipeGestureRecognizer) {
-//        if (pageControl.currentPage > 0) {
-//            pageControl.currentPage = pageControl.currentPage - 1;
-//            pageChanged(pageControl);
-//        }
-//    }
+    func imageSwipedRightAction(gestureRecognizer: UISwipeGestureRecognizer) {
+        if (pageControl.currentPage + 1 < pageControl.numberOfPages) {
+            pageControl.currentPage = pageControl.currentPage + 1;
+            pageChanged(pageControl);
+        }
+    }
+    func imageSwipedLeftAction(gestureRecognizer: UISwipeGestureRecognizer) {
+        if (pageControl.currentPage > 0) {
+            pageControl.currentPage = pageControl.currentPage - 1;
+            pageChanged(pageControl);
+        }
+    }
 }
