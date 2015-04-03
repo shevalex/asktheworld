@@ -998,6 +998,9 @@
                         <subviews>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qx8-u4-civ">
                                 <rect key="frame" x="0.0" y="524" width="320" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="hy8-ZF-eQa"/>
+                                </constraints>
                                 <items>
                                     <barButtonItem title="Delete" id="5Ye-VC-c77">
                                         <connections>
@@ -1007,16 +1010,10 @@
                                 </items>
                             </toolbar>
                             <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="aC8-XX-wLh">
-                                <rect key="frame" x="0.0" y="20" width="320" height="400"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="400" id="7nU-IN-4I3"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="20" width="320" height="504"/>
                             </imageView>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" hidesForSinglePage="YES" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="cke-uf-lg2">
-                                <rect key="frame" x="16" y="477" width="288" height="37"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="37" id="etN-8F-vbW"/>
-                                </constraints>
+                                <rect key="frame" x="16" y="0.0" width="288" height="524"/>
                                 <color key="pageIndicatorTintColor" red="0.54161119950000003" green="0.73127677199999996" blue="0.81194760099999996" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="currentPageIndicatorTintColor" red="0.33333333329999998" green="0.15742623789999999" blue="0.14256752189999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
@@ -1026,9 +1023,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Qx8-u4-civ" firstAttribute="top" secondItem="cke-uf-lg2" secondAttribute="bottom" constant="10" id="21b-fC-2U7"/>
+                            <constraint firstItem="cke-uf-lg2" firstAttribute="top" secondItem="hNd-TM-wAu" secondAttribute="topMargin" id="1Rn-CA-WxY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="aC8-XX-wLh" secondAttribute="trailing" constant="-16" id="31b-AF-WUH"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Qx8-u4-civ" secondAttribute="trailing" constant="-16" id="5fG-cf-ZH2"/>
+                            <constraint firstItem="Qx8-u4-civ" firstAttribute="top" secondItem="cke-uf-lg2" secondAttribute="bottom" id="9jX-GM-MVW"/>
+                            <constraint firstItem="cke-uf-lg2" firstAttribute="trailing" secondItem="hNd-TM-wAu" secondAttribute="trailingMargin" id="A12-7a-czy"/>
+                            <constraint firstItem="cke-uf-lg2" firstAttribute="leading" secondItem="hNd-TM-wAu" secondAttribute="leadingMargin" id="FQg-10-Drm"/>
+                            <constraint firstItem="Qx8-u4-civ" firstAttribute="top" secondItem="aC8-XX-wLh" secondAttribute="bottom" id="FV9-Qm-hi5"/>
                             <constraint firstItem="Qx8-u4-civ" firstAttribute="top" secondItem="aC8-XX-wLh" secondAttribute="bottom" id="RBU-br-Grk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="cke-uf-lg2" secondAttribute="trailing" id="VnX-IV-OIo"/>
                             <constraint firstItem="aC8-XX-wLh" firstAttribute="leading" secondItem="hNd-TM-wAu" secondAttribute="leadingMargin" constant="-16" id="X1T-aB-Tvw"/>
