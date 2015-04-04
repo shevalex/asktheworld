@@ -70,6 +70,17 @@ class EditRequestPage: UIViewControllerWithSpinner {
     }
     
     
+    @IBAction func deactivateButtonClickAction(sender: AnyObject) {
+        var request = Backend.getInstance().getRequest(requestId);
+        if (request != nil) {
+            request!.status = Backend.RequestObject.STATUS_INACTIVE;
+            Backend.getInstance().updateRequest(requestId!, request: request!, observer: {(id) in
+                self.navigationController?.popViewControllerAnimated(true);
+                return;
+            });
+        }
+        
+    }
     
     @IBAction func attachButtonClickAction(sender: AnyObject) {
         attachmentsView.showAttachAction();

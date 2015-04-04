@@ -689,7 +689,13 @@
                             <constraint firstItem="Ce3-Q4-W1G" firstAttribute="height" secondItem="7kk-SH-7sX" secondAttribute="height" id="yuI-mz-Dmt"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Inquiry Details" id="0qU-aB-g3K"/>
+                    <navigationItem key="navigationItem" title="Inquiry Details" id="0qU-aB-g3K">
+                        <barButtonItem key="rightBarButtonItem" title="Ignore" id="tUL-h4-pNC">
+                            <connections>
+                                <action selector="ignoreButtonClickAction:" destination="x7G-gD-Qx9" id="REr-TY-rP0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="attachButton" destination="hiB-7j-VAL" id="H4n-Pv-nn0"/>
@@ -838,6 +844,7 @@
                     <navigationItem key="navigationItem" title="Request Details" id="SPu-Iu-MFz"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="editRequestButton" destination="fd1-TA-WnD" id="KDY-KS-e7s"/>
                         <outlet property="nextResponseButton" destination="XCm-Zm-iUx" id="Ief-do-R3x"/>
                         <outlet property="previousResponseButton" destination="wBB-z0-Odd" id="ypH-5k-Neq"/>
                         <outlet property="requestAttachmentsView" destination="X60-qX-ge6" id="DHi-Vd-iP3"/>
@@ -1175,7 +1182,13 @@
                             <constraint firstAttribute="trailingMargin" secondItem="bIX-kF-4b4" secondAttribute="trailing" constant="-16" id="zG3-da-OtO"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Edit Request" id="pdk-iK-5Fh"/>
+                    <navigationItem key="navigationItem" title="Edit Request" id="pdk-iK-5Fh">
+                        <barButtonItem key="rightBarButtonItem" title="Deactivate" id="hxD-Zg-Rzm">
+                            <connections>
+                                <action selector="deactivateButtonClickAction:" destination="Cdn-Yv-poz" id="vhh-NU-6X0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="ageTextField" destination="qr8-Kd-pWh" id="aCJ-OC-QUt"/>

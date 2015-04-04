@@ -22,6 +22,7 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     @IBOutlet weak var previousResponseButton: UIButton!
     
     @IBOutlet weak var requestContactInfoButton: UIBarButtonItem!
+    @IBOutlet weak var editRequestButton: UIBarButtonItem!
     
     
     private var responseIds: [String]?
@@ -114,6 +115,9 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);
+        
+        let request = Backend.getInstance().getRequest(requestId);
+        editRequestButton.enabled = request != nil && request?.status == Backend.RequestObject.STATUS_ACTIVE;
         
         updateListenerId = Backend.getInstance().addCacheChangeListener(updateListener);
 

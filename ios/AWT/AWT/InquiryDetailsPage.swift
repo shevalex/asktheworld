@@ -86,7 +86,9 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
         responseAttachmentsView.showAttachAction();
     }
     
-
+    @IBAction func ignoreButtonClickAction(sender: AnyObject) {
+        Backend.getInstance().removeIncomingRequest(requestId!, observer: {(id) in });
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);
