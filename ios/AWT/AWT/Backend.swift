@@ -563,7 +563,7 @@ public struct Backend {
             return nil;
         }
         
-        var ids: [String]? = cache.getIncomingRequestIds();
+        let ids: [String]? = cache.getIncomingRequestIds();
         if (ids == nil) {
             //TODO: pull the list from the server here
             self.cache.markIncomingRequestIdsInUpdate();
@@ -591,6 +591,34 @@ public struct Backend {
             return requestIds;
         }
     }
+    
+    public func removeIncomingRequest(requestId: String, observer: CompletionObserver) {
+        if (cache.isIncomingRequestIdsInUpdate()) {
+            println("Should not be there");
+            return;
+        }
+
+        var ids: [String]! = cache.getIncomingRequestIds();
+        if (ids == nil) {
+            return;
+        }
+        
+        for (index, id) in enumerate(ids!) {
+            if (id == requestId) {
+                var action:()->Void = {() in
+                    ids.removeAtIndex(index);
+                    self.cache.setIncomingRequestIds(ids);
+                    
+                    observer(id: requestId);
+                };
+                
+                DelayedNotifier(action).schedule(2);
+                
+                return;
+            }
+        }
+    }
+    
     
     public func getRequest(requestId: String!) -> RequestObject? {
         if (cache.isRequestInUpdate(requestId)) {
@@ -654,6 +682,7 @@ public struct Backend {
             return responseIds;
         }
     }
+    
     
     public func getOutgoingResponseIds(requestId: String, responseStatus: String? = nil) -> [String]? {
         if (cache.isOutgoingResponseIdsInUpdate(requestId)) {

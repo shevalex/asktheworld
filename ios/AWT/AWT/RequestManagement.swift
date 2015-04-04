@@ -34,14 +34,15 @@ protocol ObjectProviderFactory {
 
 
 struct RequestResponseManagement {
-    typealias ObjectSelectionObserver = (id: String) -> Void;
+    typealias ObjectSelectionObserver = (id: String) -> Void
 
-    private static var mapping: NSCache! = NSCache();
+    private static var mapping: NSCache! = NSCache()
     
     
     class UIObjectTableDelegate: NSObject, UITableViewDelegate {
-        private var dataModel: AbstractUIObjectDataModel!;
-        private var selectionObserver: ObjectSelectionObserver?;
+        private let dataModel: AbstractUIObjectDataModel!
+        private let selectionObserver: ObjectSelectionObserver?
+
         
         init(dataModel: AbstractUIObjectDataModel, selectionObserver: ObjectSelectionObserver?) {
             self.dataModel = dataModel;
@@ -61,37 +62,18 @@ struct RequestResponseManagement {
             selectionObserver?(id: objectId!);
         }
         
-
-        
-//        func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-//            
-//            return UITableViewCellEditingStyle.Delete;
-//        }
-////        func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
-////            
-////            return "Jopa";
-////        }
-//        
-//        func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
-//            let ackAction:UITableViewRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: "Ack", handler: {(action, path) in
-//                
-//            });
-//            ackAction.backgroundColor = UIColor.orangeColor()
-//            
-//            let closeAction:UITableViewRowAction = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: "Close", handler: {(action, path) in
-//                
-//            });
-//            closeAction.backgroundColor = UIColor.blackColor()
-//            
-//            return [closeAction, ackAction];
-//        }
+        func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+            return dataModel.getRowActions();
+        }
     }
     
     class AbstractUIObjectDataModel: NSObject, UITableViewDataSource {
         private var dataProvider: GenericObjectProvider!
+        private let rowActions: [UITableViewRowAction]?
         
-        init(dataProvider: GenericObjectProvider) {
+        init(dataProvider: GenericObjectProvider, actions: [UITableViewRowAction]?) {
             self.dataProvider = dataProvider;
+            self.rowActions = actions;
         }
         
         func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -107,10 +89,17 @@ struct RequestResponseManagement {
             return tableCell;
         }
         
-        
-        func renderTableCell(cell: UITableViewCell, id: String) {
+        func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         }
         
+        
+        func getRowActions() -> [AnyObject]? {
+            return rowActions;
+        }
+
+        //To be overriden
+        func renderTableCell(cell: UITableViewCell, id: String) {
+        }
         
         private func getObjectId(indexPath: NSIndexPath) -> String? {
             return dataProvider.getObjectId(indexPath.row);
@@ -644,13 +633,36 @@ struct RequestResponseManagement {
     
     
     static func attachOutgoingRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: ObjectSelectionObserver? = nil) {
+
         
-        attachRequestObjectProvider(tableView, dataModel: OutgoingRequestsDataModel(dataProvider: requestObjectProvider), requestObjectProvider: requestObjectProvider, selectionObserver: selectionObserver);
+        let deactivateAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Deactivate", comment: "Deactivate outgoing request action"), handler: {(action, path) in
+
+            let requestId = requestObjectProvider.getObjectId(path.row);
+            if (requestId != nil) {
+                var request = Backend.getInstance().getRequest(requestId);
+                if (request != nil) {
+                    request!.status = Backend.RequestObject.STATUS_INACTIVE;
+                    Backend.getInstance().updateRequest(requestId!, request: request!, observer: {(id) in })
+                }
+            }
+        });
+        deactivateAction.backgroundColor = UIColor.redColor();
+        
+        attachRequestObjectProvider(tableView, dataModel: OutgoingRequestsDataModel(dataProvider: requestObjectProvider, actions: [deactivateAction]), requestObjectProvider: requestObjectProvider, selectionObserver: selectionObserver);
     }
 
     static func attachIncomingRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: ObjectSelectionObserver? = nil) {
         
-        attachRequestObjectProvider(tableView, dataModel: IncomingRequestsDataModel(dataProvider: requestObjectProvider), requestObjectProvider: requestObjectProvider, selectionObserver: selectionObserver);
+        let ignoreAction = UITableViewRowAction(style: UITableViewRowActionStyle.Normal, title: NSLocalizedString("Ignore", comment: "Ignore incoming request action"), handler: {(action, path) in
+            
+            let requestId = requestObjectProvider.getObjectId(path.row);
+            if (requestId != nil) {
+                Backend.getInstance().removeIncomingRequest(requestId!, observer: {(id) in });
+            }
+        });
+        ignoreAction.backgroundColor = UIColor.orangeColor();
+
+        attachRequestObjectProvider(tableView, dataModel: IncomingRequestsDataModel(dataProvider: requestObjectProvider, actions: [ignoreAction]), requestObjectProvider: requestObjectProvider, selectionObserver: selectionObserver);
     }
     
     
@@ -675,8 +687,6 @@ struct RequestResponseManagement {
         requestObjectProvider.setUpdateObserver({(finished) -> Void in
             tableView.alpha = finished ? 1 : 0;
         });
-        
-//        tableView.setEditing(true, animated: false);
         
         mapping.setObject(delegate!, forKey: tableView);
     }
