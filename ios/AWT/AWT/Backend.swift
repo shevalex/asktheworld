@@ -562,7 +562,7 @@ public struct Backend {
         if (cache.isIncomingRequestIdsInUpdate()) {
             return nil;
         }
-        
+
         let ids: [String]? = cache.getIncomingRequestIds();
         if (ids == nil) {
             //TODO: pull the list from the server here
@@ -587,22 +587,19 @@ public struct Backend {
                     requestIds.append(id);
                 }
             }
-            
+
             return requestIds;
         }
     }
     
     public func removeIncomingRequest(requestId: String, observer: CompletionObserver) {
-        if (cache.isIncomingRequestIdsInUpdate()) {
-            println("Should not be there");
-            return;
-        }
-
         var ids: [String]! = cache.getIncomingRequestIds();
         if (ids == nil) {
             return;
         }
+
         
+        self.cache.markIncomingRequestIdsInUpdate();
         for (index, id) in enumerate(ids!) {
             if (id == requestId) {
                 var action:()->Void = {() in

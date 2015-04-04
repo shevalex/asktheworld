@@ -642,7 +642,7 @@ struct RequestResponseManagement {
                 var request = Backend.getInstance().getRequest(requestId);
                 if (request != nil) {
                     request!.status = Backend.RequestObject.STATUS_INACTIVE;
-                    Backend.getInstance().updateRequest(requestId!, request: request!, observer: {(id) in })
+                    Backend.getInstance().updateRequest(requestId!, request: request!, observer: {(id) in tableView.reloadData(); })
                 }
             }
         });
