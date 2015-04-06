@@ -82,7 +82,7 @@ struct PushBackend {
             self.notifyPushListeners(message);
         };
         
-        DelayedNotifier(action).schedule(2);
+        DelayedNotifier(action).schedule(5);
     }
     
     

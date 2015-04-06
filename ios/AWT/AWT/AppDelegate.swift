@@ -60,17 +60,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     private func placeNotification(application: UIApplication, message: PushBackend.ServerMessage) {
-        let notification :UILocalNotification = UILocalNotification();
+        let notification = UILocalNotification();
 
         notification.alertBody = message.text;
         notification.applicationIconBadgeNumber = ++notificationCount;
-        notification.fireDate = NSDate(timeIntervalSinceNow: 10);
         
         application.scheduleLocalNotification(notification);
     }
     
     private func clearNotifications(application: UIApplication) {
         notificationCount = 0;
+        let clearBadgeNotification = UILocalNotification();
+        clearBadgeNotification.applicationIconBadgeNumber = -1;
+        application.scheduleLocalNotification(clearBadgeNotification);
+        
         application.cancelAllLocalNotifications();
     }
 }
