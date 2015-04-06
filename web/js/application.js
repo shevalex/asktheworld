@@ -127,6 +127,8 @@ Application.MESSAGE_TIMEOUT_FAST = 1;
 Application.MESSAGE_TIMEOUT_NORMAL = 5;
 Application.MESSAGE_TIMEOUT_SLOW = 10;
 
+Application.AUTO_LOGIN_PARAM = "^aitoLogin";
+
 
 Application.start = function() {
   this._rootContainer = document.getElementById("RootContainer");
@@ -150,7 +152,11 @@ Application.start = function() {
   
   Application._setupLanguageChooser();
 
-  this.showPage(LoginPage.name, {autoLogin: "true"});
+  
+  var startupBundle = {};
+  startupBundle[Application.AUTO_LOGIN_PARAM] = "true";
+  
+  this.showPage(LoginPage.name, startupBundle);
 }
 
 Application.reset = function() {
@@ -439,6 +445,11 @@ Application._serialize = function(parcel) {
   var ser = "";
   
   for (var key in parcel) {
+    //Skipping 'hidden' keys
+    if (key[0] == '^') {
+      continue;
+    }
+    
     if (ser.length > 0) {
       ser += ":";
     }
