@@ -196,8 +196,8 @@ public protocol BackendCallback {
 }
 
 public struct Backend {
-    public typealias CompletionObserver = (id: String) -> Void;
-    typealias CacheChangeEventObserver = (event: CacheChangeEvent) -> Void;
+    public typealias CompletionObserver = (String) -> Void;
+    typealias CacheChangeEventObserver = (CacheChangeEvent) -> Void;
     
     
     private static let SERVER_URL: String! = "https://hidden-taiga-8809.herokuapp.com";
@@ -606,7 +606,7 @@ public struct Backend {
                     ids.removeAtIndex(index);
                     self.cache.setIncomingRequestIds(ids);
                     
-                    observer(id: requestId);
+                    observer(requestId);
                 };
                 
                 DelayedNotifier(action).schedule(2);
@@ -765,7 +765,7 @@ public struct Backend {
             self.cache.setRequest(requestId, request: request);
             self.cache.setOutgoingRequestIds(ids!);
             self.cache.setIncomingResponseIds(requestId, responseIds: []);
-            observer(id: requestId);
+            observer(requestId);
         };
         
         DelayedNotifier(action).schedule(2);
@@ -776,7 +776,7 @@ public struct Backend {
         
         var action:()->Void = {() in
             self.cache.setRequest(requestId, request: request);
-            observer(id: requestId);
+            observer(requestId);
         };
         
         DelayedNotifier(action).schedule(2);
@@ -798,7 +798,7 @@ public struct Backend {
             
             self.cache.setResponse(requestId, responseId: responseId, response: response);
             self.cache.setOutgoingResponseIds(requestId, responseIds: ids!);
-            observer(id: responseId);
+            observer(responseId);
         };
         
         DelayedNotifier(action).schedule(3);
@@ -809,7 +809,7 @@ public struct Backend {
         
         var action:()->Void = {() in
             self.cache.setResponse(requestId, responseId: responseId, response: response);
-            observer(id: responseId);
+            observer(responseId);
         };
         
         DelayedNotifier(action).schedule(2);
@@ -824,10 +824,10 @@ public struct Backend {
         }
         
         if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
-            observer(id: responseId);
+            observer(responseId);
             return nil;
         } else if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_PROVIDED) {
-            observer(id: responseId);            
+            observer(responseId);
             return response!.contactInfo;
         } else {
             self.cache.markContactInfoInUpdate(requestId, responseId: responseId);
@@ -836,7 +836,7 @@ public struct Backend {
                 var contactInfo = ResponseObject.ContactInfo(contactName: "Anton", contactInfo: "(678) 967-3445");
                 self.cache.setContactInfo(requestId, responseId: responseId, contactInfo: contactInfo);
                 
-                observer(id: responseId);
+                observer(responseId);
             };
             
             DelayedNotifier(action).schedule(2);
@@ -1243,7 +1243,7 @@ public struct Backend {
             var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
 
             for (key, listener) in cacheChangeListeners.get() {
-                listener(event: event);
+                listener(event);
             }
         }
     }
