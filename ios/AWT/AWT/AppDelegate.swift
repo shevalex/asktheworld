@@ -14,6 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     var notificationObserver: PushBackend.PushEventObserver!
+    var notificationCount: Int = 0;
     
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -46,6 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         
         PushBackend.getInstance().removePushListener("notifications");
+        clearNotifications(application);
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
@@ -58,11 +60,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     private func placeNotification(application: UIApplication, message: PushBackend.ServerMessage) {
-        var localNotification:UILocalNotification = UILocalNotification();
-        localNotification.alertBody = message.text;
-        localNotification.applicationIconBadgeNumber = 100;
-        localNotification.fireDate = NSDate(timeIntervalSinceNow: 10);
-        application.scheduleLocalNotification(localNotification);
+        let notification :UILocalNotification = UILocalNotification();
+
+        notification.alertBody = message.text;
+        notification.applicationIconBadgeNumber = ++notificationCount;
+        notification.fireDate = NSDate(timeIntervalSinceNow: 10);
+        
+        application.scheduleLocalNotification(notification);
+    }
+    
+    private func clearNotifications(application: UIApplication) {
+        notificationCount = 0;
+        application.cancelAllLocalNotifications();
     }
 }
 
