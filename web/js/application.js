@@ -430,6 +430,10 @@ Application.placeHistory = function(page, paramBundle) {
   }
 }
 
+Application.goBack = function() {
+  window.history.back();
+}
+
 
 Application._serialize = function(parcel) {
   var ser = "";

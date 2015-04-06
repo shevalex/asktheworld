@@ -2,46 +2,57 @@
   text-align: center;
 }
 
-#UserProfilePage-GeneralPanel {
+
+
+#UserProfilePage-ProfilePanel {
+  width: 500px;
+  display: inline-block;
+  margin-top: 10px;
+  
+  font-family: Verdana;
+  font-size: 13px;
+}
+
+#UserProfilePage-ProfilePanel-ProfileLabel {
   display: block;
+  font-size: 20px;
   text-align: left;
   
-  font-size: 20px;
+  color: rgb(0, 133, 63);
 }
 
+#UserProfilePage-ProfilePanel-Nickname, #UserProfilePage-ProfilePanel-NewPassword, #UserProfilePage-ProfilePanel-ConfirmNewPassword, #UserProfilePage-ProfilePanel-CurrentPassword, #UserProfilePage-ProfilePanel-GenderAgeLanguagePanel {
+  margin-top: 10px;
+  font: inherit;
+}
 
-#UserProfilePage-ParametersPanel {
-  width: 40%;
+#UserProfilePage-ProfilePanel-GenderAgeLanguagePanel-Gender, #UserProfilePage-ProfilePanel-GenderAgeLanguagePanel-Age, #UserProfilePage-ProfilePanel-GenderAgeLanguagePanel-Language {
   display: inline-block;
-  margin-top: 20px;
-
-  font-size: 20px;
+  font: inherit;
 }
-
-#UserProfilePage-ParametersPanel-Name, #UserProfilePage-ParametersPanel-Gender, #UserProfilePage-ParametersPanel-AgeCategory, #UserProfilePage-ParametersPanel-Languages, #UserProfilePage-ParametersPanel-NewPassword, #UserProfilePage-ParametersPanel-ConfirmNewPassword, #UserProfilePage-ParametersPanel-CurrentPassword {
-  margin-bottom: 15px;
-  font-size: inherit;
+#UserProfilePage-ProfilePanel-GenderAgeLanguagePanel-Gender {
+  width: 120px;
 }
+#UserProfilePage-ProfilePanel-GenderAgeLanguagePanel-Age {
+  width: 120px;
 
-#UserProfilePage-ParametersPanel-Gender, #UserProfilePage-ParametersPanel-AgeCategory {
-  border-color: #999;
+  margin-left: 25px;
+  margin-right: 25px;
 }
-
-
-#UserProfilePage-ControlPanel {
-  display: block;
-  margin-top: 20px;
+#UserProfilePage-ProfilePanel-GenderAgeLanguagePanel-Language {
+  width: calc(100% - 240px - 50px);
 }
 
 
-#UserProfilePage-ControlPanel-UpdateButton {
-  width: 100%;
-  font-size: 20px;
+#UserProfilePage-ProfilePanel-ButtonsPanel {
+  margin-top: 30px;
+  text-align: center;
 }
 
-#UserProfilePage-ControlPanel-ResetButton {
-  font-size: 20px;
+#UserProfilePage-ProfilePanel-ButtonsPanel-UpdateButton {
+  margin-right: 200px;
 }
 
-
+#UserProfilePage-ProfilePanel-ButtonsPanel-ResetButton {
+}
 
