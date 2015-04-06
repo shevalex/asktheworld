@@ -61,6 +61,7 @@ LoginPage.prototype.definePageContent = function(root) {
   });
 }
 
+
 LoginPage.prototype.onShow = function(root, paramBundle) {
   Application.logOut();
   

@@ -207,8 +207,8 @@ Application.showPage = function(pageId, paramBundle, observer) {
 
   var showNewPage = function() {
     this._currentPage = page;
+
     this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
-    
     if (paramBundle == null) {
       paramBundle = {};
     }
@@ -385,28 +385,40 @@ Application.isEqualBundle = function(bundle1, bundle2) {
     return true;
   }
   
-  if (bundle1 == null) {
-    bundle1 = {};
+  
+  var processedBundle1 = {};
+  if (bundle1 != null) {
+    for (var key in bundle1) {
+      if (key[0] != '^') {
+        processedBundle1[key] = bundle1[key];
+      }
+    }
   }
-  if (bundle2 == null) {
-    bundle2 = {};
+
+  var processedBundle2 = {};
+  if (bundle2 != null) {
+    for (var key in bundle2) {
+      if (key[0] != '^') {
+        processedBundle2[key] = bundle2[key];
+      }
+    }
   }
   
-  if (bundle1.page == null && bundle2.page != null) {
-    bundle1.page = bundle2.page;
+  if (processedBundle1.page == null && processedBundle2.page != null) {
+    processedBundle1.page = processedBundle2.page;
   }
-  if (bundle1.page != null && bundle2.page == null) {
-    bundle2.page = bundle1.page;
-  }
-
-  if (bundle1.parent == null && bundle2.parent != null) {
-    bundle1.parent = bundle2.parent;
-  }
-  if (bundle1.parent != null && bundle2.parent == null) {
-    bundle2.parent = bundle1.parent;
+  if (processedBundle1.page != null && processedBundle2.page == null) {
+    processedBundle2.page = processedBundle1.page;
   }
 
-  return GeneralUtils.isEqual(bundle1, bundle2);
+  if (processedBundle1.parent == null && processedBundle2.parent != null) {
+    processedBundle1.parent = processedBundle2.parent;
+  }
+  if (processedBundle1.parent != null && processedBundle2.parent == null) {
+    processedBundle2.parent = processedBundle1.parent;
+  }
+  
+  return GeneralUtils.isEqual(processedBundle1, processedBundle2);
 }
 
 // HISTORY MANAGEMENT

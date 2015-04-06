@@ -53,6 +53,8 @@ RegisterPage.prototype.onShow = function() {
   this._retypePasswordElement.setValue("");
   this._termsAndCondsCheckbox.setValue(false);
   this._appropriateAgeCheckbox.setValue(false);
+  
+  this._signing = false;
 }
 
 RegisterPage.prototype.onHide = function() {
