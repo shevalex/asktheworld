@@ -140,12 +140,11 @@
   margin-top: 30px;
   margin-left: 50px;
   text-align: center;
-  
-  font-size: 13px;
 }
 
 #UserPreferencesPage-PreferencesPanel-ButtonsPanel-UpdateButton {
   margin-right: 200px;
+  
   font: inherit;
 }
 
