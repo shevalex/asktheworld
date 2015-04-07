@@ -45,12 +45,17 @@
 #UserProfilePage-ProfilePanel-ButtonsPanel {
   margin-top: 30px;
   text-align: center;
+  
+  font-size: 13px;
 }
 
 #UserProfilePage-ProfilePanel-ButtonsPanel-UpdateButton {
   margin-right: 200px;
+  
+  font: inherit;
 }
 
 #UserProfilePage-ProfilePanel-ButtonsPanel-CancelButton {
+  font: inherit;
 }
 
