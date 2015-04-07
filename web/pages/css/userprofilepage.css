@@ -2,8 +2,6 @@
   text-align: center;
 }
 
-
-
 #UserProfilePage-ProfilePanel {
   width: 500px;
   display: inline-block;
@@ -53,6 +51,6 @@
   margin-right: 200px;
 }
 
-#UserProfilePage-ProfilePanel-ButtonsPanel-ResetButton {
+#UserProfilePage-ProfilePanel-ButtonsPanel-CancelButton {
 }
 

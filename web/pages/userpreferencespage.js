@@ -26,7 +26,7 @@ UserPreferencesPage.prototype.definePageContent = function(root) {
   
   this._genderElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Gender"), this.getLocale().GenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE)).getInputElement();
 
-  this._ageElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "AgeCategory"), this.getLocale().AgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE)).getInputElement();
+  this._ageElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Age"), this.getLocale().AgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE)).getInputElement();
   
   this._quantityElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Quantity"), this.getLocale().NumOfResponsesPreferenceLabel, Application.Configuration.RESPONSE_QUANTITY)).getInputElement();
   
@@ -36,11 +36,11 @@ UserPreferencesPage.prototype.definePageContent = function(root) {
   var inquiriesPreferencesPanel = UIUtils.appendBlock(preferencesPanel, "InquiriesPreferencesPanel");
   UIUtils.appendLabel(inquiriesPreferencesPanel, "InquiriesPreferencesLabel", this.getLocale().InquiriesPreferencesLabel);
   
+  this._inquiryGenderElement = inquiriesPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(inquiriesPreferencesPanel, "Gender"), this.getLocale().InquiriesGenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE)).getInputElement();
+
+  this._inquiryAgeElement = inquiriesPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(inquiriesPreferencesPanel, "Age"), this.getLocale().InquiriesAgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE)).getInputElement();
+  
   this._inquiryLimitElement = inquiriesPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(inquiriesPreferencesPanel, "DailyInquiryLimit"), this.getLocale().NumOfInquiriesPreferenceLabel, Application.Configuration.INQUIRY_LIMIT_PREFERENCE)).getInputElement();
-  
-  this._inquiryAgeElement = inquiriesPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(inquiriesPreferencesPanel, "InquiryAge"), this.getLocale().RequestersAgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE)).getInputElement();
-  
-  this._inquiryGenderElement = inquiriesPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(inquiriesPreferencesPanel, "InquiryGender"), this.getLocale().RequestersGenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE)).getInputElement();
   
   
   var contactPreferencesPanel = UIUtils.appendBlock(preferencesPanel, "ContactPreferencesPanel");
@@ -116,13 +116,17 @@ UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
       return;
     }
   }
+  
+  if (this._expertiseElement.getSelectedData().length == 0) {
+    this._expertiseElement.selectChoices([Application.Configuration.EXPERTISES[0]]);
+  }
 
   var page = this;
-
   var callback = {
     success: function(requestId) {
       this._onCompletion();
       Application.showMessage(page.getLocale().PreferencesUpdatedMessage);
+      Application.goBack();
     },
     failure: function() {
       this._onCompletion();

@@ -115,9 +115,7 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
     success: function(requestId) {
       callback._onCompletion();
       Application.showMessage(this.getLocale().ProfileUpdatedMessage);
-
-      this._newPasswordElement.setValue("");
-      this._confirmNewPasswordElement.setValue("");
+      Application.goBack();
     }.bind(this),
     failure: function() {
       callback._onCompletion();
