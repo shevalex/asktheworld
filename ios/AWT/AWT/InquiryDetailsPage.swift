@@ -28,7 +28,10 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
     override func viewDidLoad() {
         super.viewDidLoad();
         
-        responseAttachmentsView.setHostingView(self);
+        inquiryAttachmentsView.setHostingViewController(self);
+        inquiryAttachmentsView.setMutable(false);
+        
+        responseAttachmentsView.setHostingViewController(self);
 
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
@@ -80,12 +83,12 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
     }
     
     @IBAction func attachButtonClickAction(sender: AnyObject) {
-        AtwUiUtils.setImagePicker(self, {(image: UIImage) in
-            self.responseAttachmentsView.addAttachment(image);
-        });
+        responseAttachmentsView.showAttachAction();
     }
     
-
+    @IBAction func ignoreButtonClickAction(sender: AnyObject) {
+        Backend.getInstance().removeIncomingRequest(requestId!, observer: {(id) in });
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);

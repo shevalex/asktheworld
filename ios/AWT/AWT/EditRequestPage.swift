@@ -31,7 +31,9 @@ class EditRequestPage: UIViewControllerWithSpinner {
     
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad();
+        
+        attachmentsView.setHostingViewController(self);
         
         expertiseSelector = AtwUiUtils.setDataChooser(expertiseTextField, items: Configuration.EXPERTISES, multichoice: false);
         genderSelector = AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE, multichoice: false);
@@ -68,11 +70,20 @@ class EditRequestPage: UIViewControllerWithSpinner {
     }
     
     
+    @IBAction func deactivateButtonClickAction(sender: AnyObject) {
+        var request = Backend.getInstance().getRequest(requestId);
+        if (request != nil) {
+            request!.status = Backend.RequestObject.STATUS_INACTIVE;
+            Backend.getInstance().updateRequest(requestId!, request: request!, observer: {(id) in
+                self.navigationController?.popViewControllerAnimated(true);
+                return;
+            });
+        }
+        
+    }
     
     @IBAction func attachButtonClickAction(sender: AnyObject) {
-        AtwUiUtils.setImagePicker(self, {(image: UIImage) in
-            self.attachmentsView.addAttachment(image);
-        });
+        attachmentsView.showAttachAction();
     }
     
     @IBAction func sendButtonClickAction(sender: AnyObject) {

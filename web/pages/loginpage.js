@@ -61,6 +61,7 @@ LoginPage.prototype.definePageContent = function(root) {
   });
 }
 
+
 LoginPage.prototype.onShow = function(root, paramBundle) {
   Application.logOut();
   
@@ -80,7 +81,7 @@ LoginPage.prototype.onShow = function(root, paramBundle) {
   
   this._signing = false;
   
-  var autoSignAllowed = paramBundle != null && paramBundle.autoLogin == "true";
+  var autoSignAllowed = paramBundle != null && paramBundle[Application.AUTO_LOGIN_PARAM] == "true";
   if (autoSignAllowed && remember && this._loginElement.getValue() != "" && this._passwordElement.getValue() != "") {
     this._signIn();
   }
@@ -90,7 +91,7 @@ LoginPage.prototype.onHide = function() {
 }
 
 LoginPage.prototype.hasHistory = function() {
-  return false;
+  return true;
 }
 
 

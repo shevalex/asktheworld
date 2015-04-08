@@ -53,6 +53,8 @@ RegisterPage.prototype.onShow = function() {
   this._retypePasswordElement.setValue("");
   this._termsAndCondsCheckbox.setValue(false);
   this._appropriateAgeCheckbox.setValue(false);
+  
+  this._signing = false;
 }
 
 RegisterPage.prototype.onHide = function() {
@@ -87,14 +89,14 @@ RegisterPage.prototype._signUp = function() {
   }
 
   var password = this._passwordElement.getValue();
-  if (password == "" || password.length < 5) {
+  if (!ValidationUtils.isValidPassword(password)) {
     UIUtils.indicateInvalidInput(this._passwordElement);
     Application.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
     return;
   }
 
   var retypePassword = this._retypePasswordElement.getValue();
-  if (retypePassword == "" || retypePassword != password) {
+  if (retypePassword != password) {
     UIUtils.indicateInvalidInput(this._retypePasswordElement);
     Application.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
     return;

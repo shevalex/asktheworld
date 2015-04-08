@@ -13,129 +13,70 @@ UserPreferencesPage = ClassUtils.defineClass(AbstractPage, function UserPreferen
   this._makeContactInfoRequestableCheckbox;
   this._nameElement;
   this._contactElement;  
-  
-  this._updateButton;
-  this._resetButton;
+
+  this._updating = false;
 });
 
 UserPreferencesPage.prototype.definePageContent = function(root) {
-  var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
-  generalPanel.innerHTML = this.getLocale().UpdatePreferencesText;
+  var preferencesPanel = UIUtils.appendBlock(root, "PreferencesPanel");
+  UIUtils.appendLabel(preferencesPanel, "PreferencesLabel", this.getLocale().PreferencesLabel);
+  
+  var requestsPreferencesPanel = UIUtils.appendBlock(preferencesPanel, "RequestsPreferencesPanel");
+  UIUtils.appendLabel(requestsPreferencesPanel, "RequestsPreferencesLabel", this.getLocale().RequestsPreferencesLabel);
+  
+  this._genderElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Gender"), this.getLocale().GenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE)).getInputElement();
 
-  UIUtils.appendLabel(root, "RequestPreferencesLabel", this.getLocale().RequestPreferencesLabel);
-  this._appendRequestPreferencesPanel(root);
+  this._ageElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Age"), this.getLocale().AgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE)).getInputElement();
   
-  UIUtils.appendLabel(root, "InquiryPreferencesLabel", this.getLocale().InquiryPreferencesLabel);
-  this._appendInquiryPreferencesPanel(root);
+  this._quantityElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Quantity"), this.getLocale().NumOfResponsesPreferenceLabel, Application.Configuration.RESPONSE_QUANTITY)).getInputElement();
   
-  UIUtils.appendLabel(root, "ContactInfoPreferencesLabel", this.getLocale().ContactInfoPreferencesLabel);
-  this._appendContactInfoPreferencesPanel(root);
+  this._waitTimeElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "WaitTime"), this.getLocale().WaitPreferenceLabel, Application.Configuration.RESPONSE_WAIT_TIME)).getInputElement();
   
-  this._appendControlPanel(root);
+  
+  var inquiriesPreferencesPanel = UIUtils.appendBlock(preferencesPanel, "InquiriesPreferencesPanel");
+  UIUtils.appendLabel(inquiriesPreferencesPanel, "InquiriesPreferencesLabel", this.getLocale().InquiriesPreferencesLabel);
+  
+  this._inquiryGenderElement = inquiriesPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(inquiriesPreferencesPanel, "Gender"), this.getLocale().InquiriesGenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE)).getInputElement();
+
+  this._inquiryAgeElement = inquiriesPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(inquiriesPreferencesPanel, "Age"), this.getLocale().InquiriesAgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE)).getInputElement();
+  
+  this._inquiryLimitElement = inquiriesPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(inquiriesPreferencesPanel, "DailyInquiryLimit"), this.getLocale().NumOfInquiriesPreferenceLabel, Application.Configuration.INQUIRY_LIMIT_PREFERENCE)).getInputElement();
+  
+  
+  var contactPreferencesPanel = UIUtils.appendBlock(preferencesPanel, "ContactPreferencesPanel");
+  UIUtils.appendLabel(contactPreferencesPanel, "ContactPreferencesLabel", this.getLocale().ContactPreferencesLabel);
+  
+  this._expertiseElement = contactPreferencesPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contactPreferencesPanel, "Expertise"), this.getLocale().ExpertisePreferenceLabel, Application.Configuration.EXPERTISES)).getInputElement();
+  
+  this._makeContactInfoRequestableCheckbox = UIUtils.appendCheckbox(contactPreferencesPanel, "AllowContactInfo", this.getLocale().AllowContactInfoPreferenceLabel);
+  
+  this._nameElement = contactPreferencesPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contactPreferencesPanel, "Name"), this.getLocale().NamePreferenceLabel)).getInputElement();
+
+  this._contactElement = contactPreferencesPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contactPreferencesPanel, "Contact"), this.getLocale().ContactPreferenceLabel)).getInputElement();
+  
+  
+  var buttonsPanel = UIUtils.appendBlock(preferencesPanel, "ButtonsPanel");
+  var updateButton = UIUtils.appendButton(buttonsPanel, "UpdateButton", this.getLocale().UpdateButton);
+  UIUtils.setClickListener(updateButton, function() {
+    this._updateUserPreferences();
+  }.bind(this));
+
+  var cancelButton = UIUtils.appendButton(buttonsPanel, "CancelButton", I18n.getLocale().literals.CancelOperationButton);
+  UIUtils.setClickListener(cancelButton, function() {
+    Application.goBack();
+  }.bind(this));
 }
 
 UserPreferencesPage.prototype.onShow = function() {
   this._resetParameters();
+  
+  this._updating = false;
 }
 
 UserPreferencesPage.prototype.onHide = function() {
-  UIUtils.setEnabled(this._updateButton, true);
 }
 
 
-
-UserPreferencesPage.prototype._appendRequestPreferencesPanel = function(root) {
-  var contentPanel = UIUtils.appendBlock(root, "RequestPreferencesPanel");
-  
-  this._genderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Gender"), this.getLocale().GenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
-
-  this._ageElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "AgeCategory"), this.getLocale().AgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
-  
-  this._quantityElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "Quantity"), this.getLocale().NumOfResponsesPreferenceLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
-  
-  this._waitTimeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "WaitTime"), this.getLocale().WaitPreferenceLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
-}
-
-UserPreferencesPage.prototype._appendInquiryPreferencesPanel = function(root) {
-  var contentPanel = UIUtils.appendBlock(root, "InquiryPreferencesPanel");
-  
-  this._inquiryLimitElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "DailyInquiryLimit"), this.getLocale().NumOfInquiriesPreferenceLabel, Application.Configuration.INQUIRY_LIMIT_PREFERENCE, "10px")).getInputElement();
-  
-  this._inquiryAgeElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryAge"), this.getLocale().RequestersAgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
-  
-  this._inquiryGenderElement = contentPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(contentPanel, "InquiryGender"), this.getLocale().RequestersGenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
-}
-
-UserPreferencesPage.prototype._appendContactInfoPreferencesPanel = function(root) {
-  var contentPanel = UIUtils.appendBlock(root, "ContactInfoPreferencesPanel");
-  
-  this._expertiseElement = contentPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contentPanel, "Expertise"), this.getLocale().ExpertisePreferenceLabel, Application.Configuration.EXPERTISES, "10px")).getInputElement();
-  
-  this._makeContactInfoRequestableCheckbox = UIUtils.appendCheckbox(contentPanel, "AllowContactInfo", this.getLocale().AllowContactInfoPreferenceLabel);
-  
-  this._nameElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Name"), this.getLocale().NamePreferenceLabel, "10px")).getInputElement();
-
-  this._contactElement = contentPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(contentPanel, "Contact"), this.getLocale().ContactPreferenceLabel, "10px")).getInputElement();
-}
-
-
-UserPreferencesPage.prototype._appendControlPanel = function(root) {
-  var controlPanel = UIUtils.appendBlock(root, "ControlPanel");
-  
-  controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0"));
-  
-  this._updateButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "UpdateButton"), this.getLocale().UpdateButton));
-  
-  this._resetButton = controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "ResetButton"), this.getLocale().ResetButton));
-  
-  UIUtils.setClickListener(this._resetButton, this._resetParameters.bind(this));
-  UIUtils.setClickListener(this._updateButton, function() {
-    if (this._makeContactInfoRequestableCheckbox.getValue()) {
-      if (this._expertiseElement.getSelectedData().length == 0) {
-        this._expertiseElement.indicateInvalidInput();
-        Application.showMessage(this.getLocale().NoExpertiseMessage);
-        return;
-      }
-      if (this._nameElement.getValue() == "") {
-        UIUtils.indicateInvalidInput(this._nameElement);
-        Application.showMessage(this.getLocale().NoNameMessage);
-        return;
-      }
-      if (this._contactElement.getValue() == "") {
-        UIUtils.indicateInvalidInput(this._contactElement);
-        Application.showMessage(this.getLocale().NoContactInfoMessage);
-        return;
-      }
-    }
-
-    var page = this;
-    
-    var callback = {
-      success: function(requestId) {
-        this._onCompletion();
-        Application.showMessage(page.getLocale().PreferencesUpdatedMessage);
-      },
-      failure: function() {
-        this._onCompletion();
-        Application.showMessage(page.getLocale().UpdateFailedMessage);
-      },
-      error: function() {
-        this._onCompletion();
-        Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
-      },
-
-      _onCompletion: function() {
-        UIUtils.setEnabled(this._updateButton, true);
-        Application.hideSpinningWheel();
-      }.bind(this)
-    }
-
-    UIUtils.setEnabled(this._updateButton, false);
-    Application.showSpinningWheel();
-    
-    this._updateUserPreferences(callback);
-  }.bind(this));
-}
 
 UserPreferencesPage.prototype._resetParameters = function() {
   this._quantityElement.selectData(Backend.getUserPreferences().responseQuantity);
@@ -154,6 +95,57 @@ UserPreferencesPage.prototype._resetParameters = function() {
 
 
 UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
+  if (this._updating) {
+    return;
+  }
+  
+  if (this._makeContactInfoRequestableCheckbox.getValue()) {
+    if (this._expertiseElement.getSelectedData().length == 0) {
+      this._expertiseElement.indicateInvalidInput();
+      Application.showMessage(this.getLocale().NoExpertiseMessage);
+      return;
+    }
+    if (this._nameElement.getValue() == "") {
+      UIUtils.indicateInvalidInput(this._nameElement);
+      Application.showMessage(this.getLocale().NoNameMessage);
+      return;
+    }
+    if (this._contactElement.getValue() == "") {
+      UIUtils.indicateInvalidInput(this._contactElement);
+      Application.showMessage(this.getLocale().NoContactInfoMessage);
+      return;
+    }
+  }
+  
+  if (this._expertiseElement.getSelectedData().length == 0) {
+    this._expertiseElement.selectChoices([Application.Configuration.EXPERTISES[0]]);
+  }
+
+  var page = this;
+  var callback = {
+    success: function(requestId) {
+      this._onCompletion();
+      Application.showMessage(page.getLocale().PreferencesUpdatedMessage);
+      Application.goBack();
+    },
+    failure: function() {
+      this._onCompletion();
+      Application.showMessage(page.getLocale().UpdateFailedMessage);
+    },
+    error: function() {
+      this._onCompletion();
+      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+    },
+
+    _onCompletion: function() {
+      this._updating = false;
+      Application.hideSpinningWheel();
+    }.bind(this)
+  }
+
+  this._updating = true;
+  Application.showSpinningWheel();
+
   var userPreferences = {
     responseQuantity: this._quantityElement.getSelectedData(),
     responseWaitTime: this._waitTimeElement.getSelectedData(),

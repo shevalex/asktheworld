@@ -12,20 +12,25 @@ import UIKit
 
 protocol AttachmentHandler {
     func getSelectedAttachment() -> AnyObject?;
-    func addAttachment(attachment: AnyObject);
-    func removeAttachment(attachment: AnyObject);
+    func getAttachments() -> [AnyObject];
+    func addAttachment(attachment: AnyObject) -> Bool;
+    func removeAttachment(attachment: AnyObject) -> Bool;
 }
 
 class AttachmentBarView: UIControl, AttachmentHandler {
     private let IMAGE_INSET: CGFloat = 5
-    private let imageScollView: UIScrollView = UIScrollView(frame: CGRectZero);
-    private let clipView: UIImageView = UIImageView(frame: CGRectZero);
+    private let imageScollView: UIScrollView = UIScrollView(frame: CGRectZero)
+    private let clipView: UIImageView = UIImageView(frame: CGRectZero)
     
-    private var imageArray: Array<UIImage> = []
+    private var isMutable = true;
     
-    private var hostingView: UIViewController?
+    private var attachmentArray: Array<AnyObject> = []
     
-    private var lastClickedAttachment: UIImage?;
+    private var hostingViewController: UIViewController?
+    
+    private var lastClickedAttachment: UIImage?
+    
+    private var storyboard: UIStoryboard!;
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
@@ -33,14 +38,19 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         backgroundColor = UIColor.lightGrayColor();
         layer.cornerRadius = 5;
 
+        setMutable(true);
         
-        clipView.image = UIImage(named: "paper-clip.jpg");
         addSubview(clipView);
         clipView.setTranslatesAutoresizingMaskIntoConstraints(false);
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 5));
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30));
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0));
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0));
+        
+        clipView.userInteractionEnabled = true;
+        var clipTapRecognizer = UITapGestureRecognizer(target: self, action: "clipPressedAction:");
+        clipView.addGestureRecognizer(clipTapRecognizer);
+
         
         addSubview(imageScollView);
         imageScollView.setTranslatesAutoresizingMaskIntoConstraints(false);
@@ -54,59 +64,100 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         super.layoutSubviews();
     }
     
-    func setHostingView(view: UIViewControllerWithSpinner) {
-        hostingView = view;
+    func setHostingViewController(viewController: UIViewControllerWithSpinner) {
+        hostingViewController = viewController;
     }
     
+    func setMutable(mutable: Bool) {
+        isMutable = mutable;
+        
+        clipView.userInteractionEnabled = mutable;
+        clipView.image = mutable ? UIImage(named: "paper-clip.jpg") : nil;
+
+    }
+    
+    func getAttachments() -> [AnyObject] {
+        return attachmentArray;
+    }
     
     func getSelectedAttachment() -> AnyObject? {
         return lastClickedAttachment;
     }
     
-    func addAttachment(attachment: AnyObject) {
-        addImage(attachment as UIImage);
+    func addAttachment(attachment: AnyObject) -> Bool {
+        if (!isMutable) {
+            return false;
+        }
+        
+        attachmentArray.append(attachment);
+        
+        rebuildScrollView();
+        
+        return true;
     }
     
-    func removeAttachment(attachment: AnyObject) {
-        removeImage(attachment as UIImage);
+    func removeAttachment(attachment: AnyObject) -> Bool {
+        if (!isMutable) {
+            return false;
+        }
+        
+        for (index, att) in enumerate(attachmentArray) {
+            if (att === attachment) {
+                attachmentArray.removeAtIndex(index);
+                rebuildScrollView();
+                return true;
+            }
+        }
+        
+        return false;
     }
     
+
+    func showAttachAction() {
+        AtwUiUtils.setImagePicker(hostingViewController!, {(image: UIImage) in
+            self.addAttachment(image);
+            return;
+        });
+    }
+    
+    func clipPressedAction(gestureRecognizer: UITapGestureRecognizer) {
+        showAttachAction();
+    }
     
     func imagePressedAction(gestureRecognizer: UITapGestureRecognizer) {
         lastClickedAttachment = (gestureRecognizer.view as UIImageView).image;
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil);
+        if (storyboard == nil) {
+            storyboard = UIStoryboard(name: "Main", bundle: nil);
+        }
         let imagePage = storyboard.instantiateViewControllerWithIdentifier("ImagePage") as ImagePage;
         imagePage.attachmentHandler = self;
         
-        hostingView?.navigationController?.pushViewController(imagePage, animated: true);
+        hostingViewController?.navigationController?.pushViewController(imagePage, animated: true);
     }
     
-    private func addImage(image: UIImage) {
-        imageArray.append(image);
+    private func rebuildScrollView() {
+        for (index, child) in enumerate(imageScollView.subviews) {
+            child.removeFromSuperview();
+        }
         
-        imageScollView.contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count), frame.size.height);
+        imageScollView.contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(attachmentArray.count), frame.size.height);
         
-        let x = (frame.size.height + IMAGE_INSET) * CGFloat(imageArray.count - 1);
-        let newImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
-        newImageView.image = image;
-        newImageView.contentMode = UIViewContentMode.ScaleToFill;
-        newImageView.userInteractionEnabled = true;
-        imageScollView.addSubview(newImageView);
-        
-        var tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
-        newImageView.addGestureRecognizer(tapRecognizer);
-    }
-    
-    private func removeImage(imageToRemove: UIImage) {
-        for (index, image) in enumerate(imageArray) {
-            if (image === imageToRemove) {
-                for (index, imageView) in enumerate (imageScollView.subviews) {
-                    if ((imageView as UIImageView).image === imageToRemove) {
-                        imageView.removeFromSuperview();
-                    }
-                }
+        for (index, att) in enumerate(attachmentArray) {
+            let x = (frame.size.height + IMAGE_INSET) * CGFloat(index);
+            let nextImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
+            
+            if (att.isKindOfClass(UIImage)) {
+                nextImageView.image = att as? UIImage;
+            } else {
+                nextImageView.image = UIImage(named: "paper-clip.jpg");
             }
+            nextImageView.contentMode = UIViewContentMode.ScaleToFill;
+            nextImageView.userInteractionEnabled = true;
+            imageScollView.addSubview(nextImageView);
+            
+            var tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
+            nextImageView.addGestureRecognizer(tapRecognizer);
         }
     }
 }

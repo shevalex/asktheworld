@@ -2,55 +2,154 @@
   text-align: center;
 }
 
-#UserPreferencesPage-GeneralPanel {
-  display: block;
-  text-align: left;
-  margin-bottom: 20px;
-  
-  font-size: 20px;
-}
-
-
-#UserPreferencesPage-RequestPreferencesLabel, #UserPreferencesPage-InquiryPreferencesLabel, #UserPreferencesPage-ContactInfoPreferencesLabel {
-  display: block;
-  text-align: left;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  
-  font-size: 20px;
-  font-weight: bold;
-  font-style: italic;
-}
-
-#UserPreferencesPage-RequestPreferencesPanel, #UserPreferencesPage-InquiryPreferencesPanel , #UserPreferencesPage-ContactInfoPreferencesPanel {
-  width: 50%;
+#UserPreferencesPage-PreferencesPanel {
+  width: 500px;
   display: inline-block;
-
-  font-size: 20px;
+  margin-top: 10px;
+  
+  font-family: Verdana;
+  font-size: 13px;
 }
 
-#UserPreferencesPage-RequestPreferencesPanel-Quantity, #UserPreferencesPage-RequestPreferencesPanel-Gender, #UserPreferencesPage-RequestPreferencesPanel-AgeCategory, #UserPreferencesPage-RequestPreferencesPanel-WaitTime, #UserPreferencesPage-RequestPreferencesPanel-Gender, #UserPreferencesPage-InquiryPreferencesPanel-DailyInquiryLimit, #UserPreferencesPage-InquiryPreferencesPanel-InquiryAge, #UserPreferencesPage-InquiryPreferencesPanel-InquiryGender, #UserPreferencesPage-ContactInfoPreferencesPanel-Expertise, #UserPreferencesPage-ContactInfoPreferencesPanel-AllowContactInfo, #UserPreferencesPage-ContactInfoPreferencesPanel-Name, #UserPreferencesPage-ContactInfoPreferencesPanel-Contact {
-  margin-bottom: 15px;
-}
-
-#UserPreferencesPage-ContactInfoPreferencesPanel-AllowContactInfo, #UserPreferencesPage-ContactInfoPreferencesPanel-Name, #UserPreferencesPage-ContactInfoPreferencesPanel-Contact {
-  font-size: 20px;
-}
-
-
-
-
-#UserPreferencesPage-ControlPanel {
+#UserPreferencesPage-PreferencesPanel-PreferencesLabel {
   display: block;
+  font-size: 20px;
+  text-align: left;
+  
+  color: rgb(0, 133, 63);
+}
+
+#UserPreferencesPage-PreferencesPanel-RequestsPreferencesPanel {
   margin-top: 20px;
 }
 
-
-#UserPreferencesPage-ControlPanel-UpdateButton {
-  width: 100%;
-  font-size: 20px;
+#UserPreferencesPage-PreferencesPanel-RequestsPreferencesPanel-RequestsPreferencesLabel {
+  display: block;
+  font-size: 16px;
+  text-align: left;
+  
+  color: rgb(0, 133, 63);
 }
 
-#UserPreferencesPage-ControlPanel-ResetButton {
-  font-size: 20px;
+#UserPreferencesPage-PreferencesPanel-RequestsPreferencesPanel-Gender {
+  display: inline-block;
+  width: 200px;
+  margin-left: 50px;
+  margin-top: 10px;
+  font: inherit;
 }
+
+#UserPreferencesPage-PreferencesPanel-RequestsPreferencesPanel-Age {
+  display: inline-block;
+  width: 200px;
+  margin-left: 50px;
+  margin-top: 10px;
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-RequestsPreferencesPanel-Quantity {
+  display: inline-block;
+  width: 200px;
+  margin-left: 50px;
+  margin-top: 10px;
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-RequestsPreferencesPanel-WaitTime {
+  display: inline-block;
+  width: 200px;
+  margin-left: 50px;
+  margin-top: 10px;
+  font: inherit;
+}
+
+
+#UserPreferencesPage-PreferencesPanel-InquiriesPreferencesPanel {
+  margin-top: 20px;
+}
+
+#UserPreferencesPage-PreferencesPanel-InquiriesPreferencesPanel-InquiriesPreferencesLabel {
+  display: block;
+  font-size: 16px;
+  text-align: left;
+  
+  color: rgb(0, 133, 63);
+}
+
+#UserPreferencesPage-PreferencesPanel-InquiriesPreferencesPanel-Gender {
+  display: inline-block;
+  width: 200px;
+  margin-left: 50px;
+  margin-top: 10px;
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-InquiriesPreferencesPanel-Age {
+  display: inline-block;
+  width: 200px;
+  margin-left: 50px;
+  margin-top: 10px;
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-InquiriesPreferencesPanel-DailyInquiryLimit {
+  margin-top: 10px;
+  margin-left: 50px;
+  font: inherit;
+}
+
+
+#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel {
+  margin-top: 20px;
+}
+
+#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-ContactPreferencesLabel {
+  display: block;
+  font-size: 16px;
+  text-align: left;
+  
+  color: rgb(0, 133, 63);
+}
+
+#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-Expertise {
+  margin-top: 10px;
+  margin-left: 50px;
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-AllowContactInfo {
+  margin-top: 10px;
+  margin-left: 50px;
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-Name {
+  margin-top: 10px;
+  margin-left: 50px;
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-Contact {
+  margin-top: 10px;
+  margin-left: 50px;
+  font: inherit;
+}
+
+
+#UserPreferencesPage-PreferencesPanel-ButtonsPanel {
+  margin-top: 30px;
+  margin-left: 50px;
+  text-align: center;
+}
+
+#UserPreferencesPage-PreferencesPanel-ButtonsPanel-UpdateButton {
+  margin-right: 200px;
+  
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-ButtonsPanel-CancelButton {
+  font: inherit;
+}
+
+

@@ -12,11 +12,21 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    var notificationObserver: PushBackend.PushEventObserver!
+    var notificationCount: Int = 0;
+    
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-        return true
+        
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Alert | UIUserNotificationType.Badge, categories: nil));
+        
+        notificationObserver = { (message) in
+            self.placeNotification(application, message: message);
+        }
+        
+        return true;
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -27,10 +37,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
+        PushBackend.getInstance().addPushListener(notificationObserver, listenerId: "notifications");
+        
+        PushBackend.getInstance().placeNotification("Hello");
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        
+        PushBackend.getInstance().removePushListener("notifications");
+        clearNotifications(application);
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
@@ -42,5 +59,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+    private func placeNotification(application: UIApplication, message: PushBackend.ServerMessage) {
+        let notification = UILocalNotification();
+
+        notification.alertBody = message.text;
+        notification.applicationIconBadgeNumber = ++notificationCount;
+        
+        application.scheduleLocalNotification(notification);
+    }
+    
+    private func clearNotifications(application: UIApplication) {
+        notificationCount = 0;
+        let clearBadgeNotification = UILocalNotification();
+        clearBadgeNotification.applicationIconBadgeNumber = -1;
+        application.scheduleLocalNotification(clearBadgeNotification);
+        
+        application.cancelAllLocalNotifications();
+    }
 }
 

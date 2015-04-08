@@ -35,10 +35,12 @@ class UserSettingsPage: UITableViewController {
 
 class logoutSegue: UIStoryboardSegue {
     override func perform() {
-        let src = sourceViewController as UITableViewController
-        let dst = destinationViewController as UIViewController
-        src.navigationController?.pushViewController(dst, animated: true)
-        dst.navigationItem.hidesBackButton = true
-        Backend.logOut()
+        Backend.logOut();
+
+        let src = sourceViewController as UITableViewController;
+        let loginPage = destinationViewController as LoginPage;
+        src.navigationController?.pushViewController(loginPage, animated: true);
+        loginPage.navigationItem.hidesBackButton = true;
+        loginPage.autoLogin = false;
     }
 }

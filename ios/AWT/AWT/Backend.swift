@@ -196,8 +196,8 @@ public protocol BackendCallback {
 }
 
 public struct Backend {
-    public typealias CompletionObserver = (id: String) -> Void;
-    typealias CacheChangeEventObserver = (event: CacheChangeEvent) -> Void;
+    public typealias CompletionObserver = (String) -> Void;
+    typealias CacheChangeEventObserver = (CacheChangeEvent) -> Void;
     
     
     private static let SERVER_URL: String! = "https://hidden-taiga-8809.herokuapp.com";
@@ -229,7 +229,7 @@ public struct Backend {
     
     private var userContext: UserContext! = nil;
     
-    private var cache: ObjectCache = ObjectCache();
+    private var cache: ObjectCache! = ObjectCache();
 
     
     
@@ -337,7 +337,7 @@ public struct Backend {
     
     
     
-    public static func getInstance() -> Backend {
+    public static func getInstance() -> Backend! {
         return instance;
     }
     
@@ -371,7 +371,9 @@ public struct Backend {
     }
     
     public static func logOut() {
-        println("Clear Backend here")
+        Backend.instance.userContext = nil;
+        Backend.instance.cache = nil;
+        Backend.instance = nil;
     }
 
     
@@ -562,8 +564,8 @@ public struct Backend {
         if (cache.isIncomingRequestIdsInUpdate()) {
             return nil;
         }
-        
-        var ids: [String]? = cache.getIncomingRequestIds();
+
+        let ids: [String]? = cache.getIncomingRequestIds();
         if (ids == nil) {
             //TODO: pull the list from the server here
             self.cache.markIncomingRequestIdsInUpdate();
@@ -587,10 +589,35 @@ public struct Backend {
                     requestIds.append(id);
                 }
             }
-            
+
             return requestIds;
         }
     }
+    
+    public func removeIncomingRequest(requestId: String, observer: CompletionObserver) {
+        var ids: [String]! = cache.getIncomingRequestIds();
+        if (ids == nil) {
+            return;
+        }
+
+        
+        self.cache.markIncomingRequestIdsInUpdate();
+        for (index, id) in enumerate(ids!) {
+            if (id == requestId) {
+                var action:()->Void = {() in
+                    ids.removeAtIndex(index);
+                    self.cache.setIncomingRequestIds(ids);
+                    
+                    observer(requestId);
+                };
+                
+                DelayedNotifier(action).schedule(2);
+                
+                return;
+            }
+        }
+    }
+    
     
     public func getRequest(requestId: String!) -> RequestObject? {
         if (cache.isRequestInUpdate(requestId)) {
@@ -654,6 +681,7 @@ public struct Backend {
             return responseIds;
         }
     }
+    
     
     public func getOutgoingResponseIds(requestId: String, responseStatus: String? = nil) -> [String]? {
         if (cache.isOutgoingResponseIdsInUpdate(requestId)) {
@@ -739,7 +767,7 @@ public struct Backend {
             self.cache.setRequest(requestId, request: request);
             self.cache.setOutgoingRequestIds(ids!);
             self.cache.setIncomingResponseIds(requestId, responseIds: []);
-            observer(id: requestId);
+            observer(requestId);
         };
         
         DelayedNotifier(action).schedule(2);
@@ -750,7 +778,7 @@ public struct Backend {
         
         var action:()->Void = {() in
             self.cache.setRequest(requestId, request: request);
-            observer(id: requestId);
+            observer(requestId);
         };
         
         DelayedNotifier(action).schedule(2);
@@ -772,7 +800,7 @@ public struct Backend {
             
             self.cache.setResponse(requestId, responseId: responseId, response: response);
             self.cache.setOutgoingResponseIds(requestId, responseIds: ids!);
-            observer(id: responseId);
+            observer(responseId);
         };
         
         DelayedNotifier(action).schedule(3);
@@ -783,7 +811,7 @@ public struct Backend {
         
         var action:()->Void = {() in
             self.cache.setResponse(requestId, responseId: responseId, response: response);
-            observer(id: responseId);
+            observer(responseId);
         };
         
         DelayedNotifier(action).schedule(2);
@@ -798,10 +826,10 @@ public struct Backend {
         }
         
         if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
-            observer(id: responseId);
+            observer(responseId);
             return nil;
         } else if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_PROVIDED) {
-            observer(id: responseId);            
+            observer(responseId);
             return response!.contactInfo;
         } else {
             self.cache.markContactInfoInUpdate(requestId, responseId: responseId);
@@ -810,7 +838,7 @@ public struct Backend {
                 var contactInfo = ResponseObject.ContactInfo(contactName: "Anton", contactInfo: "(678) 967-3445");
                 self.cache.setContactInfo(requestId, responseId: responseId, contactInfo: contactInfo);
                 
-                observer(id: responseId);
+                observer(responseId);
             };
             
             DelayedNotifier(action).schedule(2);
@@ -986,7 +1014,9 @@ public struct Backend {
         }
         
         @objc func timerTick() {
-            action?();
+            if (Backend.getInstance() != nil) {
+                action?();
+            }
         }
     }
     
@@ -1217,7 +1247,7 @@ public struct Backend {
             var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
 
             for (key, listener) in cacheChangeListeners.get() {
-                listener(event: event);
+                listener(event);
             }
         }
     }

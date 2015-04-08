@@ -64,6 +64,11 @@ ValidationUtils.isValidEmail = function(email) {
   return email != null && email.length > 1
 }
 
+ValidationUtils.isValidPassword = function(password) {
+  //TODO!!!
+  return password != null && password.length >= 5;
+}
+
 
 FileUtils = {};
 FileUtils.IMAGE_FILE_TYPE = "image";

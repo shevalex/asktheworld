@@ -22,6 +22,7 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     @IBOutlet weak var previousResponseButton: UIButton!
     
     @IBOutlet weak var requestContactInfoButton: UIBarButtonItem!
+    @IBOutlet weak var editRequestButton: UIBarButtonItem!
     
     
     private var responseIds: [String]?
@@ -33,6 +34,12 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        requestAttachmentsView.setHostingViewController(self);
+        requestAttachmentsView.setMutable(false);
+        
+        responseAttachmentsView.setHostingViewController(self);
+        responseAttachmentsView.setMutable(false);
+        
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED && event.requestId == self.requestId) {
                 self.responseIds = Backend.getInstance().getIncomingResponseIds(self.requestId, responseStatus: self.responseStatus);
@@ -108,6 +115,9 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);
+        
+        let request = Backend.getInstance().getRequest(requestId);
+        editRequestButton.enabled = request != nil && request?.status == Backend.RequestObject.STATUS_ACTIVE;
         
         updateListenerId = Backend.getInstance().addCacheChangeListener(updateListener);
 
