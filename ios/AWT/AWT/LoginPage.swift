@@ -9,14 +9,25 @@
 import UIKit
 
 class LoginPage: UIViewController {
-
+    let SHOW_HOME_SCREEN_SEGUE = "showHomeScreen";
+    
+    var autoLogin: Bool = true; //this is modified externally
+    
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
 
+    
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad();
 
-        // Do any additional setup after loading the view.
+        if (Backend.getInstance() != nil && Backend.getInstance().getUserContext() != nil) {
+            performSegueWithIdentifier(SHOW_HOME_SCREEN_SEGUE, sender: self);
+        } else {
+            restoreEmailAndPassword();
+            if (autoLogin && emailTextField.text != "" && passwordTextField.text != "") {
+                logIn();
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -29,52 +40,8 @@ class LoginPage: UIViewController {
     }
     
     
-    private class LoginCallback: BackendCallback {
-        private var page: LoginPage!;
-        
-        init(page: LoginPage) {
-            self.page = page;
-            
-        }
-        
-        func onError() {
-            AtwUiUtils.runOnMainThread({
-                AtwUiUtils.hideSpinner();
-                self.page.showErrorMessage(NSLocalizedString("Server Error", comment: "Login page error message"));
-            });
-        }
-        func onSuccess() {
-            AtwUiUtils.runOnMainThread({
-                AtwUiUtils.hideSpinner();
-                self.page.performSegueWithIdentifier("showHomeScreen", sender: self);
-            });
-        }
-        func onFailure() {
-            AtwUiUtils.runOnMainThread({
-                AtwUiUtils.hideSpinner();
-                self.page.showErrorMessage(NSLocalizedString("Cannot log in", comment: "Login page error message"));
-            });
-        }
-    }
     @IBAction func loginButtonClicked(sender: UIButton) {
-        if (emailTextField.text == "") {
-            showErrorMessage(NSLocalizedString("Email must be provided", comment: "Login page error message"));
-            return;
-        } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
-            showErrorMessage(NSLocalizedString("Email does not look like a valid email address", comment: "Login page error message"));
-            return;
-        }
-        
-        if (passwordTextField.text == "") {
-            showErrorMessage(NSLocalizedString("Password must be provided", comment: "Login page error message"));
-            return;
-        } else if (!AtwUiUtils.isPasswordValid(passwordTextField.text)) {
-            showErrorMessage(NSLocalizedString("Password is not valid", comment: "Login page error message"));
-            return;
-        }
-
-        AtwUiUtils.showSpinner(self.view);
-        Backend.logIn(emailTextField.text, password: passwordTextField.text, callback: LoginCallback(page: self));
+        logIn();
     }
     
     
@@ -126,7 +93,95 @@ class LoginPage: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    
+    private class LoginCallback: BackendCallback {
+        private var page: LoginPage!;
+        
+        init(page: LoginPage) {
+            self.page = page;
+        }
+        
+        func onError() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage(NSLocalizedString("Server Error", comment: "Login page error message"));
+            });
+        }
+        func onSuccess() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
 
+                self.page.saveEmailAndPassword();
+                self.page.performSegueWithIdentifier(self.page.SHOW_HOME_SCREEN_SEGUE, sender: self);
+            });
+        }
+        func onFailure() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage(NSLocalizedString("Cannot log in", comment: "Login page error message"));
+            });
+        }
+    }
+    
+    private func logIn() {
+        if (emailTextField.text == "") {
+            showErrorMessage(NSLocalizedString("Email must be provided", comment: "Login page error message"));
+            return;
+        } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
+            showErrorMessage(NSLocalizedString("Email does not look like a valid email address", comment: "Login page error message"));
+            return;
+        }
+        
+        if (passwordTextField.text == "") {
+            showErrorMessage(NSLocalizedString("Password must be provided", comment: "Login page error message"));
+            return;
+        } else if (!AtwUiUtils.isPasswordValid(passwordTextField.text)) {
+            showErrorMessage(NSLocalizedString("Password is not valid", comment: "Login page error message"));
+            return;
+        }
+        
+        AtwUiUtils.showSpinner(self.view);
+        Backend.logIn(emailTextField.text, password: passwordTextField.text, callback: LoginCallback(page: self));
+    }
+    
+    private func saveEmailAndPassword() {
+        var email: NSData = emailTextField.text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+        var emailQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassGenericPassword, email], forKeys: [kSecClass, kSecValueData]);
+        SecItemDelete(emailQuery);
+        SecItemAdd(emailQuery, nil);
+        
+        var password: NSData = passwordTextField.text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+        var passwordQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassInternetPassword, password], forKeys: [kSecClass, kSecValueData]);
+        SecItemDelete(passwordQuery);
+        SecItemAdd(passwordQuery, nil);
+    }
+    
+    private func restoreEmailAndPassword() {
+        var emailQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassGenericPassword, kCFBooleanTrue, kSecMatchLimitOne], forKeys: [kSecClass, kSecReturnData, kSecMatchLimit]);
+        
+        var dataTypeRef: Unmanaged<AnyObject>?;
+        SecItemCopyMatching(emailQuery, &dataTypeRef);
+        
+        var opaque = dataTypeRef?.toOpaque();
+        if (opaque != nil) {
+            let retrievedData = Unmanaged<NSData>.fromOpaque(opaque!).takeUnretainedValue();
+            emailTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding);
+        }
+        
+        
+        var passwordQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassInternetPassword, kCFBooleanTrue, kSecMatchLimitOne], forKeys: [kSecClass, kSecReturnData, kSecMatchLimit]);
+
+        SecItemCopyMatching(passwordQuery, &dataTypeRef);
+        
+        opaque = dataTypeRef?.toOpaque();
+        if (opaque != nil) {
+            let retrievedData = Unmanaged<NSData>.fromOpaque(opaque!).takeUnretainedValue();
+            passwordTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding);
+        }
+    }
+    
+    
     
     private func showErrorMessage(popupMessage: String) {
         AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Signing In", comment: "Login page error message title"), popupError: popupMessage);

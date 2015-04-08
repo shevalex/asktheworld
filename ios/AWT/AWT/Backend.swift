@@ -229,7 +229,7 @@ public struct Backend {
     
     private var userContext: UserContext! = nil;
     
-    private var cache: ObjectCache = ObjectCache();
+    private var cache: ObjectCache! = ObjectCache();
 
     
     
@@ -337,7 +337,7 @@ public struct Backend {
     
     
     
-    public static func getInstance() -> Backend {
+    public static func getInstance() -> Backend! {
         return instance;
     }
     
@@ -371,7 +371,9 @@ public struct Backend {
     }
     
     public static func logOut() {
-        println("Clear Backend here")
+        Backend.instance.userContext = nil;
+        Backend.instance.cache = nil;
+        Backend.instance = nil;
     }
 
     
@@ -1012,7 +1014,9 @@ public struct Backend {
         }
         
         @objc func timerTick() {
-            action?();
+            if (Backend.getInstance() != nil) {
+                action?();
+            }
         }
     }
     
