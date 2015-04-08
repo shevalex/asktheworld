@@ -21,6 +21,18 @@ public class DB {
 	//Map<String, Integer> names = new HashMap<String, Integer>();
 	//Map<Integer,User> users = new HashMap<Integer,User>();
 	
+	//TODO: Should be configurable 
+	private static float NUMBER_USERS_MULTIPLICATOR = 1.2f; 
+	private static int MAX_NUMBER_USERS_PER_REQUEST = 1000;
+	
+	
+	private static int getRequiredUsersNumber(int required){
+		if (required <= 0 ){
+			return  MAX_NUMBER_USERS_PER_REQUEST;
+		}
+		return Math.min(MAX_NUMBER_USERS_PER_REQUEST, Math.round(NUMBER_USERS_MULTIPLICATOR*required));
+	} 
+	
 	public DB() {
 		System.out.println("DB CREATED");
 	}
@@ -106,9 +118,48 @@ public class DB {
 	}
 	public ATWRequest addRequest(ATWRequest request) {
 		requests.create(request);
+		//Assign it to right users
+		//Find users base on request
+		List<ATWUser> users = findIncommingRequestUsers(request);
+		//TODO: shuffle ?
+		
+		//TODO: what we should do if list is empty?
+		if(users != null && users.size() > 0){
+			int counter = 0;
+			int max = getRequiredUsersNumber(request.getResponse_quantity());
+			for(Iterator<ATWUser> it = users.iterator(); it.hasNext();) {
+				ATWUser user = it.next();
+				//skip current user
+				if(user.getId() == request.getUser_id()) continue;
+				//TODO: filter base on number requests per day
+				
+				//assign request to users
+				user.addRequets(request);
+				//TODO: Looks like it should be atomic save for all users? to save DB resources
+				updateUser(user);
+				counter++;
+				if (counter >= max) break;
+			}
+		}else {
+			System.out.println("List is empty or null");
+		}
 		return request;
 	}
 
+	private List<ATWUser> findIncommingRequestUsers(ATWRequest request) {
+		String gender = request.getResponse_gender();
+		String age = request.getResponse_age_group();
+		//TODO: it should not be here. 
+		if (gender == null || gender.toLowerCase().equals("all")){
+			gender = "%";
+		}
+		if (age == null || age.toLowerCase().equals("all")){
+			age = "%";
+		}
+		System.out.println("Gender "+gender + "    Age "+ age);
+		return users.findUserByAgeAndGender(age, gender);
+		
+	}
 	public ATWRequest getRequest(int id) {
 		return requests.findById(id);
 	}
@@ -164,7 +215,7 @@ public class DB {
 			user.addRequets(getRequest(rID));
 			userIncommingRequests.add(rID);
 		}
-		
+		//save in DB
 		updateUser(user);
 		return userIncommingRequests;
 	}

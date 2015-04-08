@@ -30,34 +30,19 @@ public class UserDAOImpl extends AbstractDAO<ATWUser>{
 		return list.get(0);
 
 	}
-/*	
-	public ATWUser findById(final int id) {
-		  return entityManager.find(tClass, id);
-		}
 
+	private String findUserByAgeAndGender = "select u from " + ATWUser.class.getName() + " u where"+ 
+			" u.age_category like ?1 and " +
+			" u.gender like ?2";
+
+	public List<ATWUser> findUserByAgeAndGender(String age, String gender) {
 		@SuppressWarnings("unchecked")
-		public List<ATWUser> findAll() {
-			//class name == Table name
-			return entityManager.createQuery("select u from " + tClass.getName() + " u").getResultList();
-		}
-		
-		public void create(final ATWUser entity) {
-			//Thread.dumpStack();
-			entityManager.persist(entity);
-			entityManager.flush();
-		}
-
-		public ATWUser update(final ATWUser entity) {
-			return entityManager.merge(entity);
-		}
-		
-		public void delete(final ATWUser entity) {
-			entityManager.remove(entity);
-		}
-		
-		public void deleteById(final int entityId) {
-			final ATWUser entity = findById(entityId);
-			delete(entity);
-		}
-*/
+		List<ATWUser> list =  entityManager.createQuery(findUserByAgeAndGender)
+				.setParameter(1, age)
+				.setParameter(2, gender)
+				.getResultList();
+		if(list != null) {System.out.println("New requets list size = "+list.size());}
+		else { System.out.println("New requets list is NULL");}
+		return list;
+	}
 }

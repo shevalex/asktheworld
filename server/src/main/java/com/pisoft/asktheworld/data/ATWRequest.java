@@ -52,9 +52,9 @@ public class ATWRequest implements Serializable {
 	@Column
 	private int response_wait_time;
 	@Column
-	private String response_age_group;
+	private String response_age_group = "all"; //TODO: default value
 	@Column
-	private String response_gender;
+	private String response_gender = "all"; //TODO: default value
 	@Column
 	private String status;
 	
