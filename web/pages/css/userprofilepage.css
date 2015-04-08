@@ -6,6 +6,7 @@
   width: 500px;
   display: inline-block;
   margin-top: 10px;
+  position: relative;
   
   font-family: Verdana;
   font-size: 13px;
@@ -55,5 +56,53 @@
 
 #UserProfilePage-ProfilePanel-ButtonsPanel-CancelButton {
   font: inherit;
+}
+
+
+#UserProfilePage-ProfilePanel-LeftClarificationPanel {
+  width: 200px;
+  position: absolute;
+  top: 0;
+  right: 520;
+  display: inline-block;
+  
+  font-family: Verdana;
+  font-size: 13px;
+}
+
+#UserProfilePage-ProfilePanel-RightClarificationPanel {
+  width: 200px;
+  position: absolute;
+  top: 0;
+  left: 520;
+  display: inline-block;
+  
+  font-family: Verdana;
+  font-size: 13px;
+}
+
+#UserProfilePage-ProfilePanel-LeftClarificationPanel-PasswordClarificationPanel, #UserProfilePage-ProfilePanel-RightClarificationPanel-LanguageClarificationPanel {
+  padding: 5px;
+
+  border-color: red;
+  border-width: 1px;
+  border-radius: 5px;
+  border-style: solid;
+  
+  text-align: left;
+}
+#UserProfilePage-ProfilePanel-LeftClarificationPanel-PasswordClarificationPanel {
+  margin-top: 140px;
+}
+
+#UserProfilePage-ProfilePanel-RightClarificationPanel-LanguageClarificationPanel {
+  margin-top: 80px;
+}
+
+#UserProfilePage-ProfilePanel-LeftClarificationPanel-PasswordClarificationPanel-Title, #UserProfilePage-ProfilePanel-RightClarificationPanel-LanguageClarificationPanel-Title {
+  color: red;
+}
+
+#UserProfilePage-ProfilePanel-LeftClarificationPanel-PasswordClarificationPanel-Text, #UserProfilePage-ProfilePanel-RightClarificationPanel-LanguageClarificationPanel-Text {
 }
 
