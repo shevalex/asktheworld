@@ -54,8 +54,8 @@ class ContactInfoPage: UIViewController, BackendCallback {
     @IBAction func updateButtonClickAction(sender: UIButton) {
         AtwUiUtils.showSpinner(self.view);
         
-        var expertisesItems = (expertisesTextField.inputView as SelectorView).getSelectedItems();
-        var visibleItem = (contactVisibleTextField.inputView as SelectorView).getSelectedItems()[0];
+        var expertisesItems = (expertisesTextField.inputView as! SelectorView).getSelectedItems();
+        var visibleItem = (contactVisibleTextField.inputView as! SelectorView).getSelectedItems()[0];
         
         Backend.getInstance().updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: expertisesItems, contactRequestable: visibleItem, contactName: nameTextField.text, contactDetails: contactInfoTextField.text, callback: self);
     }

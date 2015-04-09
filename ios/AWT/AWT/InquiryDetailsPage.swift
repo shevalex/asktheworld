@@ -93,7 +93,7 @@ class InquiryDetailsPage: UIViewControllerWithSpinner {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);
         
-        updateListenerId = Backend.getInstance().addCacheChangeListener(updateListener);
+        updateListenerId = Backend.getInstance().addCacheChangeListener(updateListener, listenerId: nil);
         
         updateInquiryFields();
     }

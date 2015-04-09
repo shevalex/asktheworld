@@ -56,7 +56,7 @@ struct PushBackend {
     }
     
     
-    func addPushListener(listener: PushEventObserver, listenerId: String? = nil) -> String {
+    func addPushListener(listener: PushEventObserver, listenerId: String!) -> String {
         return notificationListeners.add(listener, elementId: listenerId);
     }
     
@@ -82,7 +82,7 @@ struct PushBackend {
             self.notifyPushListeners(message);
         };
         
-        DelayedNotifier(action).schedule(5);
+        DelayedNotifier(action: action).schedule(5);
     }
     
     

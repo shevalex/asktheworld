@@ -35,10 +35,6 @@ class LoginPage: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        view.endEditing(true)
-    }
-    
     
     @IBAction func loginButtonClicked(sender: UIButton) {
         logIn();
@@ -166,7 +162,7 @@ class LoginPage: UIViewController {
         var opaque = dataTypeRef?.toOpaque();
         if (opaque != nil) {
             let retrievedData = Unmanaged<NSData>.fromOpaque(opaque!).takeUnretainedValue();
-            emailTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding);
+            emailTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding) as! String;
         }
         
         
@@ -177,7 +173,7 @@ class LoginPage: UIViewController {
         opaque = dataTypeRef?.toOpaque();
         if (opaque != nil) {
             let retrievedData = Unmanaged<NSData>.fromOpaque(opaque!).takeUnretainedValue();
-            passwordTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding);
+            passwordTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding) as! String;
         }
     }
     

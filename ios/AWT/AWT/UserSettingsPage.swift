@@ -37,8 +37,8 @@ class logoutSegue: UIStoryboardSegue {
     override func perform() {
         Backend.logOut();
 
-        let src = sourceViewController as UITableViewController;
-        let loginPage = destinationViewController as LoginPage;
+        let src = sourceViewController as! UITableViewController;
+        let loginPage = destinationViewController as! LoginPage;
         src.navigationController?.pushViewController(loginPage, animated: true);
         loginPage.navigationItem.hidesBackButton = true;
         loginPage.autoLogin = false;

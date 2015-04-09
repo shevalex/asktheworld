@@ -52,7 +52,7 @@ public struct Configuration {
         }
 
         for (index, item) in enumerate(predefinedList) {
-            if (item.data as NSObject == value as NSObject) {
+            if (item.data === value) {
                 return item;
             }
         }
@@ -69,7 +69,7 @@ public struct Configuration {
         
         for (index, item) in enumerate(predefinedList) {
             for (i, value) in enumerate(values!) {
-                if (item.data as NSObject == value as NSObject) {
+                if (item.data === value) {
                     result.append(item);
                 }
             }
@@ -354,7 +354,7 @@ public struct Backend {
                 Backend.instance = Backend();
                 
                 Backend.instance.userContext = UserContext();
-                Backend.instance.userContext.userId = data?.valueForKey("userId") as Int;
+                Backend.instance.userContext.userId = data?.valueForKey("userId") as? Int;
                 Backend.instance.userContext.login = login;
                 Backend.instance.userContext.password = password;
                 
@@ -384,7 +384,7 @@ public struct Backend {
                 Backend.instance = Backend();
                 
                 Backend.instance.userContext = UserContext();
-                let location = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as String?;
+                let location = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as? String;
                 if (location == nil) {
                     println("Error: server malformed response - no userid provided in Location header");
                     callback?.onError();
@@ -412,7 +412,7 @@ public struct Backend {
         
         var langData: [String] = [];
         for (index, item) in enumerate(languages) {
-            langData.append(item.data as String);
+            langData.append(item.data as! String);
         }
         
         params.setValue(langData, forKey: USER_PROPERTY_LANGUAGES);
@@ -459,7 +459,7 @@ public struct Backend {
         
         var langData: [String] = [];
         for (index, item) in enumerate(languages) {
-            langData.append(item.data as String);
+            langData.append(item.data as! String);
         }
         
         params.setValue(langData, forKey: Backend.USER_PROPERTY_LANGUAGES);
@@ -509,7 +509,7 @@ public struct Backend {
         if (expertises != nil) {
             expertisesData = [];
             for (index, item) in enumerate(expertises!) {
-                expertisesData!.append(item.data as String);
+                expertisesData!.append(item.data as! String);
             }
         }
         params.setValue(expertisesData, forKey: Backend.USER_PREFERENCE_EXPERTISES);
@@ -540,7 +540,7 @@ public struct Backend {
                 self.cache.setOutgoingRequestIds(["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"]);
             };
             
-            DelayedNotifier(action).schedule(5);
+            DelayedNotifier(action: action).schedule(5);
             
             return nil;
         } else {
@@ -574,7 +574,7 @@ public struct Backend {
                 self.cache.setIncomingRequestIds(["req101", "req102", "req103", "req104", "req105", "req106", "req107", "req108", "req109", "req110"]);
             };
             
-            DelayedNotifier(action).schedule(5);
+            DelayedNotifier(action: action).schedule(5);
             
             return nil;
         } else {
@@ -611,7 +611,7 @@ public struct Backend {
                     observer(requestId);
                 };
                 
-                DelayedNotifier(action).schedule(2);
+                DelayedNotifier(action: action).schedule(2);
                 
                 return;
             }
@@ -637,7 +637,7 @@ public struct Backend {
                 self.cache.setRequest(requestId, request: request!);
             };
             
-            DelayedNotifier(action).schedule(2);
+            DelayedNotifier(action: action).schedule(2);
         }
         
 
@@ -662,7 +662,7 @@ public struct Backend {
                 }
             };
             
-            DelayedNotifier(action).schedule(3);
+            DelayedNotifier(action: action).schedule(3);
             
             return nil;
         } else {
@@ -701,7 +701,7 @@ public struct Backend {
                 }
             };
             
-            DelayedNotifier(action).schedule(3);
+            DelayedNotifier(action: action).schedule(3);
             
             return nil;
         } else {
@@ -743,7 +743,7 @@ public struct Backend {
                 self.cache.setResponse(requestId, responseId: responseId, response: response!);
             };
             
-            DelayedNotifier(action).schedule(2);
+            DelayedNotifier(action: action).schedule(2);
         }
         
         
@@ -770,7 +770,7 @@ public struct Backend {
             observer(requestId);
         };
         
-        DelayedNotifier(action).schedule(2);
+        DelayedNotifier(action: action).schedule(2);
     }
     
     public func updateRequest(requestId: String, request: RequestObject, observer: CompletionObserver) {
@@ -781,7 +781,7 @@ public struct Backend {
             observer(requestId);
         };
         
-        DelayedNotifier(action).schedule(2);
+        DelayedNotifier(action: action).schedule(2);
     }
     
     public func createResponse(requestId: String, response: ResponseObject, observer: CompletionObserver) {
@@ -803,7 +803,7 @@ public struct Backend {
             observer(responseId);
         };
         
-        DelayedNotifier(action).schedule(3);
+        DelayedNotifier(action: action).schedule(3);
     }
     
     public func updateResponse(requestId: String, responseId: String, response: ResponseObject, observer: CompletionObserver) {
@@ -814,7 +814,7 @@ public struct Backend {
             observer(responseId);
         };
         
-        DelayedNotifier(action).schedule(2);
+        DelayedNotifier(action: action).schedule(2);
     }
     
     
@@ -841,7 +841,7 @@ public struct Backend {
                 observer(responseId);
             };
             
-            DelayedNotifier(action).schedule(2);
+            DelayedNotifier(action: action).schedule(2);
             
             return nil;
         }
@@ -854,7 +854,7 @@ public struct Backend {
     
     // Event Management
     
-    func addCacheChangeListener(listener: CacheChangeEventObserver, listenerId: String? = nil) -> String {
+    func addCacheChangeListener(listener: CacheChangeEventObserver, listenerId: String!) -> String {
         return cache.addCacheChangeListener(listener, listenerId: listenerId);
     }
     
@@ -1297,7 +1297,7 @@ public struct Backend {
             if (error != nil) {
                 communicationCallback(-1, nil);
             } else {
-                let res = response as NSHTTPURLResponse
+                let res = response as! NSHTTPURLResponse
                 
                 if (res.statusCode >= 200 && res.statusCode < 300) {
                     var jsonData: NSMutableDictionary?;

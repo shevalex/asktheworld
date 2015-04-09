@@ -41,10 +41,10 @@ class RequestPreferencesPage: UIViewController, BackendCallback {
     @IBAction func updateButtonClickAction(sender: UIButton) {
         AtwUiUtils.showSpinner(self.view);
         
-        var genderItem = (genderTextField.inputView as SelectorView).getSelectedItems()[0];
-        var ageItem = (ageTextField.inputView as SelectorView).getSelectedItems()[0];
-        var quantityItem = (numberOfResponsesTextField.inputView as SelectorView).getSelectedItems()[0];
-        var waitTimeItem = (waitTimeTextField.inputView as SelectorView).getSelectedItems()[0];
+        var genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
+        var ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
+        var quantityItem = (numberOfResponsesTextField.inputView as! SelectorView).getSelectedItems()[0];
+        var waitTimeItem = (waitTimeTextField.inputView as! SelectorView).getSelectedItems()[0];
         
         Backend.getInstance().updateUserPreferences(ageItem, requestTargetGender: genderItem, responseQuantity: quantityItem, responseWaitTime: waitTimeItem, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: nil, contactRequestable: nil, contactName: nil, contactDetails: nil, callback: self);
     }

@@ -52,9 +52,9 @@ class ResponsePreferencesPage: UIViewController, BackendCallback {
     @IBAction func updateButtonClickAction(sender: UIButton) {
         AtwUiUtils.showSpinner(self.view);
         
-        var limitItem = (amountOfInquiriesTextField.inputView as SelectorView).getSelectedItems()[0];
-        var ageItem = (ageTextField.inputView as SelectorView).getSelectedItems()[0];
-        var genderItem = (genderTextField.inputView as SelectorView).getSelectedItems()[0];
+        var limitItem = (amountOfInquiriesTextField.inputView as! SelectorView).getSelectedItems()[0];
+        var ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
+        var genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
         
         Backend.getInstance().updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: limitItem, inquiryAge: ageItem, inquiryGender: genderItem, expertises: nil, contactRequestable: nil, contactName: nil, contactDetails: nil, callback: self);
     }

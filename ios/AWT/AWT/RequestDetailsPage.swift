@@ -119,7 +119,7 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
         let request = Backend.getInstance().getRequest(requestId);
         editRequestButton.enabled = request != nil && request?.status == Backend.RequestObject.STATUS_ACTIVE;
         
-        updateListenerId = Backend.getInstance().addCacheChangeListener(updateListener);
+        updateListenerId = Backend.getInstance().addCacheChangeListener(updateListener, listenerId: nil);
 
         updateRequestFields();
     }
@@ -132,7 +132,7 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "showEditRequestPage") {
-            let destView = segue.destinationViewController as EditRequestPage;
+            let destView = segue.destinationViewController as! EditRequestPage;
             destView.requestId = requestId;
         }
     }

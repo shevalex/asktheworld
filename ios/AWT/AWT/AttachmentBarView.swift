@@ -114,7 +114,7 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     
 
     func showAttachAction() {
-        AtwUiUtils.setImagePicker(hostingViewController!, {(image: UIImage) in
+        AtwUiUtils.setImagePicker(hostingViewController!, imagePickObserver: {(image: UIImage) in
             self.addAttachment(image);
             return;
         });
@@ -125,12 +125,12 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     }
     
     func imagePressedAction(gestureRecognizer: UITapGestureRecognizer) {
-        lastClickedAttachment = (gestureRecognizer.view as UIImageView).image;
+        lastClickedAttachment = (gestureRecognizer.view as! UIImageView).image;
         
         if (storyboard == nil) {
             storyboard = UIStoryboard(name: "Main", bundle: nil);
         }
-        let imagePage = storyboard.instantiateViewControllerWithIdentifier("ImagePage") as ImagePage;
+        let imagePage = storyboard.instantiateViewControllerWithIdentifier("ImagePage") as! ImagePage;
         imagePage.attachmentHandler = self;
         
         hostingViewController?.navigationController?.pushViewController(imagePage, animated: true);

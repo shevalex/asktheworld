@@ -24,7 +24,7 @@ class ActiveInquiriesPage: UIViewControllerWithSpinner {
         }
         
         
-        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestObjectProvider(), incomingRequestSelectionObserver);
+        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestObjectProvider(), selectionObserver: incomingRequestSelectionObserver);
         
         
         incomingRequestCounter = RequestResponseManagement.RequestsResponsesCounter(requestProvider: RequestResponseManagement.IncomingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.OutgoingResponseProviderFactory(responseStatus: nil));
@@ -41,7 +41,7 @@ class ActiveInquiriesPage: UIViewControllerWithSpinner {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "showInquiryDetails") {
-            let destView = segue.destinationViewController as InquiryDetailsPage;
+            let destView = segue.destinationViewController as! InquiryDetailsPage;
             destView.requestId = selectedRequestId;
         }
     }

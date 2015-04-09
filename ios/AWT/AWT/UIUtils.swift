@@ -25,7 +25,7 @@ public struct AtwUiUtils {
             bundleCollection.setValue(bundleData, forKey: bundleName);
         }
         
-        return bundleData as NSDictionary;
+        return bundleData as! NSDictionary;
     }
     
     static func loadResourceBundle(bundleName: String) -> NSDictionary! {
@@ -43,7 +43,7 @@ public struct AtwUiUtils {
     static func getColor(keyName: String) -> UIColor? {
         let value: AnyObject? = getStyleResource(keyName);
         if (value != nil) {
-            let colorArray: Array<Int> = value as Array<Int>;
+            let colorArray: Array<Int> = value as! Array<Int>;
             let red: CGFloat = CGFloat(colorArray[0]) / 255;
             let green: CGFloat = CGFloat(colorArray[1]) / 255;
             let blue: CGFloat = CGFloat(colorArray[2]) / 255;
@@ -112,7 +112,7 @@ public struct AtwUiUtils {
     
     static func isPasswordValid(password: String!) -> Bool! {
         //TODO: implement
-        return countElements(password) >= 5;
+        return count(password) >= 5;
     }
     
     static func runOnMainThread(block: dispatch_block_t!) {

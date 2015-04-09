@@ -24,7 +24,7 @@ class ActiveRequestsPage: UIViewControllerWithSpinner {
         }
         
         
-        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), outgoingRequestSelectionObserver);
+        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), selectionObserver: outgoingRequestSelectionObserver);
         
         outgoingRequestCounter = RequestResponseManagement.RequestsResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestObjectProvider(), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
         outgoingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
@@ -55,7 +55,7 @@ class ActiveRequestsPage: UIViewControllerWithSpinner {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "showRequestDetails") {
-            let destView = segue.destinationViewController as RequestDetailsPage;
+            let destView = segue.destinationViewController as! RequestDetailsPage;
             destView.requestId = requestIdtoSend;
             destView.responseStatus = nil;
         }

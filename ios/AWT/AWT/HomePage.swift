@@ -35,9 +35,9 @@ class HomePage: UIViewControllerWithSpinner {
         
         
         
-        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestWithResponsesObjectProvider(responseStatus: Backend.ResponseObject.STATUS_UNREAD), outgoingRequestSelectionObserver);
+        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestWithResponsesObjectProvider(responseStatus: Backend.ResponseObject.STATUS_UNREAD), selectionObserver: outgoingRequestSelectionObserver);
 
-        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestWithoutResponsesObjectProvider(), incomingRequestSelectionObserver);
+        RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestWithoutResponsesObjectProvider(), selectionObserver: incomingRequestSelectionObserver);
         
         outgoingRequestCounter = RequestResponseManagement.RequestsResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestWithResponsesObjectProvider(responseStatus: Backend.ResponseObject.STATUS_UNREAD), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
         outgoingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
@@ -52,11 +52,11 @@ class HomePage: UIViewControllerWithSpinner {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if (segue.identifier == "showRequestDetails") {
-            let destView = segue.destinationViewController as RequestDetailsPage;
+            let destView = segue.destinationViewController as! RequestDetailsPage;
             destView.requestId = selectedRequestId;
             destView.responseStatus = Backend.ResponseObject.STATUS_UNREAD;
         } else if (segue.identifier == "showInquiryDetails") {
-            let destView = segue.destinationViewController as InquiryDetailsPage;
+            let destView = segue.destinationViewController as! InquiryDetailsPage;
             destView.requestId = selectedRequestId;
         }
     }

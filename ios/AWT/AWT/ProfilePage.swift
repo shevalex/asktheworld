@@ -99,9 +99,9 @@ class ProfilePage: UIViewController, BackendCallback {
         
         AtwUiUtils.showSpinner(self.view);
         
-        var languageItems = (languagesTextField.inputView as SelectorView).getSelectedItems();
-        var genderItem = (genderTextField.inputView as SelectorView).getSelectedItems()[0];
-        var ageItem = (ageTextField.inputView as SelectorView).getSelectedItems()[0];
+        var languageItems = (languagesTextField.inputView as! SelectorView).getSelectedItems();
+        var genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
+        var ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
         
         var newPassword = newPasswordTextField.text != "" ? newPasswordTextField.text : nil;
         

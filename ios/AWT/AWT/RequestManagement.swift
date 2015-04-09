@@ -113,7 +113,7 @@ struct RequestResponseManagement {
     
     class OutgoingRequestsDataModel: AbstractUIObjectDataModel {
         override func renderTableCell(cell: UITableViewCell, id: String) {
-            let tableCell: OutgoingRequestTableCell = cell as OutgoingRequestTableCell;
+            let tableCell: OutgoingRequestTableCell = cell as! OutgoingRequestTableCell;
 
             var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
             if (request != nil) {
@@ -158,7 +158,7 @@ struct RequestResponseManagement {
     class IncomingRequestsDataModel: AbstractUIObjectDataModel {
         override func renderTableCell(cell: UITableViewCell, id: String) {
             
-            let tableCell: IncomingRequestTableCell = cell as IncomingRequestTableCell;
+            let tableCell: IncomingRequestTableCell = cell as! IncomingRequestTableCell;
             
             var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
             if (request != nil) {
@@ -247,7 +247,7 @@ struct RequestResponseManagement {
                     }
                 }
             };
-            cacheChangeListenerId = Backend.getInstance().addCacheChangeListener(cacheChangeListener);
+            cacheChangeListenerId = Backend.getInstance().addCacheChangeListener(cacheChangeListener, listenerId: nil);
         }
         
         func setUpdateObserver(observer: ObjectUpdateObserver!) {
@@ -671,12 +671,12 @@ struct RequestResponseManagement {
         
         var delegate: AnyObject? = mapping.objectForKey(tableView);
         if (delegate != nil) {
-            tableView.delegate = (delegate as UITableViewDelegate);
+            tableView.delegate = (delegate as! UITableViewDelegate);
             tableView.dataSource = delegate!.getDataModel();
             return;
         }
         
-        delegate = UIObjectTableDelegate(dataModel: dataModel, selectionObserver);
+        delegate = UIObjectTableDelegate(dataModel: dataModel, selectionObserver: selectionObserver);
         tableView.delegate = delegate as? UITableViewDelegate;
         tableView.dataSource = dataModel;
         
