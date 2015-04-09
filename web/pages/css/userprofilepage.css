@@ -84,7 +84,7 @@
 #UserProfilePage-ProfilePanel-LeftClarificationPanel-PasswordClarificationPanel, #UserProfilePage-ProfilePanel-RightClarificationPanel-LanguageClarificationPanel {
   padding: 5px;
 
-  border-color: red;
+  border-color: rgb(255, 51, 51);
   border-width: 1px;
   border-radius: 5px;
   border-style: solid;
@@ -100,7 +100,7 @@
 }
 
 #UserProfilePage-ProfilePanel-LeftClarificationPanel-PasswordClarificationPanel-Title, #UserProfilePage-ProfilePanel-RightClarificationPanel-LanguageClarificationPanel-Title {
-  color: red;
+  color: rgb(255, 51, 51);
 }
 
 #UserProfilePage-ProfilePanel-LeftClarificationPanel-PasswordClarificationPanel-Text, #UserProfilePage-ProfilePanel-RightClarificationPanel-LanguageClarificationPanel-Text {

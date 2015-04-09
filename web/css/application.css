@@ -23,17 +23,25 @@
   padding: 10px;
   
   border: solid;
-  border-color: black;
+  border-color: rgb(255, 51, 51);
   border-width: 1px;
   border-radius: 5px;
   
+/*
   vertical-align: middle;
   text-align: center;
+*/
   
   display: none;
   
-  color: white;
-  background: rgba(100, 100, 100, 0.8);
+  font-family: Verdana;
+  font-size: 13px;
+  
+  background: white;
+}
+.popup-message .popup-message-title {
+}
+.popup-message .popup-message-text {
 }
 
 .modal-dialog {

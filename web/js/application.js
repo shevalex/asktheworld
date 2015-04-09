@@ -261,10 +261,23 @@ Application.hideSpinningWheel = function() {
   $(".spinning-wheel").remove();
 }
 
-Application.showMessage = function(msg, timeout) {
+Application.showMessage = function(msg, timeout, title) {
   Application.hideMessage();
 
-  $("body").append("<div class='popup-message'>" + msg + "</div>");
+  var bodyElement = $("body").get(0);
+  var popup = UIUtils.appendBlock(bodyElement, "PopupMessage");
+  UIUtils.addClass(popup, "popup-message");
+  
+  if (title != null && title != "") {
+    var titleLabel = UIUtils.appendBlock(popup, "Title");
+    UIUtils.addClass(titleLabel, "popup-message-title");
+    titleLabel.innerHTML = title;
+  }
+  
+  var messageText = UIUtils.appendLabel(popup, "Text");
+  UIUtils.addClass(messageText, "popup-message-text");
+  messageText.innerHTML = msg;
+  
   $(".popup-message").fadeIn("slow");
   
   if (this._messageTimer != null) {
