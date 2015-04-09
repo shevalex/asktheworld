@@ -15,11 +15,22 @@ body {
   border-bottom-width: 1px;
   border-bottom-color: rgb(0, 133, 63);
 }
+/*
 #Title-Image {
   float: right;
   margin-right: 50px;
   margin-top: 20px;
   content: url(../imgs/AskTheWorld.png);
+}
+*/
+#Title-Caption {
+  float: right;
+  margin-right: 50px;
+  margin-top: 20px;
+  
+  color: rgb(0, 133, 63);
+  font-size: 50px;
+  font-weight: bold;
 }
 #Title-Options {
   text-align: right;
@@ -28,18 +39,23 @@ body {
 
   font-size: 12px;
 }
-#Title-Options-Language-Button, #Title-Options-Separator, #Title-Options-User-Button {
-  display: none;
+#Title-Options-Language, #Title-Options-Separator, #Title-Options-User {
   position: relative;
   font-size: inherit;
   color: rgb(75, 75, 75);
 }
+#Title-Options-Language {
+  display: inline-block;
+}
 #Title-Options-Separator {
+  display: none;
   margin-right: 5px;
   margin-left: 5px;
 }
-#Title-Options-Language-Button {
-  display: inline-block;
+#Title-Options-User {
+  display: none;
+}
+#Title-Options-Language-Button, #Title-Options-User-Button {
 }
 #Title-Options-Language-Button:hover, #Title-Options-User-Button:hover {
   color: rgb(17, 77, 7);
@@ -67,8 +83,9 @@ body {
 }
 
 #Footer-ContactUs {
-  float: right;
-  margin-right: 20px;
+  position: absolute;
+  right: 20px;
+  top: 5px;
   
   font: inherit;
   color: inherit;
@@ -83,7 +100,6 @@ body {
 #RootContainer {
   width: calc(100% - 0px);
   height: calc(100% - 115px);
-  overflow: auto;
 }
 
 

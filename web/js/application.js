@@ -127,7 +127,7 @@ Application.MESSAGE_TIMEOUT_FAST = 1;
 Application.MESSAGE_TIMEOUT_NORMAL = 5;
 Application.MESSAGE_TIMEOUT_SLOW = 10;
 
-Application.AUTO_LOGIN_PARAM = "^aitoLogin";
+Application.AUTO_LOGIN_PARAM = "^autoLogin";
 
 
 Application.start = function() {
@@ -145,7 +145,7 @@ Application.start = function() {
     Application.reset();
   }
   
-
+  $("#Footer-ContactUs").text(I18n.getLocale().literals.ContactUs);
   $("#Footer-ContactUs").click(function() {
     Application.showDialog("", "We will need to find a way to open this page");
   });
@@ -174,7 +174,7 @@ Application.reset = function() {
 
 Application.logOut = function() {
   Backend.logOut(function() {
-    $("#Title-User-Text").text("");
+    $("#Title-Options-User-Button").text("");
   });
 }
 
@@ -186,6 +186,8 @@ Application.reload = function() {
   this.hideMessage();
   this.hideSpinningWheel();
   this.hideDialog();
+  
+  $("#Footer-ContactUs").text(I18n.getLocale().literals.ContactUs);
 }
 
 
@@ -344,7 +346,7 @@ Application.setupUserMenuChooser = function() {
       return;
     }
     
-    var popup = UIUtils.appendBlock($("#Title-Options-User-Button").get(0), "Title-User-Popup");
+    var popup = UIUtils.appendBlock($("#Title-Options-User").get(0), "Title-User-Popup");
     UIUtils.addClass(popup, "user-menu-popup");
     
     
@@ -376,7 +378,7 @@ Application.setupUserMenuChooser = function() {
     UIUtils.setClickListener(item, function(lr) {
       popupCloser();
       $("#Title-Options-Separator").css("display", "none");
-      $("#Title-Options-User-Button").css("display", "none");
+      $("#Title-Options-User").css("display", "none");
       
       Application.reset();
       Application.showPage(LoginPage.name);
@@ -388,7 +390,7 @@ Application.setupUserMenuChooser = function() {
   }.bind(this));
   
   $("#Title-Options-Separator").css("display", "inline-block");
-  $("#Title-Options-User-Button").css("display", "inline-block");
+  $("#Title-Options-User").css("display", "inline-block");
   $("#Title-Options-User-Button").text(Backend.getUserProfile().name);
 }
 
@@ -520,7 +522,7 @@ Application._setupLanguageChooser = function() {
       return;
     }
     
-    var popup = UIUtils.appendBlock($("#Title-Options-Language-Button").get(0), "Title-Language-Popup");
+    var popup = UIUtils.appendBlock($("#Title-Options-Language").get(0), "Title-Language-Popup");
     UIUtils.addClass(popup, "language-selection-popup");
     
     for (var index in Application.Configuration.LANGUAGES) {
@@ -530,6 +532,8 @@ Application._setupLanguageChooser = function() {
       UIUtils.addClass(item, "language-selection-item");
 
       UIUtils.setClickListener(item, function(lr) {
+        UIUtils.get$(popup).remove();
+        
         $("#Title-Options-Language-Button").text(lr.display);
         I18n.setCurrentLanguage(lr.data);
         window.localStorage.menuLanguage = lr.data;
