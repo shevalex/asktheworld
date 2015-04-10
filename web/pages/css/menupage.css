@@ -14,10 +14,9 @@
 }
 
 #MenuPage-ContentPanel {
-  width: calc(100% - 200px - 40px - 10px - 10px);
-  height: calc(100% - 10px - 10px);
+  width: calc(100% - 200px - 40px);
+  height: 100%;
   overflow: auto;
-  padding: 10px;
   display: inline-block;
 }
 

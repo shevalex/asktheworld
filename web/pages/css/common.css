@@ -80,8 +80,7 @@ select {
 
 .application-page {
   display: block;
-  padding: 0px;
-  width: calc(100% - 0px);
+  width: 100%;
   height: calc(100% - 5px);
 /*  padding-bottom: 5px;*/
   overflow: auto;
