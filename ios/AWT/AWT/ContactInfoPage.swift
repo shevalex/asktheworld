@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ContactInfoPage: UIViewController, BackendCallback {
+class ContactInfoPage: UIViewController, UITextFieldDelegate, BackendCallback {
     @IBOutlet weak var expertisesTextField: UITextField!
     @IBOutlet weak var contactVisibleTextField: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
@@ -44,6 +44,9 @@ class ContactInfoPage: UIViewController, BackendCallback {
         
         nameTextField.text = Backend.getInstance().getUserContext().contactName;
         contactInfoTextField.text = Backend.getInstance().getUserContext().contactInfo;
+        
+        nameTextField.delegate = self;
+        contactInfoTextField.delegate = self;
     }
 
     override func didReceiveMemoryWarning() {
@@ -59,6 +62,16 @@ class ContactInfoPage: UIViewController, BackendCallback {
         
         Backend.getInstance().updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: expertisesItems, contactRequestable: visibleItem, contactName: nameTextField.text, contactDetails: contactInfoTextField.text, callback: self);
     }
+    
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        view.endEditing(true);
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true);
+        return false;
+    }
+    
 
     /*
     // MARK: - Navigation

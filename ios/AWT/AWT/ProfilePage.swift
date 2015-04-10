@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ProfilePage: UIViewController, BackendCallback {
+class ProfilePage: UIViewController, UITextFieldDelegate, BackendCallback {
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var genderTextField: UITextField!
     @IBOutlet weak var ageTextField: UITextField!
@@ -46,6 +46,11 @@ class ProfilePage: UIViewController, BackendCallback {
         AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS).setSelectedItem(Backend.getInstance().getUserContext().gender);
         AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES).setSelectedItem(Backend.getInstance().getUserContext().age);
         AtwUiUtils.setDataChooser(languagesTextField, items: Configuration.LANGUAGES, multichoice: true).setSelectedItems(Backend.getInstance().getUserContext().languages);
+        
+        nicknameTextField.delegate = self;
+        newPasswordTextField.delegate = self;
+        confirmPasswordTextField.delegate = self;
+        currentPasswordTextField.delegate = self;
     }
 
     override func didReceiveMemoryWarning() {
@@ -106,6 +111,16 @@ class ProfilePage: UIViewController, BackendCallback {
         var newPassword = newPasswordTextField.text != "" ? newPasswordTextField.text : nil;
         
         Backend.getInstance().updateUserProfile(newPassword , gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, currentPassword: currentPasswordTextField.text, callback: self);
+    }
+    
+    
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        view.endEditing(true);
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true);
+        return false;
     }
     
 
