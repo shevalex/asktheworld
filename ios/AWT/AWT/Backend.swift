@@ -46,13 +46,13 @@ public struct Configuration {
     static let CONTACT_REQUESTABLE: [Item] = [Item(display: NSLocalizedString("No", comment: "Contact info requestable - no"), data: false), Item(display: NSLocalizedString("Yes", comment: "Contact info requestable - yes"), data: true)];
     
     
-    static func resolve(value: AnyObject?, predefinedList: [Configuration.Item]!) -> Configuration.Item? {
+    static func resolve(value: AnyObject?, predefinedList: [Configuration.Item]!) -> Configuration.Item! {
         if (value == nil) {
             return nil;
         }
 
         for (index, item) in enumerate(predefinedList) {
-            if (item.data === value) {
+            if (item.data as! NSObject == value as! NSObject) {
                 return item;
             }
         }
@@ -60,7 +60,7 @@ public struct Configuration {
         return nil;
     }
 
-    static func resolve(values: [AnyObject]?, predefinedList: [Configuration.Item]!) -> [Configuration.Item]? {
+    static func resolve(values: [AnyObject]?, predefinedList: [Configuration.Item]!) -> [Configuration.Item]! {
         if (values == nil) {
             return nil;
         }
@@ -69,7 +69,7 @@ public struct Configuration {
         
         for (index, item) in enumerate(predefinedList) {
             for (i, value) in enumerate(values!) {
-                if (item.data === value) {
+                if (item.data as! NSObject == value as! NSObject) {
                     result.append(item);
                 }
             }
@@ -908,7 +908,7 @@ public struct Backend {
                 if (languages != nil) {
                     self.userContext.languages = languages;
                 }
-                
+
                 var gender: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_GENDER), predefinedList: Configuration.GENDERS);
                 if (gender != nil) {
                     self.userContext.gender = gender;

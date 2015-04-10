@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginPage: UIViewController {
+class LoginPage: UIViewController, UITextFieldDelegate {
     let SHOW_HOME_SCREEN_SEGUE = "showHomeScreen";
     
     var autoLogin: Bool = true; //this is modified externally
@@ -19,13 +19,18 @@ class LoginPage: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad();
+        
+        emailTextField.delegate = self;
+        passwordTextField.delegate = self;
 
         if (Backend.getInstance() != nil && Backend.getInstance().getUserContext() != nil) {
             performSegueWithIdentifier(SHOW_HOME_SCREEN_SEGUE, sender: self);
         } else {
-            restoreEmailAndPassword();
-            if (autoLogin && emailTextField.text != "" && passwordTextField.text != "") {
-                logIn();
+            if (autoLogin) {
+                restoreEmailAndPassword();
+                if (emailTextField.text != "" && passwordTextField.text != "") {
+                    logIn();
+                }
             }
         }
     }
@@ -41,7 +46,16 @@ class LoginPage: UIViewController {
     }
     
     
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        view.endEditing(true);
+    }
     
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true);
+        return false;
+    }
+    
+
     private class PasswordRecoveryCallback: BackendCallback {
         private var page: LoginPage!;
         
@@ -79,6 +93,7 @@ class LoginPage: UIViewController {
         
         Backend.resetUserPassword(emailTextField.text, callback: PasswordRecoveryCallback(page: self));
     }
+    
 
     /*
     // MARK: - Navigation

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RegisterPage: UIViewController, BackendCallback {
+class RegisterPage: UIViewController, UITextFieldDelegate, BackendCallback {
     @IBOutlet weak var languagesTextField: UITextField!
     @IBOutlet weak var genderTextField: UITextField!
     @IBOutlet weak var ageTextField: UITextField!
@@ -98,13 +98,27 @@ class RegisterPage: UIViewController, BackendCallback {
         AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES, multichoice: false);
         AtwUiUtils.setDataChooser(languagesTextField, items: Configuration.LANGUAGES, multichoice: true);
         
-        // Do any additional setup after loading the view.
+        confirmPasswordTextField.delegate = self;
+        passwordTextField.delegate = self;
+        nicknameTextField.delegate = self;
+        emailTextField.delegate = self;
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        view.endEditing(true);
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        self.view.endEditing(true);
+        return false;
+    }
+    
+    
 
     /*
     // MARK: - Navigation
