@@ -87,13 +87,6 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
     return;
   }
   
-  var currentPassword = this._currentPasswordElement.getValue();
-  if (currentPassword == "") {
-    UIUtils.indicateInvalidInput(this._currentPasswordElement);
-    Application.showMessage(this.getLocale().EnterPasswordMessage);
-    return;
-  }
-    
   var name = this._nameElement.getValue();
   if (name == "") {
     UIUtils.indicateInvalidInput(this._nameElement);
@@ -127,6 +120,14 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
       return;
     }
   }
+  
+  var currentPassword = this._currentPasswordElement.getValue();
+  if (currentPassword == "") {
+    UIUtils.indicateInvalidInput(this._currentPasswordElement);
+    Application.showMessage(this.getLocale().EnterPasswordMessage);
+    return;
+  }
+    
 
   var callback = {
     success: function(requestId) {

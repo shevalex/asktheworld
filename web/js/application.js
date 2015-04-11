@@ -264,7 +264,7 @@ Application.hideSpinningWheel = function() {
 }
 
 Application.showMessage = function(msg, timeout, title) {
-  Application.hideMessage();
+  $(".popup-message").remove();
 
   var bodyElement = $("body").get(0);
   var popup = UIUtils.appendBlock(bodyElement, "PopupMessage");

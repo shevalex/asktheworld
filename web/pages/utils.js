@@ -889,11 +889,19 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
 
 UIUtils.animateBackgroundColor = function(element, color, speed, observer) {
   var selector = UIUtils.get$(element);
+  
+  var el = selector.get(0);
+  if (el._inAnimation) {
+    return;
+  }
+  
   var initialColor = selector.css("backgroundColor");
+  el._inAnimation = true;
   
   var speed = speed || "slow";
   selector.animate({backgroundColor: color}, speed, function() {
     selector.animate({backgroundColor: initialColor}, speed, function() {
+      el._inAnimation = false;
       if (observer != null) {
         observer();
       }
