@@ -185,6 +185,8 @@
   border-style: solid;
   
   text-align: left;
+  
+  background-color: white;
 }
 #UserPreferencesPage-PreferencesPanel-LeftClarificationPanel-ResponsesClarificationPanel {
   margin-top: 120px;

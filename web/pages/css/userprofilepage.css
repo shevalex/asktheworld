@@ -90,6 +90,8 @@
   border-style: solid;
   
   text-align: left;
+  
+  background-color: white;
 }
 #UserProfilePage-ProfilePanel-LeftClarificationPanel-PasswordClarificationPanel {
   margin-top: 140px;
