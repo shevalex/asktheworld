@@ -47,10 +47,10 @@ UserProfilePage.prototype.definePageContent = function(root) {
   
   
   var leftClarificationPanel = UIUtils.appendBlock(profilePanel, "LeftClarificationPanel");
-  UIUtils.appendExplanationPad(leftClarificationPanel, "PasswordClarificationPanel", this.getLocale().PasswordClarificationTitle, this.getLocale().PasswordClarificationText);
+  UIUtils.appendExplanationPad(leftClarificationPanel, "PasswordClarificationPanel", this.getLocale().NewPasswordLabel, this.getLocale().PasswordClarificationText);
 
   var rightClarificationPanel = UIUtils.appendBlock(profilePanel, "RightClarificationPanel");
-  UIUtils.appendExplanationPad(rightClarificationPanel, "LanguageClarificationPanel", this.getLocale().LanguageClarificationTitle, this.getLocale().LanguageClarificationText);
+  UIUtils.appendExplanationPad(rightClarificationPanel, "LanguageClarificationPanel", this.getLocale().LanguageLabel, this.getLocale().LanguageClarificationText);
 }
 
 UserProfilePage.prototype.onShow = function() {

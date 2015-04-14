@@ -69,12 +69,12 @@ UserPreferencesPage.prototype.definePageContent = function(root) {
   
   
   var leftClarificationPanel = UIUtils.appendBlock(preferencesPanel, "LeftClarificationPanel");
-  UIUtils.appendExplanationPad(leftClarificationPanel, "ResponsesClarificationPanel", this.getLocale().ResponsesClarificationTitle, this.getLocale().ResponsesClarificationText);
+  UIUtils.appendExplanationPad(leftClarificationPanel, "ResponsesClarificationPanel", this.getLocale().NumOfResponsesPreferenceLabel, this.getLocale().ResponsesClarificationText);
   
 
   var rightClarificationPanel = UIUtils.appendBlock(preferencesPanel, "RightClarificationPanel");
-  UIUtils.appendExplanationPad(rightClarificationPanel, "TimeFrameClarificationPanel", this.getLocale().TimeFrameClarificationTitle, this.getLocale().TimeFrameClarificationText);
-  UIUtils.appendExplanationPad(rightClarificationPanel, "ContactClarificationPanel", this.getLocale().ContactClarificationTitle, this.getLocale().ContactClarificationText);
+  UIUtils.appendExplanationPad(rightClarificationPanel, "TimeFrameClarificationPanel", this.getLocale().WaitPreferenceLabel, this.getLocale().TimeFrameClarificationText);
+  UIUtils.appendExplanationPad(rightClarificationPanel, "ContactClarificationPanel", this.getLocale().ContactPreferencesLabel, this.getLocale().ContactClarificationText);
 }
 
 UserPreferencesPage.prototype.onShow = function() {

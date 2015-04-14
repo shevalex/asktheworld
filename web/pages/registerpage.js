@@ -46,6 +46,13 @@ RegisterPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(signUpButton, function() {
     this._signUp();
   }.bind(this));
+  
+  
+  var leftClarificationPanel = UIUtils.appendBlock(signUpPanel, "LeftClarificationPanel");
+  UIUtils.appendExplanationPad(leftClarificationPanel, "NicknameClarificationPanel", this.getLocale().NicknameLabel, this.getLocale().NicknameClarificationText);
+
+  var rightClarificationPanel = UIUtils.appendBlock(signUpPanel, "RightClarificationPanel");
+  UIUtils.appendExplanationPad(rightClarificationPanel, "LanguageClarificationPanel", this.getLocale().LanguageLabel, this.getLocale().LanguageClarificationText);
 }
 
 RegisterPage.prototype.onShow = function() {
