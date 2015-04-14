@@ -47,18 +47,10 @@ UserProfilePage.prototype.definePageContent = function(root) {
   
   
   var leftClarificationPanel = UIUtils.appendBlock(profilePanel, "LeftClarificationPanel");
-  var passwordClarificationPanel = UIUtils.appendBlock(leftClarificationPanel, "PasswordClarificationPanel");
-  var passwordClarificationTitle = UIUtils.appendBlock(passwordClarificationPanel, "Title");
-  passwordClarificationTitle.innerHTML = this.getLocale().PasswordClarificationTitle;
-  var passwordClarificationText = UIUtils.appendLabel(passwordClarificationPanel, "Text");
-  passwordClarificationText.innerHTML = this.getLocale().PasswordClarificationText;
+  UIUtils.appendExplanationPad(leftClarificationPanel, "PasswordClarificationPanel", this.getLocale().PasswordClarificationTitle, this.getLocale().PasswordClarificationText);
 
   var rightClarificationPanel = UIUtils.appendBlock(profilePanel, "RightClarificationPanel");
-  var languageClarificationPanel = UIUtils.appendBlock(rightClarificationPanel, "LanguageClarificationPanel");
-  var languageClarificationTitle = UIUtils.appendBlock(languageClarificationPanel, "Title");
-  languageClarificationTitle.innerHTML = this.getLocale().LanguageClarificationTitle;
-  var languageClarificationText = UIUtils.appendLabel(languageClarificationPanel, "Text");
-  languageClarificationText.innerHTML = this.getLocale().LanguageClarificationText;
+  UIUtils.appendExplanationPad(rightClarificationPanel, "LanguageClarificationPanel", this.getLocale().LanguageClarificationTitle, this.getLocale().LanguageClarificationText);
 }
 
 UserProfilePage.prototype.onShow = function() {

@@ -69,23 +69,12 @@ UserPreferencesPage.prototype.definePageContent = function(root) {
   
   
   var leftClarificationPanel = UIUtils.appendBlock(preferencesPanel, "LeftClarificationPanel");
-  var responsesClarificationPanel = UIUtils.appendBlock(leftClarificationPanel, "ResponsesClarificationPanel");
-  var responsesClarificationTitle = UIUtils.appendBlock(responsesClarificationPanel, "Title");
-  responsesClarificationTitle.innerHTML = this.getLocale().ResponsesClarificationTitle;
-  var responsesClarificationText = UIUtils.appendLabel(responsesClarificationPanel, "Text");
-  responsesClarificationText.innerHTML = this.getLocale().ResponsesClarificationText;
+  UIUtils.appendExplanationPad(leftClarificationPanel, "ResponsesClarificationPanel", this.getLocale().ResponsesClarificationTitle, this.getLocale().ResponsesClarificationText);
+  
 
   var rightClarificationPanel = UIUtils.appendBlock(preferencesPanel, "RightClarificationPanel");
-  var timeFrameClarificationPanel = UIUtils.appendBlock(rightClarificationPanel, "TimeFrameClarificationPanel");
-  var timeFrameClarificationTitle = UIUtils.appendBlock(timeFrameClarificationPanel, "Title");
-  timeFrameClarificationTitle.innerHTML = this.getLocale().TimeFrameClarificationTitle;
-  var timeFrameClarificationText = UIUtils.appendLabel(timeFrameClarificationPanel, "Text");
-  timeFrameClarificationText.innerHTML = this.getLocale().TimeFrameClarificationText;
-  var contactClarificationPanel = UIUtils.appendBlock(rightClarificationPanel, "ContactClarificationPanel");
-  var contactClarificationTitle = UIUtils.appendBlock(contactClarificationPanel, "Title");
-  contactClarificationTitle.innerHTML = this.getLocale().ContactClarificationTitle;
-  var contactClarificationText = UIUtils.appendLabel(contactClarificationPanel, "Text");
-  contactClarificationText.innerHTML = this.getLocale().ContactClarificationText;
+  UIUtils.appendExplanationPad(rightClarificationPanel, "TimeFrameClarificationPanel", this.getLocale().TimeFrameClarificationTitle, this.getLocale().TimeFrameClarificationText);
+  UIUtils.appendExplanationPad(rightClarificationPanel, "ContactClarificationPanel", this.getLocale().ContactClarificationTitle, this.getLocale().ContactClarificationText);
 }
 
 UserPreferencesPage.prototype.onShow = function() {

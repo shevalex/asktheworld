@@ -886,6 +886,18 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
 }
 
 
+UIUtils.appendExplanationPad = function(root, padId, title, text) {
+  var padElement = UIUtils.appendBlock(root, padId);
+  UIUtils.addClass(padElement, "explanation-pad");
+  
+  var titleElement = UIUtils.appendBlock(padElement, "Title");
+  UIUtils.addClass(titleElement, "explanation-pad-title");
+  titleElement.innerHTML = title;
+  
+  var textElement = UIUtils.appendLabel(padElement, "Text", text);
+  UIUtils.addClass(textElement, "explanation-pad-text");
+}
+
 
 UIUtils.animateBackgroundColor = function(element, color, speed, observer) {
   var selector = UIUtils.get$(element);
@@ -956,7 +968,8 @@ UIUtils.listenOutsideClicks = function(component, observer) {
 
 
 UIUtils.createId = function(container, elementId) {
-  return UIUtils._getId(container) + "-" + elementId;
+  var containerId = UIUtils._getId(container);
+  return containerId != null ? containerId + "-" + elementId : elementId;
 }
 
 
