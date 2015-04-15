@@ -886,7 +886,7 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wvn-Yi-E3t">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="Wvn-Yi-E3t">
                                 <rect key="frame" x="0.0" y="64" width="320" height="460"/>
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Professional Expertise" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3Nk-CF-c4K">
@@ -914,7 +914,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Type you request here" translatesAutoresizingMaskIntoConstraints="NO" id="CKG-jm-zOf">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" text="Type you request here" translatesAutoresizingMaskIntoConstraints="NO" id="CKG-jm-zOf">
                                         <rect key="frame" x="8" y="210" width="304" height="184"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="184" id="a6P-py-vne"/>
@@ -1093,7 +1093,7 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bIX-kF-4b4">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="bIX-kF-4b4">
                                 <rect key="frame" x="0.0" y="64" width="320" height="460"/>
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Professional Expertise" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hng-GO-O9S">
@@ -1127,7 +1127,7 @@
                                             <constraint firstAttribute="height" constant="50" id="2WE-wh-crY"/>
                                         </constraints>
                                     </scrollView>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Type you request here" translatesAutoresizingMaskIntoConstraints="NO" id="dLi-Bv-hWE">
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" text="Type you request here" translatesAutoresizingMaskIntoConstraints="NO" id="dLi-Bv-hWE">
                                         <rect key="frame" x="8" y="210" width="304" height="184"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="184" id="43C-tD-rwQ"/>
