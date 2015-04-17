@@ -81,7 +81,7 @@ LoginPage.prototype.onShow = function(root, paramBundle) {
   }
   
   this._rememberCheckbox.setValue(autoSignAllowed && remember);
-
+  window.localStorage.remember = this._rememberCheckbox.getValue() ? "yes" : "no";  
   
   this._signing = false;
   
