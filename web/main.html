@@ -2,17 +2,21 @@
   <meta charset="utf-8">
   <title>Ask The World!</title>
   
+  <script src="http://code.jquery.com/jquery-1.11.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<!--
   <script src="lib/jquery-1.11.2.min.js"></script>
   <script src="lib/jquery-ui-1.11.2.custom/jquery-ui.min.js"></script>
-
+-->
+  
+  
+  <link rel="stylesheet" href="http://cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
+  <script src="http://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+<!--
   <link rel="stylesheet" href="lib/DataTables-1.10.4/media/css/jquery.dataTables.min.css">
   <script src="lib/DataTables-1.10.4/media/js/jquery.dataTables.min.js"></script>
-
-  <!--link rel="stylesheet" href="lib/CLEditor1_4_5/jquery.cleditor.css">
-  <script src="lib/CLEditor1_4_5/jquery.cleditor.min.js"></script-->
+-->
   
-  <!--script src="lib/bs-wysiwyg/bootstrap-wysiwyg.js"></script>  
-  <script src="lib/bs-wysiwyg/jquery.hotkeys.js"></script-->  
   
 
   <script src="js/i18n.js"></script>
@@ -81,15 +85,22 @@
 </head>
 <body>
   <div id="Title">
-    <label id="Title-Label">~ Ask The World Offline ~</label>
-    <div id="Title-Language">
-      <button id="Title-Language-Text" class="link-button"></button>
+    <div id="Title-Options">
+      <div id="Title-Options-Language">
+        <button id="Title-Options-Language-Button" class="link-button"></button>
+      </div>
+      <label id="Title-Options-Separator">|</label>
+      <div id="Title-Options-User">
+        <button id="Title-Options-User-Button" class="link-button"></button>
+      </div>
     </div>
+<!--    <img id="Title-Image"></img>-->
+    <label id="Title-Caption">Ask The World</label>
   </div>
   <div id="RootContainer"></div>
   <div id="Footer">
-    <label id="Footer-Label">Pisoft Corporation, &nbsp;2015. &nbsp;All rights reserved.</label>
-    <button id="Footer-ContactUs" class="link-button">Contact Us</button>
+    <label id="Footer-Label">PiZ Technologies / PiZtec, &nbsp;2015. &nbsp;All rights reserved.</label>
+    <button id="Footer-ContactUs" class="link-button"></button>
   </div>
 </body>
 </html>
