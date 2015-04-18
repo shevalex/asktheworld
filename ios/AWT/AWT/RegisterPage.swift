@@ -16,6 +16,7 @@ class RegisterPage: UIViewController, UITextFieldDelegate, BackendCallback {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     
     //BackendCallback
@@ -91,6 +92,21 @@ class RegisterPage: UIViewController, UITextFieldDelegate, BackendCallback {
         confirmPasswordTextField.text = "";
     }
     
+    func keyboardWillShow(sender: NSNotification) {
+        let info: NSDictionary = sender.userInfo!
+        let value: NSValue = info.valueForKey(UIKeyboardFrameBeginUserInfoKey) as! NSValue
+        let keyboardSize: CGSize = value.CGRectValue().size
+        let contentInsets: UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0)
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+    }
+    
+    func keyboardWillHide(sender: NSNotification) {
+        let contentInsets: UIEdgeInsets = UIEdgeInsetsZero
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad();
         
@@ -102,6 +118,16 @@ class RegisterPage: UIViewController, UITextFieldDelegate, BackendCallback {
         passwordTextField.delegate = self;
         nicknameTextField.delegate = self;
         emailTextField.delegate = self;
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        notificationCenter.addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
     override func didReceiveMemoryWarning() {
