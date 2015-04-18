@@ -62,30 +62,27 @@ LoginPage.prototype.definePageContent = function(root) {
 
 
 LoginPage.prototype.onShow = function(root, paramBundle) {
-  Application.logOut();
-
   var autoSignAllowed = paramBundle != null && paramBundle[Application.AUTO_LOGIN_PARAM] == "true";
   
   var remember = window.localStorage.remember == "yes";
-  
-  if (autoSignAllowed && remember && window.localStorage.login != null) {
+
+  if (remember && window.localStorage.login != null) {
     this._loginElement.setValue(window.localStorage.login);
   } else {
     this._loginElement.setValue("");
   }
   
-  if (autoSignAllowed && remember && window.localStorage.password != null) {
+  if (remember && window.localStorage.password != null) {
     this._passwordElement.setValue(window.localStorage.password);
   } else {
     this._passwordElement.setValue("");
   }
   
-  this._rememberCheckbox.setValue(autoSignAllowed && remember);
-  window.localStorage.remember = this._rememberCheckbox.getValue() ? "yes" : "no";  
+  this._rememberCheckbox.setValue(remember);
   
   this._signing = false;
   
-  if (autoSignAllowed && remember && this._loginElement.getValue() != "" && this._passwordElement.getValue() != "") {
+  if (autoSignAllowed && this._loginElement.getValue() != "" && this._passwordElement.getValue() != "") {
     this._signIn();
   }
 }
