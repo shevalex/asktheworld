@@ -23,7 +23,6 @@ LoginPage.prototype.definePageContent = function(root) {
   this._loginElement = UIUtils.appendTextInput(controlPanel, "Login");
   
   this._rememberCheckbox = UIUtils.appendCheckbox(controlPanel, "RememberLoginCheck", this.getLocale().RememberLoginLabel);
-  this._rememberCheckbox.setValue(window.localStorage.remember == "yes");
   UIUtils.get$(this._rememberCheckbox).change(function() {
     window.localStorage.remember = this._rememberCheckbox.getValue() ? "yes" : "no";
   }.bind(this));
@@ -63,10 +62,10 @@ LoginPage.prototype.definePageContent = function(root) {
 
 
 LoginPage.prototype.onShow = function(root, paramBundle) {
-  Application.logOut();
+  var autoSignAllowed = paramBundle != null && paramBundle[Application.AUTO_LOGIN_PARAM] == "true";
   
   var remember = window.localStorage.remember == "yes";
-  
+
   if (remember && window.localStorage.login != null) {
     this._loginElement.setValue(window.localStorage.login);
   } else {
@@ -79,10 +78,11 @@ LoginPage.prototype.onShow = function(root, paramBundle) {
     this._passwordElement.setValue("");
   }
   
+  this._rememberCheckbox.setValue(remember);
+  
   this._signing = false;
   
-  var autoSignAllowed = paramBundle != null && paramBundle[Application.AUTO_LOGIN_PARAM] == "true";
-  if (autoSignAllowed && remember && this._loginElement.getValue() != "" && this._passwordElement.getValue() != "") {
+  if (autoSignAllowed && this._loginElement.getValue() != "" && this._passwordElement.getValue() != "") {
     this._signIn();
   }
 }

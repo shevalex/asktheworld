@@ -142,7 +142,7 @@ Application.start = function() {
     return I18n.getLocale().literals.LeaveApplicationMessage;
   }
   window.onunload = function() {
-    Application.reset();
+    Backend.logOut();
   }
   
   $("#Footer-ContactUs").text(I18n.getLocale().literals.ContactUs);
@@ -159,7 +159,7 @@ Application.start = function() {
   this.showPage(LoginPage.name, startupBundle);
 }
 
-Application.reset = function() {
+Application.logOut = function() {
   for (var index in this._pages) {
     this._pages[index].destroy();
   }
@@ -169,12 +169,11 @@ Application.reset = function() {
   this.hideSpinningWheel();
   this.hideDialog();
 
-  this.logOut();
-}
-
-Application.logOut = function() {
   Backend.logOut(function() {
-    $("#Title-Options-User-Button").text("");
+    $("#Title-Options-Separator").css("display", "none");
+    $("#Title-Options-User").css("display", "none");
+    
+    window.localStorage.remember = "no";
   });
 }
 
@@ -377,10 +376,8 @@ Application.setupUserMenuChooser = function() {
     UIUtils.addClass(item, "user-menu-item");
     UIUtils.setClickListener(item, function(lr) {
       popupCloser();
-      $("#Title-Options-Separator").css("display", "none");
-      $("#Title-Options-User").css("display", "none");
       
-      Application.reset();
+      Application.logOut();
       Application.showPage(LoginPage.name);
       
       return false;
