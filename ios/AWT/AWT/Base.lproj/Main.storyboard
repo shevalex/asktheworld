@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -1451,6 +1451,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="ageTextField" destination="SvH-aH-SXX" id="ds0-9A-8N5"/>
+                        <outlet property="bottonSpacing" destination="mE5-AK-MY8" id="3Ya-Cn-Rhb"/>
                         <outlet property="confirmPasswordTextField" destination="Zwy-d8-4hY" id="26h-V0-xV4"/>
                         <outlet property="emailTextField" destination="RU5-zt-IO0" id="CNN-Hw-A2g"/>
                         <outlet property="genderTextField" destination="viG-Fu-Fmp" id="d1e-t1-GOs"/>
@@ -2158,11 +2159,11 @@
         <image name="contact_info.png" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="c75-sv-RRF"/>
+        <segue reference="008-zD-FCd"/>
         <segue reference="mv9-mT-7H4"/>
-        <segue reference="Llv-VC-fNS"/>
-        <segue reference="7xE-kX-cnr"/>
+        <segue reference="LFC-eM-KMG"/>
         <segue reference="Z0X-31-cgP"/>
+        <segue reference="7xE-kX-cnr"/>
         <segue reference="PsH-Jh-kRd"/>
     </inferredMetricsTieBreakers>
 </document>
