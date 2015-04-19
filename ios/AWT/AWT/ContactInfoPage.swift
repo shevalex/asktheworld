@@ -8,11 +8,13 @@
 
 import UIKit
 
-class ContactInfoPage: UIViewController, UITextFieldDelegate, BackendCallback {
+class ContactInfoPage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
     @IBOutlet weak var expertisesTextField: UITextField!
     @IBOutlet weak var contactVisibleTextField: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var contactInfoTextField: UITextField!
+    
+    @IBOutlet weak var bottomSpacing: NSLayoutConstraint!
     
     private let YES_NO: [String]! = ["Yes", "No"];
     
@@ -37,6 +39,8 @@ class ContactInfoPage: UIViewController, UITextFieldDelegate, BackendCallback {
     }
     
     override func viewDidLoad() {
+        setSensitiveConstraint(bottomSpacing, offset: 0);
+        
         super.viewDidLoad()
 
         AtwUiUtils.setDataChooser(expertisesTextField, items: Configuration.EXPERTISES, multichoice: true).setSelectedItems(Backend.getInstance().getUserContext().expertises);
@@ -63,16 +67,6 @@ class ContactInfoPage: UIViewController, UITextFieldDelegate, BackendCallback {
         Backend.getInstance().updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: nil, inquiryAge: nil, inquiryGender: nil, expertises: expertisesItems, contactRequestable: visibleItem, contactName: nameTextField.text, contactDetails: contactInfoTextField.text, callback: self);
     }
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        view.endEditing(true);
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        self.view.endEditing(true);
-        return false;
-    }
-    
-
     /*
     // MARK: - Navigation
 
