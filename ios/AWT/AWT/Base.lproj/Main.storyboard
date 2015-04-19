@@ -1736,6 +1736,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="ageTextField" destination="hC4-Vz-fwg" id="3UM-vt-Azi"/>
+                        <outlet property="bottomSpacing" destination="Fyw-er-gyg" id="AwE-5q-3ib"/>
                         <outlet property="confirmPasswordTextField" destination="GBh-Go-8Hv" id="j66-Ev-3j0"/>
                         <outlet property="currentPasswordTextField" destination="dsk-qt-dHW" id="GLD-e9-mNf"/>
                         <outlet property="genderTextField" destination="scf-S1-Bxk" id="C1l-AI-Qgv"/>

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ProfilePage: UIViewController, UITextFieldDelegate, BackendCallback {
+class ProfilePage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
     @IBOutlet weak var nicknameTextField: UITextField!
     @IBOutlet weak var genderTextField: UITextField!
     @IBOutlet weak var ageTextField: UITextField!
@@ -17,7 +17,7 @@ class ProfilePage: UIViewController, UITextFieldDelegate, BackendCallback {
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var currentPasswordTextField: UITextField!
 
-    
+    @IBOutlet weak var bottomSpacing: NSLayoutConstraint!
     
     //BackendCallback
     func onError() {
@@ -40,6 +40,8 @@ class ProfilePage: UIViewController, UITextFieldDelegate, BackendCallback {
     }
     
     override func viewDidLoad() {
+        setSensitiveConstraint(bottomSpacing, offset: 0);
+        
         super.viewDidLoad()
 
         nicknameTextField.text = Backend.getInstance().getUserContext().name;
@@ -112,17 +114,6 @@ class ProfilePage: UIViewController, UITextFieldDelegate, BackendCallback {
         
         Backend.getInstance().updateUserProfile(newPassword , gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, currentPassword: currentPasswordTextField.text, callback: self);
     }
-    
-    
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        view.endEditing(true);
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        self.view.endEditing(true);
-        return false;
-    }
-    
 
     /*
     // MARK: - Navigation
