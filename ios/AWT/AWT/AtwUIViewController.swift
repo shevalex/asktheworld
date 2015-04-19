@@ -95,7 +95,6 @@ class AtwUIViewController: UIViewController {
 
         initialContraintValue = keyboardSensitiveConstraint.constant;
         keyboardSensitiveConstraint.constant = keyboardSize.height - offset;
-        self.view.layoutSubviews();
     }
     
     func keyboardWillHide(sender: NSNotification) {
