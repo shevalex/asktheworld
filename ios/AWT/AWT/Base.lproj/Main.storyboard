@@ -1459,6 +1459,7 @@
                         <outlet property="nicknameTextField" destination="Ef8-S5-GoV" id="dEA-Yg-h9W"/>
                         <outlet property="passwordTextField" destination="Fox-8B-Ka5" id="2co-Kr-Hd5"/>
                         <outlet property="scrollView" destination="8Sv-AE-ead" id="rtg-GV-L4x"/>
+                        <outlet property="toolbar" destination="1PH-E2-WBG" id="RL7-Kx-BFG"/>
                         <segue destination="tb2-wo-b3s" kind="show" identifier="showHomeScreen" id="008-zD-FCd"/>
                     </connections>
                 </viewController>

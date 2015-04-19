@@ -19,6 +19,7 @@ class RegisterPage: UIViewControllerForTextEditing, UITextFieldDelegate, Backend
     @IBOutlet weak var scrollView: UIScrollView!
     
     @IBOutlet weak var bottonSpacing: NSLayoutConstraint!
+    @IBOutlet weak var toolbar: UIToolbar!
     
     //BackendCallback
     func onError() {
@@ -105,7 +106,7 @@ class RegisterPage: UIViewControllerForTextEditing, UITextFieldDelegate, Backend
         nicknameTextField.delegate = self;
         emailTextField.delegate = self;
         
-        setSensitiveConstraint(bottonSpacing);
+        setSensitiveConstraint(bottonSpacing, offset: toolbar.frame.height);
     }
     
     override func didReceiveMemoryWarning() {

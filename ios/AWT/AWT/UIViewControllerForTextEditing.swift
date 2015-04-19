@@ -11,11 +11,14 @@ import UIKit
 
 class UIViewControllerForTextEditing: UIViewController {
     private var keyboardSensitiveConstraint: NSLayoutConstraint!
+    private var offset: CGFloat!
+    
     private var initialContraintValue: CGFloat!
 
     
-    func setSensitiveConstraint(keyboardSensitiveConstraint: NSLayoutConstraint) {
+    func setSensitiveConstraint(keyboardSensitiveConstraint: NSLayoutConstraint, offset: CGFloat) {
         self.keyboardSensitiveConstraint = keyboardSensitiveConstraint;
+        self.offset = offset;
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -45,7 +48,7 @@ class UIViewControllerForTextEditing: UIViewController {
         let keyboardSize: CGSize = value.CGRectValue().size;
 
         initialContraintValue = keyboardSensitiveConstraint.constant;
-        keyboardSensitiveConstraint.constant = keyboardSize.height;
+        keyboardSensitiveConstraint.constant = keyboardSize.height - offset;
     }
     
     func keyboardWillHide(sender: NSNotification) {
