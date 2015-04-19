@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginPage: UIViewController, UITextFieldDelegate {
+class LoginPage: AtwUIViewController, UITextFieldDelegate {
     let SHOW_HOME_SCREEN_SEGUE = "showHomeScreen";
     
     var autoLogin: Bool = true; //this is modified externally
@@ -18,11 +18,20 @@ class LoginPage: UIViewController, UITextFieldDelegate {
 
     
     override func viewDidLoad() {
+        enableSpinner(false);
+        
         super.viewDidLoad();
         
         emailTextField.delegate = self;
         passwordTextField.delegate = self;
+    }
 
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
         if (Backend.getInstance() != nil && Backend.getInstance().getUserContext() != nil) {
             performSegueWithIdentifier(SHOW_HOME_SCREEN_SEGUE, sender: self);
         } else {
@@ -31,13 +40,12 @@ class LoginPage: UIViewController, UITextFieldDelegate {
                 if (emailTextField.text != "" && passwordTextField.text != "") {
                     logIn();
                 }
+            } else {
+                emailTextField.text = "";
+                passwordTextField.text = "";
+                saveEmailAndPassword();
             }
         }
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     
@@ -46,16 +54,6 @@ class LoginPage: UIViewController, UITextFieldDelegate {
     }
     
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        view.endEditing(true);
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        self.view.endEditing(true);
-        return false;
-    }
-    
-
     private class PasswordRecoveryCallback: BackendCallback {
         private var page: LoginPage!;
         
