@@ -18,7 +18,7 @@ class RegisterPage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var scrollView: UIScrollView!
     
-    @IBOutlet weak var bottonSpacing: NSLayoutConstraint!
+    @IBOutlet weak var bottomSpacing: NSLayoutConstraint!
     @IBOutlet weak var toolbar: UIToolbar!
     
     //BackendCallback
@@ -95,7 +95,7 @@ class RegisterPage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
     }
     
     override func viewDidLoad() {
-        setSensitiveConstraint(bottonSpacing, offset: toolbar.frame.height);
+        setSensitiveConstraint(bottomSpacing, offset: toolbar.frame.height);
 
         super.viewDidLoad();
         

@@ -27,7 +27,12 @@ class CreateNewRequestPage: AtwUIViewController {
     @IBOutlet weak var imageScrollView: AttachmentBarView!
     @IBOutlet weak var requestTextField: UITextView!
     
+    @IBOutlet weak var bottomSpacing: NSLayoutConstraint!
+    @IBOutlet weak var toolbar: UIToolbar!
+    
     override func viewDidLoad() {
+        setSensitiveConstraint(bottomSpacing, offset: toolbar.frame.height);
+        
         super.viewDidLoad()
         
         imageScrollView.setHostingViewController(self);
