@@ -29,8 +29,12 @@ class EditRequestPage: AtwUIViewController {
     @IBOutlet weak var requestTextField: UITextView!
     @IBOutlet weak var attachmentsView: AttachmentBarView!
     
+    @IBOutlet weak var toolbar: UIToolbar!
+    @IBOutlet weak var bottomSpacing: NSLayoutConstraint!
     
     override func viewDidLoad() {
+        setSensitiveConstraint(bottomSpacing, offset: toolbar.frame.height);
+        
         super.viewDidLoad();
         
         attachmentsView.setHostingViewController(self);

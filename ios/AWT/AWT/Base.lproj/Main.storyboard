@@ -1195,10 +1195,12 @@
                     <connections>
                         <outlet property="ageTextField" destination="qr8-Kd-pWh" id="aCJ-OC-QUt"/>
                         <outlet property="attachmentsView" destination="Stq-TU-HQ2" id="ynq-NI-ZFd"/>
+                        <outlet property="bottomSpacing" destination="8FV-Nm-6Hq" id="xLm-PX-3W0"/>
                         <outlet property="expertiseTextField" destination="hng-GO-O9S" id="XmK-sa-0lU"/>
                         <outlet property="genderTextField" destination="lN6-l6-VBu" id="z0h-YR-hd3"/>
                         <outlet property="numOfResponsesTextField" destination="a30-bX-e5p" id="ZLV-DD-Nb6"/>
                         <outlet property="requestTextField" destination="dLi-Bv-hWE" id="0bt-sS-eoW"/>
+                        <outlet property="toolbar" destination="TK7-jL-fpD" id="EZA-RS-k0X"/>
                         <outlet property="waitTimeTextField" destination="eOD-A3-sA9" id="EAB-fS-G5e"/>
                     </connections>
                 </viewController>
