@@ -1877,6 +1877,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="ageTextField" destination="He6-76-vEa" id="kSK-OG-Em4"/>
+                        <outlet property="bottomSpacing" destination="YYE-BR-uk3" id="mJK-eO-kof"/>
                         <outlet property="genderTextField" destination="0DA-IE-9vd" id="HhY-nx-bKT"/>
                         <outlet property="numberOfResponsesTextField" destination="39v-gz-XT3" id="e9K-nB-Iwt"/>
                         <outlet property="waitTimeTextField" destination="IwD-kn-Jf7" id="4UO-AC-re3"/>

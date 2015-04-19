@@ -8,13 +8,14 @@
 
 import UIKit
 
-class RequestPreferencesPage: UIViewController, BackendCallback {
+class RequestPreferencesPage: AtwUIViewController, BackendCallback {
 
     @IBOutlet weak var genderTextField: UITextField!
     @IBOutlet weak var ageTextField: UITextField!
     @IBOutlet weak var numberOfResponsesTextField: UITextField!
     @IBOutlet weak var waitTimeTextField: UITextField!
 
+    @IBOutlet weak var bottomSpacing: NSLayoutConstraint!
     
     //BackendCallback
     func onError() {
@@ -51,6 +52,8 @@ class RequestPreferencesPage: UIViewController, BackendCallback {
     
     
     override func viewDidLoad() {
+        setSensitiveConstraint(bottomSpacing, offset: 0);
+        
         super.viewDidLoad()
 
         AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().requestTargetGender);
