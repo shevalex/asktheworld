@@ -149,6 +149,13 @@ Application.start = function() {
   $("#Footer-ContactUs").click(function() {
     Application.showDialog("", "We will need to find a way to open this page");
   });
+
+  $("#Title-Caption").click(function() {
+    Application.showMenuPage(HomePage.name);
+  });
+  $("#Title-Logo").click(function() {
+    Application.showMenuPage(HomePage.name);
+  });
   
   Application._setupLanguageChooser();
 

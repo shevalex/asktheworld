@@ -17,6 +17,13 @@ body {
   border-bottom-width: 1px;
   border-bottom-color: rgb(0, 133, 63);
 }
+#Title-Logo {
+  float: left;
+  margin-left: 20px;
+  margin-top: 10px;
+  width: 50px;
+  height: 50px;
+}
 /*
 #Title-Image {
   float: right;
@@ -34,6 +41,7 @@ body {
   color: rgb(0, 133, 63);
   font-size: 50px;
   font-weight: bold;
+  font-family: "Times New Roman";
 }
 #Title-Options {
   text-align: right;
