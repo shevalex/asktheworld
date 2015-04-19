@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eZQ-d0-Zxz">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -1764,7 +1764,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LYJ-oH-bpG">
-                                <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="484"/>
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="252" verticalCompressionResistancePriority="753" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Gender" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0DA-IE-9vd">
                                         <rect key="frame" x="50" y="37" width="220" height="30"/>
@@ -1870,7 +1870,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="LYJ-oH-bpG" firstAttribute="leading" secondItem="Pbr-vV-LtQ" secondAttribute="leadingMargin" constant="-16" id="3BZ-lo-DvB"/>
-                            <constraint firstItem="ag3-tU-dR4" firstAttribute="top" secondItem="LYJ-oH-bpG" secondAttribute="bottom" id="YYE-BR-uk3"/>
+                            <constraint firstItem="ag3-tU-dR4" firstAttribute="top" secondItem="LYJ-oH-bpG" secondAttribute="bottom" constant="20" id="YYE-BR-uk3"/>
                             <constraint firstItem="LYJ-oH-bpG" firstAttribute="top" secondItem="edw-9V-D0j" secondAttribute="bottom" id="hUy-Zo-5j8"/>
                             <constraint firstAttribute="trailingMargin" secondItem="LYJ-oH-bpG" secondAttribute="trailing" constant="-16" id="oez-bl-gxj"/>
                         </constraints>
@@ -1977,13 +1977,13 @@
                                     <constraint firstItem="Vy7-uG-LBi" firstAttribute="centerX" secondItem="gzf-cf-rkV" secondAttribute="centerX" id="UPc-oT-y4t"/>
                                     <constraint firstAttribute="trailing" secondItem="DN4-bo-KjL" secondAttribute="trailing" constant="6" id="Vno-OQ-aCx"/>
                                     <constraint firstItem="gCg-wT-Ugj" firstAttribute="centerX" secondItem="iSX-T5-WKS" secondAttribute="centerX" id="WdH-qb-310"/>
+                                    <constraint firstAttribute="bottom" secondItem="qkD-Nc-1cP" secondAttribute="bottom" constant="262" id="bCw-iy-Aay"/>
                                     <constraint firstItem="zwU-hv-dO0" firstAttribute="top" secondItem="Vy7-uG-LBi" secondAttribute="bottom" constant="8" symbolic="YES" id="c5m-SO-nHw"/>
                                     <constraint firstItem="qkD-Nc-1cP" firstAttribute="top" secondItem="gCg-wT-Ugj" secondAttribute="bottom" constant="15" id="chw-kf-6dU"/>
                                     <constraint firstItem="gzf-cf-rkV" firstAttribute="leading" secondItem="iSX-T5-WKS" secondAttribute="leading" constant="50" id="ci5-9T-Ee6"/>
                                     <constraint firstItem="gCg-wT-Ugj" firstAttribute="top" secondItem="ifp-aY-cYe" secondAttribute="bottom" constant="8" symbolic="YES" id="evn-1z-wnw"/>
                                     <constraint firstItem="ifp-aY-cYe" firstAttribute="top" secondItem="zwU-hv-dO0" secondAttribute="bottom" constant="8" symbolic="YES" id="giX-zC-Kxe"/>
                                     <constraint firstItem="Vy7-uG-LBi" firstAttribute="top" secondItem="gzf-cf-rkV" secondAttribute="bottom" constant="8" symbolic="YES" id="xhR-XV-dc9"/>
-                                    <constraint firstAttribute="bottom" secondItem="qkD-Nc-1cP" secondAttribute="bottom" constant="262" id="xsy-t5-ftk"/>
                                     <constraint firstItem="gzf-cf-rkV" firstAttribute="trailing" secondItem="zwU-hv-dO0" secondAttribute="trailing" id="zUh-NY-GrO"/>
                                 </constraints>
                             </scrollView>
@@ -1992,16 +1992,22 @@
                         <constraints>
                             <constraint firstItem="iSX-T5-WKS" firstAttribute="leading" secondItem="7db-LC-qtF" secondAttribute="leading" id="2c2-Gz-Azh"/>
                             <constraint firstAttribute="trailing" secondItem="iSX-T5-WKS" secondAttribute="trailing" id="WsX-9Y-nex"/>
-                            <constraint firstItem="iSX-T5-WKS" firstAttribute="bottom" secondItem="fHL-jn-JVj" secondAttribute="top" id="e9o-tY-t5Z"/>
+                            <constraint firstItem="iSX-T5-WKS" firstAttribute="bottom" secondItem="fHL-jn-JVj" secondAttribute="top" constant="20" id="e9o-tY-t5Z"/>
                             <constraint firstItem="iSX-T5-WKS" firstAttribute="top" secondItem="6AG-ov-VdL" secondAttribute="bottom" id="jfb-5E-0CL"/>
+                            <constraint firstItem="fHL-jn-JVj" firstAttribute="top" secondItem="iSX-T5-WKS" secondAttribute="bottom" id="rcT-8Y-7wQ"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="e9o-tY-t5Z"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Response Preferences" id="6aJ-tI-QFP"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="ageTextField" destination="zwU-hv-dO0" id="4ZJ-6N-1id"/>
                         <outlet property="amountOfInquiriesTextField" destination="gzf-cf-rkV" id="w9X-ku-DQH"/>
-                        <outlet property="bottomSpacing" destination="e9o-tY-t5Z" id="HBe-Fx-49S"/>
+                        <outlet property="bottomSpacing" destination="rcT-8Y-7wQ" id="2Sl-hw-SMC"/>
                         <outlet property="genderTextField" destination="gCg-wT-Ugj" id="dxs-S3-t0u"/>
                     </connections>
                 </viewController>
