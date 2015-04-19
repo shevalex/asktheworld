@@ -22,6 +22,7 @@ class AtwUIViewController: UIViewController {
     func setSensitiveConstraint(keyboardSensitiveConstraint: NSLayoutConstraint, offset: CGFloat) {
         self.keyboardSensitiveConstraint = keyboardSensitiveConstraint;
         self.offset = offset;
+        initialContraintValue = keyboardSensitiveConstraint.constant;
     }
     
     func enableSpinner(enable: Bool) {
@@ -93,10 +94,7 @@ class AtwUIViewController: UIViewController {
         let value: NSValue = info.valueForKey(UIKeyboardFrameEndUserInfoKey) as! NSValue;
         let keyboardSize: CGSize = value.CGRectValue().size;
 
-        initialContraintValue = keyboardSensitiveConstraint.constant;
         keyboardSensitiveConstraint.constant = keyboardSize.height - offset;
-        
-        view.layoutSubviews();
     }
     
     func keyboardWillHide(sender: NSNotification) {
@@ -105,7 +103,5 @@ class AtwUIViewController: UIViewController {
         }
         
         keyboardSensitiveConstraint.constant = initialContraintValue;
-        
-        view.layoutSubviews();
     }
 }
