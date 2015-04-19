@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RegisterPage: UIViewControllerForTextEditing, UITextFieldDelegate, BackendCallback {
+class RegisterPage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
     @IBOutlet weak var languagesTextField: UITextField!
     @IBOutlet weak var genderTextField: UITextField!
     @IBOutlet weak var ageTextField: UITextField!
@@ -95,6 +95,8 @@ class RegisterPage: UIViewControllerForTextEditing, UITextFieldDelegate, Backend
     }
     
     override func viewDidLoad() {
+        setSensitiveConstraint(bottonSpacing, offset: toolbar.frame.height);
+
         super.viewDidLoad();
         
         AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS, multichoice: false);
@@ -105,8 +107,6 @@ class RegisterPage: UIViewControllerForTextEditing, UITextFieldDelegate, Backend
         passwordTextField.delegate = self;
         nicknameTextField.delegate = self;
         emailTextField.delegate = self;
-        
-        setSensitiveConstraint(bottonSpacing, offset: toolbar.frame.height);
     }
     
     override func didReceiveMemoryWarning() {

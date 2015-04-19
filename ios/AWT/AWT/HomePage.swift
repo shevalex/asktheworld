@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomePage: UIViewControllerWithSpinner {
+class HomePage: AtwUIViewController {
 
     @IBOutlet weak var outgoingRequestsTableView: UITableView!
     @IBOutlet weak var incomingRequestsTableView: UITableView!

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ActiveInquiriesPage: UIViewControllerWithSpinner {
+class ActiveInquiriesPage: AtwUIViewController {
     @IBOutlet weak var incomingRequestsTableView: UITableView!
     @IBOutlet weak var numOfIncomingRequestsLabel: UILabel!
 

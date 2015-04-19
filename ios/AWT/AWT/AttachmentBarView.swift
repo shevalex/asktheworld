@@ -64,7 +64,7 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         super.layoutSubviews();
     }
     
-    func setHostingViewController(viewController: UIViewControllerWithSpinner) {
+    func setHostingViewController(viewController: AtwUIViewController) {
         hostingViewController = viewController;
     }
     

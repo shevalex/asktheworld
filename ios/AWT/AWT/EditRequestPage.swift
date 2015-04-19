@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditRequestPage: UIViewControllerWithSpinner {
+class EditRequestPage: AtwUIViewController {
     var requestId: String!
     
     @IBOutlet weak var expertiseTextField: UITextField!

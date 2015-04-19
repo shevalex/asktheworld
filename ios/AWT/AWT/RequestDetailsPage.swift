@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RequestDetailsPage: UIViewControllerWithSpinner {
+class RequestDetailsPage: AtwUIViewController {
     var requestId: String! //this is set from the outside before the page is brought up
     var responseStatus: String! //this is set from the outside before the page is brought up
     
@@ -32,6 +32,8 @@ class RequestDetailsPage: UIViewControllerWithSpinner {
     private var updateListenerId: String!;
     
     override func viewDidLoad() {
+        enableSpinner(true);
+        
         super.viewDidLoad()
 
         requestAttachmentsView.setHostingViewController(self);

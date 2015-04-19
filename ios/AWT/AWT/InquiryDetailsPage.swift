@@ -8,7 +8,7 @@
 
 import UIKit
 
-class InquiryDetailsPage: UIViewControllerWithSpinner {
+class InquiryDetailsPage: AtwUIViewController {
     var requestId: String! //this is set from the outside before the page is brought up
     
     @IBOutlet weak var inquiryTextField: UITextView!

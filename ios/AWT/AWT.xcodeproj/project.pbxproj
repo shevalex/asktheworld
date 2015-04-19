@@ -11,13 +11,12 @@
 		8212F27E1AC64CA600EA5F01 /* paper-clip.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8212F27D1AC64CA600EA5F01 /* paper-clip.jpg */; };
 		8212F2801ACB4E6000EA5F01 /* ImagePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8212F27F1ACB4E6000EA5F01 /* ImagePage.swift */; };
 		8236B5871AA6C16200EE3258 /* DataChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236B5861AA6C16200EE3258 /* DataChooser.swift */; };
-		8289034B1AE329BB00BD7E09 /* UIViewControllerForTextEditing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8289034A1AE329BB00BD7E09 /* UIViewControllerForTextEditing.swift */; };
+		8289034B1AE329BB00BD7E09 /* AtwUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8289034A1AE329BB00BD7E09 /* AtwUIViewController.swift */; };
 		82A4014F1AA158CA00E26253 /* Backend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A4014E1AA158CA00E26253 /* Backend.swift */; };
 		82B94D191AB0F1B20008960E /* styles.plist in Resources */ = {isa = PBXBuildFile; fileRef = 82B94D181AB0F1B20008960E /* styles.plist */; };
 		82D1288A1ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D128891ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift */; };
 		82E9E18F1AC0F4930010D757 /* ImageChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E9E18E1AC0F4930010D757 /* ImageChooser.swift */; };
 		82E9E1911AC113C00010D757 /* AttachmentBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E9E1901AC113C00010D757 /* AttachmentBarView.swift */; };
-		82E9E1931AC25BE20010D757 /* UIViewControllerWithSpinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E9E1921AC25BE20010D757 /* UIViewControllerWithSpinner.swift */; };
 		82E9E1951AC60A330010D757 /* EditRequestPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E9E1941AC60A330010D757 /* EditRequestPage.swift */; };
 		82FEA0281AD21ADD004030C5 /* PushBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FEA0271AD21ADD004030C5 /* PushBackend.swift */; };
 		F719A2041AA8A60200725A5A /* ContactInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F719A2031AA8A60200725A5A /* ContactInfoPage.swift */; };
@@ -58,13 +57,12 @@
 		8212F27D1AC64CA600EA5F01 /* paper-clip.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "paper-clip.jpg"; path = "imgs/paper-clip.jpg"; sourceTree = SOURCE_ROOT; };
 		8212F27F1ACB4E6000EA5F01 /* ImagePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePage.swift; sourceTree = "<group>"; };
 		8236B5861AA6C16200EE3258 /* DataChooser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataChooser.swift; sourceTree = "<group>"; };
-		8289034A1AE329BB00BD7E09 /* UIViewControllerForTextEditing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerForTextEditing.swift; sourceTree = "<group>"; };
+		8289034A1AE329BB00BD7E09 /* AtwUIViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtwUIViewController.swift; sourceTree = "<group>"; };
 		82A4014E1AA158CA00E26253 /* Backend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Backend.swift; sourceTree = "<group>"; };
 		82B94D181AB0F1B20008960E /* styles.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = styles.plist; sourceTree = "<group>"; };
 		82D128891ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncomingRequestTableCell.swift; sourceTree = "<group>"; };
 		82E9E18E1AC0F4930010D757 /* ImageChooser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageChooser.swift; sourceTree = "<group>"; };
 		82E9E1901AC113C00010D757 /* AttachmentBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachmentBarView.swift; sourceTree = "<group>"; };
-		82E9E1921AC25BE20010D757 /* UIViewControllerWithSpinner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewControllerWithSpinner.swift; sourceTree = "<group>"; };
 		82E9E1941AC60A330010D757 /* EditRequestPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditRequestPage.swift; sourceTree = "<group>"; };
 		82FEA0271AD21ADD004030C5 /* PushBackend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushBackend.swift; sourceTree = "<group>"; };
 		F719A2031AA8A60200725A5A /* ContactInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactInfoPage.swift; sourceTree = "<group>"; };
@@ -197,9 +195,8 @@
 				820418361AAAAF63003429CC /* RequestManagement.swift */,
 				82E9E18E1AC0F4930010D757 /* ImageChooser.swift */,
 				82E9E1901AC113C00010D757 /* AttachmentBarView.swift */,
-				82E9E1921AC25BE20010D757 /* UIViewControllerWithSpinner.swift */,
 				82FEA0271AD21ADD004030C5 /* PushBackend.swift */,
-				8289034A1AE329BB00BD7E09 /* UIViewControllerForTextEditing.swift */,
+				8289034A1AE329BB00BD7E09 /* AtwUIViewController.swift */,
 			);
 			name = utils;
 			sourceTree = "<group>";
@@ -317,13 +314,12 @@
 				82D1288A1ABA5AE4007CC2B2 /* IncomingRequestTableCell.swift in Sources */,
 				82FEA0281AD21ADD004030C5 /* PushBackend.swift in Sources */,
 				82A4014F1AA158CA00E26253 /* Backend.swift in Sources */,
-				8289034B1AE329BB00BD7E09 /* UIViewControllerForTextEditing.swift in Sources */,
+				8289034B1AE329BB00BD7E09 /* AtwUIViewController.swift in Sources */,
 				F771DCA91AA6347F00717996 /* UserSettingsPage.swift in Sources */,
 				F78FC8831AB91F9F00B2336E /* OutgoingRequestTableCell.swift in Sources */,
 				F7C079A91AB12E5B00E141D9 /* ActiveRequestsPage.swift in Sources */,
 				82E9E1951AC60A330010D757 /* EditRequestPage.swift in Sources */,
 				F7C079A71AB1263900E141D9 /* CreateNewRequestPage.swift in Sources */,
-				82E9E1931AC25BE20010D757 /* UIViewControllerWithSpinner.swift in Sources */,
 				F78FC8871AB9CB5C00B2336E /* ActiveInquiriesPage.swift in Sources */,
 				F78FC8851AB9C58300B2336E /* InquiryDetailsPage.swift in Sources */,
 				F745FE581A9E2882006E7698 /* AppDelegate.swift in Sources */,

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CreateNewRequestPage: UIViewControllerWithSpinner {
+class CreateNewRequestPage: AtwUIViewController {
     @IBOutlet weak var expertiseTextField: UITextField!
     var expertiseSelector: SelectorView!
     
