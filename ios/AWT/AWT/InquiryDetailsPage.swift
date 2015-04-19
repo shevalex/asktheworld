@@ -19,6 +19,9 @@ class InquiryDetailsPage: AtwUIViewController {
     @IBOutlet weak var sendButton: UIBarButtonItem!
     @IBOutlet weak var attachButton: UIBarButtonItem!
     
+    @IBOutlet weak var toolbar: UIToolbar!
+    @IBOutlet weak var bottomSpacing: NSLayoutConstraint!
+    
     private var updateListener: Backend.CacheChangeEventObserver!;
     private var updateListenerId: String!;
     
@@ -26,6 +29,8 @@ class InquiryDetailsPage: AtwUIViewController {
     private var responseId: String?;
 
     override func viewDidLoad() {
+        setSensitiveConstraint(bottomSpacing, offset: toolbar.frame.height);
+        
         super.viewDidLoad();
         
         inquiryAttachmentsView.setHostingViewController(self);

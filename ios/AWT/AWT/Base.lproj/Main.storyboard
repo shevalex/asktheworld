@@ -699,11 +699,13 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="attachButton" destination="hiB-7j-VAL" id="H4n-Pv-nn0"/>
+                        <outlet property="bottomSpacing" destination="uVh-ph-H70" id="B91-rP-nXb"/>
                         <outlet property="inquiryAttachmentsView" destination="n3P-Ra-KIg" id="Loa-eK-kkk"/>
                         <outlet property="inquiryTextField" destination="kfp-6W-JVb" id="qnU-2h-cZB"/>
                         <outlet property="responseAttachmentsView" destination="biZ-t1-7OJ" id="jzv-hI-zbi"/>
                         <outlet property="responseTextField" destination="cdW-iT-4D6" id="tpv-l5-4UP"/>
                         <outlet property="sendButton" destination="JAB-1v-U2r" id="bgk-hR-Xnd"/>
+                        <outlet property="toolbar" destination="oKv-Tr-SV4" id="XS9-tz-CfE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rgu-mg-b0e" userLabel="First Responder" sceneMemberID="firstResponder"/>
