@@ -8,12 +8,13 @@
 
 import UIKit
 
-class ResponsePreferencesPage: UIViewController, BackendCallback {
+class ResponsePreferencesPage: AtwUIViewController, BackendCallback {
 
     @IBOutlet weak var amountOfInquiriesTextField: UITextField!
     @IBOutlet weak var ageTextField: UITextField!
     @IBOutlet weak var genderTextField: UITextField!
     
+    @IBOutlet weak var bottomSpacing: NSLayoutConstraint!
     
     //BackendCallback
     func onError() {
@@ -37,6 +38,8 @@ class ResponsePreferencesPage: UIViewController, BackendCallback {
     
     
     override func viewDidLoad() {
+        setSensitiveConstraint(bottomSpacing, offset: 0);
+        
         super.viewDidLoad()
 
         AtwUiUtils.setDataChooser(amountOfInquiriesTextField, items: Configuration.INQUIRY_LIMIT_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().dailyInquiryLimit);

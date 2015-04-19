@@ -1999,6 +1999,7 @@
                     <connections>
                         <outlet property="ageTextField" destination="zwU-hv-dO0" id="4ZJ-6N-1id"/>
                         <outlet property="amountOfInquiriesTextField" destination="gzf-cf-rkV" id="w9X-ku-DQH"/>
+                        <outlet property="bottomSpacing" destination="e9o-tY-t5Z" id="HBe-Fx-49S"/>
                         <outlet property="genderTextField" destination="gCg-wT-Ugj" id="dxs-S3-t0u"/>
                     </connections>
                 </viewController>
