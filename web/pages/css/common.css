@@ -133,17 +133,16 @@ select {
   margin: 5px;
   
   width: calc(100% - 20px);
-  height: 140px;
+  height: 100px;
   
   overflow: auto;
 
-  border-radius: 5px;
   border-style: solid;
   border-width: 1px;
-  border-color: black;
+  border-color: rgb(166, 166, 166);
   
   background: white;
-  color: black;
+  color: rgb(75, 75, 75);
 }
 .text-editor-attachmentbar {
   margin-top: 10px;

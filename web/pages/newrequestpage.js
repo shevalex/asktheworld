@@ -8,57 +8,34 @@ NewRequestPage = ClassUtils.defineClass(AbstractPage, function NewRequestPage() 
   this._requestWaitTimeElement;
   this._requestQuantityElement;
   
-  this._sendButton = null;
+  this._updating = false;
 });
 
 NewRequestPage.prototype.definePageContent = function(root) {
-  var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
-  generalPanel.innerHTML = this.getLocale().OutlineText;
-
-  var requestTextPanel = UIUtils.appendBlock(root, "RequestContentPanel");
-  UIUtils.appendLabel(requestTextPanel, "Label", this.getLocale().ContentPanelLabel);
-  this._requestTextEditor = UIUtils.appendTextEditor(requestTextPanel, "TextEditor", {
+  var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
+  
+  UIUtils.appendLabel(contentPanel, "RequestEditorLabel", this.getLocale().RequestEditorLabel);
+  this._requestTextEditor = UIUtils.appendTextEditor(contentPanel, "TextEditor", {
     fileTooBigListener: function(file) {
       Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
     }
   });
+  
+  UIUtils.appendLabel(contentPanel, "ExpertiseCategoryLabel", this.getLocale().ExpertiseCategoryLabel);
+  this._requestExpertiseCategoryElement = contentPanel.appendChild(UIUtils.createMultiOptionList(UIUtils.createId(contentPanel, "ExpertiseCategory"), Application.Configuration.EXPERTISES, true));
+  
+  UIUtils.appendLabel(contentPanel, "WhomToSendLabel", this.getLocale().WhomToSendLabel);
+  var whomToSendPanel = UIUtils.appendBlock(contentPanel, "WhomToSendPanel");
+  this._requestGenderElement = whomToSendPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(whomToSendPanel, "Gender"), I18n.getLocale().literals.TargetGenderLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
+  this._requestAgeElement = whomToSendPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(whomToSendPanel, "Age"), I18n.getLocale().literals.TargetAgeGroupLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
 
-  var requestExpirtiseCategoryPanel = UIUtils.appendBlock(root, "RequestExpertiseCategoryPanel");
-  UIUtils.appendLabel(requestExpirtiseCategoryPanel, "Label", this.getLocale().ExpertiseCategoryLabel);
-  var requestExpirtiseCategoryContainer = UIUtils.appendBlock(requestExpirtiseCategoryPanel, "Container");
-  this._requestExpertiseCategoryElement = requestExpirtiseCategoryContainer.appendChild(UIUtils.createMultiOptionList(UIUtils.createId(requestExpirtiseCategoryPanel, "ExpertiseCategory"), Application.Configuration.EXPERTISES, true));
+  UIUtils.appendLabel(contentPanel, "HowLongToWaitLabel", this.getLocale().HowLongToWaitLabel);
+  var howLongToWaitPanel = UIUtils.appendBlock(contentPanel, "HowLongToWaitPanel");
+  this._requestQuantityElement = howLongToWaitPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(howLongToWaitPanel, "Quantity"), I18n.getLocale().literals.NumOfResponsesLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
+  this._requestWaitTimeElement = howLongToWaitPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(howLongToWaitPanel, "WaitTime"), I18n.getLocale().literals.WaitTimeLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
   
-  
-  var requestParamsPanel = UIUtils.appendBlock(root, "RequestParametersPanel");
-  UIUtils.appendLabel(requestParamsPanel, "Label", this.getLocale().ParametersLabel);
-
-  var prefLinkId = UIUtils.createId(root, "PreferencesLink");
-  UIUtils.appendLabel(requestParamsPanel, "Note", this.getLocale().ModifySettingsLinkProvider(prefLinkId));
-  UIUtils.setClickListener(prefLinkId, function() {
-    Application.showMenuPage(UserPreferencesPage.name);
-  });
-  
-  var targetSelectorPanel = UIUtils.appendBlock(requestParamsPanel, "TargetSelectors");
-
-  this._requestGenderElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "0 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "Gender"), I18n.getLocale().literals.TargetGenderLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
-  
-  this._requestAgeElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "0 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "AgeCategory"), I18n.getLocale().literals.TargetAgeGroupLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
-  
-  requestParamsPanel.appendChild(UIUtils.createLineBreak());
-  
-  this._requestWaitTimeElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "20px 4% 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "WaitTime"), I18n.getLocale().literals.WaitTimeLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
-  
-  this._requestQuantityElement = targetSelectorPanel.appendChild(UIUtils.createSpan("48%", "20px 0 0 0")).appendChild(UIUtils.createLabeledDropList(UIUtils.createId(targetSelectorPanel, "Quantity"), I18n.getLocale().literals.NumOfResponsesLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
-  
-  var controlPanel = UIUtils.appendBlock(root, "RequestControlPanel");
-  UIUtils.appendLabel(controlPanel, "Label", this.getLocale().ControlsLabel);
-  
-  controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0"));
-  this._sendButton = controlPanel.appendChild(UIUtils.createSpan("32%", "0 2% 0 0")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "SendButton"), this.getLocale().SendButton));
-  var resetButton = controlPanel.appendChild(UIUtils.createSpan("32%")).appendChild(UIUtils.createButton(UIUtils.createId(controlPanel, "ResetButton"), this.getLocale().ResetButton));
-  
-  
-  UIUtils.setClickListener(this._sendButton, function() {
+  var sendButton = UIUtils.appendButton(contentPanel, "SendButton", this.getLocale().SendButton);
+  UIUtils.setClickListener(sendButton, function() {
     if (this._requestTextEditor.getValue() != "") {
       this._createRequest();
     } else {
@@ -67,6 +44,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
     }
   }.bind(this));
   
+  var resetButton = UIUtils.appendButton(contentPanel, "ResetButton", this.getLocale().ResetButton);
   UIUtils.setClickListener(resetButton, function() {
     this._resetPage();
   }.bind(this));
@@ -77,11 +55,14 @@ NewRequestPage.prototype.onShow = function() {
 }
 
 NewRequestPage.prototype.onHide = function() {
-  UIUtils.setEnabled(this._sendButton, true);
 }
 
 
 NewRequestPage.prototype._resetPage = function() {
+  if (this._updating) {
+    return;
+  }
+  
   this._requestTextEditor.reset();
   this._requestTextEditor.focus();
 
@@ -94,12 +75,15 @@ NewRequestPage.prototype._resetPage = function() {
 }
 
 NewRequestPage.prototype._createRequest = function() {
+  if (this._updating) {
+    return;
+  }
+  
   var page = this;
   
   var callback = {
     success: function(requestId) {
       Application.showMessage(page.getLocale().RequestSentMessage);
-      page._resetPage();
       this._onCompletion();
     },
     failure: function() {
@@ -112,10 +96,11 @@ NewRequestPage.prototype._createRequest = function() {
     },
     
     _onCompletion: function() {
+      page._updating = false;
+      
       Application.hideSpinningWheel();
-      UIUtils.setEnabled(this._sendButton, true);
       Application.showMenuPage(ActiveOutgoingRequestsPage.name);
-    }.bind(this)
+    }
   }
 
   var request = {
@@ -128,7 +113,6 @@ NewRequestPage.prototype._createRequest = function() {
     expertise_category: this._requestExpertiseCategoryElement.getSelectedData()
   }
   
-  UIUtils.setEnabled(this._sendButton, false);
   Application.showSpinningWheel();
 
   Backend.createRequest(request, callback);

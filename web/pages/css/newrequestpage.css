@@ -1,99 +1,93 @@
 #NewRequestPage {
 }
 
-#NewRequestPage-GeneralPanel {
-  display: block;
-  
-  font-size: 20px;
-}
 
-#NewRequestPage-RequestContentPanel {
-  display: block;
-  margin-top: 20px;
-}
-
-#NewRequestPage-RequestContentPanel-Label {
-  display: block;
-  text-align: left;
-  
-  font-size: 20px;
-}
-
-#NewRequestPage-RequestContentPanel-TextEditor {
-  margin-top: 10px;
-  
-  font-size: 15px;
-}
-
-#NewRequestPage-RequestExpertiseCategoryPanel {
-  display: block;
-  margin-top: 10px;
-  
-  font-size: 20px;
-}
-
-#NewRequestPage-RequestExpertiseCategoryPanel-Label {
-  display: block;
-  text-align: left;
-  margin-bottom: 10px;
-
-  font-size: 20px;
-}
-
-#NewRequestPage-RequestExpertiseCategoryPanel-Container {
-  margin-left: 1%;
-  width: 98%;
-}
-
-
-
-#NewRequestPage-RequestParametersPanel {
-  display: block;
-  margin-top: 30px;
-  
-  font-size: 20px;
-}
-
-#NewRequestPage-RequestParametersPanel-Label {
-  display: block;
-  text-align: left;
-
-  font-size: 20px;
-}
-
-#NewRequestPage-RequestParametersPanel-Note {
-  display: block;
-  text-align: left;
-  margin-top: 5px;
-  margin-bottom: 10px;
-
-  font-size: 15px;
-}
-
-#NewRequestPage-RequestParametersPanel-TargetSelectors {
-  padding: 0px 5px 0px 5px;
-}
-
-#NewRequestPage-RequestControlPanel {
-  display: block;
+#NewRequestPage-ContentPanel {
+  margin-left: calc(50% - 350px);
+  width: 700px;
+  display: inline-block;
   margin-top: 20px;
   
-  text-align: center;
+  font-family: Verdana;
+  font-size: 13px;
 }
 
-#NewRequestPage-RequestControlPanel-Label {
-  display: block;
-  text-align: left;
+#NewRequestPage-ContentPanel-RequestEditorLabel {
+  margin-top: 10px;
+  font: inherit;
+}
+
+#NewRequestPage-ContentPanel-TextEditor {
+  margin-top: 10px;
+  font: inherit;
+}
+
+#NewRequestPage-ContentPanel-ExpertiseCategoryLabel {
+  margin-top: 10px;
+  font: inherit;
+}
+
+#NewRequestPage-ContentPanel-ExpertiseCategory {
+  width: 300px;
+  margin-top: 10px;
   margin-bottom: 20px;
+  margin-left: 20px;
+  font: inherit;
+}
 
+
+#NewRequestPage-ContentPanel-WhomToSendLabel {
+}
+
+#NewRequestPage-ContentPanel-WhomToSendPanel {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+#NewRequestPage-ContentPanel-WhomToSendPanel-Gender {
+  width: 300px;
+  display: inline-block;
+}
+#NewRequestPage-ContentPanel-WhomToSendPanel-Age {
+  width: 300px;
+  display: inline-block;
+  float: right;
+}
+
+
+#NewRequestPage-ContentPanel-HowLongToWaitLabel {
+  margin-top: 20px;
+  font: inherit;
+}
+
+#NewRequestPage-ContentPanel-HowLongToWaitPanel {
+  margin-top: 10px;
+  margin-left: 20px;
+}
+#NewRequestPage-ContentPanel-HowLongToWaitPanel-Quantity {
+  width: 300px;
+  display: inline-block;
+}
+#NewRequestPage-ContentPanel-HowLongToWaitPanel-WaitTime {
+  width: 300px;
+  display: inline-block;
+  float: right;
+}
+
+
+#NewRequestPage-ContentPanel-SendButton {
+  width: 150px;
+  margin-top: 50px;
+  margin-left: 170px;
+  
   font-size: 20px;
 }
 
-#NewRequestPage-RequestControlPanel-SendButton {
-  padding: 0px 50px 0px 50px;
-  font-size: 30px;
-}
+#NewRequestPage-ContentPanel-ResetButton {
+  width: 55px;
+  float: right;
+  margin-top: 55px;
+  margin-right: 245px;
 
-#NewRequestPage-RequestControlPanel-ResetButton {
-  font-size: 20px;
+  font-size: 15px;
 }
