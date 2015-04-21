@@ -1,5 +1,4 @@
 .outputgoing-request-container {
-/*  display: inline-block;*/
   position: relative;
   padding: 5px;
   
@@ -15,6 +14,12 @@
   
   font-family: Verdana;
   font-size: 12px;
+}
+.outputgoing-request-container:hover {
+  background-color: red;
+}
+.outputgoing-request-container:active {
+  background-color: green;
 }
 .outputgoing-request-container .request-date-label {
   margin-left: 10px;
@@ -55,6 +60,65 @@
   
   color: black;
 }
+
+.incoming-request-container {
+  position: relative;
+  padding: 5px;
+  
+  min-width: 500px;
+  max-width: 700px;
+  
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(166, 166, 166);
+  
+  background-color: blue;
+  color: rgb(166, 166, 166);
+  
+  font-family: Verdana;
+  font-size: 12px;
+}
+.incoming-request-container:hover {
+  background-color: red;
+}
+.incoming-request-container:active {
+  background-color: green;
+}
+.incoming-request-container .request-date-label {
+  margin-left: 10px;
+  height: 15px;
+  
+  color: inherit;
+}
+.incoming-request-container .request-expires-label {
+  position: absolute;
+  right: 100px;
+  top: 5px;
+  
+  color: inherit;
+}
+.incoming-request-container .request-expertise-label {
+  position: absolute;
+  right: 60px;
+  top: 25px;
+  
+  color: inherit;
+}
+.incoming-request-container .request-singleline-text {
+  margin-left: 40px;
+  margin-top: 5px;
+  
+  color: white;
+}
+.incoming-request-container .request-multiline-text {
+  margin-left: 40px;
+  margin-top: 5px;
+  
+  color: white;
+}
+
+
+
 
 
 

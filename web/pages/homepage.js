@@ -64,8 +64,11 @@ HomePage.prototype.definePageContent = function(root) {
   generalPanel.innerHTML = this.getLocale().WelcomeProvider(Backend.getUserProfile().name);
 
   // Temporary debugging
-//  var requestItem = new AbstractRequestPage.OutgoingRequestItem("request2");
-//  requestItem.append(generalPanel);
+//  var outRequestItem = new AbstractRequestPage.OutgoingRequestItem("request2");
+//  outRequestItem.append(generalPanel);
+
+  var inRequestItem = new AbstractRequestPage.IncomingRequestItem("request100");
+  inRequestItem.append(generalPanel);
 
   var outgoingRequestsPanel = UIUtils.appendBlock(root, "OutgoingRequestPanel");
   this._outgoingRequestsStatusElement = UIUtils.appendBlock(outgoingRequestsPanel, "Status");

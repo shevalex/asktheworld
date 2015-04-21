@@ -4,9 +4,10 @@ AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequ
 
 
 
-AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(Object, function OutgoingRequestItem(requestId, settings) {
+AbstractRequestPage._AbstractRequestItem = ClassUtils.defineClass(Object, function _AbstractRequestItem(requestId, baseCssClass, settings) {
   this._requestId = requestId;
   this._settings = settings || {};
+  this._baseCssClass = baseCssClass;
   
   this._container = null;
   
@@ -19,7 +20,7 @@ AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(Object, functio
   }.bind(this);
 });
 
-AbstractRequestPage.OutgoingRequestItem.prototype.append = function(root) {
+AbstractRequestPage._AbstractRequestItem.prototype.append = function(root) {
   if (this._container != null) {
     throw "Item " + this._requestId + " is already added";
   }
@@ -27,7 +28,7 @@ AbstractRequestPage.OutgoingRequestItem.prototype.append = function(root) {
   Backend.addCacheChangeListener(this._cacheChangeListener);
   
   this._container = UIUtils.appendBlock(root, this._requestId);
-  UIUtils.addClass(this._container, "outputgoing-request-container");
+  UIUtils.addClass(this._container, this._baseCssClass);
 
   var request = Backend.getRequest(this._requestId);
   if (request != null) {
@@ -35,7 +36,7 @@ AbstractRequestPage.OutgoingRequestItem.prototype.append = function(root) {
   }
 }
 
-AbstractRequestPage.OutgoingRequestItem.prototype.remove = function() {
+AbstractRequestPage._AbstractRequestItem.prototype.remove = function() {
   if (this._container == null) {
     throw "Item " + this._requestId + " cannot be removed since it was never added";
   }
@@ -45,6 +46,15 @@ AbstractRequestPage.OutgoingRequestItem.prototype.remove = function() {
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
 }
+
+AbstractRequestPage._AbstractRequestItem.prototype._fill = function() {
+  throw "Inimplemented";
+}
+
+
+AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function OutgoingRequestItem(requestId, settings) {
+  AbstractRequestPage._AbstractRequestItem.call(this, requestId, "outputgoing-request-container", settings);
+});
 
 AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   UIUtils.get$(this._container).empty();
@@ -68,6 +78,37 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   }
   var counterLabel = UIUtils.appendLabel(this._container, "CounterLabel", counterText);
   UIUtils.addClass(counterLabel, "request-responsecounter-label");
+  
+  var requestText = UIUtils.appendBlock(this._container, "RequestText");
+  if (this._settings.fullText) {
+    UIUtils.addClass(requestText, "request-multiline-text");
+    requestText.innerHTML = request.text;
+  } else {
+    UIUtils.addClass(requestText, "request-singleline-text");
+    requestText.innerHTML = UIUtils.getOneLine(request.text);
+  }
+
+  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.toExpertiseString(request.expertise_category));
+  UIUtils.addClass(expertiseLabel, "request-expertise-label");
+}
+
+
+AbstractRequestPage.IncomingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function IncomingRequestItem(requestId, settings) {
+  AbstractRequestPage._AbstractRequestItem.call(this, requestId, "incoming-request-container", settings);
+});
+
+AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
+  UIUtils.get$(this._container).empty();
+  
+  var request = Backend.getRequest(this._requestId);
+  
+  var requestDate = new Date(request.time);
+  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", requestDate.toDateString() + ", " + requestDate.toLocaleTimeString());
+  UIUtils.addClass(dateLabel, "request-date-label");
+  
+  var expires = (request.time + request.response_wait_time * 60000) - Date.now();
+  var expiresLabel = UIUtils.appendLabel(this._container, "ExpiresLabel", I18n.getPageLocale("AbstractRequestPage").ExpiresLabel + " " + expires);
+  UIUtils.addClass(expiresLabel, "request-expires-label");
   
   var requestText = UIUtils.appendBlock(this._container, "RequestText");
   if (this._settings.fullText) {
