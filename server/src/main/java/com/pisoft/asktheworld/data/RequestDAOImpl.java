@@ -43,13 +43,14 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 		return list;
 	}
 	
-	public List<ATWRequest> findNewIncommingRequets(int userId, List<Integer> userRequests, List<String> userAges, List<String> userGenders) {
+	public List<ATWRequest> findNewIncomingRequets(int userId, List<Integer> userRequests, List<String> userAges, List<String> userGenders, int number) {
 		@SuppressWarnings("unchecked")
 		List<ATWRequest> list =  entityManager.createQuery(findForUserQuery)
 				.setParameter(1, userId)
 				.setParameter(2, userRequests)
 				.setParameter(3, userAges)
 				.setParameter(4, userGenders)
+				.setMaxResults(number)
 				.getResultList();
 		if(list != null) {System.out.println("New requets list size = "+list.size());}
 		else { System.out.println("New requets list is NULL");}

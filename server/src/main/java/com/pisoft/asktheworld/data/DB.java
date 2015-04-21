@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pisoft.asktheworld.enums.RequestStatus;
+
 @Service
 @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 public class DB {
@@ -120,7 +122,7 @@ public class DB {
 		requests.create(request);
 		//Assign it to right users
 		//Find users base on request
-		List<ATWUser> users = findIncommingRequestUsers(request);
+		List<ATWUser> users = findIncomingRequestUsers(request);
 		//TODO: shuffle ?
 		
 		//TODO: what we should do if list is empty?
@@ -146,7 +148,7 @@ public class DB {
 		return request;
 	}
 
-	private List<ATWUser> findIncommingRequestUsers(ATWRequest request) {
+	private List<ATWUser> findIncomingRequestUsers(ATWRequest request) {
 		String gender = request.getResponse_gender();
 		String age = request.getResponse_age_group();
 		//TODO: it should not be here. 
@@ -179,6 +181,25 @@ public class DB {
 		return existRequest;
 	}
 	
+	
+	/**
+	 * getUserOutgoingRequestsIDs returns sorted list of outgoing requests ids for 
+	 * particular user base on status and 
+	 * @param id - user id 
+	 * @param status - required request status [active, archived, deleted, expired]
+	 * @param sorting - sorting field. Now we support just creation time sorting  
+	 * @return list of outgoing requests ids or empty list 
+	 */
+	public List<Integer> getUserOutgoingRequestsIDs(int id, String status, String sorting) {
+		List<Integer> listIDs = null;
+		List<ATWRequest> listRequests = findUserOutgoingRequests(id, status, sorting);
+		if(listRequests != null) {
+			listIDs = new ArrayList<Integer>();
+			for(Iterator<ATWRequest> it = listRequests.iterator(); it.hasNext(); listIDs.add(it.next().getId()));
+		}
+		return listIDs;
+	}
+
 	public List<ATWRequest> findUserOutgoingRequests(int id, String status, String sorting) {
 		//test it here not necessary but leave it for protection now
 		ATWUser existUser = getUser(id);
@@ -193,59 +214,81 @@ public class DB {
 		return list;
 	}
 	
-	public List<Integer> getUserOutgoingRequestsIDs(int id, String status, String sorting) {
-		List<Integer> listIDs = null;
-		List<ATWRequest> listRequests = findUserOutgoingRequests(id, status, sorting);
-		if(listRequests != null) {
-			listIDs = new ArrayList<Integer>();
-			for(Iterator<ATWRequest> it = listRequests.iterator(); it.hasNext(); listIDs.add(it.next().getId()));
-		}
-		return listIDs;
-	}
 	
-	public List<Integer> getUserIncommingRequestsIDs(int id, String status,
-			String sorting) {
+	/**
+	 * Return sorted list of incoming requests ids with particular status for user
+	 * @param id user id
+	 * @param status status of request
+	 * @param sorting is not supported yet
+	 * @return list of ids or empty list
+	 */
+	public List<Integer> getUserIncomingRequestsIDs(int id, String status, String sorting) {
+		//TODO: add support for sorting
+		//TODO: move selecting and sorting into DAO layer? 
 		ATWUser user = getUser(id);
-		//get already assigned requests
-		List<Integer> userIncommingRequests = getIncommingRequestsByUser(id);
-		//get number of requests per day
-		List<Integer> userNewIncommingRequests = getNewIncommingRequests(user);
-		for(Iterator<Integer> it = userNewIncommingRequests.iterator(); it.hasNext(); ){
-			int rID = it.next();
-			user.addRequets(getRequest(rID));
-			userIncommingRequests.add(rID);
+		List<Integer> requestsIDs;
+		RequestStatus rStatus = RequestStatus.valueOf(status); 
+		//if staus is all, return without filtrations
+		if(rStatus == RequestStatus.ALL) {
+			requestsIDs = user.getIncomingRequestsIDs();
+		} else {
+			//this list should not be null
+			List<ATWRequest> requests = user.getIncomingRequests();
+			requestsIDs = new ArrayList<Integer>();
+			for(Iterator<ATWRequest> it = requests.iterator(); it.hasNext(); ) {
+				ATWRequest r = it.next();
+				if (rStatus.equals(r.getStatus())) {
+					requestsIDs.add(r.getId());
+				}
+			}
 		}
-		//save in DB
-		updateUser(user);
-		return userIncommingRequests;
+		return requestsIDs;
+	}
+
+	/**
+	 * Method assigns additional number requests to user
+	 * @param user - to assign new requests
+	 * @param number - number of new requests
+	 * @return list of assigned requests ids. 
+	 */
+	public List<Integer> getAdditionalIncomingRequestsIDs(ATWUser user, int number) {
+		List<ATWRequest> requests = getNewIncomingRequests(user, number);
+		List<Integer> requestsIDs = new ArrayList<Integer>();
+		if(requests != null) {
+			for(Iterator<ATWRequest> it = requests.iterator(); it.hasNext(); ){
+				ATWRequest r = it.next();
+				user.addRequets(r);
+				requestsIDs.add(r.getId());
+			}
+			//save in DB
+			updateUser(user);
+		}
+		return requestsIDs;
 	}
 	
 	//I am not sure that we need this function
 	//public void addRequestToUser(int userId, int requestId){}
-	public List<Integer> getIncommingRequestsByUser(int userId){
-		return getUser(userId).getIncommingRequests();
-	}
 	
-	public List<Integer> getNewIncommingRequests(ATWUser user){
+	
+	/**
+	 * Methods searches for number new incoming request for user  
+	 * @param user
+	 * @return
+	 */
+	private List<ATWRequest> getNewIncomingRequests(ATWUser user, int number){
 		int id = user.getId();
-		List<Integer> userIncommingRequests = getIncommingRequestsByUser(id);
+		//TODO: we need to optimize here. This list will grow up. Probably we need just Active request here
+		List<Integer> userIncomingRequests = user.getIncomingRequestsIDs();
 		//List should not be empty
-		userIncommingRequests.add(0);
+		userIncomingRequests.add(0);
 		List<String> userAges = new ArrayList<String>(); 
 		userAges.add(user.getAge_category());
 		userAges.add("All");
 		List<String> userGenders = new ArrayList<String>();
 		userGenders.add(user.getGender());
 		userGenders.add("All");
-		List<ATWRequest> newIncommingRequests = requests.findNewIncommingRequets(id, userIncommingRequests, userAges, userGenders);
-		List<Integer> listIDs = null;
-		if(newIncommingRequests != null) {
-			listIDs = new ArrayList<Integer>();
-			for(Iterator<ATWRequest> it = newIncommingRequests.iterator(); it.hasNext(); listIDs.add(it.next().getId()));
-		} else {
-			System.out.println("LIST EMPTY");
-		}
-		return listIDs;
+		List<ATWRequest> newIncomingRequests = requests.findNewIncomingRequets(id, userIncomingRequests, userAges, userGenders, number);
+		return newIncomingRequests;
 	}
 	
 	

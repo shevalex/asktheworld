@@ -79,12 +79,13 @@ public class ATWUser implements Serializable {
 		this.name = name;
 	}
 	
+	//TODO: Probably we need to change this to request IDs to minimize size of this array
 	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name="USER_INC_REQ",
 	      joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="id")},
 	      inverseJoinColumns={@JoinColumn(name="REQ_ID", referencedColumnName="request_id")})
-	private List<ATWRequest> incommingRequets;
+	private List<ATWRequest> incomingRequets = new ArrayList<ATWRequest>();
 	
 	
 	public ATWUser createCopy() {
@@ -114,12 +115,18 @@ public class ATWUser implements Serializable {
 	     return false;
 	}
 	public void addRequets(ATWRequest request) {
-		incommingRequets.add(request);
+		incomingRequets.add(request);
 	}
 	
-	public List<Integer> getIncommingRequests(){
+	public List<Integer> getIncomingRequestsIDs(){
 		List<Integer> reqstsIds = new ArrayList<Integer>();
-		for(Iterator<ATWRequest> it =incommingRequets.iterator(); it.hasNext(); reqstsIds.add(it.next().getId()));
+		for(Iterator<ATWRequest> it =incomingRequets.iterator(); it.hasNext(); reqstsIds.add(it.next().getId()));
 		return reqstsIds;
 	}
+	
+	public List<ATWRequest> getIncomingRequests() {
+		return incomingRequets;
+	}
+	
+	
 }

@@ -58,10 +58,6 @@ public class RequestController {
 	public ResponseEntity<ATWRequest> getUser(@PathVariable("requestID") int id) {
 		//System.out.println("Request id " + id);
 		ATWRequest request  = db.getRequest(id);
-/*		if(request != null) {
-			req  = user.createCopy();
-		}
-*/
 		//TODO:"Need to add security check. Should we add it in security filter or here?"
 		//We can compare request owner id with current user ID
 		//Plus we need to check if this user has this request in incoming list??
@@ -91,12 +87,12 @@ public class RequestController {
 		return new ResponseEntity<String>("{\"responses\":"+Arrays.toString(list.toArray())+"}", HttpStatus.OK);
 	}
 	
-	//For specific user incomming requests 
-	@RequestMapping(method=RequestMethod.GET, value="/user/{user_id}/requests/incomming")
-	public ResponseEntity<String> getIncommingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false) String  status,
+	//For specific user incoming requests 
+	@RequestMapping(method=RequestMethod.GET, value="/user/{user_id}/requests/incoming")
+	public ResponseEntity<String> getIncomingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false) String  status,
 			@RequestParam(value="sorting", required = false, defaultValue="chronologically") String  sorting) {
 		//TODO: check if user id is correct?  I am not sure that we should check this
-		List<Integer> list = db.getUserIncommingRequestsIDs(id, status, sorting);
+		List<Integer> list = db.getUserIncomingRequestsIDs(id, status, sorting);
 		if(list == null) {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
