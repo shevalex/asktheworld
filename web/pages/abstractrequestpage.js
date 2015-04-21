@@ -4,35 +4,38 @@ AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequ
 
 
 
-AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(Object, function OutgoingRequestItem(requestId) {
+AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(Object, function OutgoingRequestItem(requestId, settings) {
   this._requestId = requestId;
+  this._settings = settings || {};
   
   this._container = null;
   
   this._cacheChangeListener = function(event) {
-    if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
+    if (event.requestId == this._requestId
+        && (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED || Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED)) {
+      
       this._fill();
     }
   }.bind(this);
 });
 
-AbstractRequestPage.OutgoingRequestItem.append = function(root) {
+AbstractRequestPage.OutgoingRequestItem.prototype.append = function(root) {
   if (this._container != null) {
     throw "Item " + this._requestId + " is already added";
   }
   
   Backend.addCacheChangeListener(this._cacheChangeListener);
   
-  this._container = UIUtils.appendBlock(root, requestId);
-  UIUtils.addClass(container, "outputgoing-request-container");
+  this._container = UIUtils.appendBlock(root, this._requestId);
+  UIUtils.addClass(this._container, "outputgoing-request-container");
 
-  var request = Backend.getRequest(requestId);
+  var request = Backend.getRequest(this._requestId);
   if (request != null) {
     this._fill();
   }
 }
 
-AbstractRequestPage.OutgoingRequestItem.remove = function() {
+AbstractRequestPage.OutgoingRequestItem.prototype.remove = function() {
   if (this._container == null) {
     throw "Item " + this._requestId + " cannot be removed since it was never added";
   }
@@ -43,30 +46,40 @@ AbstractRequestPage.OutgoingRequestItem.remove = function() {
   Backend.removeCacheChangeListener(this._cacheChangeListener);
 }
 
-AbstractRequestPage.OutgoingRequestItem._fill = function() {
+AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   UIUtils.get$(this._container).empty();
   
-  var request = Backend.getRequest(requestId);
+  var request = Backend.getRequest(this._requestId);
   
   var requestDate = new Date(request.time);
-  var dateLabel = UIUtils.appendLabel(this._container, requestDate.toDateString() + ", " + requestDate.toLocaleTimeString());
+  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", requestDate.toDateString() + ", " + requestDate.toLocaleTimeString());
   UIUtils.addClass(dateLabel, "request-date-label");
   
-  var targetLabel = UIUtils.appendLabel(this._container, Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
+  var targetLabel = UIUtils.appendLabel(this._container, "TargetLabel", I18n.getPageLocale("AbstractRequestPage").TargetLabel + " " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
   UIUtils.addClass(targetLabel, "request-target-label");
   
   var unreadResponses = Backend.getIncomingResponseIds(this._requestId, Backend.Response.STATUS_READ);
   var allResponses = Backend.getIncomingResponseIds(this._requestId);
-  var counterLabel = null;
+  var counterText = null;
   if (allResponses != null && unreadResponses != null) {
-    counterLabel = UIUtils.appendLabel(this._container, unreadResponses.length + "/" + allResponses.length);
+    counterText = "<b>" + unreadResponses.length + "</b>/" + allResponses.length;
   } else {
-    counterLabel = "--";
+    counterText = "--";
   }
+  var counterLabel = UIUtils.appendLabel(this._container, "CounterLabel", counterText);
   UIUtils.addClass(counterLabel, "request-responsecounter-label");
   
-  var expertiseLabel = UIUtils.appendLabel(this._container, Application.Configuration.toExpertiseString(request.expertise_category));
-  UIUtils.addClass(targetLabel, "request-expertise-label");
+  var requestText = UIUtils.appendBlock(this._container, "RequestText");
+  if (this._settings.fullText) {
+    UIUtils.addClass(requestText, "request-multiline-text");
+    requestText.innerHTML = request.text;
+  } else {
+    UIUtils.addClass(requestText, "request-singleline-text");
+    requestText.innerHTML = UIUtils.getOneLine(request.text);
+  }
+
+  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.toExpertiseString(request.expertise_category));
+  UIUtils.addClass(expertiseLabel, "request-expertise-label");
 }
 
 

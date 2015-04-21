@@ -1,14 +1,60 @@
 .outputgoing-request-container {
+/*  display: inline-block;*/
+  position: relative;
+  padding: 5px;
+  
+  min-width: 500px;
+  max-width: 700px;
+  
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(166, 166, 166);
+  
+  background-color: yellow;
+  color: rgb(166, 166, 166);
+  
+  font-family: Verdana;
+  font-size: 12px;
 }
 .outputgoing-request-container .request-date-label {
+  margin-left: 10px;
+  height: 15px;
+  
+  color: inherit;
 }
 .outputgoing-request-container .request-target-label {
+  position: absolute;
+  left: 300px;
+  top: 5px;
+  
+  color: inherit;
 }
 .outputgoing-request-container .request-responsecounter-label {
+  position: absolute;
+  right: 40px;
+  top: 5px;
+  
+  color: inherit;
 }
 .outputgoing-request-container .request-expertise-label {
+  position: absolute;
+  right: 60px;
+  top: 25px;
+  
+  color: inherit;
 }
-
+.outputgoing-request-container .request-singleline-text {
+  margin-left: 40px;
+  margin-top: 5px;
+  
+  color: black;
+}
+.outputgoing-request-container .request-multiline-text {
+  margin-left: 40px;
+  margin-top: 5px;
+  
+  color: black;
+}
 
 
 
