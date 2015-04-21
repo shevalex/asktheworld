@@ -1,3 +1,17 @@
+.outputgoing-request-container {
+}
+.outputgoing-request-container .request-date-label {
+}
+.outputgoing-request-container .request-target-label {
+}
+.outputgoing-request-container .request-responsecounter-label {
+}
+.outputgoing-request-container .request-expertise-label {
+}
+
+
+
+
 .request-and-responses-container {
   min-width: 200px;
 }

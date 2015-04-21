@@ -3,6 +3,77 @@ AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequ
 });
 
 
+
+AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(Object, function OutgoingRequestItem(requestId) {
+  this._requestId = requestId;
+  
+  this._container = null;
+  
+  this._cacheChangeListener = function(event) {
+    if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
+      this._fill();
+    }
+  }.bind(this);
+});
+
+AbstractRequestPage.OutgoingRequestItem.append = function(root) {
+  if (this._container != null) {
+    throw "Item " + this._requestId + " is already added";
+  }
+  
+  Backend.addCacheChangeListener(this._cacheChangeListener);
+  
+  this._container = UIUtils.appendBlock(root, requestId);
+  UIUtils.addClass(container, "outputgoing-request-container");
+
+  var request = Backend.getRequest(requestId);
+  if (request != null) {
+    this._fill();
+  }
+}
+
+AbstractRequestPage.OutgoingRequestItem.remove = function() {
+  if (this._container == null) {
+    throw "Item " + this._requestId + " cannot be removed since it was never added";
+  }
+  
+  UIUtils.get$(this._container).remove();
+  this._container = null;
+  
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
+}
+
+AbstractRequestPage.OutgoingRequestItem._fill = function() {
+  UIUtils.get$(this._container).empty();
+  
+  var request = Backend.getRequest(requestId);
+  
+  var requestDate = new Date(request.time);
+  var dateLabel = UIUtils.appendLabel(this._container, requestDate.toDateString() + ", " + requestDate.toLocaleTimeString());
+  UIUtils.addClass(dateLabel, "request-date-label");
+  
+  var targetLabel = UIUtils.appendLabel(this._container, Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
+  UIUtils.addClass(targetLabel, "request-target-label");
+  
+  var unreadResponses = Backend.getIncomingResponseIds(this._requestId, Backend.Response.STATUS_READ);
+  var allResponses = Backend.getIncomingResponseIds(this._requestId);
+  var counterLabel = null;
+  if (allResponses != null && unreadResponses != null) {
+    counterLabel = UIUtils.appendLabel(this._container, unreadResponses.length + "/" + allResponses.length);
+  } else {
+    counterLabel = "--";
+  }
+  UIUtils.addClass(counterLabel, "request-responsecounter-label");
+  
+  var expertiseLabel = UIUtils.appendLabel(this._container, Application.Configuration.toExpertiseString(request.expertise_category));
+  UIUtils.addClass(targetLabel, "request-expertise-label");
+}
+
+
+
+
+
+
 // THIS IS THE SECTION WHICH DEFINES RequestTable element
 
 /*
