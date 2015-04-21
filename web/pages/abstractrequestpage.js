@@ -130,6 +130,68 @@ AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
 
 
 
+AbstractRequestPage._AbstractRequestsView = ClassUtils.defineClass(Object, function _AbstractRequestsView(requestClass, settings) {
+  this._requestClass = requestClass;
+  this._settings = settings;
+  this._root = null;
+  this._containerElement = null;
+  this._requestIds = null;
+  
+  this._requestItems = [];
+});
+
+AbstractRequestPage._AbstractRequestsView.prototype.setRequestIds = function(requestIds) {
+  this._requestIds = requestIds;
+  
+  this.clear();
+  
+  for (var index in requestIds) {
+    var requestItem = new AbstractRequestPage[this._requestClass](requestIds[index], this._settings);
+    this._requestItems.push(requestItem);
+    
+    if (this._containerElement != null) {
+      this._requestItems[index].append(this._containerElement);
+    }
+  }
+}
+
+AbstractRequestPage._AbstractRequestsView.prototype.append = function(root) {
+  if (this._containerElement != null) {
+    this.remove();
+  }
+  
+  this._root = root;
+  this._containerElement = UIUtils.appendBlock(this._root, "RequestView");
+  
+  if (this._requestIds != null) {
+    this.setRequestIds(this._requestIds);
+  }
+}
+
+AbstractRequestPage._AbstractRequestsView.prototype.clear = function() {
+  for (var index in this._requestItems) {
+    this._requestItems[index].remove();
+  }
+  
+  this._requestItems = [];
+}
+
+AbstractRequestPage._AbstractRequestsView.prototype.remove = function() {
+  this.clear();
+  UIUtils.get$(this._rootElement).remove();
+}
+
+
+AbstractRequestPage.OutgoingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsView, function OutgoingRequestsView(settings) {
+  AbstractRequestPage._AbstractRequestsView.call(this, "OutgoingRequestItem", settings);
+});
+
+AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsView, function IncomingRequestsView(settings) {
+  AbstractRequestPage._AbstractRequestsView.call(this, "IncomingRequestItem", settings);
+});
+
+
+
 
 
 // THIS IS THE SECTION WHICH DEFINES RequestTable element

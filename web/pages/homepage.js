@@ -1,5 +1,13 @@
 HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   AbstractPage.call(this, HomePage.name);
+
+  
+  this._outgoingRequestsView;
+  this._incomingRequestsView;
+  
+  this._cacheChangeListener;
+  
+/*  
   
   this._outgoingRequestsPanelRequests = null;
   this._outgoingRequestsStatusElement = null;
@@ -56,20 +64,37 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
       }.bind(this)
     }
   });
+  
+*/  
 });
 
 
 HomePage.prototype.definePageContent = function(root) {
-  var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
-  generalPanel.innerHTML = this.getLocale().WelcomeProvider(Backend.getUserProfile().name);
-
-  // Temporary debugging
-//  var outRequestItem = new AbstractRequestPage.OutgoingRequestItem("request2");
-//  outRequestItem.append(generalPanel);
-
-  var inRequestItem = new AbstractRequestPage.IncomingRequestItem("request100");
-  inRequestItem.append(generalPanel);
-
+  var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
+  
+  var outgoingRequestPanel = UIUtils.appendBlock(contentPanel, "OutgoingRequestsPanel");
+  UIUtils.appendLabel(outgoingRequestPanel, "Title");
+  
+  this._outgoingRequestsView = new AbstractRequestPage.OutgoingRequestsView({});
+  this._outgoingRequestsView.append(outgoingRequestPanel);
+  
+  var incomingRequestPanel = UIUtils.appendBlock(contentPanel, "IncomingRequestsPanel");
+  UIUtils.appendLabel(incomingRequestPanel, "Title");
+  
+  this._incomingRequestsView = new AbstractRequestPage.IncomingRequestsView({});
+  this._incomingRequestsView.append(incomingRequestPanel);
+  
+  
+  this._cacheChangeListener = function(event) {
+    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED) {
+      this._outgoingRequestsView.setRequestIds(this._getOutgoingRequestIds());
+    } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
+      this._incomingRequestsView.setRequestIds(this._getIncomingRequestIds());
+    }
+  }.bind(this);
+  
+  
+/*  
   var outgoingRequestsPanel = UIUtils.appendBlock(root, "OutgoingRequestPanel");
   this._outgoingRequestsStatusElement = UIUtils.appendBlock(outgoingRequestsPanel, "Status");
   
@@ -123,25 +148,59 @@ HomePage.prototype.definePageContent = function(root) {
     
     this._incomingRequestsStatusElement.innerHTML = this.getLocale().IncomingRequestsStatisticProvider(countRequests);
   }.bind(this));
+  
+  */
 }
 
 HomePage.prototype.onShow = function(root) {
-  UIUtils.get$(this._outgoingRequestsStatusElement).html("Checking if you have any new responses to your requests...");
-  UIUtils.get$(this._incomingRequestsStatusElement).html("Checking if you have any new requests for your attention...");
+//  UIUtils.get$(this._outgoingRequestsStatusElement).html("Checking if you have any new responses to your requests...");
+//  UIUtils.get$(this._incomingRequestsStatusElement).html("Checking if you have any new requests for your attention...");
+//  
+//  this._outgoingStatistics.start();
+//  this._incomingStatistics.start();
+//
+//  this._outgoingRequestList.append(this._outgoingRequestsPanelRequests);
+//  this._incomingRequestList.append(this._incomingRequestsPanelRequests);
   
-  this._outgoingStatistics.start();
-  this._incomingStatistics.start();
-
-  this._outgoingRequestList.append(this._outgoingRequestsPanelRequests);
-  this._incomingRequestList.append(this._incomingRequestsPanelRequests);
+  this._outgoingRequestsView.setRequestIds(this._getOutgoingRequestIds());
+  this._incomingRequestsView.setRequestIds(this._getIncomingRequestIds());
+  
+  Backend.addCacheChangeListener(this._cacheChangeListener);
 }
 
 HomePage.prototype.onHide = function() {
-  this._outgoingRequestList.remove();
-  this._outgoingStatistics.stop();
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
   
-  this._incomingRequestList.remove();
-  this._incomingStatistics.stop();
+//  this._outgoingRequestList.remove();
+//  this._outgoingStatistics.stop();
+//  
+//  this._incomingRequestList.remove();
+//  this._incomingStatistics.stop();
 }
 
 
+HomePage.prototype._getOutgoingRequestIds = function() {
+  var allActiveRequestIds = Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE);
+  var requestIds = [];
+  for (var i in allActiveRequestIds) {
+    var responseIds = Backend.getIncomingResponseIds(allActiveRequestIds[i], Backend.Request.STATUS_UNREAD);
+    if (responseIds != null && responseIds.length > 0) {
+      requestIds.push(allActiveRequestIds[i]);
+    }
+  }
+  
+  return requestIds;
+}
+
+HomePage.prototype._getIncomingRequestIds = function() {
+  var allActiveRequestIds = Backend.getIncomingRequestIds(Backend.Request.STATUS_ACTIVE);
+  var requestIds = [];
+  for (var i in allActiveRequestIds) {
+    var responseIds = Backend.getOutgoingResponseIds(allActiveRequestIds[i]);
+    if (responseIds != null && responseIds.length == 0) {
+      requestIds.push(allActiveRequestIds[i]);
+    }
+  }
+
+  return requestIds;
+}
