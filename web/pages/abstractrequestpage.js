@@ -106,8 +106,12 @@ AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
   var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", requestDate.toDateString() + ", " + requestDate.toLocaleTimeString());
   UIUtils.addClass(dateLabel, "request-date-label");
   
-  var expires = (request.time + request.response_wait_time * 60000) - Date.now();
-  var expiresLabel = UIUtils.appendLabel(this._container, "ExpiresLabel", I18n.getPageLocale("AbstractRequestPage").ExpiresLabel + " " + expires);
+  var timeToLive = (request.time + request.response_wait_time * 1000 * 60 * 60) - Date.now();
+  var numOfDaysLeft = Math.floor(timeToLive / (1000 * 60 * 60 * 24));
+  var numOfHoursLeft = Math.floor((timeToLive % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var numOfMinutesLeft = Math.floor((timeToLive % (1000 * 60 * 60)) / (1000 * 60));
+
+  var expiresLabel = UIUtils.appendLabel(this._container, "ExpiresLabel", I18n.getPageLocale("AbstractRequestPage").ExpiresLabelProvider(numOfDaysLeft, numOfHoursLeft, numOfMinutesLeft));
   UIUtils.addClass(expiresLabel, "request-expires-label");
   
   var requestText = UIUtils.appendBlock(this._container, "RequestText");
