@@ -1,52 +1,38 @@
 #HomePage {
 }
 
-#HomePage-GeneralPanel {
-  font-size: 20px;
-  height: 30px;
+#HomePage-ContentPanel {
+  min-width: 500px;
+  max-width: 700px;
 }
 
-#HomePage-OutgoingRequestPanel {
+#HomePage-ContentPanel-OutgoingRequestsPanel {
   margin-top: 10px;
 }
 
-#HomePage-OutgoingRequestPanel-Status {
-  font-size: 20px;
-  height: 20px;
+#HomePage-ContentPanel-OutgoingRequestsPanel-Title {
+  font-family: Verdana;
+  font-size: 40px;
+  
+  color: orange;
 }
 
-#HomePage-OutgoingRequestPanel-SeeActiveRequests {
-  margin-top: 5px;
-  font-size: 15px;
-  height: 20px;
-}
-
-#HomePage-OutgoingRequestPanel-Requests {
-  margin-top: 10px;
-  padding-right: 10px;
-  max-height: calc(50% - 85px);
-  overflow-y: auto;
-}
-
-#HomePage-IncomingRequestPanel {
+#HomePage-ContentPanel-OutgoingRequestsPanel-RequestView {
   margin-top: 20px;
 }
 
-#HomePage-IncomingRequestPanel-Status {
-  font-size: 20px;
-  height: 20px;
+
+#HomePage-ContentPanel-IncomingRequestsPanel {
+  margin-top: 20px;
 }
 
-#HomePage-IncomingRequestPanel-SeeActiveRequests {
-  margin-top: 5px;
-  font-size: 15px;
-  height: 20px;
+#HomePage-ContentPanel-IncomingRequestsPanel-Title {
+  font-family: Verdana;
+  font-size: 40px;
+  
+  color: blue;
 }
 
-#HomePage-IncomingRequestPanel-Requests {
-  margin-top: 10px;
-  padding-right: 10px;
-  max-height: calc(50% - 85px);
-  overflow-y: auto;
+#HomePage-ContentPanel-IncomingRequestsPanel-RequestView {
+  margin-top: 20px;
 }
-

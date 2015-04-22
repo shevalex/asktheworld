@@ -29,6 +29,10 @@ AbstractRequestPage._AbstractRequestItem.prototype.append = function(root) {
   
   this._container = UIUtils.appendBlock(root, this._requestId);
   UIUtils.addClass(this._container, this._baseCssClass);
+  
+  if (this._settings.clickListener) {
+    UIUtils.setClickListener(this._container, this._settings.clickListener.bind(this, this._requestId));
+  }
 
   var request = Backend.getRequest(this._requestId);
   if (request != null) {
@@ -53,7 +57,7 @@ AbstractRequestPage._AbstractRequestItem.prototype._fill = function() {
 
 
 AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function OutgoingRequestItem(requestId, settings) {
-  AbstractRequestPage._AbstractRequestItem.call(this, requestId, "outputgoing-request-container", settings);
+  AbstractRequestPage._AbstractRequestItem.call(this, requestId, "outgoing-request-container", settings);
 });
 
 AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
@@ -129,8 +133,10 @@ AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
 
 
 
+// settings.clickListener(requestId);
 
-AbstractRequestPage._AbstractRequestsView = ClassUtils.defineClass(Object, function _AbstractRequestsView(requestClass, settings) {
+AbstractRequestPage._AbstractRequestsView = ClassUtils.defineClass(Object, function _AbstractRequestsView(viewId, requestClass, settings) {
+  this._viewId = viewId;
   this._requestClass = requestClass;
   this._settings = settings;
   this._root = null;
@@ -161,7 +167,8 @@ AbstractRequestPage._AbstractRequestsView.prototype.append = function(root) {
   }
   
   this._root = root;
-  this._containerElement = UIUtils.appendBlock(this._root, "RequestView");
+  this._containerElement = UIUtils.appendBlock(this._root, this._viewId);
+  UIUtils.addClass(this._containerElement, "request-view");
   
   if (this._requestIds != null) {
     this.setRequestIds(this._requestIds);
@@ -182,12 +189,12 @@ AbstractRequestPage._AbstractRequestsView.prototype.remove = function() {
 }
 
 
-AbstractRequestPage.OutgoingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsView, function OutgoingRequestsView(settings) {
-  AbstractRequestPage._AbstractRequestsView.call(this, "OutgoingRequestItem", settings);
+AbstractRequestPage.OutgoingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsView, function OutgoingRequestsView(viewId, settings) {
+  AbstractRequestPage._AbstractRequestsView.call(this, viewId, "OutgoingRequestItem", settings);
 });
 
-AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsView, function IncomingRequestsView(settings) {
-  AbstractRequestPage._AbstractRequestsView.call(this, "IncomingRequestItem", settings);
+AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsView, function IncomingRequestsView(viewId, settings) {
+  AbstractRequestPage._AbstractRequestsView.call(this, viewId, "IncomingRequestItem", settings);
 });
 
 
@@ -712,7 +719,6 @@ AbstractRequestPage._AbstractRequestList._AbstractRequestPanel = ClassUtils.defi
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype._appendRequestElement = function(request) {
   throw "Not implemented"
 }
-
 
 AbstractRequestPage._AbstractRequestList._AbstractRequestPanel.prototype.append = function(container) {
   this._rootContainer = UIUtils.appendBlock(container, this._requestId);
