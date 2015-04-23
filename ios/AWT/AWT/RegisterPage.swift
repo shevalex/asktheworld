@@ -95,6 +95,7 @@ class RegisterPage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
     }
     
     override func viewDidLoad() {
+        enableSpinner(false);
         setSensitiveConstraint(bottomSpacing, offset: toolbar.frame.height);
 
         super.viewDidLoad();
