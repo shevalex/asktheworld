@@ -27,7 +27,7 @@ public struct Configuration {
     
     static let LANGUAGES: [Item] = [Item(display: NSLocalizedString("English", comment: "Language - English"), data: "eng"), Item(display: NSLocalizedString("Russian", comment: "Language - Russian"), data: "rus")];
     
-    static let EXPERTISES: [Item] = [Item(display: NSLocalizedString("General", comment: "Expertise - general"), data: "general"), Item(display: NSLocalizedString("Law", comment: "Expertise - law"), data: "law"), Item(display: NSLocalizedString("Medicicne", comment: "Expertise - medicicne"), data: "medicine"), Item(display: NSLocalizedString("Construction", comment: "Expertise - construction"), data: "construction")];
+    static let EXPERTISES: [Item] = [Item(display: NSLocalizedString("General", comment: "Expertise - general"), data: "general"), Item(display: NSLocalizedString("Law", comment: "Expertise - law"), data: "law"), Item(display: NSLocalizedString("Medicine", comment: "Expertise - medicicne"), data: "medicine"), Item(display: NSLocalizedString("Construction", comment: "Expertise - construction"), data: "construction")];
 
     static let AGE_CATEGORIES: [Item] = [Item(display: NSLocalizedString("Child", comment: "Age - child"), data: "child"), Item(display: NSLocalizedString("Teenager", comment: "Age - teenager"), data: "teenager"), Item(display: NSLocalizedString("Young Adult", comment: "Age - young"), data: "young"), Item(display: NSLocalizedString("Adult", comment: "Age - adult"), data: "adult"), Item(display: NSLocalizedString("Senior", comment: "Age - senior"), data: "senior")];
     

@@ -40,14 +40,14 @@ struct ImageChooserFactory {
         attachSheet.addAction(cancelAction)
         
         let takePictureAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("Take Picture", comment: "Take Picture action"), style: .Default) { (action) -> Void in
-            println("Camera is not available in simulator")
 
-//            let imageController: UIImagePickerController = UIImagePickerController();
-//            imageController.allowsEditing = false;
-//            self.imagePickerDelegate.setImagePickObserver(imagePickObserver);
-//            imageController.delegate = self.imagePickerDelegate;
-//            imageController.sourceType = UIImagePickerControllerSourceType.Camera
-//            self.presentViewController(imageController, animated: true, completion: nil)
+            let imageController: UIImagePickerController = UIImagePickerController();
+            imageController.allowsEditing = false;
+            self.imagePickerDelegate.setImagePickObserver(imagePickObserver);
+            imageController.delegate = self.imagePickerDelegate;
+            
+            imageController.sourceType = UIImagePickerControllerSourceType.Camera
+            viewController.presentViewController(imageController, animated: true, completion: nil)
         }
         attachSheet.addAction(takePictureAction)
         
