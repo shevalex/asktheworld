@@ -150,11 +150,20 @@ Application.start = function() {
     Application.showDialog("", "We will need to find a way to open this page");
   });
 
+  
+  var showDefaultPage = function() {
+    if (Backend.isLogged()) {
+      Application.showMenuPage(HomePage.name);
+    } else {
+      Application.showPage(LoginPage.name);
+    }
+  }
+  
   $("#Title-Caption").click(function() {
-    Application.showMenuPage(HomePage.name);
+    showDefaultPage();
   });
   $("#Title-Logo").click(function() {
-    Application.showMenuPage(HomePage.name);
+    showDefaultPage();
   });
   
   Application._setupLanguageChooser();

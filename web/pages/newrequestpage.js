@@ -26,13 +26,13 @@ NewRequestPage.prototype.definePageContent = function(root) {
   
   UIUtils.appendLabel(contentPanel, "WhomToSendLabel", this.getLocale().WhomToSendLabel);
   var whomToSendPanel = UIUtils.appendBlock(contentPanel, "WhomToSendPanel");
-  this._requestGenderElement = whomToSendPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(whomToSendPanel, "Gender"), I18n.getLocale().literals.TargetGenderLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
-  this._requestAgeElement = whomToSendPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(whomToSendPanel, "Age"), I18n.getLocale().literals.TargetAgeGroupLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
+  this._requestGenderElement = whomToSendPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(whomToSendPanel, "Gender"), I18n.getLocale().literals.GenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE, "10px")).getInputElement();
+  this._requestAgeElement = whomToSendPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(whomToSendPanel, "Age"), I18n.getLocale().literals.AgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE, "10px")).getInputElement();
 
   UIUtils.appendLabel(contentPanel, "HowLongToWaitLabel", this.getLocale().HowLongToWaitLabel);
   var howLongToWaitPanel = UIUtils.appendBlock(contentPanel, "HowLongToWaitPanel");
-  this._requestQuantityElement = howLongToWaitPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(howLongToWaitPanel, "Quantity"), I18n.getLocale().literals.NumOfResponsesLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
-  this._requestWaitTimeElement = howLongToWaitPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(howLongToWaitPanel, "WaitTime"), I18n.getLocale().literals.WaitTimeLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
+  this._requestQuantityElement = howLongToWaitPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(howLongToWaitPanel, "Quantity"), I18n.getLocale().literals.NumOfResponsesPreferenceLabel, Application.Configuration.RESPONSE_QUANTITY, "10px")).getInputElement();
+  this._requestWaitTimeElement = howLongToWaitPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(howLongToWaitPanel, "WaitTime"), I18n.getLocale().literals.WaitPreferenceLabel, Application.Configuration.RESPONSE_WAIT_TIME, "10px")).getInputElement();
   
   var sendButton = UIUtils.appendButton(contentPanel, "SendButton", this.getLocale().SendButton);
   UIUtils.setClickListener(sendButton, function() {

@@ -17,12 +17,12 @@ UserProfilePage.prototype.definePageContent = function(root) {
   var profilePanel = UIUtils.appendBlock(root, "ProfilePanel");
   UIUtils.appendLabel(profilePanel, "ProfileLabel", this.getLocale().ProfileLabel);
   
-  this._nameElement = profilePanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(profilePanel, "Nickname"), this.getLocale().NicknameLabel)).getInputElement();
+  this._nameElement = profilePanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(profilePanel, "Nickname"), I18n.getLocale().literals.NicknameLabel)).getInputElement();
   
   var genderAgeLanguagePanel = UIUtils.appendBlock(profilePanel, "GenderAgeLanguagePanel");
-  this._genderElement = profilePanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Gender"), this.getLocale().GenderLabel, Application.Configuration.GENDERS)).getInputElement();
-  this._ageElement = profilePanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Age"), this.getLocale().AgeLabel, Application.Configuration.AGE_CATEGORIES)).getInputElement();
-  this._languagesElement = profilePanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(genderAgeLanguagePanel, "Language"), this.getLocale().LanguageLabel, Application.Configuration.LANGUAGES)).getInputElement();
+  this._genderElement = profilePanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Gender"), I18n.getLocale().literals.GenderLabel, Application.Configuration.GENDERS)).getInputElement();
+  this._ageElement = profilePanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Age"), I18n.getLocale().literals.AgeLabel, Application.Configuration.AGE_CATEGORIES)).getInputElement();
+  this._languagesElement = profilePanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(genderAgeLanguagePanel, "Language"), I18n.getLocale().literals.LanguageLabel, Application.Configuration.LANGUAGES)).getInputElement();
   
   this._newPasswordElement = profilePanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(profilePanel, "NewPassword"), this.getLocale().NewPasswordLabel)).getInputElement();
   this._confirmNewPasswordElement = profilePanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(profilePanel, "ConfirmNewPassword"), this.getLocale().ConfirmNewPasswordLabel)).getInputElement();
@@ -44,13 +44,11 @@ UserProfilePage.prototype.definePageContent = function(root) {
   }.bind(this));
   
   
-  
-  
   var leftClarificationPanel = UIUtils.appendBlock(profilePanel, "LeftClarificationPanel");
-  UIUtils.appendExplanationPad(leftClarificationPanel, "PasswordClarificationPanel", this.getLocale().NewPasswordLabel, this.getLocale().PasswordClarificationText);
+  UIUtils.appendExplanationPad(leftClarificationPanel, "PasswordClarification", this.getLocale().NewPasswordLabel, this.getLocale().PasswordClarificationText);
 
   var rightClarificationPanel = UIUtils.appendBlock(profilePanel, "RightClarificationPanel");
-  UIUtils.appendExplanationPad(rightClarificationPanel, "LanguageClarificationPanel", this.getLocale().LanguageLabel, this.getLocale().LanguageClarificationText);
+  UIUtils.appendExplanationPad(rightClarificationPanel, "LanguageClarification", I18n.getLocale().literals.LanguageLabel, this.getLocale().LanguageClarificationText);
 }
 
 UserProfilePage.prototype.onShow = function() {

@@ -70,6 +70,10 @@ Backend.logOut = function(callback) {
   }
 }
 
+Backend.isLogged = function() {
+  return Backend.UserProfile.login != null;
+}
+
 Backend.pullUserProfile = function(callback) {
   if (Backend.UserProfile.userId == null) {
     throw "Must login or register first";

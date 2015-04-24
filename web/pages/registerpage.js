@@ -18,16 +18,16 @@ RegisterPage.prototype.definePageContent = function(root) {
   var signUpPanel = UIUtils.appendBlock(root, "SignUpPanel");
   UIUtils.appendLabel(signUpPanel, "SignUpLabel", this.getLocale().SignUpLabel);
   
-  this._emailElement = signUpPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(signUpPanel, "Email"), this.getLocale().EmailLoginLabel)).getInputElement();
-  this._nameElement = signUpPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(signUpPanel, "Nickname"), this.getLocale().NicknameLabel)).getInputElement();
+  this._emailElement = signUpPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(signUpPanel, "Email"), I18n.getLocale().literals.EmailLoginLabel)).getInputElement();
+  this._nameElement = signUpPanel.appendChild(UIUtils.createLabeledTextInput(UIUtils.createId(signUpPanel, "Nickname"), I18n.getLocale().literals.NicknameLabel)).getInputElement();
   
   var genderAgeLanguagePanel = UIUtils.appendBlock(signUpPanel, "GenderAgeLanguagePanel");
-  this._genderElement = signUpPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Gender"), this.getLocale().GenderLabel, Application.Configuration.GENDERS)).getInputElement();
-  this._ageElement = signUpPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Age"), this.getLocale().AgeLabel, Application.Configuration.AGE_CATEGORIES)).getInputElement();
-  this._languagesElement = signUpPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(genderAgeLanguagePanel, "Language"), this.getLocale().LanguageLabel, Application.Configuration.LANGUAGES)).getInputElement();
+  this._genderElement = signUpPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Gender"), I18n.getLocale().literals.GenderLabel, Application.Configuration.GENDERS)).getInputElement();
+  this._ageElement = signUpPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(genderAgeLanguagePanel, "Age"), I18n.getLocale().literals.AgeLabel, Application.Configuration.AGE_CATEGORIES)).getInputElement();
+  this._languagesElement = signUpPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(genderAgeLanguagePanel, "Language"), I18n.getLocale().literals.LanguageLabel, Application.Configuration.LANGUAGES)).getInputElement();
   
-  this._passwordElement = signUpPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(signUpPanel, "Password"), this.getLocale().PasswordLabel)).getInputElement();
-  this._retypePasswordElement = signUpPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(signUpPanel, "RetypePassword"), this.getLocale().RetypePasswordLabel)).getInputElement();
+  this._passwordElement = signUpPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(signUpPanel, "Password"), I18n.getLocale().literals.PasswordLabel)).getInputElement();
+  this._retypePasswordElement = signUpPanel.appendChild(UIUtils.createLabeledPasswordInput(UIUtils.createId(signUpPanel, "RetypePassword"), I18n.getLocale().literals.RetypePasswordLabel)).getInputElement();
   UIUtils.get$(this._passwordElement).on("input", function() {
     this._retypePasswordElement.setValue("");
   }.bind(this));
@@ -49,10 +49,10 @@ RegisterPage.prototype.definePageContent = function(root) {
   
   
   var leftClarificationPanel = UIUtils.appendBlock(signUpPanel, "LeftClarificationPanel");
-  UIUtils.appendExplanationPad(leftClarificationPanel, "NicknameClarificationPanel", this.getLocale().NicknameLabel, this.getLocale().NicknameClarificationText);
+  UIUtils.appendExplanationPad(leftClarificationPanel, "NicknameClarificationPanel", I18n.getLocale().literals.NicknameLabel, this.getLocale().NicknameClarificationText);
 
   var rightClarificationPanel = UIUtils.appendBlock(signUpPanel, "RightClarificationPanel");
-  UIUtils.appendExplanationPad(rightClarificationPanel, "LanguageClarificationPanel", this.getLocale().LanguageLabel, this.getLocale().LanguageClarificationText);
+  UIUtils.appendExplanationPad(rightClarificationPanel, "LanguageClarificationPanel", I18n.getLocale().literals.LanguageLabel, this.getLocale().LanguageClarificationText);
 }
 
 RegisterPage.prototype.onShow = function() {

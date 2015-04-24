@@ -24,13 +24,13 @@ UserPreferencesPage.prototype.definePageContent = function(root) {
   var requestsPreferencesPanel = UIUtils.appendBlock(preferencesPanel, "RequestsPreferencesPanel");
   UIUtils.appendLabel(requestsPreferencesPanel, "RequestsPreferencesLabel", this.getLocale().RequestsPreferencesLabel);
   
-  this._genderElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Gender"), this.getLocale().GenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE)).getInputElement();
+  this._genderElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Gender"), I18n.getLocale().literals.GenderPreferenceLabel, Application.Configuration.GENDER_PREFERENCE)).getInputElement();
 
-  this._ageElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Age"), this.getLocale().AgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE)).getInputElement();
+  this._ageElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Age"), I18n.getLocale().literals.AgePreferenceLabel, Application.Configuration.AGE_CATEGORY_PREFERENCE)).getInputElement();
   
-  this._quantityElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Quantity"), this.getLocale().NumOfResponsesPreferenceLabel, Application.Configuration.RESPONSE_QUANTITY)).getInputElement();
+  this._quantityElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "Quantity"), I18n.getLocale().literals.NumOfResponsesPreferenceLabel, Application.Configuration.RESPONSE_QUANTITY)).getInputElement();
   
-  this._waitTimeElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "WaitTime"), this.getLocale().WaitPreferenceLabel, Application.Configuration.RESPONSE_WAIT_TIME)).getInputElement();
+  this._waitTimeElement = requestsPreferencesPanel.appendChild(UIUtils.createLabeledDropList(UIUtils.createId(requestsPreferencesPanel, "WaitTime"), I18n.getLocale().literals.WaitPreferenceLabel, Application.Configuration.RESPONSE_WAIT_TIME)).getInputElement();
   
   
   var inquiriesPreferencesPanel = UIUtils.appendBlock(preferencesPanel, "InquiriesPreferencesPanel");
@@ -69,11 +69,11 @@ UserPreferencesPage.prototype.definePageContent = function(root) {
   
   
   var leftClarificationPanel = UIUtils.appendBlock(preferencesPanel, "LeftClarificationPanel");
-  UIUtils.appendExplanationPad(leftClarificationPanel, "ResponsesClarificationPanel", this.getLocale().NumOfResponsesPreferenceLabel, this.getLocale().ResponsesClarificationText);
+  UIUtils.appendExplanationPad(leftClarificationPanel, "ResponsesClarificationPanel", I18n.getLocale().literals.NumOfResponsesPreferenceLabel, this.getLocale().ResponsesClarificationText);
   
 
   var rightClarificationPanel = UIUtils.appendBlock(preferencesPanel, "RightClarificationPanel");
-  UIUtils.appendExplanationPad(rightClarificationPanel, "TimeFrameClarificationPanel", this.getLocale().WaitPreferenceLabel, this.getLocale().TimeFrameClarificationText);
+  UIUtils.appendExplanationPad(rightClarificationPanel, "TimeFrameClarificationPanel", I18n.getLocale().literals.WaitPreferenceLabel, this.getLocale().TimeFrameClarificationText);
   UIUtils.appendExplanationPad(rightClarificationPanel, "ContactClarificationPanel", this.getLocale().ContactPreferencesLabel, this.getLocale().ContactClarificationText);
 }
 
