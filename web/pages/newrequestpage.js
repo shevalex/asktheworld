@@ -48,6 +48,16 @@ NewRequestPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(resetButton, function() {
     this._resetPage();
   }.bind(this));
+  
+  
+  var rightClarificationPanel = UIUtils.appendBlock(contentPanel, "RightClarificationPanel");
+  UIUtils.appendExplanationPad(rightClarificationPanel, "FileFormatsClarification", this.getLocale().FileTitle, this.getLocale().FileClarificationText);
+  
+  var preferencesLinkId = UIUtils.createId(rightClarificationPanel, "PreferencesLink");
+  UIUtils.appendExplanationPad(rightClarificationPanel, "PreferencesClarification", this.getLocale().PreferencesTitle, this.getLocale().PreferencesClarificationTextProvider(preferencesLinkId));
+  UIUtils.setClickListener(preferencesLinkId, function() {
+    Application.showPage(UserPreferencesPage.name);
+  });
 }
 
 NewRequestPage.prototype.onShow = function() {

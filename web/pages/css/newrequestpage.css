@@ -3,7 +3,8 @@
 
 
 #NewRequestPage-ContentPanel {
-  margin-left: calc(50% - 350px);
+  position: relative;
+  margin-left: 50px;
   width: 700px;
   display: inline-block;
   margin-top: 20px;
@@ -91,3 +92,24 @@
 
   font-size: 15px;
 }
+
+
+#NewRequestPage-ContentPanel-RightClarificationPanel {
+  width: 200px;
+  position: absolute;
+  top: 0;
+  left: 720;
+  display: inline-block;
+  
+  font-family: Verdana;
+  font-size: 13px;
+}
+
+#NewRequestPage-ContentPanel-RightClarificationPanel-FileFormatsClarification {
+  margin-top: 120px;
+}
+
+#NewRequestPage-ContentPanel-RightClarificationPanel-PreferencesClarification {
+  margin-top: 170px;
+}
+
