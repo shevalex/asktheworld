@@ -88,6 +88,33 @@ FileUtils.loadFile = function(file, loadObserver) {
 }
 
 
+
+TimeUtils = {};
+
+TimeUtils.getDateTimeSrting = function(millis) {
+  var date = new Date(millis);
+  var now = new Date();
+  
+  var dayAsString;
+  if (date.getFullYear() == now.getFullYear() && date.getMonth() == now.getMonth()) {
+    if (date.getDate() == now.getDate()) {
+      dayAsString = I18n.getLocale().literals.Today;
+    } else {
+      var yesterday = new Date(now - 24 * 60 * 60 * 1000);
+      if (date.getFullYear() == yesterday.getFullYear() && date.getMonth() == yesterday.getMonth() && date.getDate() == yesterday.getDate()) {
+        dayAsString = I18n.getLocale().literals.Yesterday;
+      } else {
+        dayAsString = date.toLocaleDateString();
+      }
+    }
+  }
+
+  var timeAsString = date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();
+
+  return dayAsString + ", " + timeAsString;
+}
+
+
 UIUtils = {};
 
 UIUtils.INVALID_INPUT_BACKGROUND = "rgb(255, 100, 100)";

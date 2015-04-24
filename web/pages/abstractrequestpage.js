@@ -65,8 +65,7 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   
   var request = Backend.getRequest(this._requestId);
   
-  var requestDate = new Date(request.time);
-  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", requestDate.toDateString() + ", " + requestDate.toLocaleTimeString());
+  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
   UIUtils.addClass(dateLabel, "request-date-label");
   
   var targetLabel = UIUtils.appendLabel(this._container, "TargetLabel", I18n.getPageLocale("AbstractRequestPage").TargetLabel + " " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
@@ -106,8 +105,7 @@ AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
   
   var request = Backend.getRequest(this._requestId);
   
-  var requestDate = new Date(request.time);
-  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", requestDate.toDateString() + ", " + requestDate.toLocaleTimeString());
+  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
   UIUtils.addClass(dateLabel, "request-date-label");
   
   var timeToLive = (request.time + request.response_wait_time * 1000 * 60 * 60) - Date.now();
