@@ -12,9 +12,9 @@
 
 #HomePage-ContentPanel-OutgoingRequestsPanel-Title {
   font-family: Verdana;
-  font-size: 40px;
+  font-size: 20px;
   
-  color: orange;
+  color: rgb(255, 153, 0);
 }
 
 #HomePage-ContentPanel-OutgoingRequestsPanel-RequestView {
@@ -28,9 +28,9 @@
 
 #HomePage-ContentPanel-IncomingRequestsPanel-Title {
   font-family: Verdana;
-  font-size: 40px;
+  font-size: 20px;
   
-  color: blue;
+  color: rgb(0, 110, 167);
 }
 
 #HomePage-ContentPanel-IncomingRequestsPanel-RequestView {

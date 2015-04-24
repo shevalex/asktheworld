@@ -4,16 +4,16 @@
   
   border-style: solid;
   border-width: 1px;
-  border-color: rgb(166, 166, 166);
+  border-color: rgb(237, 237, 237);
   
-  background-color: orange;
-  color: rgb(166, 166, 166);
+  background-color: rgb(254, 226, 169);
+  color: rgb(129, 129, 129);
   
   font-family: Verdana;
   font-size: 12px;
 }
 .outgoing-request-container:hover {
-  background-color: red;
+  background-color: rgb(255, 153, 0);
 }
 .outgoing-request-container:active {
   background-color: green;
@@ -49,13 +49,13 @@
   margin-left: 40px;
   margin-top: 5px;
   
-  color: black;
+  color: rgb(39, 39, 39);
 }
 .outgoing-request-container .request-multiline-text {
   margin-left: 40px;
   margin-top: 5px;
   
-  color: black;
+  color: rgb(39, 39, 39);
 }
 
 .incoming-request-container {
@@ -64,16 +64,16 @@
   
   border-style: solid;
   border-width: 1px;
-  border-color: rgb(166, 166, 166);
+  border-color: rgb(237, 237, 237);
   
-  background-color: blue;
-  color: rgb(166, 166, 166);
+  background-color: rgb(215, 236, 249);
+  color: rgb(129, 129, 129);
   
   font-family: Verdana;
   font-size: 12px;
 }
 .incoming-request-container:hover {
-  background-color: red;
+  background-color: rgb(0, 110, 167);
 }
 .incoming-request-container:active {
   background-color: green;
@@ -102,13 +102,13 @@
   margin-left: 40px;
   margin-top: 5px;
   
-  color: white;
+  color: rgb(39, 39, 39);
 }
 .incoming-request-container .request-multiline-text {
   margin-left: 40px;
   margin-top: 5px;
   
-  color: white;
+  color: rgb(39, 39, 39);
 }
 
 .request-view .incoming-request-container {
