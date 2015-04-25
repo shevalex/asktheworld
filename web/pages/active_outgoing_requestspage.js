@@ -1,63 +1,50 @@
 ActiveOutgoingRequestsPage = ClassUtils.defineClass(AbstractPage, function ActiveOutgoingRequestsPage() {
   AbstractPage.call(this, ActiveOutgoingRequestsPage.name);
   
-  this._requestsPanelRequests;
+  this._outgoingRequestsTable;
   this._requestList
 });
 
 ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
-  var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
+  var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
-  var textPanel = UIUtils.appendBlock(generalPanel, "Text");
-  textPanel.innerHTML = this.getLocale().ActiveOutgoingRequestsLabel;
-
-  var seeAllLinkId = UIUtils.createId(generalPanel, "Link");
-  var seeAllElement = UIUtils.appendBlock(generalPanel, "SeeAll");
-  seeAllElement.innerHTML = this.getLocale().AllRequestsLinkProvider(seeAllLinkId);
-  UIUtils.setClickListener(seeAllLinkId, function() {
-    Application.showMenuPage(AllOutgoingRequestsPage.name);
-  });
+  UIUtils.appendLabel(contentPanel, "Title", this.getLocale().TableTitle);
   
-  this._requestsPanelRequests = UIUtils.appendBlock(root, "RequestsPanel");
-}
-
-ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
-  this._requestList = new AbstractRequestPage.OutgoingRequestList({
-    requestClickListener: function(requestId) {
+  var page = this;
+  this._outgoingRequestsTable = new AbstractRequestPage.OutgoingRequestsTable("RequestTable", {
+    clickListener: function(requestId) {
       var paramBundle = {
         incoming: false,
         returnPageId: ActiveOutgoingRequestsPage.name,
         requestId: requestId,
-        otherRequestIds: Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE).join(",")
+        otherRequestIds: page._getOutgoingRequestIds().join(",")
       }
 
       Application.showMenuPage(RequestDetailsPage.name, paramBundle);
-    },
-    requestEditable: true,
-    showFullContent: true,
-    maxResponses: 2,
-    showResponseCount: true,
-    responseAreaMaxHeight: "300px",
-    requestInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.REQUEST_INCLUSION_POLICY_STATUS_ACTIVE,
-    responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_UNVIEWED,
-    updateListener: {
-      updateStarted: function() {
-        Application.showSpinningWheel();
-      },
-      updateFinished: function() {
-        Application.hideSpinningWheel();
-      },
-      requestUpdated: function() {
-        Application.showMessage(I18n.getLocale().literals.RequestUpdatedMessage, Application.MESSAGE_TIMEOUT_FAST);
-      }
     }
   });
+  this._outgoingRequestsTable.append(contentPanel);
   
-  this._requestList.append(this._requestsPanelRequests);
+  
+  this._cacheChangeListener = function(event) {
+    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
+      this._outgoingRequestsTable.setRequestIds(this._getOutgoingRequestIds());
+    }
+  }.bind(this);
+}
+
+ActiveOutgoingRequestsPage.prototype.onShow = function(root) {
+  this._outgoingRequestsTable.setRequestIds(this._getOutgoingRequestIds());
+  
+  Backend.addCacheChangeListener(this._cacheChangeListener);
 }
 
 ActiveOutgoingRequestsPage.prototype.onHide = function() {
-  this._requestList.destroy();
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
 }
 
+
+ActiveOutgoingRequestsPage.prototype._getOutgoingRequestIds = function() {
+  return Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE);
+}
 
