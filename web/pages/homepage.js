@@ -11,6 +11,24 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
 
 HomePage.prototype.definePageContent = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
+
+  var incomingRequestPanel = UIUtils.appendBlock(contentPanel, "IncomingRequestsPanel");
+  UIUtils.appendLabel(incomingRequestPanel, "Title", this.getLocale().IncomingRequestsTitle);
+  
+  this._incomingRequestsView = new AbstractRequestPage.IncomingRequestsView("RequestView", {
+    clickListener: function(requestId) {
+      var paramBundle = {
+        incoming: true,
+        returnPageId: HomePage.name,
+        requestId: requestId,
+        otherRequestIds: page._getIncomingRequestIds().join(",")
+      }
+
+      Application.showMenuPage(RequestDetailsPage.name, paramBundle);
+    }
+  });
+  this._incomingRequestsView.append(incomingRequestPanel);
+  
   
   var outgoingRequestPanel = UIUtils.appendBlock(contentPanel, "OutgoingRequestsPanel");
   UIUtils.appendLabel(outgoingRequestPanel, "Title", this.getLocale().OutgoingRequestsTitle);
@@ -29,23 +47,6 @@ HomePage.prototype.definePageContent = function(root) {
     }
   });
   this._outgoingRequestsView.append(outgoingRequestPanel);
-  
-  var incomingRequestPanel = UIUtils.appendBlock(contentPanel, "IncomingRequestsPanel");
-  UIUtils.appendLabel(incomingRequestPanel, "Title", this.getLocale().IncomingRequestsTitle);
-  
-  this._incomingRequestsView = new AbstractRequestPage.IncomingRequestsView("RequestView", {
-    clickListener: function(requestId) {
-      var paramBundle = {
-        incoming: true,
-        returnPageId: HomePage.name,
-        requestId: requestId,
-        otherRequestIds: page._getIncomingRequestIds().join(",")
-      }
-
-      Application.showMenuPage(RequestDetailsPage.name, paramBundle);
-    }
-  });
-  this._incomingRequestsView.append(incomingRequestPanel);
   
   
   this._cacheChangeListener = function(event) {
