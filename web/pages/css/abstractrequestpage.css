@@ -13,6 +13,9 @@
   font-family: "Times New Roman";
   font-size: 12px;
 }
+.outgoing-request-container:nth-child(2n) {
+  background-color: rgb(237, 237, 237);
+}
 .outgoing-request-container:hover {
   background-color: rgb(255, 153, 0);
 }
@@ -79,6 +82,9 @@
   font-family: "Times New Roman";
   font-size: 12px;
 }
+.incoming-request-container:nth-child(2n) {
+  background-color: rgb(237, 237, 237);
+}
 .incoming-request-container:hover {
   background-color: rgb(115, 236, 255);
 }
@@ -130,7 +136,6 @@
 .request-view .outgoing-request-container {
   margin-bottom: 5px;
 }
-
 
 
 
