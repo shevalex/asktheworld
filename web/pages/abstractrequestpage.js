@@ -205,17 +205,28 @@ AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, func
   this._settings = settings;
   this._root = null;
   this._containerElement = null;
-  this._currentPage = 0;
+
   this._visibleItemCount = settings.visibleItemCount || 10;
   
-  this._requestIds = null;
+  this._currentPage = 0;
+  this._beginIndex = 0;
+  this._endIndex = 0;
+  this._numOfPages = 0;
+  
+  this._statusLabel = null;
+  this._previousButton = null;
+  this._nextButton = null;
+  
+  this.setRequestIds(null);
 });
 
 AbstractRequestPage._AbstractRequestsTable.prototype.setRequestIds = function(requestIds) {
   this.clear();
-  this._requestIds = requestIds;
+  this._requestIds = requestIds || [];
 
-  this.setCurrentPage(this._currentPage);
+  this._numOfPages = Math.ceil(this._requestIds.length / this._visibleItemCount);
+  
+  this.setCurrentPage(0);
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype.append = function(root) {
@@ -226,8 +237,10 @@ AbstractRequestPage._AbstractRequestsTable.prototype.append = function(root) {
   this._root = root;
   this._containerElement = UIUtils.appendBlock(this._root, this._tableId);
   UIUtils.addClass(this._containerElement, "request-table");
-  
+
+  this._appendTableHeader();
   this._requestsView.append(this._containerElement);
+  this._appendTableFooter();
   
   if (this._requestIds != null) {
     this.setRequestIds(this._requestIds);
@@ -252,22 +265,43 @@ AbstractRequestPage._AbstractRequestsTable.prototype.getCurrentPage = function()
 AbstractRequestPage._AbstractRequestsTable.prototype.setCurrentPage = function(currentPage) {
   this._currentPage = currentPage;
   
-  this._requestsView.setRequestIds(this._getRequestIdsForCurrentPage());
-}
+  this._beginIndex = this._currentPage * this._visibleItemCount;
+  this._endIndex = this._beginIndex + this._visibleItemCount < this._requestIds.length ? this._beginIndex + this._visibleItemCount : this._requestIds.length;
 
-AbstractRequestPage._AbstractRequestsTable.prototype._getRequestIdsForCurrentPage = function() {
-  if (this._requestIds == null || this._requestIds.length == 0) {
-    return null;
-  }
+  this._requestsView.setRequestIds(this._requestIds.slice(this._beginIndex, this._endIndex));
   
-  var beginIndex = this._currentPage * this._visibleItemCount;
-  var endIndex = beginIndex + this._visibleItemCount < this._requestIds.length ? beginIndex + this._visibleItemCount : this._requestIds.length;
-
-  return this._requestIds.slice(beginIndex, endIndex);
+  if (this._statusLabel != null) {
+    this._statusLabel.innerHTML = I18n.getPageLocale("AbstractRequestPage").TableStatusLabelProvider(this._beginIndex + 1, this._endIndex, this._requestIds.length);
+    UIUtils.setEnabled(this._previousButton, this._currentPage > 0);
+    UIUtils.setEnabled(this._nextButton, this._currentPage + 1 < this._numOfPages);
+  }
 }
 
-AbstractRequestPage._AbstractRequestsTable.prototype._getNumOfPages = function() {
-  return Math.ceil(this._requestIds.length / this._visibleItemCount);
+AbstractRequestPage._AbstractRequestsTable.prototype._appendTableHeader = function() {
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype._appendTableFooter = function() {
+  var footer = UIUtils.appendBlock(this._containerElement, "Footer");
+  UIUtils.addClass(footer, "request-table-footer");
+  
+  this._statusLabel = UIUtils.appendLabel(footer, "StatusLabel");
+  UIUtils.addClass(this._statusLabel, "request-table-statuslabel");
+  
+  this._previousButton = UIUtils.appendButton(footer, "PreviousButton", I18n.getPageLocale("AbstractRequestPage").TablePreviousButton);
+  UIUtils.addClass(this._previousButton, "request-table-previousbutton");
+  UIUtils.setClickListener(this._previousButton, function() {
+    if (this._currentPage > 0) {
+      this.setCurrentPage(this._currentPage - 1);
+    }
+  }.bind(this));
+  
+  this._nextButton = UIUtils.appendButton(footer, "NextButton", I18n.getPageLocale("AbstractRequestPage").TableNextButton);
+  UIUtils.addClass(this._nextButton, "request-table-nextbutton");
+  UIUtils.setClickListener(this._nextButton, function() {
+    if (this._currentPage + 1 < this._numOfPages) {
+      this.setCurrentPage(this._currentPage + 1);
+    }
+  }.bind(this));
 }
 
 
