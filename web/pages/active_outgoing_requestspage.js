@@ -21,7 +21,8 @@ ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
       }
 
       Application.showMenuPage(RequestDetailsPage.name, paramBundle);
-    }
+    },
+    hideWhenEmpty: true
   });
   this._outgoingRequestsTable.append(contentPanel);
   

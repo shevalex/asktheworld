@@ -198,7 +198,7 @@ AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractReques
 
 // settings.clickListener(requestId);
 // settings.visibleItemCount;
-
+// settings.hideWhenEmpty;
 AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, function _AbstractRequestsTable(tableId, requestView, settings) {
   this._tableId = tableId;
   this._requestsView = requestView;
@@ -223,6 +223,14 @@ AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, func
 AbstractRequestPage._AbstractRequestsTable.prototype.setRequestIds = function(requestIds) {
   this.clear();
   this._requestIds = requestIds || [];
+  
+  if (this._containerElement != null) {
+    if (this._requestIds.length == 0 && this._settings.hideWhenEmpty) {
+      this._containerElement.style.display = "none";
+    } else {
+      this._containerElement.style.display = "block";
+    }
+  }
 
   this._numOfPages = Math.ceil(this._requestIds.length / this._visibleItemCount);
   
@@ -242,9 +250,7 @@ AbstractRequestPage._AbstractRequestsTable.prototype.append = function(root) {
   this._requestsView.append(this._containerElement);
   this._appendTableFooter();
   
-  if (this._requestIds != null) {
-    this.setRequestIds(this._requestIds);
-  }
+  this.setRequestIds(this._requestIds);
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype.clear = function() {
