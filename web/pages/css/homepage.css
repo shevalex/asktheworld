@@ -5,24 +5,8 @@
   max-width: 700px;
 }
 
-#HomePage-ContentPanel-OutgoingRequestsPanel {
-  margin-top: 10px;
-}
-
-#HomePage-ContentPanel-OutgoingRequestsPanel-Title {
-  font-family: Verdana;
-  font-size: 20px;
-  
-  color: rgb(255, 153, 0);
-}
-
-#HomePage-ContentPanel-OutgoingRequestsPanel-RequestView {
-  margin-top: 20px;
-}
-
-
 #HomePage-ContentPanel-IncomingRequestsPanel {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 #HomePage-ContentPanel-IncomingRequestsPanel-Title {
@@ -33,5 +17,20 @@
 }
 
 #HomePage-ContentPanel-IncomingRequestsPanel-RequestView {
+  margin-top: 20px;
+}
+
+#HomePage-ContentPanel-OutgoingRequestsPanel {
+  margin-top: 20px;
+}
+
+#HomePage-ContentPanel-OutgoingRequestsPanel-Title {
+  font-family: Verdana;
+  font-size: 20px;
+  
+  color: rgb(255, 153, 0);
+}
+
+#HomePage-ContentPanel-OutgoingRequestsPanel-RequestView {
   margin-top: 20px;
 }

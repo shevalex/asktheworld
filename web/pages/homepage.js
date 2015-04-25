@@ -4,6 +4,9 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
   
   this._outgoingRequestsView;
   this._incomingRequestsView;
+  this._outgoingRequestsLabel;
+  this._incomingRequestsLabel;
+  
   
   this._cacheChangeListener;
 });
@@ -13,7 +16,7 @@ HomePage.prototype.definePageContent = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
 
   var incomingRequestPanel = UIUtils.appendBlock(contentPanel, "IncomingRequestsPanel");
-  UIUtils.appendLabel(incomingRequestPanel, "Title", this.getLocale().IncomingRequestsTitle);
+  this._incomingRequestsLabel = UIUtils.appendLabel(incomingRequestPanel, "Title");
   
   this._incomingRequestsView = new AbstractRequestPage.IncomingRequestsView("RequestView", {
     clickListener: function(requestId) {
@@ -31,7 +34,7 @@ HomePage.prototype.definePageContent = function(root) {
   
   
   var outgoingRequestPanel = UIUtils.appendBlock(contentPanel, "OutgoingRequestsPanel");
-  UIUtils.appendLabel(outgoingRequestPanel, "Title", this.getLocale().OutgoingRequestsTitle);
+  this._outgoingRequestsLabel = UIUtils.appendLabel(outgoingRequestPanel, "Title");
   
   var page = this;
   this._outgoingRequestsView = new AbstractRequestPage.OutgoingRequestsView("RequestView", {
@@ -51,16 +54,16 @@ HomePage.prototype.definePageContent = function(root) {
   
   this._cacheChangeListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED) {
-      this._outgoingRequestsView.setRequestIds(this._getOutgoingRequestIds());
+      this._updateOutgoingRequests();
     } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
-      this._incomingRequestsView.setRequestIds(this._getIncomingRequestIds());
+      this._updateIncomingRequests();
     }
   }.bind(this);
 }
 
 HomePage.prototype.onShow = function(root) {
-  this._outgoingRequestsView.setRequestIds(this._getOutgoingRequestIds());
-  this._incomingRequestsView.setRequestIds(this._getIncomingRequestIds());
+  this._updateIncomingRequests();
+  this._updateOutgoingRequests();
   
   Backend.addCacheChangeListener(this._cacheChangeListener);
 }
@@ -70,8 +73,36 @@ HomePage.prototype.onHide = function() {
 }
 
 
+HomePage.prototype._updateOutgoingRequests = function() {
+  var outgoingRequestIds = this._getOutgoingRequestIds();
+  if (outgoingRequestIds == null) {
+    this._outgoingRequestsLabel.innerHTML = this.getLocale().UpdatingOutgoingRequestsTitle;
+  } else if (outgoingRequestIds.length == 0) {
+    this._outgoingRequestsLabel.innerHTML = this.getLocale().NoOutgoingRequestsTitle;
+  } else {
+    this._outgoingRequestsLabel.innerHTML = this.getLocale().OutgoingRequestsTitle;
+  }
+  this._outgoingRequestsView.setRequestIds(outgoingRequestIds);
+}
+
+HomePage.prototype._updateIncomingRequests = function() {
+  var incomingRequestIds = this._getIncomingRequestIds();
+  if (incomingRequestIds == null) {
+    this._incomingRequestsLabel.innerHTML = this.getLocale().UpdatingIncomingRequestsTitle;
+  } else if (incomingRequestIds.length == 0) {
+    this._incomingRequestsLabel.innerHTML = this.getLocale().NoIncomingRequestsTitle;
+  } else {
+    this._incomingRequestsLabel.innerHTML = this.getLocale().IncomingRequestsTitle;
+  }
+  this._incomingRequestsView.setRequestIds(incomingRequestIds);
+}
+
 HomePage.prototype._getOutgoingRequestIds = function() {
   var allActiveRequestIds = Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE);
+  if (allActiveRequestIds == null) {
+    return null;
+  }
+  
   var requestIds = [];
   for (var i in allActiveRequestIds) {
     var responseIds = Backend.getIncomingResponseIds(allActiveRequestIds[i], Backend.Response.STATUS_UNREAD);
@@ -85,6 +116,10 @@ HomePage.prototype._getOutgoingRequestIds = function() {
 
 HomePage.prototype._getIncomingRequestIds = function() {
   var allActiveRequestIds = Backend.getIncomingRequestIds(Backend.Request.STATUS_ACTIVE);
+  if (allActiveRequestIds == null) {
+    return null;
+  }
+  
   var requestIds = [];
   for (var i in allActiveRequestIds) {
     var responseIds = Backend.getOutgoingResponseIds(allActiveRequestIds[i]);
