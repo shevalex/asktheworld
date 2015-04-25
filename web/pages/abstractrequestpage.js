@@ -139,7 +139,7 @@ AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
 AbstractRequestPage._AbstractRequestsView = ClassUtils.defineClass(Object, function _AbstractRequestsView(viewId, requestClass, settings) {
   this._viewId = viewId;
   this._requestClass = requestClass;
-  this._settings = settings;
+  this._settings = settings || {};
   this._root = null;
   this._containerElement = null;
   this._requestIds = null;
@@ -205,11 +205,11 @@ AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractReques
 AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, function _AbstractRequestsTable(tableId, requestView, settings) {
   this._tableId = tableId;
   this._requestsView = requestView;
-  this._settings = settings;
+  this._settings = settings || {};
   this._root = null;
   this._containerElement = null;
 
-  this._visibleItemCount = settings.visibleItemCount || 10;
+  this._visibleItemCount = this._settings.visibleItemCount || 10;
   
   this._currentPage = 0;
   this._beginIndex = 0;

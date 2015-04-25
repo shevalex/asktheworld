@@ -1,19 +1,19 @@
 #AllIncomingRequestsPage {
 }
 
-#AllIncomingRequestsPage-GeneralPanel {
+#AllIncomingRequestsPage-ContentPanel {
+  max-width: 700px;
+  margin-top: 10px;
+}
+
+#AllIncomingRequestsPage-ContentPanel-Title {
+  font-family: Verdana;
   font-size: 20px;
+  
+  color: rgb(0, 110, 167);
 }
 
-#AllIncomingRequestsPage-GeneralPanel-Text {
-  font-size: 20px;
-}
-
-#AllIncomingRequestsPage-GeneralPanel-SeeActive {
-  font-size: 15px;
-}
-
-#AllIncomingRequestsPage-TablePanel {
-  margin-top: 30px;
+#AllIncomingRequestsPage-ContentPanel-RequestTable {
+  margin-top: 20px;
 }
 

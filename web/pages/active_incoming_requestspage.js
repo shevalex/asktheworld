@@ -3,6 +3,7 @@ ActiveIncomingRequestsPage = ClassUtils.defineClass(AbstractPage, function Activ
   
   this._requestsTable;
   this._tableLabel;
+  this._cacheChangeListener;
 });
 
 ActiveIncomingRequestsPage.prototype.definePageContent = function(root) {

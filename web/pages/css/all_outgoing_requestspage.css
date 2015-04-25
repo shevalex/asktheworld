@@ -1,17 +1,19 @@
 #AllOutgoingRequestsPage {
 }
 
-#AllOutgoingRequestsPage-GeneralPanel {
+#AllOutgoingRequestsPage-ContentPanel {
+  max-width: 700px;
+  margin-top: 10px;
 }
 
-#AllOutgoingRequestsPage-GeneralPanel-Text {
+#AllOutgoingRequestsPage-ContentPanel-Title {
+  font-family: Verdana;
   font-size: 20px;
+  
+  color: rgb(255, 153, 0);
 }
 
-#AllOutgoingRequestsPage-GeneralPanel-SeeActiveLink {
-  font-size: 15px;
+#AllOutgoingRequestsPage-ContentPanel-RequestTable {
+  margin-top: 20px;
 }
 
-#AllOutgoingRequestsPage-TablePanel {
-  margin-top: 30px;
-}

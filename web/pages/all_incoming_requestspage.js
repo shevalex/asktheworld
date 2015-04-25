@@ -1,56 +1,58 @@
 AllIncomingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function AllIncomingRequestsPage() {
   AbstractRequestPage.call(this, AllIncomingRequestsPage.name);
   
-  this._requestTable = null;
-  this._requestTableContainer = null;
+  this._requestsTable;
+  this._tableLabel;
+  this._cacheChangeListener;
 });
 
 AllIncomingRequestsPage.prototype.definePageContent = function(root) {
-  var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
+  var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
-  var textPanel = UIUtils.appendBlock(generalPanel, "Text");
-  textPanel.innerHTML = this.getLocale().AllIncomingRequestsLabel;
+  this._tableLabel = UIUtils.appendLabel(contentPanel, "Title");
 
-  var linkId = UIUtils.createId(generalPanel, "ActiveInquiriesLink");
-  var seeActiveElement = UIUtils.appendBlock(generalPanel, "SeeActive");
-  seeActiveElement.innerHTML = this.getLocale().ActiveRequestsLinkProvider(linkId);
-  UIUtils.setClickListener(linkId, function() {
-    Application.showMenuPage(ActiveIncomingRequestsPage.name);
-  });
-
-  this._requestTableContainer = UIUtils.appendBlock(root, "TablePanel");
-
-  this._requestTable = new AbstractRequestPage.IncomingRequestsTable({
-    requestStatus: null,
-    clickObserver: function(requestId) {
+  var page = this;
+  this._requestsTable = new AbstractRequestPage.IncomingRequestsTable("RequestTable", {
+    clickListener: function(requestId) {
       var paramBundle = {
-        incoming: true,
+        incoming: false,
         returnPageId: AllIncomingRequestsPage.name,
         requestId: requestId,
         otherRequestIds: ""
       }
 
       Application.showMenuPage(RequestDetailsPage.name, paramBundle);
-    }.bind(this),
-    updateListener: {
-      updateStarted: function() {
-        Application.showSpinningWheel();
-      },
-      updateFinished: function() {
-        Application.hideSpinningWheel();
-      }
-    }
+    },
+    hideWhenEmpty: true
   });
+  this._requestsTable.append(contentPanel);
+  
+  
+  this._cacheChangeListener = function(event) {
+    if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
+      this._updateRequests();
+    }
+  }.bind(this);
 }
 
 AllIncomingRequestsPage.prototype.onShow = function(root) {
-  this._requestTable.append(this._requestTableContainer);
-  this._requestTable.restore();
+  this._updateRequests();
+  
+  Backend.addCacheChangeListener(this._cacheChangeListener);
 }
 
 AllIncomingRequestsPage.prototype.onHide = function() {
-  this._requestTable.save();
-  this._requestTable.remove();
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
 }
 
-
+AllIncomingRequestsPage.prototype._updateRequests = function() {
+  var requestIds = Backend.getIncomingRequestIds();
+  if (requestIds == null) {
+    this._tableLabel.innerHTML = this.getLocale().UpdatingRequestsTitle;
+  } else if (requestIds.length == 0) {
+    this._tableLabel.innerHTML = this.getLocale().NoRequestsTitle;
+  } else {
+    this._tableLabel.innerHTML = this.getLocale().RequestsTitle;
+  }
+  this._requestsTable.setRequestIds(requestIds);
+}
