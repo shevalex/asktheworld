@@ -73,7 +73,7 @@ HomePage.prototype._getOutgoingRequestIds = function() {
   var allActiveRequestIds = Backend.getOutgoingRequestIds(Backend.Request.STATUS_ACTIVE);
   var requestIds = [];
   for (var i in allActiveRequestIds) {
-    var responseIds = Backend.getIncomingResponseIds(allActiveRequestIds[i], Backend.Request.STATUS_UNREAD);
+    var responseIds = Backend.getIncomingResponseIds(allActiveRequestIds[i], Backend.Response.STATUS_UNREAD);
     if (responseIds != null && responseIds.length > 0) {
       requestIds.push(allActiveRequestIds[i]);
     }
