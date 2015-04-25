@@ -129,13 +129,37 @@
   color: rgb(39, 39, 39);
 }
 
-
+.request-view {
+}
 .request-view .incoming-request-container {
   margin-bottom: 5px;
 }
 .request-view .outgoing-request-container {
   margin-bottom: 5px;
 }
+
+
+.request-table {
+}
+.request-table .request-table-footer {
+  position: relative;
+  margin-top: 20px;
+}
+.request-table .request-table-footer .request-table-statuslabel {
+}
+.request-table .request-table-footer .request-table-previousbutton {
+  position: absolute;
+  right: 100px;
+}
+.request-table .request-table-footer .request-table-nextbutton {
+  position: absolute;
+  right: 0px;
+}
+
+
+
+
+
 
 
 

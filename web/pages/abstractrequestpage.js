@@ -145,16 +145,17 @@ AbstractRequestPage._AbstractRequestsView = ClassUtils.defineClass(Object, funct
 });
 
 AbstractRequestPage._AbstractRequestsView.prototype.setRequestIds = function(requestIds) {
+  this.clear();
   this._requestIds = requestIds;
   
-  this.clear();
-  
-  for (var index in requestIds) {
-    var requestItem = new AbstractRequestPage[this._requestClass](requestIds[index], this._settings);
-    this._requestItems.push(requestItem);
-    
-    if (this._containerElement != null) {
-      this._requestItems[index].append(this._containerElement);
+  if (this._requestIds != null) {
+    for (var index in requestIds) {
+      var requestItem = new AbstractRequestPage[this._requestClass](requestIds[index], this._settings);
+      this._requestItems.push(requestItem);
+
+      if (this._containerElement != null) {
+        this._requestItems[index].append(this._containerElement);
+      }
     }
   }
 }
@@ -168,9 +169,7 @@ AbstractRequestPage._AbstractRequestsView.prototype.append = function(root) {
   this._containerElement = UIUtils.appendBlock(this._root, this._viewId);
   UIUtils.addClass(this._containerElement, "request-view");
   
-  if (this._requestIds != null) {
-    this.setRequestIds(this._requestIds);
-  }
+  this.setRequestIds(this._requestIds);
 }
 
 AbstractRequestPage._AbstractRequestsView.prototype.clear = function() {
@@ -197,6 +196,137 @@ AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractReques
 
 
 
+// settings.clickListener(requestId);
+// settings.visibleItemCount;
+// settings.hideWhenEmpty;
+AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, function _AbstractRequestsTable(tableId, requestView, settings) {
+  this._tableId = tableId;
+  this._requestsView = requestView;
+  this._settings = settings;
+  this._root = null;
+  this._containerElement = null;
+
+  this._visibleItemCount = settings.visibleItemCount || 10;
+  
+  this._currentPage = 0;
+  this._beginIndex = 0;
+  this._endIndex = 0;
+  this._numOfPages = 0;
+  
+  this._statusLabel = null;
+  this._previousButton = null;
+  this._nextButton = null;
+  
+  this.setRequestIds(null);
+});
+
+AbstractRequestPage._AbstractRequestsTable.prototype.setRequestIds = function(requestIds) {
+  this.clear();
+  this._requestIds = requestIds || [];
+  
+  if (this._containerElement != null) {
+    if (this._requestIds.length == 0 && this._settings.hideWhenEmpty) {
+      this._containerElement.style.display = "none";
+    } else {
+      this._containerElement.style.display = "block";
+    }
+  }
+
+  this._numOfPages = Math.ceil(this._requestIds.length / this._visibleItemCount);
+  
+  this.setCurrentPage(0);
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.append = function(root) {
+  if (this._containerElement != null) {
+    this.remove();
+  }
+  
+  this._root = root;
+  this._containerElement = UIUtils.appendBlock(this._root, this._tableId);
+  UIUtils.addClass(this._containerElement, "request-table");
+
+  this._appendTableHeader();
+  this._requestsView.append(this._containerElement);
+  this._appendTableFooter();
+  
+  this.setRequestIds(this._requestIds);
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.clear = function() {
+  this._requestsView.clear();
+  this._requestItems = [];
+  this._currentPage = 0;
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.remove = function() {
+  this.clear();
+  UIUtils.get$(this._rootElement).remove();
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.getCurrentPage = function() {
+  return this._currentPage;
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.setCurrentPage = function(currentPage) {
+  this._currentPage = currentPage;
+  
+  this._beginIndex = this._currentPage * this._visibleItemCount;
+  this._endIndex = this._beginIndex + this._visibleItemCount < this._requestIds.length ? this._beginIndex + this._visibleItemCount : this._requestIds.length;
+
+  this._requestsView.setRequestIds(this._requestIds.slice(this._beginIndex, this._endIndex));
+  
+  if (this._statusLabel != null) {
+    this._statusLabel.innerHTML = I18n.getPageLocale("AbstractRequestPage").TableStatusLabelProvider(this._beginIndex + 1, this._endIndex, this._requestIds.length);
+    UIUtils.setEnabled(this._previousButton, this._currentPage > 0);
+    UIUtils.setEnabled(this._nextButton, this._currentPage + 1 < this._numOfPages);
+  }
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype._appendTableHeader = function() {
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype._appendTableFooter = function() {
+  var footer = UIUtils.appendBlock(this._containerElement, "Footer");
+  UIUtils.addClass(footer, "request-table-footer");
+  
+  this._statusLabel = UIUtils.appendLabel(footer, "StatusLabel");
+  UIUtils.addClass(this._statusLabel, "request-table-statuslabel");
+  
+  this._previousButton = UIUtils.appendButton(footer, "PreviousButton", I18n.getPageLocale("AbstractRequestPage").TablePreviousButton);
+  UIUtils.addClass(this._previousButton, "request-table-previousbutton");
+  UIUtils.setClickListener(this._previousButton, function() {
+    if (this._currentPage > 0) {
+      this.setCurrentPage(this._currentPage - 1);
+    }
+  }.bind(this));
+  
+  this._nextButton = UIUtils.appendButton(footer, "NextButton", I18n.getPageLocale("AbstractRequestPage").TableNextButton);
+  UIUtils.addClass(this._nextButton, "request-table-nextbutton");
+  UIUtils.setClickListener(this._nextButton, function() {
+    if (this._currentPage + 1 < this._numOfPages) {
+      this.setCurrentPage(this._currentPage + 1);
+    }
+  }.bind(this));
+}
+
+
+AbstractRequestPage.OutgoingRequestsTable = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsTable, function OutgoingRequestsTable(tableId, settings) {
+  var requestView = new AbstractRequestPage.OutgoingRequestsView(tableId + "-RequestsView", settings);
+  AbstractRequestPage._AbstractRequestsTable.call(this, tableId, requestView, settings);
+});
+
+AbstractRequestPage.IncomingRequestsTable = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsTable, function IncomingRequestsTable(tableId, settings) {
+  var requestView = new AbstractRequestPage.IncomingRequestsView(tableId + "-RequestsView", settings);
+  AbstractRequestPage._AbstractRequestsTable.call(this, tableId, requestView, settings);
+});
+
+
+
+
+
+
+
 
 
 // THIS IS THE SECTION WHICH DEFINES RequestTable element
@@ -207,6 +337,7 @@ AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractReques
  * settings.clickObserver
  * settings.updateListener
  */
+/*
 AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, function _AbstractRequestsTable(settings) {
   this._settings = settings;
   this._cacheChangeListener = null;
@@ -435,7 +566,7 @@ AbstractRequestPage.IncomingRequestsTable.prototype._getColumns = function() {
 AbstractRequestPage.IncomingRequestsTable.prototype._getRowData = function(requestId, request) {
   return {time: new Date(request.time).toDateString(), text: request.text};
 }
-
+*/
 
 
 

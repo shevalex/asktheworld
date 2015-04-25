@@ -548,7 +548,7 @@ Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
 Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
     var responseIds = [];
-  
+
     if (responseStatus == Backend.Response.STATUS_READ) {
       responseIds = this._cache.incomingResponseIds[requestId].viewed.slice(0);
     } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
@@ -654,7 +654,7 @@ Backend._pullOutgoingRequestIds = function() {
   setTimeout(function() {
     this._cache.outgoingRequestIds = {active: [], inactive: []};
 
-    var numOfRequests = Math.random() * 10;
+    var numOfRequests = Math.random() * 100;
     for (var i = 0; i < numOfRequests; i++) {
       var isActive = Math.random() < 0.5;
       
@@ -716,7 +716,7 @@ Backend._pullIncomingResponseIds = function(requestId) {
     var numOfResponses = Math.random() * 100;
     for (var i = 0; i < numOfResponses; i++) {
       var responseId = requestId + "-response" + i;
-      if (Math.random() < 0.5) {
+      if (Math.random() < 0.95) {
         this._cache.incomingResponseIds[requestId].viewed.push(responseId);
       } else {
         this._cache.incomingResponseIds[requestId].unviewed.push(responseId);
