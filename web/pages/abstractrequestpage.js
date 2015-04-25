@@ -14,8 +14,11 @@ AbstractRequestPage._AbstractRequestItem = ClassUtils.defineClass(Object, functi
   this._cacheChangeListener = function(event) {
     if (event.requestId == this._requestId
         && (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED || Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED)) {
-      
-      this._fill();
+
+      var request = Backend.getRequest(this._requestId);
+      if (request != null) {
+        this._fill();
+      }
     }
   }.bind(this);
 });
