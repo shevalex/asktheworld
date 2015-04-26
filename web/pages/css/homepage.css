@@ -16,6 +16,12 @@
   color: rgb(0, 110, 167);
 }
 
+#HomePage-ContentPanel-IncomingRequestsPanel-NoRequestsNote {
+  width: 400px;
+  margin-top: 10px;
+  margin-left: 100px;
+}
+
 #HomePage-ContentPanel-IncomingRequestsPanel-RequestView {
   margin-top: 20px;
 }
@@ -29,6 +35,12 @@
   font-size: 20px;
   
   color: rgb(255, 153, 0);
+}
+
+#HomePage-ContentPanel-OutgoingRequestsPanel-NoRequestsNote {
+  width: 400px;
+  margin-top: 10px;
+  margin-left: 100px;
 }
 
 #HomePage-ContentPanel-OutgoingRequestsPanel-RequestView {

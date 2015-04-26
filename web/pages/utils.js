@@ -917,12 +917,16 @@ UIUtils.appendExplanationPad = function(root, padId, title, text) {
   var padElement = UIUtils.appendBlock(root, padId);
   UIUtils.addClass(padElement, "explanation-pad");
   
-  var titleElement = UIUtils.appendBlock(padElement, "Title");
-  UIUtils.addClass(titleElement, "explanation-pad-title");
-  titleElement.innerHTML = title;
+  if (title != null) {
+    var titleElement = UIUtils.appendBlock(padElement, "Title");
+    UIUtils.addClass(titleElement, "explanation-pad-title");
+    titleElement.innerHTML = title;
+  }
   
   var textElement = UIUtils.appendLabel(padElement, "Text", text);
   UIUtils.addClass(textElement, "explanation-pad-text");
+  
+  return padElement;
 }
 
 
