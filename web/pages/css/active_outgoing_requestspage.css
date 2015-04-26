@@ -13,6 +13,12 @@
   color: rgb(255, 153, 0);
 }
 
+#ActiveOutgoingRequestsPage-ContentPanel-NoRequestsNote {
+  width: 400px;
+  margin-top: 10px;
+  margin-left: 100px;
+}
+
 #ActiveOutgoingRequestsPage-ContentPanel-RequestTable {
   margin-top: 20px;
 }
