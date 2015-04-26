@@ -202,6 +202,7 @@ AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractReques
 // settings.clickListener(requestId);
 // settings.visibleItemCount;
 // settings.hideWhenEmpty;
+// settings.maxNumOfPageButtons
 AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, function _AbstractRequestsTable(tableId, requestView, settings) {
   this._tableId = tableId;
   this._requestsView = requestView;
@@ -210,6 +211,7 @@ AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, func
   this._containerElement = null;
 
   this._visibleItemCount = this._settings.visibleItemCount || 10;
+  this._maxNumOfPageButtons = this._settings.maxNumOfPageButtons || 5;
   
   this._currentPage = 0;
   this._beginIndex = 0;
@@ -281,8 +283,8 @@ AbstractRequestPage._AbstractRequestsTable.prototype.setCurrentPage = function(c
   
   if (this._statusLabel != null) {
     this._statusLabel.innerHTML = I18n.getPageLocale("AbstractRequestPage").TableStatusLabelProvider(this._beginIndex + 1, this._endIndex, this._requestIds.length);
-    UIUtils.setEnabled(this._previousButton, this._currentPage > 0);
-    UIUtils.setEnabled(this._nextButton, this._currentPage + 1 < this._numOfPages);
+    
+    this._updateTableControl();
   }
 }
 
@@ -296,21 +298,59 @@ AbstractRequestPage._AbstractRequestsTable.prototype._appendTableFooter = functi
   this._statusLabel = UIUtils.appendLabel(footer, "StatusLabel");
   UIUtils.addClass(this._statusLabel, "request-table-statuslabel");
   
-  this._previousButton = UIUtils.appendButton(footer, "PreviousButton", I18n.getPageLocale("AbstractRequestPage").TablePreviousButton);
+  
+  var tableControlPanel = UIUtils.appendBlock(footer, "TableControlPanel");
+  UIUtils.addClass(tableControlPanel, "request-table-tablecontrolpanel");
+  
+  this._previousButton = UIUtils.appendButton(tableControlPanel, "PreviousButton", I18n.getPageLocale("AbstractRequestPage").TablePreviousButton);
   UIUtils.addClass(this._previousButton, "request-table-previousbutton");
   UIUtils.setClickListener(this._previousButton, function() {
     if (this._currentPage > 0) {
       this.setCurrentPage(this._currentPage - 1);
     }
   }.bind(this));
+
+  this._pageButtonsPanel = UIUtils.appendBlock(tableControlPanel, "PageButtonsPanel");
+  UIUtils.addClass(this._pageButtonsPanel, "request-table-pagebuttonpanel");
   
-  this._nextButton = UIUtils.appendButton(footer, "NextButton", I18n.getPageLocale("AbstractRequestPage").TableNextButton);
+  this._nextButton = UIUtils.appendButton(tableControlPanel, "NextButton", I18n.getPageLocale("AbstractRequestPage").TableNextButton);
   UIUtils.addClass(this._nextButton, "request-table-nextbutton");
   UIUtils.setClickListener(this._nextButton, function() {
     if (this._currentPage + 1 < this._numOfPages) {
       this.setCurrentPage(this._currentPage + 1);
     }
   }.bind(this));
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype._updateTableControl = function() {
+  UIUtils.setEnabled(this._previousButton, this._currentPage > 0);
+  UIUtils.setEnabled(this._nextButton, this._currentPage + 1 < this._numOfPages);
+  
+  UIUtils.get$(this._pageButtonsPanel).empty();
+  if (this._numOfPages == 0 || this._maxNumOfPageButtons <= 0) {
+    return;
+  }
+  
+  var startPage;
+  var endPage;
+  if (this._numOfPages <= this._maxNumOfPageButtons) {
+    startPage = 1;
+    endPage = this._numOfPages;
+  } else {
+    startPage = Math.max(this._currentPage + 1 - Math.floor(this._maxNumOfPageButtons / 2), 1);
+    endPage = Math.min(startPage + this._maxNumOfPageButtons - 1, this._numOfPages);
+  }
+  
+  for (var i = startPage; i <= endPage; i++) {
+    var pageButton = UIUtils.appendButton(this._pageButtonsPanel, "PageButton" + i, i);
+    UIUtils.addClass(pageButton, "request-table-pagebutton");
+    if (i - 1 == this._currentPage) {
+      UIUtils.setEnabled(pageButton, false);
+    }
+    UIUtils.setClickListener(pageButton, function(pageNum) {
+      this.setCurrentPage(pageNum);
+    }.bind(this, i - 1));
+  }
 }
 
 

@@ -142,20 +142,28 @@
 .request-table {
 }
 .request-table .request-table-footer {
-  position: relative;
   margin-top: 20px;
 }
 .request-table .request-table-footer .request-table-statuslabel {
 }
-.request-table .request-table-footer .request-table-previousbutton {
-  position: absolute;
-  right: 100px;
+.request-table .request-table-footer .request-table-tablecontrolpanel {
+  float: right;
 }
-.request-table .request-table-footer .request-table-nextbutton {
-  position: absolute;
-  right: 0px;
+.request-table .request-table-footer .request-table-tablecontrolpanel .request-table-nextbutton {
 }
-
+.request-table .request-table-footer .request-table-tablecontrolpanel .request-table-previousbutton {
+}
+.request-table .request-table-footer .request-table-tablecontrolpanel .request-table-pagebuttonpanel {
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px;
+  min-width: 100px;
+  text-align: center;
+}
+.request-table .request-table-footer .request-table-tablecontrolpanel .request-table-pagebuttonpanel .request-table-pagebutton {
+  margin-left: 3px;
+  margin-right: 3px;
+}
 
 
 
