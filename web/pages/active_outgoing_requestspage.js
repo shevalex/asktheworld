@@ -11,7 +11,11 @@ ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
   this._tableLabel = UIUtils.appendLabel(contentPanel, "Title");
-  this._noRequestsNote = UIUtils.appendExplanationPad(contentPanel, "NoRequestsNote", null, this.getLocale().NoRequestsNote);
+  var newRequestLinkId = UIUtils.createId(contentPanel, "NewRequestLink");
+  this._noRequestsNote = UIUtils.appendExplanationPad(contentPanel, "NoRequestsNote", null, this.getLocale().NoRequestsNoteProvider(newRequestLinkId));
+  UIUtils.setClickListener(newRequestLinkId, function() {
+    Application.showMenuPage(NewRequestPage.name);
+  });
 
   var page = this;
   this._requestsTable = new AbstractRequestPage.OutgoingRequestsTable("RequestTable", {

@@ -135,7 +135,7 @@
   background-color: rgb(237, 237, 237);
 }
 .incoming-request-container:hover {
-  background-color: rgb(115, 236, 255);
+  background-color: rgb(145, 201, 253);
 }
 .incoming-request-container:active {
   background-color: green;
