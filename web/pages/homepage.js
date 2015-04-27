@@ -24,13 +24,13 @@ HomePage.prototype.definePageContent = function(root) {
   this._incomingRequestsView = new AbstractRequestPage.IncomingRequestsView("RequestView", {
     clickListener: function(requestId) {
       var paramBundle = {
-        incoming: true,
+        type: "incoming",
         returnPageId: HomePage.name,
         requestId: requestId,
         otherRequestIds: page._getIncomingRequestIds().join(",")
       }
 
-      Application.showMenuPage(RequestDetailsPage.name, paramBundle);
+      Application.showMenuPage(IncomingRequestDetailsPage.name, paramBundle);
     }
   });
   this._incomingRequestsView.append(incomingRequestPanel);
@@ -49,13 +49,13 @@ HomePage.prototype.definePageContent = function(root) {
   this._outgoingRequestsView = new AbstractRequestPage.OutgoingRequestsView("RequestView", {
     clickListener: function(requestId) {
       var paramBundle = {
-        incoming: false,
+        type: "outgoing",
         returnPageId: HomePage.name,
         requestId: requestId,
         otherRequestIds: page._getOutgoingRequestIds().join(",")
       }
 
-      Application.showMenuPage(RequestDetailsPage.name, paramBundle);
+      Application.showMenuPage(OutgoingRequestDetailsPage.name, paramBundle);
     }
   });
   this._outgoingRequestsView.append(outgoingRequestPanel);

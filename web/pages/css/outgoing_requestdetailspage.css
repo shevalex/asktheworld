@@ -1,0 +1,25 @@
+#OutgoingRequestDetailsPage {
+}
+
+#OutgoingRequestDetailsPage-ContentPanel {
+  max-width: 700px;
+  margin-top: 10px;  
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-GoBackLink {
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-PreviousNextPanel {
+  margin-top: 10px;
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-PreviousNextPanel-PreviousButton {
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-PreviousNextPanel-NextButton {
+  float: right;
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-RequestPanel {
+  margin-top: 10px;
+}

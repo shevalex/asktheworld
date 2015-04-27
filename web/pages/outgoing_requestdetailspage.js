@@ -1,65 +1,64 @@
-RequestDetailsPage = ClassUtils.defineClass(AbstractPage, function RequestDetailsPage() {
-  AbstractPage.call(this, RequestDetailsPage.name);
+OutgoingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function OutgoingRequestDetailsPage() {
+  AbstractPage.call(this, OutgoingRequestDetailsPage.name);
+  
+  this._previousButton;
+  this._nextButton;
+  this._requestPanel;
   
   this._currentRequestId;
-  this._previousLinkId;
-  this._nextLinkId;
-  
   this._returnPageId;
   this._navigatableRequestIds;
-  this._requestList = null;
-  this._requestsPanel = null;
-  this._isIncomingList = false;
   
+  this._requestItem;
   this._cacheChangeListener;
 });
 
-RequestDetailsPage.prototype.definePageContent = function(root) {
-  var generalPanel = UIUtils.appendBlock(root, "GeneralPanel");
+OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
+  var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
+
+  UIUtils.appendLink(contentPanel, "BackLink", this.getLocale().GoBackLink);
   
-  this._previousLinkId = UIUtils.createId(generalPanel, "PreviousLink");
-  generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink(this._previousLinkId, this.getLocale().PreviousLink));
-  UIUtils.setClickListener(this._previousLinkId, function() {
-//    this._currentRequestId = this._getPreviousRequestId();
-//    this._updatePage();
-    
+  var previousNextPanel = UIUtils.appendBlock(contentPanel, "PreviousNextPanel");
+  this._previousButton = UIUtils.appendButton(previousNextPanel, "PreviousButton", this.getLocale().PreviousButton);
+  UIUtils.setClickListener(this._previousButton, function() {
     Application.showMenuPage(RequestDetailsPage.name, {
       requestId: this._getPreviousRequestId(),
       returnPageId: this._returnPageId,
-      otherRequestIds: this._navigatableRequestIds.join(","),
-      incoming: this._isIncomingList
+      otherRequestIds: this._navigatableRequestIds.join(",")
     });
   }.bind(this));
-
-  var goBackLinkId = UIUtils.createId(generalPanel, "GoBackLink");
-  generalPanel.appendChild(UIUtils.createSpan("56%", "0 2% 2% 0")).appendChild(UIUtils.createLink(goBackLinkId, this.getLocale().GoBackLink));
-  UIUtils.setClickListener(goBackLinkId, function() {
-    Application.showMenuPage(this._returnPageId);
-  }.bind(this));
-
-  this._nextLinkId = UIUtils.createId(generalPanel, "NextLink");
-  generalPanel.appendChild(UIUtils.createSpan("20%")).appendChild(UIUtils.createLink(this._nextLinkId, this.getLocale().NextLink));
-  UIUtils.setClickListener(this._nextLinkId, function() {
-//    this._currentRequestId = this._getNextRequestId();
-//    this._updatePage();
-    
+  
+  this._nextButton = UIUtils.appendButton(previousNextPanel, "NextButton", this.getLocale().NextButton);
+  UIUtils.setClickListener(this._nextButton, function() {
     Application.showMenuPage(RequestDetailsPage.name, {
       requestId: this._getNextRequestId(),
       returnPageId: this._returnPageId,
-      otherRequestIds: this._navigatableRequestIds.join(","),
-      incoming: this._isIncomingList
+      otherRequestIds: this._navigatableRequestIds.join(",")
     });
   }.bind(this));
-
-  this._requestsPanel = UIUtils.appendBlock(root, "RequestsPanel");
+  
+  this._requestPanel = UIUtils.appendBlock(contentPanel, "RequestPanel");
 }
 
-RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
+OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._returnPageId = paramBundle.returnPageId;
   this._currentRequestId = paramBundle.requestId;
-  this._isIncomingList = paramBundle.incoming != null && paramBundle.incoming == "true";
+  this._type = paramBundle.type;
   this._navigatableRequestIds = paramBundle.otherRequestIds.split(",");
-  this._updatePage();
+//  this._updatePage();
+
+  this._requestItem = new AbstractRequestPage.OutgoingRequestItem(this._currentRequestId, {fullRecord: true});
+  this._requestItem.append(this._requestPanel);
+  
+  
+
+//  this._cacheChangeListener = function(event) {
+//    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED) {
+//      this._updateOutgoingRequests();
+//    } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
+//      this._updateIncomingRequests();
+//    }
+//  }.bind(this);
   
 
 //  Consider closing the page if the request shown is being removed
@@ -86,18 +85,20 @@ RequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   Backend.addCacheChangeListener(this._cacheChangeListener);
 }
 
-RequestDetailsPage.prototype.onHide = function() {
+OutgoingRequestDetailsPage.prototype.onHide = function() {
+  this._requestItem.remove();
+  
   Backend.removeCacheChangeListener(this._cacheChangeListener);
-  this._requestList.remove();
+  
 }
 
-RequestDetailsPage.prototype.provideHistory = function() {
-  return Application.makeHistory([this.getHistoryPrefix(), ["request", this._currentRequestId], ["return", this._returnPageId], ["type", (this._isIncomingList ? "incoming" : "outgoing")], ["siblings", this._navigatableRequestIds != null ? this._navigatableRequestIds.join(",") : ""]]);
+OutgoingRequestDetailsPage.prototype.provideHistory = function() {
+  return Application.makeHistory([this.getHistoryPrefix(), ["request", this._currentRequestId], ["return", this._returnPageId], ["siblings", this._navigatableRequestIds != null ? this._navigatableRequestIds.join(",") : ""]]);
 }
 
 
 
-RequestDetailsPage.prototype._getPreviousRequestId = function() {
+OutgoingRequestDetailsPage.prototype._getPreviousRequestId = function() {
   if (this._navigatableRequestIds == null) {
     return null;
   }
@@ -115,7 +116,7 @@ RequestDetailsPage.prototype._getPreviousRequestId = function() {
   return null;
 }
 
-RequestDetailsPage.prototype._getNextRequestId = function() {
+OutgoingRequestDetailsPage.prototype._getNextRequestId = function() {
   if (this._navigatableRequestIds == null) {
     return null;
   }
@@ -133,7 +134,9 @@ RequestDetailsPage.prototype._getNextRequestId = function() {
   return null;
 }
 
-RequestDetailsPage.prototype._updatePage = function() {
+
+/*
+OutgoingRequestDetailsPage.prototype._updatePage = function() {
   UIUtils.setEnabled(this._previousLinkId, this._getPreviousRequestId() != null);
   UIUtils.setEnabled(this._nextLinkId, this._getNextRequestId() != null);
   
@@ -179,5 +182,5 @@ RequestDetailsPage.prototype._updatePage = function() {
   this._requestList.append(this._requestsPanel);
 }
 
-
+*/
 

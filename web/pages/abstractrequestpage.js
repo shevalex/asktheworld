@@ -59,8 +59,9 @@ AbstractRequestPage._AbstractRequestItem.prototype._fill = function() {
 }
 
 
+// settings.fullRecord;
 AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function OutgoingRequestItem(requestId, settings) {
-  AbstractRequestPage._AbstractRequestItem.call(this, requestId, "outgoing-request-container", settings);
+  AbstractRequestPage._AbstractRequestItem.call(this, requestId, settings.fullRecord ? "full-outgoing-request-container" : "outgoing-request-container", settings);
 });
 
 AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
@@ -86,11 +87,10 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   UIUtils.addClass(counterLabel, "request-responsecounter-label");
   
   var requestText = UIUtils.appendBlock(this._container, "RequestText");
-  if (this._settings.fullText) {
-    UIUtils.addClass(requestText, "request-multiline-text");
+  UIUtils.addClass(requestText, "request-text");
+  if (this._settings.fullRecord) {
     requestText.innerHTML = request.text;
   } else {
-    UIUtils.addClass(requestText, "request-singleline-text");
     requestText.innerHTML = UIUtils.getOneLine(request.text);
   }
 
@@ -100,7 +100,7 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
 
 
 AbstractRequestPage.IncomingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function IncomingRequestItem(requestId, settings) {
-  AbstractRequestPage._AbstractRequestItem.call(this, requestId, "incoming-request-container", settings);
+  AbstractRequestPage._AbstractRequestItem.call(this, requestId, settings.fullRecord ? "full-incoming-request-container" : "incoming-request-container", settings);
 });
 
 AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
@@ -120,11 +120,10 @@ AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
   UIUtils.addClass(expiresLabel, "request-expires-label");
   
   var requestText = UIUtils.appendBlock(this._container, "RequestText");
-  if (this._settings.fullText) {
-    UIUtils.addClass(requestText, "request-multiline-text");
+  UIUtils.addClass(requestText, "request-text");
+  if (this._settings.fullRecord) {
     requestText.innerHTML = request.text;
   } else {
-    UIUtils.addClass(requestText, "request-singleline-text");
     requestText.innerHTML = UIUtils.getOneLine(request.text);
   }
 
