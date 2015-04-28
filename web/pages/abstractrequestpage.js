@@ -96,6 +96,10 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
 
   var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.toExpertiseString(request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
+  
+  if (this._settings.fullRecord && request.attachments != null && request.attachments.length > 0) {
+    var attachmentBar = UIUtils.appendAttachmentBar(this._container, request.attachments);
+  }
 }
 
 

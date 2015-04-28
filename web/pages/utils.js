@@ -624,6 +624,118 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
 
 
 
+UIUtils.appendAttachmentBar = function(root, attachments, editable) {
+  var attachmentBar = UIUtils.appendBlock(root, "AttachmentBar");
+  UIUtils.addClass(attachmentBar, "attachmentbar");
+  
+  attachmentBar._attachments = [];
+
+  var attachmentsPanel = UIUtils.appendBlock(attachmentBar, "AttachmentsPanel");
+  UIUtils.addClass(attachmentBar, "attachmentbar-attachments");
+
+  if (editable) {
+    var attachButton = UIUtils.appendButton(attachmentBar, "AttachButton", I18n.getLocale().literals.AttachButton);
+    UIUtils.addClass(attachButton, "attachmentbar-attachbutton");
+    UIUtils.setClickListener(attachButton, function() {
+      var fileChooser = UIUtils.appendFileChooser(attachmentBar);
+
+      fileChooser.open(function(files) {
+        var selectedFile = files[0];
+        UIUtils.get$(fileChooser).remove();
+
+        if (selectedFile.size > 5 * 1024000) {
+          if (settings != null && settings.fileTooBigListener != null) {
+            settings.fileTooBigListener(selectedFile);
+          }
+          return;
+        }
+
+        FileUtils.loadFile(selectedFile, function(file, dataUrl) {
+          attachmentBar.addAttachment({data: dataUrl, name: file.name, type: file.type, loaded: true});
+        });
+      });
+    });
+  }
+  
+  
+  attachmentBar.setAttachments = function(attachments) {
+    attachmentBar._attachments = [];
+    attachmentBar._attachmentCounter = 0;
+    UIUtils.get$(attachmentsPanel).empty();
+    
+    for (var i in attachments) {
+      attachmentBar.addAttachment(attachments[i]);
+    }
+  }
+  
+  attachmentBar.addAttachment = function(attachment) {
+    attachmentBar._attachments.push(attachment);
+    
+    var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachmentBar._attachmentCounter++);
+    UIUtils.addClass(thumbnail, "attachmentbar-thumbnail");
+
+    var thumbnailTitle = UIUtils.appendBlock(thumbnail, "Title");
+    UIUtils.addClass(thumbnailTitle, "attachmentbar-thumbnail-title");
+    thumbnailTitle.innerHTML = attachment.name;
+    
+    if (editable) {
+      var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
+      UIUtils.addClass(thumbnailCloser, "attachmentbar-thumbnail-x");
+
+      UIUtils.setClickListener(thumbnailCloser, function() {
+        UIUtils.get$(thumbnail).remove();
+        for (var index = 0; index < attachmentBar._attachments.length; index++) {
+          if (attachmentBar._attachments[index] == attachment) {
+            attachmentBar._attachments.splice(index, 1);
+            break;
+          }
+        }
+
+        return false;
+      });
+    }
+
+    if (FileUtils.isImage(attachment)) {
+      thumbnail.style.backgroundImage = "url(" + attachment.data + ")";
+
+      UIUtils.setClickListener(thumbnail, function(attachment) {
+        var previewElement = UIUtils.appendBlock(attachmentsPanel, "Preview");
+        UIUtils.addClass(previewElement, "attachmentbar-preview");
+
+        var previewCloser = UIUtils.appendBlock(previewElement, "X");
+        UIUtils.addClass(previewCloser, "attachmentbar-preview-x");
+
+        UIUtils.removeIfClickedOutside(previewElement);
+
+        UIUtils.setClickListener(previewCloser, function() {
+          UIUtils.get$(previewElement).remove();
+        });
+
+        previewElement.style.backgroundImage = "url(" + attachment.data + ")";
+
+        var previewTitle = UIUtils.appendBlock(previewElement, "Title");
+        UIUtils.addClass(previewTitle, "attachmentbar-preview-title");
+        previewTitle.innerHTML = attachment.name;
+      }.bind(this, attachment));
+    } else {
+      // TBD provide special icons for other file types
+    }
+  }
+  
+  attachmentBar.getAttachments = function() {
+    return attachmentBar._attachments;
+  }
+  
+
+  if (attachments != null) {
+    attachmentBar.setAttachments(attachments);
+  }
+  
+  return attachmentBar;
+}
+
+
+
 
 
 UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener, clickListener) {
