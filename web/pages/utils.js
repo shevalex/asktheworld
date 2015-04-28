@@ -744,92 +744,6 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable) {
 
 
 
-
-UIUtils.appendFeaturedTable = function(tableId, root, columns, rowDataProvider, selectionListener, clickListener) {
-  var tableElement = document.createElement("table");
-  tableElement.setAttribute("class", "display");
-
-  var tableElementId = UIUtils.createId(root, tableId);
-  tableElement.setAttribute("id", tableElementId);
-  
-  root.appendChild(tableElement);
-
-  
-  var defaultSortingRule = [];
-  for (var index in columns) {
-    defaultSortingRule.push([index, "desc"]);
-  }
-  
-  var dataTableObject = $("#" + tableElementId).DataTable({
-    columns: columns,
-    data: rowDataProvider.getRows(),
-    createdRow: function(row, rowData, index) {
-      var table = this.api();
-      
-      rowDataProvider.getRowData(rowData.rowId, function(rowDetailedData) {
-        rowDetailedData.rowId = rowData.rowId;
-        table.row(index).data(rowDetailedData).draw(false);
-      });
-    },
-    aLengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "All"]],
-    iDisplayLength: 5,
-    iDisplayStart: 0,
-    aaSorting: defaultSortingRule
-  });
-  
-  dataTableObject.on("click", "tr", function() {
-    var tableRowObjectData = dataTableObject.row(this).data();
-    if (tableRowObjectData == null || tableRowObjectData.temporary) {
-      return;
-    }
-
-    if (dataTableObject.$("tr.selected").get(0) != $(this).get(0)) {
-      dataTableObject.$("tr.selected").removeClass("selected");
-      $(this).addClass("selected");
-
-      if (selectionListener != null) {
-        selectionListener(tableRowObjectData.rowId);
-      }
-    }
-    
-    
-    if (clickListener != null) {
-      clickListener(tableRowObjectData.rowId);
-    }
-  });
-  
-  dataTableObject.getSelectedRow = function() {
-    var selectedRow = dataTableObject.row(".selected");
-    
-    if (selectedRow.length > 0) {
-      return selectedRow;
-    } else {
-      return null;
-    }
-  }
-  
-  dataTableObject.setSelectedRow = function(rowIndex) {
-    dataTableObject.$("tr.selected").removeClass("selected");
-
-    if (rowIndex != null) {
-      dataTableObject.row(rowIndex).nodes().to$().addClass("selected");
-    }
-  }
-
-  dataTableObject.getSelectedPage = function() {
-    var selectedRow = dataTableObject.row(".selected");
-    if (selectedRow.length > 0) {
-      return selectedRow.index();
-    } else {
-      return -1;
-    }
-  }
-  
-  
-  return dataTableObject;
-}
-
-
 UIUtils.appendFileChooser = function(root) {
   var fileChooser = UIUtils._createInputField(UIUtils.createId(root, "FileChooser"), "file");
   fileChooser.style.display = "none";
@@ -850,19 +764,12 @@ UIUtils.appendFileChooser = function(root) {
   return fileChooser;
 }
 
-/*
- settings.textCssClass
- settings.defaultValue
- settings.fileTooBigListener
- */
-UIUtils.appendTextEditor = function(root, editorId, settings) {
-  var editorArea = UIUtils.appendBlock(root, editorId);
-  UIUtils.addClass(editorArea, "text-editor-container");
-  
-  var textArea = UIUtils.appendBlock(editorArea, editorId + "EdittingArea");
+UIUtils.appendTextEditor = function(root, editorId, defaultValue) {
+  var textArea = UIUtils.appendBlock(editorArea, editorId);
   textArea.setAttribute("contenteditable", "true");
+  UIUtils.addClass(textArea, "text-editor");
   
-  var defaultValue = settings != null && settings.defaultValue != null ? settings.defaultValue : "";
+  defaultValue = defaultValue || "";
   
   textArea.onfocus = function() {
     if (textArea.innerHTML == defaultValue) {
@@ -875,160 +782,24 @@ UIUtils.appendTextEditor = function(root, editorId, settings) {
     }
   }
   
-  
-  UIUtils.addClass(textArea, "text-editor-textcomponent");
-  if (settings != null && settings.textCssClass != null) {
-    UIUtils.addClass(textArea, settings.textCssClass);
-  }
-  
-  var attachmentBar = UIUtils.appendBlock(editorArea, "AttachmentBar");
-  UIUtils.addClass(attachmentBar, "text-editor-attachmentbar");
-
-  var attachmentsPanel = UIUtils.appendBlock(attachmentBar, "Attachments");
-  UIUtils.addClass(attachmentsPanel, "text-editor-attachments");
-
-  var controlPanel = UIUtils.appendBlock(attachmentBar, "ControlPanel");
-  UIUtils.addClass(controlPanel, "text-editor-controlpanel");
-  
-  var attachButton = UIUtils.appendButton(controlPanel, "AttachButton", I18n.getLocale().literals.AttachButton);
-  UIUtils.addClass(attachButton, "text-editor-attachbutton");
-
-  var attachments = [];
-  var attachmentCounter = 0;
-  
-  
-  var appendAttachment = function(attachment) {
-    attachments.push(attachment);
-
-    attachmentCounter++;
-    var thumbnail = UIUtils.appendBlock(attachmentsPanel, "Attachment-" + attachmentCounter);
-    UIUtils.addClass(thumbnail, "text-editor-thumbnail");
-
-    if (FileUtils.isImage(attachment)) {
-      thumbnail.style.backgroundImage = "url(" + attachment.data + ")";
-
-      UIUtils.setClickListener(thumbnail, function() {
-        var previewElement = UIUtils.appendBlock(attachmentBar, "Preview");
-        UIUtils.addClass(previewElement, "text-editor-preview");
-
-        var previewCloser = UIUtils.appendBlock(previewElement, "X");
-        UIUtils.addClass(previewCloser, "text-editor-preview-x");
-
-        UIUtils.removeIfClickedOutside(previewElement);
-
-        UIUtils.setClickListener(previewCloser, function() {
-          UIUtils.get$(previewElement).remove();
-          
-          return false;
-        });
-
-        previewElement.style.backgroundImage = "url(" + attachment.data + ")";
-
-        var previewTitle = UIUtils.appendBlock(previewElement, "Title");
-        UIUtils.addClass(previewTitle, "text-editor-preview-title");
-        previewTitle.innerHTML = attachment.name;
-      });
-    } else {
-      // TBD provide special icons for other file types
-    }
-
-    var thumbnailCloser = UIUtils.appendBlock(thumbnail, "X");
-    UIUtils.addClass(thumbnailCloser, "text-editor-thumbnail-x");
-
-    UIUtils.setClickListener(thumbnailCloser, function() {
-      UIUtils.get$(thumbnail).remove();
-      for (var index = 0; index < attachments.length; index++) {
-        if (attachments[index] == attachment) {
-          attachments.splice(index, 1);
-          break;
-        }
-      }
-      
-      return false;
-    });
-
-    var thumbnailTitle = UIUtils.appendBlock(thumbnail, "Title");
-    UIUtils.addClass(thumbnailTitle, "text-editor-thumbnail-title");
-    thumbnailTitle.innerHTML = attachment.name;
-  }.bind(this);
-  
-  
-  UIUtils.setClickListener(attachButton, function() {
-    var fileChooser = UIUtils.appendFileChooser(attachmentBar);
-
-    fileChooser.open(function(files) {
-      var selectedFile = files[0];
-      UIUtils.get$(fileChooser).remove();
-      
-      if (selectedFile.size > 5 * 1024000) {
-        if (settings != null && settings.fileTooBigListener != null) {
-          settings.fileTooBigListener(selectedFile);
-        }
-        return;
-      }
-
-      FileUtils.loadFile(selectedFile, function(file, dataUrl) {
-        appendAttachment({data: dataUrl, name: file.name, type: file.type, loaded: true});
-      });
-    });
-  });
-  
-  
-  editorArea.getValue = function() {
+  textArea.getValue = function() {
     var value = UIUtils.get$(textArea).html();
     return value != defaultValue ? value : "";
   }
   
-  editorArea.setValue = function(value) {
+  textArea.setValue = function(value) {
     UIUtils.get$(textArea).html(value);
   }
   
-  editorArea.reset = function() {
+  textArea.reset = function() {
     if (defaultValue != null) {
       this.setValue(defaultValue);
     } else {
       this.setValue("");
     }
-    
-    UIUtils.get$(attachmentsPanel).empty();
-    attachments = [];
-    attachmentCounter = 0;
   }
-  
-  editorArea.focus = function() {
-    textArea.focus();
-  }
-  
-  editorArea.getTextElement = function() {
-    return textArea;
-  }
-  
-  editorArea.getAttachments = function() {
-    return attachments;
-  }
-  
-  // attachment.data - url or data array
-  // attachment.name - file name
-  // attachment.type - mime type
-  editorArea.addAttachment = function(attachment) {
-    appendAttachment(attachment);
-  }
-  
-  editorArea.addAttachments = function(ats) {
-    if (ats == null || ats.length == 0) {
-      return;
-    }
-    
-    for (var index in ats) {
-      appendAttachment(ats[index]);
-    }
-  }
-  
-  editorArea.indicateInvalidInput = function() {
-    UIUtils.indicateInvalidInput(textArea);
-  }
-  
-  return editorArea;
+
+  return textArea;
 }
 
 

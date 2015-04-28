@@ -16,12 +16,15 @@ OutgoingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function Outgo
 OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
 
-  UIUtils.appendLink(contentPanel, "BackLink", this.getLocale().GoBackLink);
+  var backLink = UIUtils.appendLink(contentPanel, "BackLink", this.getLocale().GoBackLink);
+  UIUtils.setClickListener(backLink, function() {
+    Application.showMenuPage(this._returnPageId);
+  }.bind(this));
   
   var previousNextPanel = UIUtils.appendBlock(contentPanel, "PreviousNextPanel");
   this._previousButton = UIUtils.appendButton(previousNextPanel, "PreviousButton", this.getLocale().PreviousButton);
   UIUtils.setClickListener(this._previousButton, function() {
-    Application.showMenuPage(RequestDetailsPage.name, {
+    Application.showMenuPage(OutgoingRequestDetailsPage.name, {
       requestId: this._getPreviousRequestId(),
       returnPageId: this._returnPageId,
       otherRequestIds: this._navigatableRequestIds.join(",")
@@ -30,7 +33,7 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   
   this._nextButton = UIUtils.appendButton(previousNextPanel, "NextButton", this.getLocale().NextButton);
   UIUtils.setClickListener(this._nextButton, function() {
-    Application.showMenuPage(RequestDetailsPage.name, {
+    Application.showMenuPage(OutgoingRequestDetailsPage.name, {
       requestId: this._getNextRequestId(),
       returnPageId: this._returnPageId,
       otherRequestIds: this._navigatableRequestIds.join(",")
