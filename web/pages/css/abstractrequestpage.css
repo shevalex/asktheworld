@@ -76,6 +76,8 @@
   font-size: 12px;
 }
 .full-outgoing-request-container .request-date-label {
+  display: block;
+  margin-bottom: 5px;
   margin-left: 10px;
   height: 15px;
   
@@ -99,6 +101,16 @@
   position: absolute;
   right: 20px;
   top: 5px;
+  
+  color: inherit;
+}
+.full-outgoing-request-container .request-quantity-label {
+  margin-left: 10px;
+
+  color: inherit;
+}
+.full-outgoing-request-container .request-timeframe-label {
+  margin-left: 200px;
   
   color: inherit;
 }

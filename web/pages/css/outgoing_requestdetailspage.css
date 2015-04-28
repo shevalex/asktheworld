@@ -23,3 +23,8 @@
 #OutgoingRequestDetailsPage-ContentPanel-RequestPanel {
   margin-top: 10px;
 }
+
+#OutgoingRequestDetailsPage-ContentPanel-EditButton {
+  float: right;
+  margin-top: 2px;
+}

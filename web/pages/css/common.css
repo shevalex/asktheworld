@@ -125,6 +125,133 @@ select {
 }
 
 
+.attachmentbar {
+  position: relative;
+  height: 70px;
+}
+.attachmentbar .attachmentbar-attachments {
+  height: 50px;
+  padding: 0px 10px 20px 10px; 
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.attachmentbar .attachmentbar-attachbutton {
+  position: absolute;
+  float: right;
+  width: 100px;
+}
+.attachmentbar .attachmentbar-editablepanel {
+}
+.attachmentbar .attachmentbar-editablepanel .attachmentbar-attachments {
+  width: calc(100% - 120px); 
+}
+.attachmentbar .attachmentbar-thumbnail {
+  display:inline-block;
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin-right: 10px;
+  
+  border-style: solid;
+  border-radius: 3px;
+  border-width: 1px;
+  border-color: black;
+  
+  background-image: url(../../imgs/default_thumbnail.png);
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+.attachmentbar .attachmentbar-thumbnail-x, .attachmentbar .attachmentbar-preview-x {
+  display: none;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  
+  border-radius: 5px;
+  
+  background-color: white;
+  background-image: url(../../imgs/close.png);
+  background-size: contain;
+}
+.attachmentbar .attachmentbar-thumbnail-x:hover, .attachmentbar .attachmentbar-preview-x:hover {
+  background-color: rgb(225, 90, 80);
+}
+.attachmentbar .attachmentbar-thumbnail-x:active, .attachmentbar .attachmentbar-preview-x:active {
+  background-color: rgb(225, 60, 50);
+}
+.attachmentbar .attachmentbar-thumbnail-x {
+  width: 15px;
+  height: 15px;
+}
+.attachmentbar .attachmentbar-thumbnail:hover .attachmentbar .attachmentbar-thumbnail-x {
+  display: block;
+}
+.attachmentbar .attachmentbar-thumbnail-title {
+  display: none;
+  position: absolute;
+  bottom: -20px;
+  left: 0px;
+  
+  font-size: 15px;
+
+  color: black;
+}
+.attachmentbar .attachmentbar-thumbnail:hover .attachmentbar .attachmentbar-thumbnail-title {
+  display: block;
+}
+.attachmentbar .attachmentbar-preview {
+  display: block;
+  position: fixed;
+  left: 25%;
+  top: 25%;
+  
+  z-index: 1;
+  
+  width: 50%;
+  height: 50%;
+  
+  padding: 5px;
+
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 3px;
+  border-color: black;
+  
+  background-color: rgba(100, 100, 100, 0.8);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+.attachmentbar .attachmentbar-preview-x {
+  width: 20px;
+  height: 20px;
+}
+.attachmentbar .attachmentbar-preview:hover .attachmentbar .attachmentbar-preview-x {
+  display: block;
+}
+.attachmentbar .attachmentbar-preview-title {
+  display: none;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  padding: 5px;
+
+  width: calc(100% - 10px);
+  text-align: center;
+  overflow: hidden;
+
+  font-size: 20px;
+  
+  background-color: rgb(100, 100, 100);
+  color: white;
+}
+.attachmentbar .attachmentbar-preview:hover .attachmentbar .attachmentbar-preview-title {
+  display: block;
+}
+
+
 
 .text-editor-container {
 }

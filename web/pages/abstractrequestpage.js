@@ -72,7 +72,7 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
   UIUtils.addClass(dateLabel, "request-date-label");
   
-  var targetLabel = UIUtils.appendLabel(this._container, "TargetLabel", I18n.getPageLocale("AbstractRequestPage").TargetLabel + " " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
+  var targetLabel = UIUtils.appendLabel(this._container, "TargetLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").TargetLabel + "</b> " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
   UIUtils.addClass(targetLabel, "request-target-label");
   
   var unreadResponses = Backend.getIncomingResponseIds(this._requestId, Backend.Response.STATUS_READ);
@@ -86,6 +86,14 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   var counterLabel = UIUtils.appendLabel(this._container, "CounterLabel", counterText);
   UIUtils.addClass(counterLabel, "request-responsecounter-label");
   
+  if (this._settings.fullRecord) {
+    var quantityLabel = UIUtils.appendLabel(this._container, "QuntityLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").QuantityLabel + "</b> " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_QUANTITY, request.response_quantity));
+    UIUtils.addClass(quantityLabel, "request-quantity-label");
+
+    var timeFrameLabel = UIUtils.appendLabel(this._container, "TimeFrameLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").TimeFrameLabel + "</b> " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_WAIT_TIME, request.response_wait_time));
+    UIUtils.addClass(timeFrameLabel, "request-timeframe-label");
+  }
+  
   var requestText = UIUtils.appendBlock(this._container, "RequestText");
   UIUtils.addClass(requestText, "request-text");
   if (this._settings.fullRecord) {
@@ -94,8 +102,12 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
     requestText.innerHTML = UIUtils.getOneLine(request.text);
   }
 
-  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.toExpertiseString(request.expertise_category));
+  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").ExpertiseLabel + "</b> " + Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
+  
+  if (this._settings.fullRecord && request.attachments != null && request.attachments.length > 0) {
+    var attachmentBar = UIUtils.appendAttachmentBar(this._container, request.attachments);
+  }
 }
 
 
@@ -127,7 +139,7 @@ AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
     requestText.innerHTML = UIUtils.getOneLine(request.text);
   }
 
-  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.toExpertiseString(request.expertise_category));
+  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
 }
 
@@ -1136,7 +1148,7 @@ AbstractRequestPage._AbstractRequestList._OutgoingRequestPanel.prototype._append
     }
     
     var requestDate = new Date(request.time);
-    UIUtils.get$(textElement).html("<b>" + I18n.getPageLocale("AbstractRequestPage").OutgoingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString(), Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender), Application.Configuration.toExpertiseString(request.expertise_category)) + "</b><br>" + text);
+    UIUtils.get$(textElement).html("<b>" + I18n.getPageLocale("AbstractRequestPage").OutgoingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString(), Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender), Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category)) + "</b><br>" + text);
     
     AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(requestHolderElement, request.attachments);
     
@@ -1305,7 +1317,7 @@ AbstractRequestPage._AbstractRequestList._IncomingRequestPanel.prototype._append
     }
 
     var requestDate = new Date(request.time);
-    UIUtils.get$(requestTextElement).html("<b>" + I18n.getPageLocale("AbstractRequestPage").IncomingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString(), Application.Configuration.toExpertiseString(request.expertise_category)) + "</b><br>" + text);
+    UIUtils.get$(requestTextElement).html("<b>" + I18n.getPageLocale("AbstractRequestPage").IncomingRequestTitleProvider(requestDate.toDateString() + ", " + requestDate.toLocaleTimeString(), Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category)) + "</b><br>" + text);
     
     AbstractRequestPage._AbstractRequestList.__appendAttachmentPanel(requestHolderElement, request.attachments);
 
