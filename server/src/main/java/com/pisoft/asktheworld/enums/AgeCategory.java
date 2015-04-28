@@ -1,3 +1,5 @@
+package com.pisoft.asktheworld.enums;
+
 public enum AgeCategory {
     TEENS("teens"),
     ADULTS("adults"),

@@ -1,7 +1,5 @@
 package com.pisoft.asktheworld.enums;
 
-import org.hibernate.internal.util.compare.EqualsHelper;
-
 public enum RequestStatus {
 	ACTIVE("active"),
 	EXPIRED("expired"),

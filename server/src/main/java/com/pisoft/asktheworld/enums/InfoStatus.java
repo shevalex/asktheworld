@@ -1,3 +1,4 @@
+package com.pisoft.asktheworld.enums;
 public enum InfoStatus {
     NO("no"),
     CANPROVIDE("can_provide"),

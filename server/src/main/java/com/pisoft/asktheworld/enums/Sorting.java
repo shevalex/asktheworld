@@ -1,3 +1,4 @@
+package com.pisoft.asktheworld.enums;
 public enum Sorting {
     CHRONOLOGICALLY("chronologically"),
     DEFAULT("");
