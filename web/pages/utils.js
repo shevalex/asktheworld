@@ -629,12 +629,16 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable) {
   UIUtils.addClass(attachmentBar, "attachmentbar");
   
   attachmentBar._attachments = [];
-
-  var attachmentsPanel = UIUtils.appendBlock(attachmentBar, "AttachmentsPanel");
-  UIUtils.addClass(attachmentBar, "attachmentbar-attachments");
+  attachmentBar._attachmentCounter = 0;
 
   if (editable) {
-    var attachButton = UIUtils.appendButton(attachmentBar, "AttachButton", I18n.getLocale().literals.AttachButton);
+    var editableAttachmentPanel = UIUtils.appendBlock(attachmentBar, "EditableAttachmentPanel");
+    UIUtils.addClass(attachmentBar, "attachmentbar-editablepanel");
+
+    var attachmentsPanel = UIUtils.appendBlock(editableAttachmentPanel, "AttachmentsPanel");
+    UIUtils.addClass(attachmentBar, "attachmentbar-attachments");
+
+    var attachButton = UIUtils.appendButton(editableAttachmentPanel, "AttachButton", I18n.getLocale().literals.AttachButton);
     UIUtils.addClass(attachButton, "attachmentbar-attachbutton");
     UIUtils.setClickListener(attachButton, function() {
       var fileChooser = UIUtils.appendFileChooser(attachmentBar);
@@ -655,6 +659,9 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable) {
         });
       });
     });
+  } else {
+    var attachmentsPanel = UIUtils.appendBlock(attachmentBar, "AttachmentsPanel");
+    UIUtils.addClass(attachmentBar, "attachmentbar-attachments");
   }
   
   

@@ -129,21 +129,22 @@ select {
   position: relative;
   height: 70px;
 }
-
 .attachmentbar .attachmentbar-attachments {
-  width: calc(100% - 120px); 
   height: 50px;
   padding: 0px 10px 20px 10px; 
   white-space: nowrap;
   overflow-x: auto;
 }
-
 .attachmentbar .attachmentbar-attachbutton {
   position: absolute;
   float: right;
   width: 100px;
 }
-
+.attachmentbar .attachmentbar-editablepanel {
+}
+.attachmentbar .attachmentbar-editablepanel .attachmentbar-attachments {
+  width: calc(100% - 120px); 
+}
 .attachmentbar .attachmentbar-thumbnail {
   display:inline-block;
   position: relative;
