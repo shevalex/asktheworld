@@ -41,6 +41,11 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   }.bind(this));
   
   this._requestPanel = UIUtils.appendBlock(contentPanel, "RequestPanel");
+  
+  var editButton = UIUtils.appendButton(contentPanel, "EditButton", this.getLocale().EditButton);
+  UIUtils.setClickListener(editButton, function() {
+//    Application.showMenuPage(OutgoingRequestDetailsPage.name);
+  }.bind(this));
 }
 
 OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
