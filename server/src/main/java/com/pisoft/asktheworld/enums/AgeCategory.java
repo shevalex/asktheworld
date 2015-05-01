@@ -10,5 +10,9 @@ public enum AgeCategory {
     private AgeCategory(String age) {
         this.age = age;
     }
+
+    public boolean equals(String s) {
+        return s == this.age;
+    }
     
 }

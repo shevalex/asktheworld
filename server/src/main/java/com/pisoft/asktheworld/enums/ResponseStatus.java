@@ -8,5 +8,8 @@ public enum ResponseStatus {
     private ResponseStatus(String status) {
         this.status = status;
     }
-    
+    public boolean equals(String s) {
+        return s == this.status;
+    }
+
 }

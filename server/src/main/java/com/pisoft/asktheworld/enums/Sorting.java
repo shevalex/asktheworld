@@ -7,5 +7,8 @@ public enum Sorting {
     private Sorting(String sorting) {
         this.sorting = sorting;
     }
-    
+    public boolean equals(String s) {
+        return s == this.sorting;
+    }
+
 }

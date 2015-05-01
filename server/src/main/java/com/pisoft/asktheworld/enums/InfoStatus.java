@@ -9,5 +9,8 @@ public enum InfoStatus {
     private InfoStatus(String status) {
         this.status = status;
     }
-    
+    public boolean equals(String s) {
+        return s == this.status;
+    }
+
 }

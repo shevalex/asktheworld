@@ -8,5 +8,9 @@ public enum Gender {
     private Gender(String gender) {
         this.gender = gender;
     }
+
+    public boolean equals(String s) {
+        return s == this.gender;
+    }
     
 }
