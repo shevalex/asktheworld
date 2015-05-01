@@ -91,14 +91,20 @@ public class RequestController {
 	@RequestMapping(method=RequestMethod.GET, value="/user/{user_id}/requests/incoming")
 	public ResponseEntity<String> getIncomingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false) String  status,
 			@RequestParam(value="sorting", required = false, defaultValue="chronologically") String  sorting) {
-		//TODO: check if user id is correct?  I am not sure that we should check this
+		//TODO: check if user id is correct?  I am not sure that we need to check this
 		List<Integer> list = db.getUserIncomingRequestsIDs(id, status, sorting);
 		if(list == null) {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<String>("{\"responses\":"+Arrays.toString(list.toArray())+"}", HttpStatus.OK);
 	}
-	
+
+	@RequestMapping(method=RequestMethod.DELETE, value="/user/{user_id}/requests/incoming/{requestID}")
+	public ResponseEntity<Void> deleteIncomingRequests(@PathVariable("user_id") int userId, @PathVariable("requestID") int requestId) {
+		//TODO: check if user id is correct?  I am not sure that we need to check this
+		ATWRequest request = db.deleteUserIncomingRequests(userId, requestId);
+        return new ResponseEntity<Void>( request != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+	}
 
 
 //~/user/{user id}/requests/incoming

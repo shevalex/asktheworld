@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.pisoft.asktheworld.enums.AgeCategory;
+import com.pisoft.asktheworld.enums.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -125,8 +127,8 @@ public class DB {
 		List<ATWUser> users = findIncomingRequestUsers(request);
 		//TODO: shuffle ?
 		
-		//TODO: what we should do if list is empty?
-		if(users != null && users.size() > 0){
+		//TODO: what we should do if list is empty or smaller than user wants?
+		if(users != null && users.size() > 0) {
 			int counter = 0;
 			int max = getRequiredUsersNumber(request.getResponse_quantity());
 			for(Iterator<ATWUser> it = users.iterator(); it.hasNext();) {
@@ -152,10 +154,10 @@ public class DB {
 		String gender = request.getResponse_gender();
 		String age = request.getResponse_age_group();
 		//TODO: it should not be here. 
-		if (gender == null || gender.toLowerCase().equals("all")){
+		if (gender == null || Gender.ALL.equals(gender)){
 			gender = "%";
 		}
-		if (age == null || age.toLowerCase().equals("all")){
+		if (age == null || AgeCategory.ALL.equals(age)){
 			age = "%";
 		}
 		System.out.println("Gender "+gender + "    Age "+ age);
@@ -290,7 +292,26 @@ public class DB {
 		List<ATWRequest> newIncomingRequests = requests.findNewIncomingRequets(id, userIncomingRequests, userAges, userGenders, number);
 		return newIncomingRequests;
 	}
-	
-	
 
+
+	public ATWRequest deleteUserIncomingRequests(int userId, int requestId) {
+		ATWUser user = users.findById(userId);
+		if ( user == null ) {
+			//Really we should not be here, as we check user id and credentials in security
+			return null;
+		}
+
+		//For now we will got trough request in user list and compare request id
+		//TODO: objects are same if they have same id (implement equal method)
+		List<ATWRequest> list = user.getIncomingRequests();
+		for (Iterator<ATWRequest> it = list.iterator(); it.hasNext();) {
+			ATWRequest request = it.next();
+			if ( request.getId() == requestId ) {
+				request = user.deleteRequest(request);
+				users.update(user);
+				return request;
+			}
+		}
+		return null;
+	}
 }

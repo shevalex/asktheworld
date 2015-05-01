@@ -117,6 +117,10 @@ public class ATWUser implements Serializable {
 	public void addRequets(ATWRequest request) {
 		incomingRequets.add(request);
 	}
+
+	public ATWRequest deleteRequest(ATWRequest request) {
+		return incomingRequets.remove(request)?request:null;
+	}
 	
 	public List<Integer> getIncomingRequestsIDs(){
 		List<Integer> reqstsIds = new ArrayList<Integer>();

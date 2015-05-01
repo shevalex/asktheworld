@@ -41,6 +41,7 @@ public class UserDAOImpl extends AbstractDAO<ATWUser>{
 				.setParameter(1, age)
 				.setParameter(2, gender)
 				.getResultList();
+		//TODO: Clean this up
 		if(list != null) {System.out.println("New requets list size = "+list.size());}
 		else { System.out.println("New requets list is NULL");}
 		return list;
