@@ -27,7 +27,7 @@ ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
         otherRequestIds: page._getRequestIds().join(",")
       }
 
-      Application.showMenuPage(RequestDetailsPage.name, paramBundle);
+      Application.showMenuPage(OutgoingRequestDetailsPage.name, paramBundle);
     },
     hideWhenEmpty: true
   });

@@ -127,23 +127,25 @@ select {
 
 .attachmentbar {
   position: relative;
-  height: 70px;
-}
-.attachmentbar .attachmentbar-attachments {
+  padding: 0px 0px 20px 0px; 
   height: 50px;
-  padding: 0px 10px 20px 10px; 
-  white-space: nowrap;
-  overflow-x: auto;
-}
-.attachmentbar .attachmentbar-attachbutton {
-  position: absolute;
-  float: right;
-  width: 100px;
 }
 .attachmentbar .attachmentbar-editablepanel {
 }
 .attachmentbar .attachmentbar-editablepanel .attachmentbar-attachments {
+  display: inline-block;
   width: calc(100% - 120px); 
+}
+.attachmentbar .attachmentbar-attachments {
+/*
+  height: 50px;
+  white-space: nowrap;
+  overflow-x: auto;
+*/
+}
+.attachmentbar .attachmentbar-attachbutton {
+  float: right;
+  width: 100px;
 }
 .attachmentbar .attachmentbar-thumbnail {
   display:inline-block;
@@ -185,7 +187,7 @@ select {
   width: 15px;
   height: 15px;
 }
-.attachmentbar .attachmentbar-thumbnail:hover .attachmentbar .attachmentbar-thumbnail-x {
+.attachmentbar .attachmentbar-thumbnail:hover .attachmentbar-thumbnail-x {
   display: block;
 }
 .attachmentbar .attachmentbar-thumbnail-title {
@@ -194,11 +196,13 @@ select {
   bottom: -20px;
   left: 0px;
   
+  white-space: nowrap;
+  
   font-size: 15px;
 
   color: black;
 }
-.attachmentbar .attachmentbar-thumbnail:hover .attachmentbar .attachmentbar-thumbnail-title {
+.attachmentbar .attachmentbar-thumbnail:hover .attachmentbar-thumbnail-title {
   display: block;
 }
 .attachmentbar .attachmentbar-preview {
@@ -228,7 +232,7 @@ select {
   width: 20px;
   height: 20px;
 }
-.attachmentbar .attachmentbar-preview:hover .attachmentbar .attachmentbar-preview-x {
+.attachmentbar .attachmentbar-preview:hover .attachmentbar-preview-x {
   display: block;
 }
 .attachmentbar .attachmentbar-preview-title {
@@ -241,25 +245,21 @@ select {
   width: calc(100% - 10px);
   text-align: center;
   overflow: hidden;
+  white-space: nowrap;
 
   font-size: 20px;
   
   background-color: rgb(100, 100, 100);
   color: white;
 }
-.attachmentbar .attachmentbar-preview:hover .attachmentbar .attachmentbar-preview-title {
+.attachmentbar .attachmentbar-preview:hover .attachmentbar-preview-title {
   display: block;
 }
 
 
 
-.text-editor-container {
-}
-.text-editor-textcomponent {
+.text-editor {
   padding: 5px;
-  margin: 5px;
-  
-  width: calc(100% - 20px);
   height: 100px;
   
   overflow: auto;
@@ -270,135 +270,6 @@ select {
   
   background: white;
   color: rgb(75, 75, 75);
-}
-.text-editor-attachmentbar {
-  margin-top: 10px;
-  height: 70px;
-}
-.text-editor-attachments {
-  position: relative;
-  float: left;
-  width: calc(100% - 120px); 
-  height: 50px;
-  padding: 0px 10px 20px 10px; 
-  white-space: nowrap;
-  overflow-x: auto;
-}
-.text-editor-controlpanel {
-  position: relative;
-  float: right;
-  width: 100px;
-  height: 30px;
-  text-align: right;
-}
-.text-editor-attachbutton {
-  font-size: 15px;
-  margin-right: 5px;
-}
-.text-editor-thumbnail {
-  display:inline-block;
-  position: relative;
-  width: 48px;
-  height: 48px;
-  margin-right: 10px;
-  
-  border-style: solid;
-  border-radius: 3px;
-  border-width: 1px;
-  border-color: black;
-  
-  background-image: url(../../imgs/default_thumbnail.png);
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-}
-.text-editor-thumbnail-x, .text-editor-preview-x {
-  display: none;
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  
-  border-radius: 5px;
-  
-  background-color: white;
-  background-image: url(../../imgs/close.png);
-  background-size: contain;
-}
-.text-editor-thumbnail-x:hover, .text-editor-preview-x:hover {
-  background-color: rgb(225, 90, 80);
-}
-.text-editor-thumbnail-x:active, .text-editor-preview-x:active {
-  background-color: rgb(225, 60, 50);
-}
-.text-editor-thumbnail-x {
-  width: 15px;
-  height: 15px;
-}
-.text-editor-thumbnail:hover .text-editor-thumbnail-x {
-  display: block;
-}
-.text-editor-thumbnail-title {
-  display: none;
-  position: absolute;
-  bottom: -20px;
-  left: 0px;
-  
-  font-size: 15px;
-
-  color: black;
-}
-.text-editor-thumbnail:hover .text-editor-thumbnail-title {
-  display: block;
-}
-.text-editor-preview {
-  display: block;
-  position: fixed;
-  left: 25%;
-  top: 25%;
-  
-  z-index: 1;
-  
-  width: 50%;
-  height: 50%;
-  
-  padding: 5px;
-
-  border-style: solid;
-  border-radius: 5px;
-  border-width: 3px;
-  border-color: black;
-  
-  background-color: rgba(100, 100, 100, 0.8);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-}
-.text-editor-preview-x {
-  width: 20px;
-  height: 20px;
-}
-.text-editor-preview:hover .text-editor-preview-x {
-  display: block;
-}
-.text-editor-preview-title {
-  display: none;
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  padding: 5px;
-
-  width: calc(100% - 10px);
-  text-align: center;
-  overflow: hidden;
-
-  font-size: 20px;
-  
-  background-color: rgb(100, 100, 100);
-  color: white;
-}
-.text-editor-preview:hover .text-editor-preview-title {
-  display: block;
 }
 
 

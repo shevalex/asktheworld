@@ -4,48 +4,38 @@ AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequ
 
 
 
-AbstractRequestPage._AbstractRequestItem = ClassUtils.defineClass(Object, function _AbstractRequestItem(requestId, baseCssClass, settings) {
-  this._requestId = requestId;
+AbstractRequestPage._AbstractObjectItem = ClassUtils.defineClass(Object, function _AbstractObjectItem(objectId, baseCssClass, settings) {
+  this._objectId = objectId;
   this._settings = settings || {};
   this._baseCssClass = baseCssClass;
   
   this._container = null;
   
-  this._cacheChangeListener = function(event) {
-    if (event.requestId == this._requestId
-        && (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED || Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED)) {
-
-      var request = Backend.getRequest(this._requestId);
-      if (request != null) {
-        this._fill();
-      }
-    }
-  }.bind(this);
+  this._cacheChangeListener = this._cacheChangeListener();
 });
 
-AbstractRequestPage._AbstractRequestItem.prototype.append = function(root) {
+AbstractRequestPage._AbstractObjectItem.prototype.append = function(root) {
   if (this._container != null) {
-    throw "Item " + this._requestId + " is already added";
+    throw "Item " + this._objectId + " is already added";
   }
   
   Backend.addCacheChangeListener(this._cacheChangeListener);
   
-  this._container = UIUtils.appendBlock(root, this._requestId);
+  this._container = UIUtils.appendBlock(root, this._objectId);
   UIUtils.addClass(this._container, this._baseCssClass);
   
   if (this._settings.clickListener) {
-    UIUtils.setClickListener(this._container, this._settings.clickListener.bind(this, this._requestId));
+    UIUtils.setClickListener(this._container, this._settings.clickListener.bind(this, this._objectId));
   }
-
-  var request = Backend.getRequest(this._requestId);
-  if (request != null) {
+  
+  if (this._getObject() != null) {
     this._fill();
   }
 }
 
-AbstractRequestPage._AbstractRequestItem.prototype.remove = function() {
+AbstractRequestPage._AbstractObjectItem.prototype.remove = function() {
   if (this._container == null) {
-    throw "Item " + this._requestId + " cannot be removed since it was never added";
+    throw "Item " + this._objectId + " cannot be removed since it was never added";
   }
   
   UIUtils.get$(this._container).remove();
@@ -54,9 +44,40 @@ AbstractRequestPage._AbstractRequestItem.prototype.remove = function() {
   Backend.removeCacheChangeListener(this._cacheChangeListener);
 }
 
-AbstractRequestPage._AbstractRequestItem.prototype._fill = function() {
-  throw "Inimplemented";
+AbstractRequestPage._AbstractObjectItem.prototype._cacheChangeListener = function() {
+  throw "Not implemented";
 }
+
+AbstractRequestPage._AbstractObjectItem.prototype._getObject = function() {
+  throw "Not implemented";
+}
+
+AbstractRequestPage._AbstractObjectItem.prototype._fill = function() {
+  throw "Not implemented";
+}
+
+
+
+AbstractRequestPage._AbstractRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractObjectItem, function _AbstractRequestItem(requestId, baseCssClass, settings) {
+  AbstractRequestPage._AbstractObjectItem.call(this, requestId, baseCssClass, settings);
+});
+AbstractRequestPage._AbstractRequestItem.prototype._cacheChangeListener = function() {
+  return function(event) {
+    if (event.requestId == this._objectId
+        && (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED || Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED)) {
+
+      if (this._getObject() != null) {
+        this._fill();
+      }
+    }
+  }.bind(this);
+}
+AbstractRequestPage._AbstractRequestItem.prototype._getObject = function() {
+  return Backend.getRequest(this._objectId);
+}
+
+
+
 
 
 // settings.fullRecord;
@@ -67,16 +88,16 @@ AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(AbstractRequest
 AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   UIUtils.get$(this._container).empty();
   
-  var request = Backend.getRequest(this._requestId);
-  
+  var request = this._getObject();
+
   var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
   UIUtils.addClass(dateLabel, "request-date-label");
   
   var targetLabel = UIUtils.appendLabel(this._container, "TargetLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").TargetLabel + "</b> " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
   UIUtils.addClass(targetLabel, "request-target-label");
   
-  var unreadResponses = Backend.getIncomingResponseIds(this._requestId, Backend.Response.STATUS_READ);
-  var allResponses = Backend.getIncomingResponseIds(this._requestId);
+  var unreadResponses = Backend.getIncomingResponseIds(this._objectId, Backend.Response.STATUS_READ);
+  var allResponses = Backend.getIncomingResponseIds(this._objectId);
   var counterText = null;
   if (allResponses != null && unreadResponses != null) {
     counterText = "<b>" + unreadResponses.length + "</b>/" + allResponses.length;
@@ -118,8 +139,7 @@ AbstractRequestPage.IncomingRequestItem = ClassUtils.defineClass(AbstractRequest
 AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
   UIUtils.get$(this._container).empty();
   
-  var request = Backend.getRequest(this._requestId);
-  
+  var request = this._getObject();
   var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
   UIUtils.addClass(dateLabel, "request-date-label");
   

@@ -4,6 +4,7 @@ NewRequestPage = ClassUtils.defineClass(AbstractPage, function NewRequestPage() 
   this._requestTextEditor;
   
   this._requestGenderElement;
+  this._attachmentsBar;
   this._requestAgeElement;
   this._requestWaitTimeElement;
   this._requestQuantityElement;
@@ -15,10 +16,10 @@ NewRequestPage.prototype.definePageContent = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
   UIUtils.appendLabel(contentPanel, "RequestEditorLabel", this.getLocale().RequestEditorLabel);
-  this._requestTextEditor = UIUtils.appendTextEditor(contentPanel, "TextEditor", {
-    fileTooBigListener: function(file) {
-      Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
-    }
+  this._requestTextEditor = UIUtils.appendTextEditor(contentPanel, "TextEditor");
+  
+  this._attachmentsBar = UIUtils.appendAttachmentBar(contentPanel, null, true, function(file) {
+    Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
   });
   
   UIUtils.appendLabel(contentPanel, "ExpertiseCategoryLabel", this.getLocale().ExpertiseCategoryLabel);
@@ -39,7 +40,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
     if (this._requestTextEditor.getValue() != "") {
       this._createRequest();
     } else {
-      this._requestTextEditor.indicateInvalidInput();
+      UIUtils.indicateInvalidInput(this._requestTextEditor);
       Application.showMessage(this.getLocale().RequestEmptyMessage, Application.MESSAGE_TIMEOUT_FAST);
     }
   }.bind(this));
@@ -115,7 +116,7 @@ NewRequestPage.prototype._createRequest = function() {
 
   var request = {
     text: this._requestTextEditor.getValue(),
-    attachments: this._requestTextEditor.getAttachments(),
+    attachments: this._attachmentsBar.getAttachments(),
     response_gender: this._requestGenderElement.getSelectedData(),
     response_quantity: this._requestQuantityElement.getSelectedData(),
     response_wait_time: this._requestWaitTimeElement.getSelectedData(),

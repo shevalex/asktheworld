@@ -624,7 +624,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
 
 
 
-UIUtils.appendAttachmentBar = function(root, attachments, editable) {
+UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFileListener) {
   var attachmentBar = UIUtils.appendBlock(root, "AttachmentBar");
   UIUtils.addClass(attachmentBar, "attachmentbar");
   
@@ -633,10 +633,10 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable) {
 
   if (editable) {
     var editableAttachmentPanel = UIUtils.appendBlock(attachmentBar, "EditableAttachmentPanel");
-    UIUtils.addClass(attachmentBar, "attachmentbar-editablepanel");
+    UIUtils.addClass(editableAttachmentPanel, "attachmentbar-editablepanel");
 
     var attachmentsPanel = UIUtils.appendBlock(editableAttachmentPanel, "AttachmentsPanel");
-    UIUtils.addClass(attachmentBar, "attachmentbar-attachments");
+    UIUtils.addClass(attachmentsPanel, "attachmentbar-attachments");
 
     var attachButton = UIUtils.appendButton(editableAttachmentPanel, "AttachButton", I18n.getLocale().literals.AttachButton);
     UIUtils.addClass(attachButton, "attachmentbar-attachbutton");
@@ -648,8 +648,8 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable) {
         UIUtils.get$(fileChooser).remove();
 
         if (selectedFile.size > 5 * 1024000) {
-          if (settings != null && settings.fileTooBigListener != null) {
-            settings.fileTooBigListener(selectedFile);
+          if (cannotOpenFileListener != null) {
+            cannotOpenFileListener(selectedFile);
           }
           return;
         }
@@ -765,7 +765,7 @@ UIUtils.appendFileChooser = function(root) {
 }
 
 UIUtils.appendTextEditor = function(root, editorId, defaultValue) {
-  var textArea = UIUtils.appendBlock(editorArea, editorId);
+  var textArea = UIUtils.appendBlock(root, editorId);
   textArea.setAttribute("contenteditable", "true");
   UIUtils.addClass(textArea, "text-editor");
   
