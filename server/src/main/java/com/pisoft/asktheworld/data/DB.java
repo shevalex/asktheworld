@@ -85,7 +85,7 @@ public class DB {
 		ATWUser existUser = getUser(user.getId());
 		if( existUser != null) {
 			if(verifyString(user.getPassword())) existUser.setPassword(user.getPassword());
-			if(verifyString(user.getGender())) existUser.setGender(user.getGender());
+			//if(verifyString(user.getGender())) existUser.setGender(user.getGender());
 			if(verifyAge(user.getAge_category())) existUser.setAge_category(user.getAge_category());
 			if(verifyLangs(user.getLanguages())) existUser.setLanguages(user.getLanguages());
 			users.update(existUser);
@@ -287,7 +287,7 @@ public class DB {
 		userAges.add(user.getAge_category());
 		userAges.add("All");
 		List<String> userGenders = new ArrayList<String>();
-		userGenders.add(user.getGender());
+		userGenders.add(user.getGender().toString());
 		userGenders.add("All");
 		List<ATWRequest> newIncomingRequests = requests.findNewIncomingRequets(id, userIncomingRequests, userAges, userGenders, number);
 		return newIncomingRequests;

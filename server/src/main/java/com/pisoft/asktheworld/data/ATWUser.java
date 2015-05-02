@@ -15,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.pisoft.asktheworld.enums.Gender;
 
 @Entity
 public class ATWUser implements Serializable {
@@ -36,16 +37,16 @@ public class ATWUser implements Serializable {
 	@Column
 	private String languages[];
 	@Column
-	private String gender;
+	private Gender gender;
 	@Column
 	private String name;
 	@Column
 	private String age_category;
 
-	public String getGender() {
+	public Gender getGender() {
 		return gender;
 	}
-	public void setGender(String gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 	public int getId() {
