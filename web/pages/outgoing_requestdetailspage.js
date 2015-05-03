@@ -58,6 +58,8 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._requestItem = new AbstractRequestPage.OutgoingRequestItem(this._currentRequestId, {fullRecord: true});
   this._requestItem.append(this._requestPanel);
   
+  UIUtils.setEnabled(this._previousButton, this._getPreviousRequestId() != null);
+  UIUtils.setEnabled(this._nextButton, this._getNextRequestId() != null);
   
 
 //  this._cacheChangeListener = function(event) {
