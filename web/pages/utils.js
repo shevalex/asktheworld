@@ -635,8 +635,11 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFi
     var editableAttachmentPanel = UIUtils.appendBlock(attachmentBar, "EditableAttachmentPanel");
     UIUtils.addClass(editableAttachmentPanel, "attachmentbar-editablepanel");
 
-    var attachmentsPanel = UIUtils.appendBlock(editableAttachmentPanel, "AttachmentsPanel");
-    UIUtils.addClass(attachmentsPanel, "attachmentbar-attachments");
+    var attachmentsContainer = UIUtils.appendBlock(editableAttachmentPanel, "AttachmentsContainer");
+    UIUtils.addClass(attachmentsContainer, "attachmentbar-attachmentscontainer");
+
+    var attachmentsPanel = UIUtils.appendBlock(attachmentsContainer, "AttachmentsPanel");
+    UIUtils.addClass(attachmentsContainer, "attachmentbar-attachments");
 
     var attachButton = UIUtils.appendButton(editableAttachmentPanel, "AttachButton", I18n.getLocale().literals.AttachButton);
     UIUtils.addClass(attachButton, "attachmentbar-attachbutton");
@@ -660,8 +663,11 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFi
       });
     });
   } else {
-    var attachmentsPanel = UIUtils.appendBlock(attachmentBar, "AttachmentsPanel");
-    UIUtils.addClass(attachmentBar, "attachmentbar-attachments");
+    var attachmentsContainer = UIUtils.appendBlock(editableAttachmentPanel, "AttachmentsContainer");
+    UIUtils.addClass(attachmentsContainer, "attachmentbar-attachmentscontainer");
+    
+    var attachmentsPanel = UIUtils.appendBlock(attachmentsContainer, "AttachmentsPanel");
+    UIUtils.addClass(attachmentsPanel, "attachmentbar-attachments");
   }
   
   

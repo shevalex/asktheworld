@@ -126,22 +126,22 @@ select {
 
 
 .attachmentbar {
-  position: relative;
-  padding: 0px 0px 20px 0px; 
-  height: 50px;
+  height: 70px;
 }
 .attachmentbar .attachmentbar-editablepanel {
+  height: inherit;
 }
 .attachmentbar .attachmentbar-editablepanel .attachmentbar-attachments {
   display: inline-block;
-  width: calc(100% - 120px); 
+  width: calc(100% - 120px);
+}
+.attachmentbar .attachmentbar-attachmentscontainer {
 }
 .attachmentbar .attachmentbar-attachments {
-/*
-  height: 50px;
-  white-space: nowrap;
+  display: block;
+  height: inherit;
+  white-space: nowrap;  
   overflow-x: auto;
-*/
 }
 .attachmentbar .attachmentbar-attachbutton {
   float: right;
@@ -153,6 +153,8 @@ select {
   width: 48px;
   height: 48px;
   margin-right: 10px;
+  
+  overflow-y: visible;
   
   border-style: solid;
   border-radius: 3px;
@@ -191,7 +193,6 @@ select {
   display: block;
 }
 .attachmentbar .attachmentbar-thumbnail-title {
-  display: none;
   position: absolute;
   bottom: -20px;
   left: 0px;
@@ -200,10 +201,10 @@ select {
   
   font-size: 15px;
 
-  color: black;
+  color: transparent;
 }
 .attachmentbar .attachmentbar-thumbnail:hover .attachmentbar-thumbnail-title {
-  display: block;
+  color: black;
 }
 .attachmentbar .attachmentbar-preview {
   display: block;

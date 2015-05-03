@@ -17,7 +17,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
   
   UIUtils.appendLabel(contentPanel, "RequestEditorLabel", this.getLocale().RequestEditorLabel);
   this._requestTextEditor = UIUtils.appendTextEditor(contentPanel, "TextEditor");
-  
+
   this._attachmentsBar = UIUtils.appendAttachmentBar(contentPanel, null, true, function(file) {
     Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
   });
