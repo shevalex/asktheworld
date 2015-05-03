@@ -126,6 +126,9 @@
   font-family: Verdana;
   color: rgb(39, 39, 39);
 }
+.full-outgoing-request-container .request-attachmentbar {
+  margin: 5px 5px 0px 5px;
+}
 
 
 .incoming-request-container {

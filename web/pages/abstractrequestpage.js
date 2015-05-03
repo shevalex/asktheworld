@@ -128,6 +128,7 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   
   if (this._settings.fullRecord && request.attachments != null && request.attachments.length > 0) {
     var attachmentBar = UIUtils.appendAttachmentBar(this._container, request.attachments);
+    UIUtils.addClass(attachmentBar, "request-attachmentbar");
   }
 }
 
