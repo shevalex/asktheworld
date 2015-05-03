@@ -291,6 +291,9 @@ Backend.createRequest = function(request, transactionCallback) {
     request.time = Date.now();
     request.status = Backend.Request.STATUS_ACTIVE;
     
+    if (this._cache.requests == null) {
+      this._cache.requests = {};
+    }
     this._cache.requests[newRequestId] = request;
     
     transactionCallback.success();

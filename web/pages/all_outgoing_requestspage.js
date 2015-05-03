@@ -27,7 +27,7 @@ AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
         otherRequestIds: ""
       }
 
-      Application.showMenuPage(RequestDetailsPage.name, paramBundle);
+      Application.showMenuPage(OutgoingRequestDetailsPage.name, paramBundle);
     },
     hideWhenEmpty: true
   });

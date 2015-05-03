@@ -131,17 +131,17 @@ select {
 .attachmentbar .attachmentbar-editablepanel {
   height: inherit;
 }
-.attachmentbar .attachmentbar-editablepanel .attachmentbar-attachments {
+.attachmentbar .attachmentbar-editablepanel .attachmentbar-attachmentscontainer {
   display: inline-block;
   width: calc(100% - 120px);
 }
 .attachmentbar .attachmentbar-attachmentscontainer {
+  display: block;
+  height: inherit;  
+  overflow-x: auto;
 }
 .attachmentbar .attachmentbar-attachments {
-  display: block;
-  height: inherit;
   white-space: nowrap;  
-  overflow-x: auto;
 }
 .attachmentbar .attachmentbar-attachbutton {
   float: right;

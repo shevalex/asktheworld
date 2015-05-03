@@ -639,7 +639,7 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFi
     UIUtils.addClass(attachmentsContainer, "attachmentbar-attachmentscontainer");
 
     var attachmentsPanel = UIUtils.appendBlock(attachmentsContainer, "AttachmentsPanel");
-    UIUtils.addClass(attachmentsContainer, "attachmentbar-attachments");
+    UIUtils.addClass(attachmentsPanel, "attachmentbar-attachments");
 
     var attachButton = UIUtils.appendButton(editableAttachmentPanel, "AttachButton", I18n.getLocale().literals.AttachButton);
     UIUtils.addClass(attachButton, "attachmentbar-attachbutton");
@@ -663,7 +663,7 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFi
       });
     });
   } else {
-    var attachmentsContainer = UIUtils.appendBlock(editableAttachmentPanel, "AttachmentsContainer");
+    var attachmentsContainer = UIUtils.appendBlock(attachmentBar, "AttachmentsContainer");
     UIUtils.addClass(attachmentsContainer, "attachmentbar-attachmentscontainer");
     
     var attachmentsPanel = UIUtils.appendBlock(attachmentsContainer, "AttachmentsPanel");

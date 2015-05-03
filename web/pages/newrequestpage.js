@@ -76,6 +76,7 @@ NewRequestPage.prototype._resetPage = function() {
   
   this._requestTextEditor.reset();
   this._requestTextEditor.focus();
+  this._attachmentsBar.setAttachments(null);
 
   this._requestGenderElement.selectData(Backend.getUserPreferences().requestTargetGender);
   this._requestAgeElement.selectData(Backend.getUserPreferences().requestTargetAge);
