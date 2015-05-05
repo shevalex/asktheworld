@@ -187,12 +187,12 @@
 }
 
 
-.request-view {
+.items-view {
 }
-.request-view .incoming-request-container {
+.items-view .incoming-request-container {
   margin-bottom: 5px;
 }
-.request-view .outgoing-request-container {
+.items-view .outgoing-request-container {
   margin-bottom: 5px;
 }
 

@@ -94,7 +94,7 @@ HomePage.prototype._updateOutgoingRequests = function() {
     this._outgoingRequestsLabel.innerHTML = this.getLocale().OutgoingRequestsTitle;
     this._noOutgoingRequestsNote.style.display = "none";
   }
-  this._outgoingRequestsView.setRequestIds(outgoingRequestIds);
+  this._outgoingRequestsView.setObjectIds(outgoingRequestIds);
 }
 
 HomePage.prototype._updateIncomingRequests = function() {
@@ -109,7 +109,7 @@ HomePage.prototype._updateIncomingRequests = function() {
     this._incomingRequestsLabel.innerHTML = this.getLocale().IncomingRequestsTitle;
     this._noIncomingRequestsNote.style.display = "none";
   }
-  this._incomingRequestsView.setRequestIds(incomingRequestIds);
+  this._incomingRequestsView.setObjectIds(incomingRequestIds);
 }
 
 HomePage.prototype._getOutgoingRequestIds = function() {
