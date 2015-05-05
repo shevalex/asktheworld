@@ -191,7 +191,7 @@ AbstractRequestPage._AbstractResponseItem.prototype._getObject = function() {
 
 
 AbstractRequestPage.IncomingResponseItem = ClassUtils.defineClass(AbstractRequestPage._AbstractResponseItem, function IncomingResponseItem(requestId, responseId, settings) {
-  AbstractRequestPage._AbstractRequestItem.call(this, requestId, responseId, "incoming-response-container", settings);
+  AbstractRequestPage._AbstractResponseItem.call(this, requestId, responseId, "incoming-response-container", settings);
 });
 
 AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
@@ -200,7 +200,7 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   var response = this._getObject();
   var isRead = response.status == Backend.Response.STATUS_READ;
 
-  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
+  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(response.time));
   UIUtils.addClass(dateLabel, "response-date-label");
   if (!isRead) {
     UIUtils.addClass(dateLabel, "response-label-unread");
@@ -213,8 +213,8 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   }
   
   var responseText = UIUtils.appendBlock(this._container, "ResponseText");
-  UIUtils.addClass(requestText, "response-text");
-  responseText.innerHTML = request.text;
+  UIUtils.addClass(responseText, "response-text");
+  responseText.innerHTML = response.text;
 
   if (response.attachments != null && response.attachments.length > 0) {
     var attachmentBar = UIUtils.appendAttachmentBar(this._container, response.attachments);
@@ -247,7 +247,7 @@ AbstractRequestPage._AbstractItemsView.prototype.setObjectIds = function(objectI
   
   if (this._objectIds != null) {
     for (var index in objectIds) {
-      var objectItem = new AbstractRequestPage[this._itemClass](objectIds[index], this._settings);
+      var objectItem = this._createItem(objectIds[index]);
       this._objectItems.push(objectItem);
 
       if (this._containerElement != null) {
@@ -282,13 +282,45 @@ AbstractRequestPage._AbstractItemsView.prototype.remove = function() {
   UIUtils.get$(this._rootElement).remove();
 }
 
+AbstractRequestPage._AbstractItemsView.prototype._createItem = function(objectId) {
+  throw "Undefined";
+}
 
-AbstractRequestPage.OutgoingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractItemsView, function OutgoingRequestsView(viewId, settings) {
-  AbstractRequestPage._AbstractItemsView.call(this, viewId, "OutgoingRequestItem", settings);
+
+AbstractRequestPage._AbstractRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractItemsView, function _AbstractRequestsView(viewId, itemClass, settings) {
+  AbstractRequestPage._AbstractItemsView.call(this, viewId, itemClass, settings);
+});
+AbstractRequestPage._AbstractRequestsView.prototype._createItem = function(objectId) {
+  return new AbstractRequestPage[this._itemClass](objectId, this._settings);
+}
+
+AbstractRequestPage.OutgoingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsView, function OutgoingRequestsView(viewId, settings) {
+  AbstractRequestPage._AbstractRequestsView.call(this, viewId, "OutgoingRequestItem", settings);
 });
 
-AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractItemsView, function IncomingRequestsView(viewId, settings) {
-  AbstractRequestPage._AbstractItemsView.call(this, viewId, "IncomingRequestItem", settings);
+AbstractRequestPage.IncomingRequestsView = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsView, function IncomingRequestsView(viewId, settings) {
+  AbstractRequestPage._AbstractRequestsView.call(this, viewId, "IncomingRequestItem", settings);
+});
+
+
+AbstractRequestPage._AbstractResponsesView = ClassUtils.defineClass(AbstractRequestPage._AbstractItemsView, function _AbstractResponsesView(viewId, itemClass, settings) {
+  AbstractRequestPage._AbstractItemsView.call(this, viewId, itemClass, settings);
+  
+  this._requestId = null;
+});
+AbstractRequestPage._AbstractResponsesView.prototype.setRequestId = function(requestId) {
+  this._requestId = requestId;
+}
+AbstractRequestPage._AbstractResponsesView.prototype._createItem = function(objectId) {
+  return new AbstractRequestPage[this._itemClass](this._requestId, objectId, this._settings);
+}
+
+AbstractRequestPage.OutgoingResponsesView = ClassUtils.defineClass(AbstractRequestPage._AbstractResponsesView, function OutgoingResponsesView(viewId, settings) {
+  AbstractRequestPage._AbstractResponsesView.call(this, viewId, "OutgoingResponseItem", settings);
+});
+
+AbstractRequestPage.IncomingResponsesView = ClassUtils.defineClass(AbstractRequestPage._AbstractResponsesView, function IncomingResponsesView(viewId, settings) {
+  AbstractRequestPage._AbstractResponsesView.call(this, viewId, "IncomingResponseItem", settings);
 });
 
 

@@ -9,6 +9,8 @@ OutgoingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function Outgo
   this._returnPageId;
   this._navigatableRequestIds;
   
+  this._incomingResponsesView;
+  
   this._requestItem;
   this._cacheChangeListener;
 });
@@ -46,6 +48,21 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(editButton, function() {
 //    Application.showMenuPage(OutgoingRequestDetailsPage.name);
   }.bind(this));
+  
+  this._incomingResponsesView = new AbstractRequestPage.IncomingResponsesView("ResponseView", {
+    clickListener: function(requestId) {
+    }
+  });
+  this._incomingResponsesView.append(contentPanel);
+  
+  
+  this._cacheChangeListener = function(event) {
+    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
+//      this._updateOutgoingRequests();
+    } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
+//      this._updateIncomingRequests();
+    }
+  }.bind(this);
 }
 
 OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
@@ -57,6 +74,9 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
 
   this._requestItem = new AbstractRequestPage.OutgoingRequestItem(this._currentRequestId, {fullRecord: true});
   this._requestItem.append(this._requestPanel);
+  
+  this._incomingResponsesView.setRequestId(this._currentRequestId);
+  this._incomingResponsesView.setObjectIds(this._getResponseIds());
   
   UIUtils.setEnabled(this._previousButton, this._getPreviousRequestId() != null);
   UIUtils.setEnabled(this._nextButton, this._getNextRequestId() != null);
@@ -97,6 +117,7 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
 
 OutgoingRequestDetailsPage.prototype.onHide = function() {
   this._requestItem.remove();
+  this._incomingResponsesView.remove();
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
   
@@ -142,6 +163,10 @@ OutgoingRequestDetailsPage.prototype._getNextRequestId = function() {
   }
   
   return null;
+}
+
+OutgoingRequestDetailsPage.prototype._getResponseIds = function() {
+  return Backend.getIncomingResponseIds(this._currentRequestId);
 }
 
 
