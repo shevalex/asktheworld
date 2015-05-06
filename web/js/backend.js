@@ -520,7 +520,9 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
       existingResponse[key] = response[key];
     }
 
-    transactionCallback.success();
+    if (transactionCallback != null) {
+      transactionCallback.success();
+    }
 
     this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
   }.bind(this), 1000);
@@ -528,7 +530,10 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 
 Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
   if (this._contactInfo[responseId] != null) {
-    transactionCallback.success(this._contactInfo[responseId]);
+    if (transactionCallback != null) {
+      transactionCallback.success(this._contactInfo[responseId]);
+    }
+    
     return this._contactInfo[responseId];
   }
   
@@ -540,7 +545,24 @@ Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
     var contactInfo = contacts[contactIndex];
     
     this._contactInfo[responseId] = contactInfo;
-    transactionCallback.success(contactInfo);
+    
+    
+    var callback = null;
+    if (transactionCallback != null) {
+      callback = {
+        success: function() {
+          transactionCallback.success(contactInfo);        
+        },
+        failure: function() {
+          transactionCallback.failure()
+        },
+        error: function() {
+          transactionCallback.error();
+        }
+      };
+    }
+    
+    Backend.updateResponse(requestId, responseId, {contact_info_status: Backend.Response.CONTACT_INFO_STATUS_PROVIDED}, callback);
   }.bind(this), 2000);
   
   return null;

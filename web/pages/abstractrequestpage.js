@@ -199,18 +199,18 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   
   var response = this._getObject();
   var isRead = response.status == Backend.Response.STATUS_READ;
-
-  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(response.time));
-  UIUtils.addClass(dateLabel, "response-date-label");
+  
+  var responseHeader = UIUtils.appendBlock(this._container, "ResponseHeader");
+  UIUtils.addClass(responseHeader, "response-header");
   if (!isRead) {
-    UIUtils.addClass(dateLabel, "response-label-unread");
+    UIUtils.addClass(responseHeader, "response-header-unread");
   }
   
-  var fromLabel = UIUtils.appendLabel(this._container, "FromLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").FromLabel + "</b> " + Application.Configuration.toUserIdentityString(response.age_category, response.gender));
+  var dateLabel = UIUtils.appendLabel(responseHeader, "DateLabel", TimeUtils.getDateTimeSrting(response.time));
+  UIUtils.addClass(dateLabel, "response-date-label");
+  
+  var fromLabel = UIUtils.appendLabel(responseHeader, "FromLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").FromLabel + "</b> " + Application.Configuration.toUserIdentityString(response.age_category, response.gender));
   UIUtils.addClass(fromLabel, "response-from-label");
-  if (!isRead) {
-    UIUtils.addClass(fromLabel, "response-label-unread");
-  }
   
   var responseText = UIUtils.appendBlock(this._container, "ResponseText");
   UIUtils.addClass(responseText, "response-text");
@@ -220,8 +220,24 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
     var attachmentBar = UIUtils.appendAttachmentBar(this._container, response.attachments);
     UIUtils.addClass(attachmentBar, "response-attachmentbar");
   }
-}
 
+  
+  var raitingBar = UIUtils.appendBlock(this._container, "RaitingBar");
+  UIUtils.addClass(raitingBar, "response-raitingbar");
+  
+  if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_PROVIDED) {  
+    var contactInfo = Backend.getContactInfo(this._requestId, this._objectId);
+    if (contactInfo != null) {
+      var contactInfo = UIUtils.appendLabel(raitingBar, "ContactInfoLabel", contactInfo.contact_name + ", " + contactInfo.contact_info);
+      UIUtils.addClass(contactInfo, "response-contactinfo");
+    }
+  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE) {
+    var requestContactInfoButton = UIUtils.appendButton(raitingBar, "RequestContactButton", I18n.getPageLocale("AbstractRequestPage").RequestContactButton);
+    UIUtils.setClickListener(requestContactInfoButton, function() {
+      Backend.getContactInfo(this._requestId, this._objectId);
+    }.bind(this));
+  }
+}
 
 
 
@@ -493,6 +509,13 @@ AbstractRequestPage.IncomingRequestsTable = ClassUtils.defineClass(AbstractReque
 
 
 
+  
+  
+  
+  
+  
+  
+  
 
 
 
