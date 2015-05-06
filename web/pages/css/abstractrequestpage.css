@@ -186,6 +186,63 @@
   color: rgb(39, 39, 39);
 }
 
+.incoming-response-container {
+  position: relative;
+  padding-top: 5px;
+  min-width: 500px;
+  
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(191, 191, 191);
+  
+  background-color: rgb(215, 236, 249);
+  color: rgb(129, 129, 129);
+  
+  font-family: "Times New Roman";
+  font-size: 12px;
+}
+.incoming-response-container:nth-child(2n) {
+  background-color: rgb(237, 237, 237);
+}
+.incoming-response-container:hover {
+  background-color: rgb(145, 201, 253);
+}
+.incoming-response-container:active {
+  background-color: green;
+}
+.incoming-response-container .response-label-unread {
+  color: black;
+  font-weight: bold;
+}
+.incoming-response-container .response-date-label {
+  margin-left: 10px;
+  height: 15px;
+  
+  color: inherit;
+}
+.incoming-response-container .response-from-label {
+  position: absolute;
+  left: 300px;
+  top: 5px;
+  
+  color: inherit;
+}
+.incoming-response-container .response-text {
+  margin-top: 5px;
+  padding: 5px;
+  
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: rgb(191, 191, 191);
+  
+  background-color: rgba(220, 220, 220, 0.8);
+  font-family: Verdana;
+  color: rgb(39, 39, 39);
+}
+.incoming-response-container .response-attachmentbar {
+  margin: 5px;
+}
+
 
 .items-view {
 }
@@ -193,6 +250,12 @@
   margin-bottom: 5px;
 }
 .items-view .outgoing-request-container {
+  margin-bottom: 5px;
+}
+.items-view .incoming-response-container {
+  margin-bottom: 5px;
+}
+.items-view .outgoing-response-container {
   margin-bottom: 5px;
 }
 

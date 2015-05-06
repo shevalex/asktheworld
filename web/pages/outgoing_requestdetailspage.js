@@ -117,7 +117,7 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
 
 OutgoingRequestDetailsPage.prototype.onHide = function() {
   this._requestItem.remove();
-  this._incomingResponsesView.remove();
+  this._incomingResponsesView.clear();
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
   
