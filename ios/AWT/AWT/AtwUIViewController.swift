@@ -83,7 +83,22 @@ class AtwUIViewController: UIViewController {
         view.endEditing(true);
     }
     
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        
+        var toolbar = UIToolbar();
+        toolbar.barStyle = .Default;
+        toolbar.sizeToFit();
+        var doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonClickedAction")
+        var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        toolbar.setItems([flexibleSpace, doneButton], animated: true);
+        textField.inputAccessoryView = toolbar;
+        
+        return true
+    }
     
+    func doneButtonClickedAction() {
+        self.view.endEditing(true)
+    }
     
     func keyboardWillShow(sender: NSNotification) {
         if (keyboardSensitiveConstraint == nil) {
