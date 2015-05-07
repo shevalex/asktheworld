@@ -222,21 +222,25 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   }
 
   
-  var raitingBar = UIUtils.appendBlock(this._container, "RaitingBar");
-  UIUtils.addClass(raitingBar, "response-raitingbar");
+  var contactInfoPanel = UIUtils.appendBlock(this._container, "ContactInfoPanel");
+  UIUtils.addClass(contactInfoPanel, "response-contactinfopanel");
   
   if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_PROVIDED) {  
     var contactInfo = Backend.getContactInfo(this._requestId, this._objectId);
     if (contactInfo != null) {
-      var contactInfo = UIUtils.appendLabel(raitingBar, "ContactInfoLabel", contactInfo.contact_name + ", " + contactInfo.contact_info);
+      var contactInfo = UIUtils.appendLabel(contactInfoPanel, "ContactInfoLabel", contactInfo.contact_name + ", " + contactInfo.contact_info);
       UIUtils.addClass(contactInfo, "response-contactinfo");
     }
   } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE) {
-    var requestContactInfoButton = UIUtils.appendButton(raitingBar, "RequestContactButton", I18n.getPageLocale("AbstractRequestPage").RequestContactButton);
+    var requestContactInfoButton = UIUtils.appendButton(contactInfoPanel, "RequestContactButton", I18n.getPageLocale("AbstractRequestPage").RequestContactButton);
     UIUtils.setClickListener(requestContactInfoButton, function() {
       Backend.getContactInfo(this._requestId, this._objectId);
     }.bind(this));
   }
+  
+  var ratingBar = UIUtils.appendRatingBar(contactInfoPanel, "RatingBar");
+  UIUtils.addClass(ratingBar, "response-starrating");
+  ratingBar.setRating(response.star_rating);
 }
 
 

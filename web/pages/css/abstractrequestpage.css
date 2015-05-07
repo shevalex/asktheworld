@@ -247,16 +247,18 @@
 .incoming-response-container .response-attachmentbar {
   margin: 5px;
 }
-.incoming-response-container .response-raitingbar {
+.incoming-response-container .response-contactinfopanel {
   margin: 5px;
   height: 18px;
 }
-.incoming-response-container .response-raitingbar .response-contactinfo {
+.incoming-response-container .response-contactinfopanel .response-contactinfo {
   padding-top: 5px;
   font-family: Verdana;
   font-size: 12px;
 }
-.incoming-response-container .response-raitingbar .response-starrating {
+.incoming-response-container .response-contactinfopanel .response-starrating {
+  float: right;
+  margin-right: 20px;
 }
 
 

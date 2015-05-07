@@ -747,6 +747,49 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFi
   return attachmentBar;
 }
 
+UIUtils.appendRatingBar = function(root, barId) {
+  var bar = UIUtils.appendBlock(root, barId);
+  UIUtils.addClass(bar, "ratingbar");
+  bar._rating = 0;
+  bar._stars = [];
+  
+  for (var i = 1; i <= 5; i++) {
+    var star = UIUtils.appendBlock(bar, "star-" + i);
+    bar._stars.push(star);
+    star._rating = i;
+    UIUtils.addClass(star, "ratingbar-star");
+    UIUtils.setClickListener(star, function() {
+      if (bar.getRating() == this._rating) {
+        bar.setRating(this._rating - 1);
+      } else {
+        bar.setRating(this._rating);
+      }
+    }.bind(star));
+  }
+  
+  bar.setRating = function(rating) {
+    bar._rating = rating;
+    for (var i = 0; i < bar._stars.length; i++) {
+      var star = bar._stars[i];
+      if (i < bar._rating) {
+        UIUtils.removeClass(star, "ratingbar-star-empty");
+        UIUtils.addClass(star, "ratingbar-star-full");
+      } else {
+        UIUtils.addClass(star, "ratingbar-star-empty");
+        UIUtils.removeClass(star, "ratingbar-star-full");
+      }
+    }
+  }
+
+  bar.getRating = function() {
+    return bar._rating;
+  }
+  
+  
+  bar.setRating(0);
+  
+  return bar;
+}
 
 
 

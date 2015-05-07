@@ -891,6 +891,7 @@ Backend._createDummyResponse = function(requestId, responseId) {
   var contactStatus = Math.round(Math.random() * 2);
   var statusUnread = false;
   var numOfExtraLines = Math.round(Math.random() * 5);
+  var starRating = Math.round(Math.random() * 5);
   
   var responses = null;
   if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
@@ -925,7 +926,8 @@ Backend._createDummyResponse = function(requestId, responseId) {
     age_category: Application.Configuration.AGE_CATEGORIES[age].data,
     gender: Application.Configuration.GENDERS[gender].data,
     status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ,
-    contact_info_status: contactInfoStatus
+    contact_info_status: contactInfoStatus,
+    star_rating: starRating
   }
 
   return response;

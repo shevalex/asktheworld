@@ -258,6 +258,27 @@ select {
 }
 
 
+.ratingbar {
+  display: inline-block;
+}
+.ratingbar-star {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+.ratingbar-star-empty {
+  background-image: url(../../imgs/star-empty.jpeg);
+}
+.ratingbar-star-full {
+  background-image: url(../../imgs/star-full.jpeg);
+}
+
+
 
 .text-editor {
   padding: 5px;
