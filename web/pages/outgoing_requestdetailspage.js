@@ -50,7 +50,14 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   }.bind(this));
   
   this._incomingResponsesView = new AbstractRequestPage.IncomingResponsesView("ResponseView", {
-    clickListener: function(requestId) {
+    clickListener: function(requestId, responseId) {
+      var response = Backend.getResponse(requestId, responseId);
+      if (response.status == Backend.Response.STATUS_UNREAD) {
+        Backend.updateResponse(requestId, responseId, {status: Backend.Response.STATUS_READ});
+      }
+    },
+    ratingChangeListener: function(requestId, responseId, rating) {
+      Backend.updateResponse(requestId, responseId, {star_rating: rating});
     }
   });
   this._incomingResponsesView.append(contentPanel);

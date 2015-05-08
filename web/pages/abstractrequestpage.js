@@ -25,7 +25,7 @@ AbstractRequestPage._AbstractObjectItem.prototype.append = function(root) {
   UIUtils.addClass(this._container, this._baseCssClass);
   
   if (this._settings.clickListener) {
-    UIUtils.setClickListener(this._container, this._settings.clickListener.bind(this, this._objectId));
+    UIUtils.setClickListener(this._container, this._createClickListener());
   }
   
   if (this._getObject() != null) {
@@ -56,6 +56,10 @@ AbstractRequestPage._AbstractObjectItem.prototype._fill = function() {
   throw "Not implemented";
 }
 
+AbstractRequestPage._AbstractObjectItem.prototype._createClickListener = function() {
+  throw "Not implemented";
+}
+
 
 
 AbstractRequestPage._AbstractRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractObjectItem, function _AbstractRequestItem(requestId, baseCssClass, settings) {
@@ -75,7 +79,9 @@ AbstractRequestPage._AbstractRequestItem.prototype._cacheChangeListener = functi
 AbstractRequestPage._AbstractRequestItem.prototype._getObject = function() {
   return Backend.getRequest(this._objectId);
 }
-
+AbstractRequestPage._AbstractRequestItem.prototype._createClickListener = function() {
+  return this._settings.clickListener.bind(this, this._objectId);
+}
 
 
 
@@ -187,9 +193,12 @@ AbstractRequestPage._AbstractResponseItem.prototype._cacheChangeListener = funct
 AbstractRequestPage._AbstractResponseItem.prototype._getObject = function() {
   return Backend.getResponse(this._requestId, this._objectId);
 }
+AbstractRequestPage._AbstractResponseItem.prototype._createClickListener = function() {
+  return this._settings.clickListener.bind(this, this._requestId, this._objectId);
+}
 
 
-
+// settings.ratingChangeListener
 AbstractRequestPage.IncomingResponseItem = ClassUtils.defineClass(AbstractRequestPage._AbstractResponseItem, function IncomingResponseItem(requestId, responseId, settings) {
   AbstractRequestPage._AbstractResponseItem.call(this, requestId, responseId, "incoming-response-container", settings);
 });
@@ -238,7 +247,7 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
     }.bind(this));
   }
   
-  var ratingBar = UIUtils.appendRatingBar(contactInfoPanel, "RatingBar");
+  var ratingBar = UIUtils.appendRatingBar(contactInfoPanel, "RatingBar", this._settings.ratingChangeListener.bind(this, this._requestId, this._objectId));
   UIUtils.addClass(ratingBar, "response-starrating");
   ratingBar.setRating(response.star_rating);
 }

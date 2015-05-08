@@ -747,7 +747,7 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFi
   return attachmentBar;
 }
 
-UIUtils.appendRatingBar = function(root, barId) {
+UIUtils.appendRatingBar = function(root, barId, ratingListener) {
   var bar = UIUtils.appendBlock(root, barId);
   UIUtils.addClass(bar, "ratingbar");
   bar._rating = 0;
@@ -759,16 +759,24 @@ UIUtils.appendRatingBar = function(root, barId) {
     star._rating = i;
     UIUtils.addClass(star, "ratingbar-star");
     UIUtils.setClickListener(star, function() {
+      var rating;
       if (bar.getRating() == this._rating) {
-        bar.setRating(this._rating - 1);
+        rating = this._rating - 1;
       } else {
-        bar.setRating(this._rating);
+        rating = this._rating;
+      }
+    
+      bar.setRating(rating);
+      if (ratingListener != null) {
+        ratingListener(rating);
       }
     }.bind(star));
   }
   
   bar.setRating = function(rating) {
+    var previousRating = bar._rating;
     bar._rating = rating;
+
     for (var i = 0; i < bar._stars.length; i++) {
       var star = bar._stars[i];
       if (i < bar._rating) {

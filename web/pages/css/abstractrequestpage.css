@@ -203,10 +203,10 @@
 .incoming-response-container:nth-child(2n) {
   background-color: rgb(237, 237, 237);
 }
-/*
 .incoming-response-container:hover {
-  background-color: rgb(145, 201, 253);
+  border-color: black;
 }
+/*
 .incoming-response-container:active {
   background-color: green;
 }
