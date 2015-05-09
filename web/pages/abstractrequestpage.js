@@ -85,13 +85,11 @@ AbstractRequestPage._AbstractRequestItem.prototype._createClickListener = functi
 
 
 
-
-// settings.fullRecord;
-AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function OutgoingRequestItem(requestId, settings) {
-  AbstractRequestPage._AbstractRequestItem.call(this, requestId, settings.fullRecord ? "full-outgoing-request-container" : "outgoing-request-container", settings);
+AbstractRequestPage._AbstractOutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function _AbstractOutgoingRequestItem(requestId, cssClass, settings) {
+  AbstractRequestPage._AbstractRequestItem.call(this, requestId, cssClass, settings);
 });
 
-AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
+AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   UIUtils.get$(this._container).empty();
   
   var request = this._getObject();
@@ -121,22 +119,44 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
     UIUtils.addClass(timeFrameLabel, "request-timeframe-label");
   }
   
-  var requestText = UIUtils.appendBlock(this._container, "RequestText");
-  UIUtils.addClass(requestText, "request-text");
-  if (this._settings.fullRecord) {
-    requestText.innerHTML = request.text;
-  } else {
-    requestText.innerHTML = UIUtils.getOneLine(request.text);
-  }
-
   var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").ExpertiseLabel + "</b> " + Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
+}
+
+
+AbstractRequestPage.OutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractOutgoingRequestItem, function OutgoingRequestItem(requestId, settings) {
+  AbstractRequestPage._AbstractOutgoingRequestItem.call(this, requestId, "outgoing-request-container", settings);
+});
+
+AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
+  AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill.call(this);
   
-  if (this._settings.fullRecord && request.attachments != null && request.attachments.length > 0) {
+  var request = this._getObject();
+
+  var requestText = UIUtils.appendBlock(this._container, "RequestText");
+  UIUtils.addClass(requestText, "request-text");
+  requestText.innerHTML = UIUtils.getOneLine(request.text);
+}
+  
+AbstractRequestPage.ExtendedOutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractOutgoingRequestItem, function ExtendedOutgoingRequestItem(requestId, settings) {
+  AbstractRequestPage._AbstractOutgoingRequestItem.call(this, requestId, "full-outgoing-request-container", settings);
+});
+
+AbstractRequestPage.ExtendedOutgoingRequestItem.prototype._fill = function() {
+  AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill.call(this);
+  
+  var request = this._getObject();
+
+  var requestText = UIUtils.appendBlock(this._container, "RequestText");
+  UIUtils.addClass(requestText, "request-text");
+  requestText.innerHTML = request.text;
+
+  if (request.attachments != null && request.attachments.length > 0) {
     var attachmentBar = UIUtils.appendAttachmentBar(this._container, request.attachments);
     UIUtils.addClass(attachmentBar, "request-attachmentbar");
   }
 }
+
 
 
 AbstractRequestPage.IncomingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function IncomingRequestItem(requestId, settings) {

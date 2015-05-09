@@ -79,7 +79,7 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._navigatableRequestIds = paramBundle.otherRequestIds.split(",");
 //  this._updatePage();
 
-  this._requestItem = new AbstractRequestPage.OutgoingRequestItem(this._currentRequestId, {fullRecord: true});
+  this._requestItem = new AbstractRequestPage.ExtendedOutgoingRequestItem(this._currentRequestId);
   this._requestItem.append(this._requestPanel);
   
   this._incomingResponsesView.setRequestId(this._currentRequestId);
