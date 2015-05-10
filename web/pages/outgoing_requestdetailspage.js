@@ -62,9 +62,21 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   
   this._cacheChangeListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
-//      this._updateOutgoingRequests();
-    } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
-//      this._updateIncomingRequests();
+      var requests  = Backend.getOutgoingRequestIds();
+      for (var i = 0; i < requests.length; i++) {
+        if (requests[i] == this._currentRequestId) {
+          return;
+        }
+      }
+      
+      // The request was removed - we need to show something else.
+      Application.showMenuPage(this._returnPageId);
+    } else if (event.requestId == this._currentRequestId) {
+      if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
+        this._showViewableRequest();
+      } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
+        this._incomingResponsesView.setObjectIds(this._getResponseIds());
+      }
     }
   }.bind(this);
 }
@@ -75,7 +87,6 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._currentRequestId = paramBundle.requestId;
   this._type = paramBundle.type;
   this._navigatableRequestIds = paramBundle.otherRequestIds.split(",");
-//  this._updatePage();
   
   this._showViewableRequest();
   
@@ -86,36 +97,6 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   UIUtils.setEnabled(this._nextButton, this._getNextRequestId() != null);
   
 
-//  this._cacheChangeListener = function(event) {
-//    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED) {
-//      this._updateOutgoingRequests();
-//    } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
-//      this._updateIncomingRequests();
-//    }
-//  }.bind(this);
-  
-
-//  Consider closing the page if the request shown is being removed
-//  this._cacheChangeListener = function(event) {
-//    if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
-//      var requestList;
-//      if (this._isIncomingList) {
-//        requestList = Backend.getIncomingRequestIds();
-//      } else {
-//        requestList = Backend.getOutgoingRequestIds();
-//      }
-//      
-//      for (var index in requestList) {
-//        if (requestList[index] == this._currentRequestId) {
-//          return;
-//        }
-//      }
-//
-//      Application.showMenuPage(this._returnPageId);
-//    }
-//  }.bind(this);
-
-  
   Backend.addCacheChangeListener(this._cacheChangeListener);
 }
 
