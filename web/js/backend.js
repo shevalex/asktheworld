@@ -609,7 +609,9 @@ Backend.removeIncomingResponse = function(requestId, responseId, callback) {
         if (responseList[index] == responseId) {
           responseList.splice(index, 1);
           
-          callback.success();
+          if (callback != null) {
+            callback.success();
+          }
           
           this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
           break;

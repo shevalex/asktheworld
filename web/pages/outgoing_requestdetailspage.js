@@ -55,6 +55,9 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
     },
     ratingChangeListener: function(requestId, responseId, rating) {
       Backend.updateResponse(requestId, responseId, {star_rating: rating});
+    },
+    removeListener: function(requestId, responseId) {
+      Backend.removeIncomingResponse(requestId, responseId);      
     }
   });
   this._incomingResponsesView.append(contentPanel);
@@ -74,7 +77,7 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
     } else if (event.requestId == this._currentRequestId) {
       if (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
         this._showViewableRequest();
-      } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
+      } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED) {
         this._incomingResponsesView.setObjectIds(this._getResponseIds());
       }
     }

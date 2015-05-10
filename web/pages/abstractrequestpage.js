@@ -228,6 +228,7 @@ AbstractRequestPage._AbstractResponseItem.prototype._createClickListener = funct
 
 
 // settings.ratingChangeListener
+// settings.removeListener
 AbstractRequestPage.IncomingResponseItem = ClassUtils.defineClass(AbstractRequestPage._AbstractResponseItem, function IncomingResponseItem(requestId, responseId, settings) {
   AbstractRequestPage._AbstractResponseItem.call(this, requestId, responseId, "incoming-response-container", settings);
 });
@@ -249,6 +250,16 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   
   var fromLabel = UIUtils.appendLabel(responseHeader, "FromLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").FromLabel + "</b> " + Application.Configuration.toUserIdentityString(response.age_category, response.gender));
   UIUtils.addClass(fromLabel, "response-from-label");
+  
+  if (this._settings.removeListener != null) {
+    var responseRemover = UIUtils.appendBlock(responseHeader, "Remover");
+    UIUtils.addClass(responseRemover, "response-remover");
+
+    UIUtils.setClickListener(responseRemover, function() {
+      this._settings.removeListener(this._requestId, this._objectId);
+      return false;
+    }.bind(this));
+  }
   
   var responseText = UIUtils.appendBlock(this._container, "ResponseText");
   UIUtils.addClass(responseText, "response-text");
@@ -284,7 +295,7 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
 
 
 
-
+// LIST VIEWS
 
 // settings.clickListener(requestId);
 
@@ -382,6 +393,8 @@ AbstractRequestPage.IncomingResponsesView = ClassUtils.defineClass(AbstractReque
 });
 
 
+
+// TABLES
 
 // settings.clickListener(requestId);
 // settings.visibleItemCount;
