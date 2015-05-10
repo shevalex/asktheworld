@@ -11,8 +11,10 @@ OutgoingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function Outgo
   
   this._incomingResponsesView;
   
-  this._requestItem;
+  this._requestItem = null;
   this._cacheChangeListener;
+  
+  this._updating = false;
 });
 
 OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
@@ -44,11 +46,6 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   
   this._requestPanel = UIUtils.appendBlock(contentPanel, "RequestPanel");
   
-  var editButton = UIUtils.appendButton(contentPanel, "EditButton", this.getLocale().EditButton);
-  UIUtils.setClickListener(editButton, function() {
-//    Application.showMenuPage(OutgoingRequestDetailsPage.name);
-  }.bind(this));
-  
   this._incomingResponsesView = new AbstractRequestPage.IncomingResponsesView("ResponseView", {
     clickListener: function(requestId, responseId) {
       var response = Backend.getResponse(requestId, responseId);
@@ -72,15 +69,15 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   }.bind(this);
 }
 
+
 OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._returnPageId = paramBundle.returnPageId;
   this._currentRequestId = paramBundle.requestId;
   this._type = paramBundle.type;
   this._navigatableRequestIds = paramBundle.otherRequestIds.split(",");
 //  this._updatePage();
-
-  this._requestItem = new AbstractRequestPage.ExtendedOutgoingRequestItem(this._currentRequestId);
-  this._requestItem.append(this._requestPanel);
+  
+  this._showViewableRequest();
   
   this._incomingResponsesView.setRequestId(this._currentRequestId);
   this._incomingResponsesView.setObjectIds(this._getResponseIds());
@@ -124,16 +121,68 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
 
 OutgoingRequestDetailsPage.prototype.onHide = function() {
   this._requestItem.remove();
+  this._requestItem = null;  
+  UIUtils.get$(this._requestPanel).empty();  
+
   this._incomingResponsesView.clear();
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
+}
+
+OutgoingRequestDetailsPage.prototype._showViewableRequest = function() {
+  if (this._requestItem != null) {
+    this._requestItem.remove();
+    UIUtils.get$(this._requestPanel).empty();
+  }
+
+  this._requestItem = new AbstractRequestPage.ExtendedOutgoingRequestItem(this._currentRequestId);
+  this._requestItem.append(this._requestPanel);
   
+  var request = Backend.getRequest(this._currentRequestId);
+  
+  if (request.status == Backend.Request.STATUS_ACTIVE) {
+    var editButton = UIUtils.appendButton(this._requestPanel, "EditButton", this.getLocale().EditButton);
+    
+    UIUtils.setClickListener(editButton, function() {
+      this._showEditingRequest();
+    }.bind(this));
+  }
 }
 
-OutgoingRequestDetailsPage.prototype.provideHistory = function() {
-  return Application.makeHistory([this.getHistoryPrefix(), ["request", this._currentRequestId], ["return", this._returnPageId], ["siblings", this._navigatableRequestIds != null ? this._navigatableRequestIds.join(",") : ""]]);
-}
+OutgoingRequestDetailsPage.prototype._showEditingRequest = function() {
+  if (this._requestItem != null) {
+    this._requestItem.remove();
+    UIUtils.get$(this._requestPanel).empty();
+  }
 
+  this._requestItem = new AbstractRequestPage.EditableOutgoingRequestItem(this._currentRequestId);
+  this._requestItem.append(this._requestPanel);
+  
+  var request = Backend.getRequest(this._currentRequestId);
+
+  this._requestTextEditor = UIUtils.appendTextEditor(this._requestPanel, "TextEditor");
+  this._requestTextEditor.setValue(request.text);
+  this._attachmentsBar = UIUtils.appendAttachmentBar(this._requestPanel, null, true, function(file) {
+    Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
+  });
+  
+  var buttonsPanel = UIUtils.appendBlock(this._requestPanel, "ControlButtonsPanel");
+  
+  var deactivateButton = UIUtils.appendButton(buttonsPanel, "DeactivateButton", this.getLocale().DeactivateButton);
+  UIUtils.setClickListener(deactivateButton, function() {
+    this._updateRequest({status: Backend.Request.STATUS_INACTIVE});
+  }.bind(this));
+
+  var updateButton = UIUtils.appendButton(buttonsPanel, "UpdateButton", this.getLocale().UpdateButton);
+  UIUtils.setClickListener(updateButton, function() {
+    this._updateRequest({text: this._requestTextEditor.getValue(), attachments: this._attachmentsBar.getAttachments()});
+  }.bind(this));
+
+  var cancelButton = UIUtils.appendButton(buttonsPanel, "CancelButton", I18n.getLocale().literals.CancelOperationButton);
+  UIUtils.setClickListener(cancelButton, function() {
+    this._showViewableRequest();
+  }.bind(this));
+}
 
 
 OutgoingRequestDetailsPage.prototype._getPreviousRequestId = function() {
@@ -177,52 +226,36 @@ OutgoingRequestDetailsPage.prototype._getResponseIds = function() {
 }
 
 
-/*
-OutgoingRequestDetailsPage.prototype._updatePage = function() {
-  UIUtils.setEnabled(this._previousLinkId, this._getPreviousRequestId() != null);
-  UIUtils.setEnabled(this._nextLinkId, this._getNextRequestId() != null);
-  
-  if (this._requestList != null) {
-    this._requestList.remove();
+
+OutgoingRequestDetailsPage.prototype._updateRequest = function(requestAttributesToUpdate) {
+  if (this._updating) {
+    return;
   }
   
-  var requestListParams = {
-    requestClickListener: null,
-    requestIds: [this._currentRequestId],
-    requestEditable: true,
-    maxResponses: -1,
-    responseAreaMaxHeight: -1,
-    responseInclusionPolicy: AbstractRequestPage.OutgoingRequestList.prototype.RESPONSE_INCLUSION_POLICY_STATUS_ALL,
-    showFullContent: true,
-    showResponseCount: true,
-    updateListener: {
-      updateStarted: function() {
-        Application.showSpinningWheel();
-      },
-      updateFinished: function() {
-        Application.hideSpinningWheel();
-      },
-      responseCreated: function() {
-        Application.showMessage(I18n.getLocale().literals.ResponseSentMessage, Application.MESSAGE_TIMEOUT_FAST);
-      },
-      requestUpdated: function() {
-        Application.showMessage(I18n.getLocale().literals.RequestUpdatedMessage, Application.MESSAGE_TIMEOUT_FAST);
-      },
-      requestDeleted: function() {
-        Application.showMessage(I18n.getLocale().literals.RequestRemovedMessage, Application.MESSAGE_TIMEOUT_FAST);
-        Application.showMenuPage(this._returnPageId);
-      }.bind(this)
+  var page = this;
+  
+  var callback = {
+    success: function(requestId) {
+      this._onCompletion();
+      page._showViewableRequest();
+    },
+    failure: function() {
+      Application.showMessage(page.getLocale().RequestFailedMessage);
+      this._onCompletion();
+    },
+    error: function() {
+      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      this._onCompletion();
+    },
+    
+    _onCompletion: function() {
+      page._updating = false;
+      
+      Application.hideSpinningWheel();
     }
-  };
-
-  if (this._isIncomingList) {
-    this._requestList = new AbstractRequestPage.IncomingRequestList(requestListParams);
-  } else {
-    this._requestList = new AbstractRequestPage.OutgoingRequestList(requestListParams);
   }
-  
-  this._requestList.append(this._requestsPanel);
+
+  Application.showSpinningWheel();
+
+  Backend.updateRequest(this._currentRequestId, requestAttributesToUpdate, callback);
 }
-
-*/
-

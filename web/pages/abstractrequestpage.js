@@ -158,6 +158,15 @@ AbstractRequestPage.ExtendedOutgoingRequestItem.prototype._fill = function() {
 }
 
 
+AbstractRequestPage.EditableOutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractOutgoingRequestItem, function EditableOutgoingRequestItem(requestId, settings) {
+  AbstractRequestPage._AbstractOutgoingRequestItem.call(this, requestId, "full-outgoing-request-container", settings);
+});
+
+AbstractRequestPage.EditableOutgoingRequestItem.prototype._fill = function() {
+  AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill.call(this);
+}
+
+
 
 AbstractRequestPage.IncomingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function IncomingRequestItem(requestId, settings) {
   AbstractRequestPage._AbstractRequestItem.call(this, requestId, settings.fullRecord ? "full-incoming-request-container" : "incoming-request-container", settings);

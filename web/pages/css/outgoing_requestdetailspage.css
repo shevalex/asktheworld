@@ -24,9 +24,28 @@
   margin-top: 10px;
 }
 
-#OutgoingRequestDetailsPage-ContentPanel-EditButton {
+#OutgoingRequestDetailsPage-ContentPanel-RequestPanel-TextEditor {
+  outline: none;
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-RequestPanel-EditButton {
   float: right;
   margin-top: 2px;
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-RequestPanel-ControlButtonsPanel {
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-RequestPanel-ControlButtonsPanel-DeactivateButton {
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-RequestPanel-ControlButtonsPanel-CancelButton {
+  float: right;
+  margin-right: 20px;
+}
+
+#OutgoingRequestDetailsPage-ContentPanel-RequestPanel-ControlButtonsPanel-UpdateButton {
+  float: right;
 }
 
 #OutgoingRequestDetailsPage-ContentPanel-ResponseView {

@@ -17,13 +17,12 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
   this._requestsTable = new AbstractRequestPage.IncomingRequestsTable("RequestTable", {
     clickListener: function(requestId) {
       var paramBundle = {
-        incoming: false,
         returnPageId: AllIncomingRequestsPage.name,
         requestId: requestId,
         otherRequestIds: ""
       }
 
-      Application.showMenuPage(RequestDetailsPage.name, paramBundle);
+      Application.showMenuPage(IncomingRequestDetailsPage.name, paramBundle);
     },
     hideWhenEmpty: true
   });

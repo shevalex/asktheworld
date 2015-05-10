@@ -21,7 +21,6 @@ ActiveOutgoingRequestsPage.prototype.definePageContent = function(root) {
   this._requestsTable = new AbstractRequestPage.OutgoingRequestsTable("RequestTable", {
     clickListener: function(requestId) {
       var paramBundle = {
-        incoming: false,
         returnPageId: ActiveOutgoingRequestsPage.name,
         requestId: requestId,
         otherRequestIds: page._getRequestIds().join(",")
