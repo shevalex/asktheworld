@@ -1,0 +1,52 @@
+#IncomingRequestDetailsPage {
+}
+
+#IncomingRequestDetailsPage-ContentPanel {
+  max-width: 700px;
+  margin-top: 10px;  
+}
+
+#IncomingRequestDetailsPage-ContentPanel-GoBackLink {
+}
+
+#IncomingRequestDetailsPage-ContentPanel-PreviousNextPanel {
+  margin-top: 10px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-PreviousNextPanel-PreviousButton {
+}
+
+#IncomingRequestDetailsPage-ContentPanel-PreviousNextPanel-NextButton {
+  float: right;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-RequestPanel {
+  margin-top: 10px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel {
+  margin-top: 40px;
+  margin-left: 30px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-TextEditor {
+  outline: none;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-EditButton {
+  float: right;
+  margin-top: 2px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-ControlButtonsPanel {
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-ControlButtonsPanel-CancelButton {
+  float: right;
+  margin-right: 20px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-ControlButtonsPanel-UpdateButton {
+  float: right;
+}
+
