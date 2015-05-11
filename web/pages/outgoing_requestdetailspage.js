@@ -1,17 +1,17 @@
 OutgoingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function OutgoingRequestDetailsPage() {
   AbstractPage.call(this, OutgoingRequestDetailsPage.name);
   
-  this._previousButton;
-  this._nextButton;
-  this._requestPanel;
-  
   this._currentRequestId;
   this._returnPageId;
   this._navigatableRequestIds;
   
+  this._previousButton;
+  this._nextButton;
+  this._requestPanel;
+  this._requestItem = null;
+  
   this._incomingResponsesView;
   
-  this._requestItem = null;
   this._cacheChangeListener;
   
   this._updating = false;
@@ -98,7 +98,6 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   
   UIUtils.setEnabled(this._previousButton, this._getPreviousRequestId() != null);
   UIUtils.setEnabled(this._nextButton, this._getNextRequestId() != null);
-  
 
   Backend.addCacheChangeListener(this._cacheChangeListener);
 }

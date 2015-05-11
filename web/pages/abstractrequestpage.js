@@ -168,35 +168,61 @@ AbstractRequestPage.EditableOutgoingRequestItem.prototype._fill = function() {
 
 
 
-AbstractRequestPage.IncomingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function IncomingRequestItem(requestId, settings) {
-  AbstractRequestPage._AbstractRequestItem.call(this, requestId, settings.fullRecord ? "full-incoming-request-container" : "incoming-request-container", settings);
+AbstractRequestPage._AbstractIncomingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestItem, function _AbstractIncomingRequestItem(requestId, cssClass, settings) {
+  AbstractRequestPage._AbstractRequestItem.call(this, requestId, cssClass, settings);
 });
 
-AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
+AbstractRequestPage._AbstractIncomingRequestItem.prototype._fill = function() {
   UIUtils.get$(this._container).empty();
   
   var request = this._getObject();
   var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
   UIUtils.addClass(dateLabel, "request-date-label");
   
-  var timeToLive = (request.time + request.response_wait_time * 1000 * 60 * 60) - Date.now();
-  var numOfDaysLeft = Math.floor(timeToLive / (1000 * 60 * 60 * 24));
-  var numOfHoursLeft = Math.floor((timeToLive % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var numOfMinutesLeft = Math.floor((timeToLive % (1000 * 60 * 60)) / (1000 * 60));
+  var expiresLabel;
+  if (request.status == Backend.Request.STATUS_ACTIVE) {
+    var timeToLive = (request.time + request.response_wait_time * 1000 * 60 * 60) - Date.now();
+    var numOfDaysLeft = Math.floor(timeToLive / (1000 * 60 * 60 * 24));
+    var numOfHoursLeft = Math.floor((timeToLive % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var numOfMinutesLeft = Math.floor((timeToLive % (1000 * 60 * 60)) / (1000 * 60));
 
-  var expiresLabel = UIUtils.appendLabel(this._container, "ExpiresLabel", I18n.getPageLocale("AbstractRequestPage").ExpiresLabelProvider(numOfDaysLeft, numOfHoursLeft, numOfMinutesLeft));
-  UIUtils.addClass(expiresLabel, "request-expires-label");
-  
-  var requestText = UIUtils.appendBlock(this._container, "RequestText");
-  UIUtils.addClass(requestText, "request-text");
-  if (this._settings.fullRecord) {
-    requestText.innerHTML = request.text;
-  } else {
-    requestText.innerHTML = UIUtils.getOneLine(request.text);
+    expiresLabel = UIUtils.appendLabel(this._container, "ExpiresLabel", I18n.getPageLocale("AbstractRequestPage").ExpiresLabelProvider(numOfDaysLeft, numOfHoursLeft, numOfMinutesLeft));
+    UIUtils.addClass(expiresLabel, "request-expires-label");
   }
-
+  
   var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
+}
+
+AbstractRequestPage.IncomingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractIncomingRequestItem, function IncomingRequestItem(requestId, settings) {
+  AbstractRequestPage._AbstractIncomingRequestItem.call(this, requestId, "incoming-request-container", settings);
+});
+AbstractRequestPage.IncomingRequestItem.prototype._fill = function() {
+  AbstractRequestPage._AbstractIncomingRequestItem.prototype._fill.call(this);
+  
+  var request = this._getObject();
+
+  var requestText = UIUtils.appendBlock(this._container, "RequestText");
+  requestText.innerHTML = UIUtils.getOneLine(request.text);
+  UIUtils.addClass(requestText, "request-text");
+}
+
+AbstractRequestPage.ExtendedIncomingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractIncomingRequestItem, function IncomingRequestItem(requestId, settings) {
+  AbstractRequestPage._AbstractIncomingRequestItem.call(this, requestId, "full-incoming-request-container", settings);
+});
+AbstractRequestPage.ExtendedIncomingRequestItem.prototype._fill = function() {
+  AbstractRequestPage._AbstractIncomingRequestItem.prototype._fill.call(this);
+  
+  var request = this._getObject();
+
+  var requestText = UIUtils.appendBlock(this._container, "RequestText");
+  UIUtils.addClass(requestText, "request-text");
+  requestText.innerHTML = request.text;
+
+  if (request.attachments != null && request.attachments.length > 0) {
+    var attachmentBar = UIUtils.appendAttachmentBar(this._container, request.attachments);
+    UIUtils.addClass(attachmentBar, "request-attachmentbar");
+  }
 }
 
 
@@ -232,7 +258,6 @@ AbstractRequestPage._AbstractResponseItem.prototype._createClickListener = funct
 AbstractRequestPage.IncomingResponseItem = ClassUtils.defineClass(AbstractRequestPage._AbstractResponseItem, function IncomingResponseItem(requestId, responseId, settings) {
   AbstractRequestPage._AbstractResponseItem.call(this, requestId, responseId, "incoming-response-container", settings);
 });
-
 AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   UIUtils.get$(this._container).empty();
   
@@ -270,7 +295,6 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
     UIUtils.addClass(attachmentBar, "response-attachmentbar");
   }
 
-  
   var contactInfoPanel = UIUtils.appendBlock(this._container, "ContactInfoPanel");
   UIUtils.addClass(contactInfoPanel, "response-contactinfopanel");
   
@@ -290,6 +314,51 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   var ratingBar = UIUtils.appendRatingBar(contactInfoPanel, "RatingBar", this._settings.ratingChangeListener.bind(this, this._requestId, this._objectId));
   UIUtils.addClass(ratingBar, "response-starrating");
   ratingBar.setRating(response.star_rating);
+}
+
+
+AbstractRequestPage._AbstractOutgoingResponseItem = ClassUtils.defineClass(AbstractRequestPage._AbstractResponseItem, function _AbstractOutgoingResponseItem(requestId, responseId, cssClass, settings) {
+  AbstractRequestPage._AbstractResponseItem.call(this, requestId, responseId, cssClass, settings);
+});
+AbstractRequestPage._AbstractOutgoingResponseItem.prototype._fill = function() {
+  UIUtils.get$(this._container).empty();
+  
+  var response = this._getObject();
+  var isRead = response.status == Backend.Response.STATUS_READ;
+  
+  var responseHeader = UIUtils.appendBlock(this._container, "ResponseHeader");
+  UIUtils.addClass(responseHeader, "response-header");
+  if (!isRead) {
+    UIUtils.addClass(responseHeader, "response-header-unread");
+  }
+  
+  var dateLabel = UIUtils.appendLabel(responseHeader, "DateLabel", TimeUtils.getDateTimeSrting(response.time));
+  UIUtils.addClass(dateLabel, "response-date-label");
+}
+
+AbstractRequestPage.OutgoingResponseItem = ClassUtils.defineClass(AbstractRequestPage._AbstractOutgoingResponseItem, function OutgoingResponseItem(requestId, responseId, settings) {
+  AbstractRequestPage._AbstractOutgoingResponseItem.call(this, requestId, responseId, "outgoing-response-container", settings);
+});
+AbstractRequestPage.OutgoingResponseItem.prototype._fill = function() {
+  AbstractRequestPage._AbstractOutgoingResponseItem.prototype._fill.call(this);
+  
+  var response = this._getObject();
+
+  var responseText = UIUtils.appendBlock(this._container, "ResponseText");
+  UIUtils.addClass(responseText, "response-text");
+  responseText.innerHTML = response.text;
+
+  if (response.attachments != null && response.attachments.length > 0) {
+    var attachmentBar = UIUtils.appendAttachmentBar(this._container, response.attachments);
+    UIUtils.addClass(attachmentBar, "response-attachmentbar");
+  }
+}
+
+AbstractRequestPage.EditableOutgoingResponseItem = ClassUtils.defineClass(AbstractRequestPage._AbstractOutgoingResponseItem, function OutgoingResponseItem(requestId, responseId, settings) {
+  AbstractRequestPage._AbstractOutgoingResponseItem.call(this, requestId, responseId, "editable-outgoing-response-container", settings);
+});
+AbstractRequestPage.EditableOutgoingResponseItem.prototype._fill = function() {
+  AbstractRequestPage._AbstractOutgoingResponseItem.prototype._fill.call(this);
 }
 
 
