@@ -118,18 +118,17 @@ HomePage.prototype._getOutgoingRequestIds = function() {
     return null;
   }
   
-  var ready = true;
   var requestIds = [];
   for (var i in allActiveRequestIds) {
     var responseIds = Backend.getIncomingResponseIds(allActiveRequestIds[i], Backend.Response.STATUS_UNREAD);
     if (responseIds == null) {
-      ready = false;
+      return null;
     } else if (responseIds.length > 0) {
       requestIds.push(allActiveRequestIds[i]);
     }
   }
   
-  return ready ? requestIds : null;
+  return requestIds;
 }
 
 HomePage.prototype._getIncomingRequestIds = function() {
@@ -138,16 +137,15 @@ HomePage.prototype._getIncomingRequestIds = function() {
     return null;
   }
   
-  var ready = true;
   var requestIds = [];
   for (var i in allActiveRequestIds) {
     var responseIds = Backend.getOutgoingResponseIds(allActiveRequestIds[i]);
     if (responseIds == null) {
-      ready = false;
-    } else if (responseIds.length > 0) {
+      return null;
+    } else if (responseIds.length == 0) {
       requestIds.push(allActiveRequestIds[i]);
     }
   }
 
-  return ready ? requestIds : null;
+  return requestIds;
 }

@@ -186,6 +186,58 @@
   color: rgb(39, 39, 39);
 }
 
+.full-incoming-request-container {
+  position: relative;
+  padding: 5px;
+  min-width: 500px;
+  
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(191, 191, 191);
+  
+  background-color: rgb(215, 236, 249);
+  color: rgb(129, 129, 129);
+  
+  font-family: "Times New Roman";
+  font-size: 12px;
+}
+.full-incoming-request-container .request-date-label {
+  margin-left: 10px;
+  height: 15px;
+  
+  color: inherit;
+}
+.full-incoming-request-container .request-expires-label {
+  position: absolute;
+  left: 300px;
+  top: 5px;
+  
+  color: inherit;
+}
+.full-incoming-request-container .request-expertise-label {
+  position: absolute;
+  right: 20px;
+  top: 5px;
+  
+  color: inherit;
+}
+.full-incoming-request-container .request-text {
+  margin-top: 5px;
+  padding: 5px;
+  
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: rgb(191, 191, 191);
+  
+  background-color: rgb(145, 201, 253);
+  font-family: Verdana;
+  color: rgb(39, 39, 39);
+}
+.full-incoming-request-container .request-attachmentbar {
+  margin: 5px 5px 0px 5px;
+}
+
+
 .incoming-response-container {
   position: relative;
   min-width: 500px;
@@ -286,6 +338,53 @@
 .incoming-response-container .response-contactinfopanel .response-starrating {
   float: right;
   margin-right: 20px;
+}
+
+.outgoing-response-container {
+  position: relative;
+  min-width: 500px;
+  
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(191, 191, 191);
+  
+  background-color: rgb(245, 236, 249);
+  color: rgb(129, 129, 129);
+  
+  font-family: "Times New Roman";
+  font-size: 12px;
+}
+.outgoing-response-container:nth-child(2n) {
+  background-color: rgb(237, 237, 237);
+}
+.outgoing-response-container .response-header {
+  height: 20px;
+}
+.outgoing-response-container .response-header-unread {
+  background-color: rgb(0, 150, 200);
+  color: black;
+  font-weight: bold;
+}
+.outgoing-response-container .response-date-label {
+  position: absolute;
+  top: 3px;
+  left: 10px;
+  
+  color: inherit;
+}
+.outgoing-response-container .response-text {
+  padding: 5px;
+  
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: rgb(191, 191, 191);
+  
+  background-color: rgba(220, 220, 220, 0.8);
+  font-family: Verdana;
+  color: rgb(39, 39, 39);
+}
+.outgoing-response-container .response-attachmentbar {
+  margin: 5px;
 }
 
 

@@ -355,7 +355,7 @@ AbstractRequestPage.OutgoingResponseItem.prototype._fill = function() {
 }
 
 AbstractRequestPage.EditableOutgoingResponseItem = ClassUtils.defineClass(AbstractRequestPage._AbstractOutgoingResponseItem, function OutgoingResponseItem(requestId, responseId, settings) {
-  AbstractRequestPage._AbstractOutgoingResponseItem.call(this, requestId, responseId, "editable-outgoing-response-container", settings);
+  AbstractRequestPage._AbstractOutgoingResponseItem.call(this, requestId, responseId, "outgoing-response-container", settings);
 });
 AbstractRequestPage.EditableOutgoingResponseItem.prototype._fill = function() {
   AbstractRequestPage._AbstractOutgoingResponseItem.prototype._fill.call(this);

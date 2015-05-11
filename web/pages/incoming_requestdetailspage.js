@@ -130,10 +130,10 @@ IncomingRequestDetailsPage.prototype._showViewableResponse = function() {
 }
 
 IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
-  if (this._requestItem != null) {
-    this._requestItem.remove();
+  if (this._responseItem != null) {
+    this._responseItem.remove();
   }
-  UIUtils.get$(this._requestPanel).empty();
+  UIUtils.get$(this._responsePanel).empty();
 
   var responseId = this._getResponseId();
   this._responseItem = new AbstractRequestPage.EditableOutgoingResponseItem(this._currentRequestId, responseId);
