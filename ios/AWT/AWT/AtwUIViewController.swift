@@ -84,16 +84,15 @@ class AtwUIViewController: UIViewController {
     }
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-        
-        var toolbar = UIToolbar();
-        toolbar.barStyle = .Default;
-        toolbar.sizeToFit();
-        var doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonClickedAction")
-        var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        toolbar.setItems([flexibleSpace, doneButton], animated: true);
+        var toolbar = AtwUiUtils.createToolbarForInputAccessoryView(self);
         textField.inputAccessoryView = toolbar;
-        
-        return true
+        return true;
+    }
+    
+    func textViewShouldBeginEditing(textView: UITextView) -> Bool {
+        var toolbar = AtwUiUtils.createToolbarForInputAccessoryView(self);
+        textView.inputAccessoryView = toolbar;
+        return true;
     }
     
     func doneButtonClickedAction() {

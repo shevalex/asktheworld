@@ -132,4 +132,15 @@ public struct AtwUiUtils {
     static func setImagePicker(viewController: UIViewController, imagePickObserver: ImagePickObserver? = nil) {
         ImageChooserFactory.setImagePicker(viewController, imagePickObserver: imagePickObserver);
     }
+    
+    static func createToolbarForInputAccessoryView(anchor: AtwUIViewController) -> UIToolbar {
+        var toolbar = UIToolbar();
+        toolbar.barStyle = .Default;
+        toolbar.sizeToFit();
+        var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        var doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: anchor, action: "doneButtonClickedAction")
+        toolbar.setItems([flexibleSpace, doneButton], animated: true);
+        return toolbar;
+    }
+
 }
