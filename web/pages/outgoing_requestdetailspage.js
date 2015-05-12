@@ -143,8 +143,8 @@ OutgoingRequestDetailsPage.prototype._showEditingRequest = function() {
   
   var request = Backend.getRequest(this._currentRequestId);
 
-  this._requestTextEditor = UIUtils.appendTextEditor(this._requestPanel, "TextEditor");
-  this._requestTextEditor.setValue(request.text);
+  var requestTextEditor = UIUtils.appendTextEditor(this._requestPanel, "TextEditor");
+  requestTextEditor.setValue(request.text);
   this._attachmentsBar = UIUtils.appendAttachmentBar(this._requestPanel, null, true, function(file) {
     Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
   });
@@ -158,7 +158,12 @@ OutgoingRequestDetailsPage.prototype._showEditingRequest = function() {
 
   var updateButton = UIUtils.appendButton(buttonsPanel, "UpdateButton", this.getLocale().UpdateButton);
   UIUtils.setClickListener(updateButton, function() {
-    this._updateRequest({text: this._requestTextEditor.getValue(), attachments: this._attachmentsBar.getAttachments()});
+    var requestText = requestTextEditor.getValue();
+    if (requestText != null && requestText != "") {
+      this._updateRequest({text: requestText, attachments: this._attachmentsBar.getAttachments()});
+    } else {
+      requestText.indicateInvalidInput();
+    }
   }.bind(this));
 
   var cancelButton = UIUtils.appendButton(buttonsPanel, "CancelButton", I18n.getLocale().literals.CancelOperationButton);

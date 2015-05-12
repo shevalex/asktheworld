@@ -1,5 +1,5 @@
 IncomingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function IncomingRequestDetailsPage() {
-  AbstractPage.call(this, OutgoingRequestDetailsPage.name);
+  AbstractPage.call(this, IncomingRequestDetailsPage.name);
   
   this._currentRequestId;
   this._returnPageId;
@@ -17,6 +17,7 @@ IncomingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function Incom
   this._cacheChangeListener;
   
   this._updating = false;
+  this._editing = false;
 });
 
 IncomingRequestDetailsPage.prototype.definePageContent = function(root) {
@@ -79,6 +80,23 @@ IncomingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   
   this._requestItem = new AbstractRequestPage.ExtendedIncomingRequestItem(this._currentRequestId);
   this._requestItem.append(this._requestPanel);
+  var responseId = this._getResponseId();
+  if (responseId == null) {
+    var buttonsPanel = UIUtils.appendBlock(this._requestPanel, "ButtonsPanel");
+    var respondButton = UIUtils.appendButton(buttonsPanel, "RespondButton", this.getLocale().RespondButton);
+    UIUtils.setClickListener(respondButton, function() {
+      if (!this._editing) {
+        this._showCreatingResponse();
+      }
+    }.bind(this));
+    
+    var ignoreButton = UIUtils.appendButton(buttonsPanel, "IgnoreButton", this.getLocale().IgnoreButton);
+    UIUtils.setClickListener(ignoreButton, function() {
+      if (!this._editing) {
+        this._ignoreRequest();
+      }
+    }.bind(this));
+  }
   
   this._showViewableResponse();
   
@@ -90,6 +108,7 @@ IncomingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
 
 IncomingRequestDetailsPage.prototype.onHide = function() {
   this._requestItem.remove();
+  UIUtils.get$(this._requestPanel).empty();
 
   if (this._responseItem != null) {
     this._responseItem.remove();
@@ -141,22 +160,51 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
   
   var response = Backend.getResponse(this._currentRequestId, responseId);
 
-  this._responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
-  this._responseTextEditor.setValue(response.text);
-  this._attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, function(file) {
+  var responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
+  responseTextEditor.setValue(response.text);
+  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, function(file) {
     Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
   });
   
   var buttonsPanel = UIUtils.appendBlock(this._responsePanel, "ControlButtonsPanel");
   
-  var updateButton = UIUtils.appendButton(buttonsPanel, "UpdateButton", this.getLocale().UpdateButton);
-  UIUtils.setClickListener(updateButton, function() {
-    this._updateRequest({text: this._responseTextEditor.getValue(), attachments: this._attachmentsBar.getAttachments()});
-  }.bind(this));
-
   var cancelButton = UIUtils.appendButton(buttonsPanel, "CancelButton", I18n.getLocale().literals.CancelOperationButton);
   UIUtils.setClickListener(cancelButton, function() {
     this._showViewableResponse();
+  }.bind(this));
+
+  var updateButton = UIUtils.appendButton(buttonsPanel, "UpdateButton", this.getLocale().UpdateButton);
+  UIUtils.setClickListener(updateButton, function() {
+    this._updateResponse(responseId, responseTextEditor.getValue(), attachmentsBar.getAttachments());
+  }.bind(this));
+}
+
+IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
+  if (this._responseItem != null) {
+    this._responseItem.remove();
+  }
+  UIUtils.get$(this._responsePanel).empty();
+
+  var responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
+  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, function(file) {
+    Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
+  });
+  
+  var buttonsPanel = UIUtils.appendBlock(this._responsePanel, "ControlButtonsPanel");
+  
+  var cancelButton = UIUtils.appendButton(buttonsPanel, "CancelButton", I18n.getLocale().literals.CancelOperationButton);
+  UIUtils.setClickListener(cancelButton, function() {
+    UIUtils.get$(this._responsePanel).empty();
+  }.bind(this));
+
+  var createButton = UIUtils.appendButton(buttonsPanel, "CreateButton", this.getLocale().CreateButton);
+  UIUtils.setClickListener(createButton, function() {
+    var responseText = responseTextEditor.getValue();
+    if (responseText != null && responseText != "") {
+      this._createResponse(responseText, attachmentsBar.getAttachments());
+    } else {
+      responseTextEditor.indicateInvalidInput();
+    }
   }.bind(this));
 }
 
@@ -212,7 +260,7 @@ IncomingRequestDetailsPage.prototype._getResponseId = function() {
 
 
 
-IncomingRequestDetailsPage.prototype._updateResponse = function(requestAttributesToUpdate) {
+IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, responseText, attachments) {
   if (this._updating) {
     return;
   }
@@ -220,12 +268,12 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(requestAttribute
   var page = this;
   
   var callback = {
-    success: function(requestId) {
+    success: function() {
       this._onCompletion();
-      page._showViewableRequest();
+      page._showViewableResponse();
     },
     failure: function() {
-      Application.showMessage(page.getLocale().RequestFailedMessage);
+      Application.showMessage(page.getLocale().ResponseUpdateFailedMessage);
       this._onCompletion();
     },
     error: function() {
@@ -242,5 +290,79 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(requestAttribute
 
   Application.showSpinningWheel();
 
-  Backend.updateRequest(this._currentRequestId, requestAttributesToUpdate, callback);
+  var response = {
+    text: responseText,
+    attachments: attachments
+  }
+  
+  Backend.updateResponse(this._currentRequestId, responseId, response, callback);
+}
+
+IncomingRequestDetailsPage.prototype._createResponse = function(responseText, attachments) {
+  if (this._updating) {
+    return;
+  }
+  
+  var page = this;
+  
+  var callback = {
+    success: function() {
+      this._onCompletion();
+      page._showViewableResponse();
+    },
+    failure: function() {
+      Application.showMessage(page.getLocale().ResponseCreateFailedMessage);
+      this._onCompletion();
+    },
+    error: function() {
+      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      this._onCompletion();
+    },
+    
+    _onCompletion: function() {
+      page._updating = false;
+      
+      Application.hideSpinningWheel();
+    }
+  }
+
+  Application.showSpinningWheel();
+
+  var response = {
+    text: responseText, 
+    contact_info_status: Backend.UserPreferences.contactVisible ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE, 
+    attachments: attachments
+  }
+
+  Backend.createResponse(this._currentRequestId, response, callback);
+}
+
+IncomingRequestDetailsPage.prototype._ignoreRequest = function() {
+  if (this._updating) {
+    return;
+  }
+  
+//  var page = this;
+//  
+//  var callback = {
+//    success: function() {
+//      this._onCompletion();
+//    },
+//    failure: function() {
+//      this._onCompletion();
+//    },
+//    error: function() {
+//      this._onCompletion();
+//    },
+//    
+//    _onCompletion: function() {
+//      page._updating = false;
+//      
+//      Application.hideSpinningWheel();
+//    }
+//  }
+//
+//  Application.showSpinningWheel();
+
+  Backend.removeIncomingRequest(this._currentRequestId, callback);
 }

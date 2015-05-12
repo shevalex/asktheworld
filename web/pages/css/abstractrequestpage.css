@@ -188,7 +188,7 @@
 
 .full-incoming-request-container {
   position: relative;
-  padding: 5px;
+  padding-top: 5px;
   min-width: 500px;
   
   border-style: solid;

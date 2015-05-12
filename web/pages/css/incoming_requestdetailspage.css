@@ -24,9 +24,23 @@
   margin-top: 10px;
 }
 
+#IncomingRequestDetailsPage-ContentPanel-RequestPanel-ButtonsPanel {
+  margin-top: 5px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-RequestPanel-ButtonsPanel-RespondButton {
+}
+
+#IncomingRequestDetailsPage-ContentPanel-RequestPanel-ButtonsPanel-IgnoreButton {
+  float: right;
+}
+
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel {
   margin-top: 40px;
   margin-left: 30px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-StatusLabel {
 }
 
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel-TextEditor {
@@ -43,10 +57,15 @@
 
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel-ControlButtonsPanel-CancelButton {
   float: right;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-ControlButtonsPanel-CreateButton {
+  float: right;
   margin-right: 20px;
 }
 
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel-ControlButtonsPanel-UpdateButton {
   float: right;
+  margin-right: 20px;  
 }
 
