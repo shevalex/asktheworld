@@ -466,7 +466,9 @@ Backend.removeIncomingRequest = function(requestId, callback) {
       if (this._cache.incomingRequestIds.active[index] == requestId) {
         this._cache.incomingRequestIds.active.splice(index, 1);
         
-        callback.success();
+        if (callback != null) {
+          callback.success();
+        }
         
         this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED});
         

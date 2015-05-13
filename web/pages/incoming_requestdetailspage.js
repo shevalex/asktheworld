@@ -40,7 +40,7 @@ IncomingRequestDetailsPage.prototype.definePageContent = function(root) {
   
   this._nextButton = UIUtils.appendButton(previousNextPanel, "NextButton", this.getLocale().NextButton);
   UIUtils.setClickListener(this._nextButton, function() {
-    Application.showMenuPage(OutgoingRequestDetailsPage.name, {
+    Application.showMenuPage(IncomingRequestDetailsPage.name, {
       requestId: this._getNextRequestId(),
       returnPageId: this._returnPageId,
       otherRequestIds: this._navigatableRequestIds.join(",")
@@ -49,7 +49,6 @@ IncomingRequestDetailsPage.prototype.definePageContent = function(root) {
   
   this._requestPanel = UIUtils.appendBlock(contentPanel, "RequestPanel");
   this._responsePanel = UIUtils.appendBlock(contentPanel, "ResponsePanel");
-  
   
   
   this._cacheChangeListener = function(event) {
@@ -78,17 +77,21 @@ IncomingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._type = paramBundle.type;
   this._navigatableRequestIds = paramBundle.otherRequestIds.split(",");
   
+  var request = Backend.getRequest(this._currentRequestId);
   this._requestItem = new AbstractRequestPage.ExtendedIncomingRequestItem(this._currentRequestId);
   this._requestItem.append(this._requestPanel);
   var responseId = this._getResponseId();
   if (responseId == null) {
     var buttonsPanel = UIUtils.appendBlock(this._requestPanel, "ButtonsPanel");
-    var respondButton = UIUtils.appendButton(buttonsPanel, "RespondButton", this.getLocale().RespondButton);
-    UIUtils.setClickListener(respondButton, function() {
-      if (!this._editing) {
-        this._showCreatingResponse();
-      }
-    }.bind(this));
+    
+    if (request.status == Backend.Request.STATUS_ACTIVE) {
+      var respondButton = UIUtils.appendButton(buttonsPanel, "RespondButton", this.getLocale().RespondButton);
+      UIUtils.setClickListener(respondButton, function() {
+        if (!this._editing) {
+          this._showCreatingResponse();
+        }
+      }.bind(this));
+    }
     
     var ignoreButton = UIUtils.appendButton(buttonsPanel, "IgnoreButton", this.getLocale().IgnoreButton);
     UIUtils.setClickListener(ignoreButton, function() {
@@ -120,6 +123,8 @@ IncomingRequestDetailsPage.prototype.onHide = function() {
 }
 
 IncomingRequestDetailsPage.prototype._showViewableResponse = function() {
+  this._editing = false;
+  
   if (this._responseItem != null) {
     this._responseItem.remove();
     this._responseItem = null;
@@ -149,6 +154,8 @@ IncomingRequestDetailsPage.prototype._showViewableResponse = function() {
 }
 
 IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
+  this._editing = true;
+  
   if (this._responseItem != null) {
     this._responseItem.remove();
   }
@@ -175,11 +182,18 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
 
   var updateButton = UIUtils.appendButton(buttonsPanel, "UpdateButton", this.getLocale().UpdateButton);
   UIUtils.setClickListener(updateButton, function() {
-    this._updateResponse(responseId, responseTextEditor.getValue(), attachmentsBar.getAttachments());
+    var responseText = responseTextEditor.getValue();
+    if (responseText != null && responseText != "") {
+      this._updateResponse(responseId, responseText, attachmentsBar.getAttachments());
+    } else {
+      UIUtils.indicateInvalidInput(responseTextEditor);
+    }
   }.bind(this));
 }
 
 IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
+  this._editing = true;
+  
   if (this._responseItem != null) {
     this._responseItem.remove();
   }
@@ -195,6 +209,7 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
   var cancelButton = UIUtils.appendButton(buttonsPanel, "CancelButton", I18n.getLocale().literals.CancelOperationButton);
   UIUtils.setClickListener(cancelButton, function() {
     UIUtils.get$(this._responsePanel).empty();
+    this._editing = false;
   }.bind(this));
 
   var createButton = UIUtils.appendButton(buttonsPanel, "CreateButton", this.getLocale().CreateButton);
@@ -203,7 +218,7 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
     if (responseText != null && responseText != "") {
       this._createResponse(responseText, attachmentsBar.getAttachments());
     } else {
-      responseTextEditor.indicateInvalidInput();
+      UIUtils.indicateInvalidInput(responseTextEditor);
     }
   }.bind(this));
 }
@@ -341,28 +356,6 @@ IncomingRequestDetailsPage.prototype._ignoreRequest = function() {
   if (this._updating) {
     return;
   }
-  
-//  var page = this;
-//  
-//  var callback = {
-//    success: function() {
-//      this._onCompletion();
-//    },
-//    failure: function() {
-//      this._onCompletion();
-//    },
-//    error: function() {
-//      this._onCompletion();
-//    },
-//    
-//    _onCompletion: function() {
-//      page._updating = false;
-//      
-//      Application.hideSpinningWheel();
-//    }
-//  }
-//
-//  Application.showSpinningWheel();
 
-  Backend.removeIncomingRequest(this._currentRequestId, callback);
+  Backend.removeIncomingRequest(this._currentRequestId);
 }

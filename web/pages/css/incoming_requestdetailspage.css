@@ -26,6 +26,7 @@
 
 #IncomingRequestDetailsPage-ContentPanel-RequestPanel-ButtonsPanel {
   margin-top: 5px;
+  height: 20px;
 }
 
 #IncomingRequestDetailsPage-ContentPanel-RequestPanel-ButtonsPanel-RespondButton {
@@ -41,6 +42,10 @@
 }
 
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel-StatusLabel {
+  font-family: Verdana;
+  font-size: 14px;
+  
+  color: rgb(0, 110, 167);
 }
 
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel-TextEditor {
