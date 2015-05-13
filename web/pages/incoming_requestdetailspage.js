@@ -80,8 +80,9 @@ IncomingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   var request = Backend.getRequest(this._currentRequestId);
   this._requestItem = new AbstractRequestPage.ExtendedIncomingRequestItem(this._currentRequestId);
   this._requestItem.append(this._requestPanel);
-  var responseId = this._getResponseId();
-  if (responseId == null) {
+  
+  var responseIds = Backend.getOutgoingResponseIds(this._currentRequestId);
+  if (responseIds != null && responseIds.length == 0) {
     var buttonsPanel = UIUtils.appendBlock(this._requestPanel, "ButtonsPanel");
     
     if (request.status == Backend.Request.STATUS_ACTIVE) {
@@ -132,15 +133,14 @@ IncomingRequestDetailsPage.prototype._showViewableResponse = function() {
   UIUtils.get$(this._responsePanel).empty();
 
   var request = Backend.getRequest(this._currentRequestId);
-  var responseId = this._getResponseId();
-
-  if (responseId == null) {
-    if (request.status == Backend.Request.STATUS_ACTIVE) {
-    } else {
+  
+  var responseIds = Backend.getOutgoingResponseIds(this._currentRequestId);
+  if (responseIds != null && responseIds.length == 0) {
+    if (request.status == Backend.Request.STATUS_INACTIVE) {
       UIUtils.appendLabel(this._responsePanel, "StatusLabel", this.getLocale().CannotCommentOnRequestLabel);
     }
-  } else {
-    this._responseItem = new AbstractRequestPage.OutgoingResponseItem(this._currentRequestId, responseId);
+  } else if (responseIds != null && responseIds.length > 0) {
+    this._responseItem = new AbstractRequestPage.OutgoingResponseItem(this._currentRequestId, responseIds[0]);
     this._responseItem.append(this._responsePanel);
     
     if (request.status == Backend.Request.STATUS_ACTIVE) {
@@ -161,7 +161,8 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
   }
   UIUtils.get$(this._responsePanel).empty();
 
-  var responseId = this._getResponseId();
+  var responseIds = Backend.getOutgoingResponseIds(this._currentRequestId);
+  var responseId = responseIds[0];
   this._responseItem = new AbstractRequestPage.EditableOutgoingResponseItem(this._currentRequestId, responseId);
   this._responseItem.append(this._responsePanel);
   
@@ -259,20 +260,6 @@ IncomingRequestDetailsPage.prototype._getNextRequestId = function() {
   
   return null;
 }
-
-IncomingRequestDetailsPage.prototype._getResponseId = function() {
-  var responses = Backend.getOutgoingResponseIds(this._currentRequestId);
-  if (responses == null) {
-    return null;
-  }
-  
-  if (responses.length == 0) {
-    return null;
-  }
-  
-  return responses[0];
-}
-
 
 
 IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, responseText, attachments) {
