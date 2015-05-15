@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.pisoft.asktheworld.enums.AgeCategory;
+import com.pisoft.asktheworld.enums.Age;
+import com.pisoft.asktheworld.enums.AgeRequest;
 import com.pisoft.asktheworld.enums.Gender;
+import com.pisoft.asktheworld.enums.GenderRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -154,10 +157,10 @@ public class DB {
 		String gender = request.getResponse_gender();
 		String age = request.getResponse_age_group();
 		//TODO: it should not be here. 
-		if (gender == null || Gender.ALL.equals(gender)){
+		if (gender == null || GenderRequest.ALL.equals(gender)){
 			gender = "%";
 		}
-		if (age == null || AgeCategory.ALL.equals(age)){
+		if (age == null || AgeRequest.ALL.equals(age)){
 			age = "%";
 		}
 		System.out.println("Gender "+gender + "    Age "+ age);
