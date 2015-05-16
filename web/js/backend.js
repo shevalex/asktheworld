@@ -449,14 +449,24 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
     setTimeout(function() {
       var requestIds = {};
 
-      requestIds.all = [];
+      if (requestIds.all == null) {
+        requestIds.all = [];
+      }
       if (requestStatus == null) {
-        requestIds.active = [];
-        requestIds.inactive = [];
+        if (requestIds.active == null) {
+          requestIds.active = [];
+        }
+        if (requestIds.inactive == null) {
+          requestIds.inactive = [];
+        }
       } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
-        requestIds.active = [];
+        if (requestIds.active == null) {
+          requestIds.active = [];
+        }
       } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-        requestIds.inactive = [];
+        if (requestIds.inactive == null) {
+          requestIds.inactive = [];
+        }
       }
 
       var numOfRequests = Math.random() * 100;
@@ -512,14 +522,24 @@ Backend.getIncomingRequestIds = function(requestStatus) {
     setTimeout(function() {
       var requestIds = {};
 
-      requestIds.all = [];
+      if (requestIds.all == null) {
+        requestIds.all = [];
+      }
       if (requestStatus == null) {
-        requestIds.active = [];
-        requestIds.inactive = [];
+        if (requestIds.active == null) {
+          requestIds.active = [];
+        }
+        if (requestIds.inactive == null) {
+          requestIds.inactive = [];
+        }
       } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
-        requestIds.active = [];
+        if (requestIds.active == null) {
+          requestIds.active = [];
+        }
       } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-        requestIds.inactive = [];
+        if (requestIds.inactive == null) {
+          requestIds.inactive = [];
+        }
       }
 
       var numOfRequests = Math.random() * 100;
@@ -672,14 +692,24 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
     setTimeout(function() {
       var responseIds = {};
 
-      responseIds.all = [];
+      if (responseIds.all == null) {
+        responseIds.all = [];
+      }
       if (responseStatus == null) {
-        responseIds.unviewed = [];
-        responseIds.viewed = [];
+        if (responseIds.unviewed == null) {
+          responseIds.unviewed = [];
+        }
+        if (responseIds.viewed == null) {
+          responseIds.viewed = [];
+        }
       } else if (responseStatus == Backend.Response.STATUS_READ) {
-        responseIds.viewed = [];
+        if (responseIds.viewed == null) {
+          responseIds.viewed = [];
+        }
       } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
-        responseIds.unviewed = [];
+        if (responseIds.unviewed == null) {
+          responseIds.unviewed = [];
+        }
       }
 
       var numOfResponses = Math.random() * 100;
@@ -762,14 +792,24 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
     setTimeout(function() {
       var responseIds = {};
 
-      responseIds.all = [];
+      if (responseIds.all == null) {
+        responseIds.all = [];
+      }
       if (responseStatus == null) {
-        responseIds.unviewed = [];
-        responseIds.viewed = [];
+        if (responseIds.unviewed == null) {
+          responseIds.unviewed = [];
+        }
+        if (responseIds.viewed == null) {
+          responseIds.viewed = [];
+        }
       } else if (responseStatus == Backend.Response.STATUS_READ) {
-        responseIds.viewed = [];
+        if (responseIds.viewed == null) {
+          responseIds.viewed = [];
+        }
       } else if (responseStatus == Backend.Reponse.STATUS_UNREAD) {
-        responseIds.unviewed = [];
+        if (responseIds.unviewed == null) {
+          responseIds.unviewed = [];
+        }
       }
 
       var numOfResponses = Math.random() * 10;
