@@ -1095,7 +1095,7 @@ public struct Backend {
 //            println("!!! outgoing request ids updated");
         }
         func getOutgoingRequestIds() -> [String]? {
-            return outgoingRequestIdsInProgress == false ? self.outgoingRequestIds : nil;
+            return outgoingRequestIdsInProgress == false ? outgoingRequestIds : nil;
         }
         
         func markIncomingRequestIdsInUpdate() {
@@ -1115,7 +1115,7 @@ public struct Backend {
             //            println("!!! incoming request ids updated");
         }
         func getIncomingRequestIds() -> [String]? {
-            return incomingRequestIdsInProgress == false ? self.incomingRequestIds : nil;
+            return incomingRequestIdsInProgress == false ? incomingRequestIds : nil;
         }
         
         func markRequestInUpdate(requestId: String) {

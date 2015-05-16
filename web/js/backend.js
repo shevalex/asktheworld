@@ -1,8 +1,4 @@
 var Backend = {
-  _cache: {},
-  _cacheChangeListeners: [],
-  
-  _contactInfo: {}
 };
 
 Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
@@ -60,9 +56,7 @@ Backend.logOut = function(callback) {
   Backend.UserProfile.name = null;
   Backend.UserProfile.userId = null;
   
-  
-  this._cache = {};
-  this._cacheChangeListeners = [];
+  Backend.Cache.reset();
   
   //We may need to inform the server maybe?
   if (callback != null) {
@@ -284,21 +278,25 @@ Backend.Response.CONTACT_INFO_STATUS_PROVIDED = "provided";
 
 
 Backend.createRequest = function(request, transactionCallback) {
+  Backend.Cache.markOutgoingRequestIdsInUpdate();
+  var newRequestId = "request" + Backend.Cache.getOutgoingRequestIds().length;
+  Backend.Cache.markRequestInUpdate(newRequestId);
+  
   setTimeout(function() {
-    var newRequestId = "request" + (this._cache.outgoingRequestIds.active.length + this._cache.outgoingRequestIds.inactive.length);
-    this._cache.outgoingRequestIds.active.push(newRequestId);
+    var requestIds = Backend.Cache.getOutgoingRequestIds();
+    requestIds.all.push(newRequestId);
+    requestIds.active.push(newRequestId);
+    Backend.Cache.setOutgoingRequestIds(requestIds);
+    Backend.Cache.setIncomingResponseIds(newRequestId, []);
     
     request.time = Date.now();
     request.status = Backend.Request.STATUS_ACTIVE;
     
-    if (this._cache.requests == null) {
-      this._cache.requests = {};
+    Backend.Cache.setRequest(newRequestId, request);
+    
+    if (transactionCallback != null) {
+      transactionCallback.success();
     }
-    this._cache.requests[newRequestId] = request;
-    
-    transactionCallback.success();
-    
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: newRequestId});
   }.bind(this), 1000);
   
   
@@ -335,14 +333,18 @@ Backend.createRequest = function(request, transactionCallback) {
 }
 
 Backend.updateRequest = function(requestId, request, transactionCallback) {
+  Backend.Cache.markRequestInUpdate(requestId);
+  
   setTimeout(function() {
-    var existingRequest = this._cache.requests[requestId];
+    var existingRequest = Backend.Cache.getRequest(requestId);
     for (var key in request) {
       if (key == "status" && existingRequest[key] != request[key] && request.status == Backend.Request.STATUS_INACTIVE) {
-        for (var index in this._cache.outgoingRequestIds.active) {
-          if (this._cache.outgoingRequestIds.active[index] == requestId) {
-            this._cache.outgoingRequestIds.active.splice(index, 1);
-            this._cache.outgoingRequestIds.inactive.push(requestId);
+        var allRequestIds = Backend.Cache.getOutgoingRequestIds();
+        for (var index in allRequestIds.active) {
+          if (allRequestIds.active[index] == requestId) {
+            allRequestIds.active.splice(index, 1);
+            allRequestIds.inactive.push(requestId);
+            Backend.Cache.setOutgoingRequestIds(allRequestIds);
             break;
           }
         }
@@ -351,9 +353,11 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
       existingRequest[key] = request[key];
     }
 
-    transactionCallback.success();
-
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId});
+    Backend.Cache.setRequest(requestId, existingRequest);
+    
+    if (transactionCallback != null) {
+      transactionCallback.success();
+    }
   }.bind(this), 1000);
 
   /*
@@ -391,10 +395,13 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
 
 
 Backend.createResponse = function(requestId, response, transactionCallback) {
+  Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
+  var newResponseId = requestId + "-response" + Backend.Cache.getOutgoingResponseIds(requestId).length;
+  Backend.Cache.markResponseInUpdate(requestId, newResponseId);
+  
   setTimeout(function() {
-    var newResponseId = requestId + "-response" + this._cache.outgoingResponseIds[requestId].unviewed.length;
-
-    this._cache.outgoingResponseIds[requestId].unviewed.push(newResponseId);
+    var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
+    responseIds.push(newResponseId);
     
     response.time = Date.now();
     response.attachments = [];
@@ -402,14 +409,12 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     response.gender = Backend.UserProfile.gender;
     response.status = Backend.Response.STATUS_UNREAD;
 
-    if (this._cache.responses == null) {
-      this._cache.responses = {};
+    Backend.Cache.setResponse(requestId, newResponseId, response);
+    Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
+    
+    if (transactionCallback != null) {
+      transactionCallback.success(newResponseId);
     }
-    this._cache.responses[newResponseId] = response;
-    
-    transactionCallback.success(newResponseId);
-    
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId});
   }.bind(this), 1000);
 }
 
@@ -417,430 +422,404 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
 
 
 Backend.getOutgoingRequestIds = function(requestStatus) {
-  if (this._cache.outgoingRequestIds != null) {
-    var requestIds = [];
-    
-    if (requestStatus == Backend.Request.STATUS_ACTIVE || requestStatus == null) {
-      for (var index in this._cache.outgoingRequestIds.active) {
-        requestIds.push(this._cache.outgoingRequestIds.active[index]);
-      }
+  if (Backend.Cache.isOutgoingRequestIdsInUpdate()) {
+    return null;
+  }
+  
+  var requestIds = Backend.Cache.getOutgoingRequestIds();
+  
+  var result = null;
+  if (requestIds != null) {
+    if (requestStatus == null) {
+      result = requestIds.all;
+    } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+      result = requestIds.active;
+    } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+      result = requestIds.inactive;
+    } else {
+      throw "Invalid request status requested: " + requestStatus;
     }
-    if (requestStatus == Backend.Request.STATUS_INACTIVE || requestStatus == null) {
-      for (var index in this._cache.outgoingRequestIds.inactive) {
-        requestIds.push(this._cache.outgoingRequestIds.inactive[index]);
-      }
-    }
-    
-    return requestIds;
+  }
+
+  if (result != null) {
+    return result;
   } else {
-    Backend._pullOutgoingRequestIds();
+    Backend.Cache.markOutgoingRequestIdsInUpdate();
+
+    setTimeout(function() {
+      var requestIds = {};
+
+      requestIds.all = [];
+      if (requestStatus == null) {
+        requestIds.active = [];
+        requestIds.inactive = [];
+      } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+        requestIds.active = [];
+      } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+        requestIds.inactive = [];
+      }
+
+      var numOfRequests = Math.random() * 100;
+      for (var i = 0; i < numOfRequests; i++) {
+        var isActive = Math.random() < 0.5;
+
+        var id = "request" + i;
+        if (isActive) {
+          if (requestStatus == null || requestStatus == Backend.Request.STATUS_ACTIVE) {
+            requestIds.all.push(id);
+            requestIds.active.push(id);
+          }
+        } else {
+          if (requestStatus == null || requestStatus == Backend.Request.STATUS_INACTIVE) {
+            requestIds.all.push(id);
+            requestIds.inactive.push(id);
+          }
+        }
+      }
+
+      Backend.Cache.setOutgoingRequestIds(requestIds);
+    }.bind(this), 1000);
+    
     return null;
   }
 }
 
 Backend.getIncomingRequestIds = function(requestStatus) {
-  if (this._cache.incomingRequestIds != null) {
-    var requestIds = [];
-
-    if (requestStatus == Backend.Request.STATUS_ACTIVE || requestStatus == null) {
-      for (var index in this._cache.incomingRequestIds.active) {
-        requestIds.push(this._cache.incomingRequestIds.active[index]);
-      }
+  if (Backend.Cache.isIncomingRequestIdsInUpdate()) {
+    return null;
+  }
+  
+  var requestIds = Backend.Cache.getIncomingRequestIds();
+  
+  var result = null;
+  if (requestIds != null) {
+    if (requestStatus == null) {
+      result = requestIds.all;
+    } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+      result = requestIds.active;
+    } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+      result = requestIds.inactive;
+    } else {
+      throw "Invalid request status requested: " + requestStatus;
     }
-    if (requestStatus == Backend.Request.STATUS_INACTIVE || requestStatus == null) {
-      for (var index in this._cache.incomingRequestIds.inactive) {
-        requestIds.push(this._cache.incomingRequestIds.inactive[index]);
-      }
-    }
-    
-    return requestIds;
+  }
+  
+  if (result != null) {
+    return result;
   } else {
-    Backend._pullIncomingRequestIds();
+    Backend.Cache.markIncomingRequestIdsInUpdate();
+
+    setTimeout(function() {
+      var requestIds = {};
+
+      requestIds.all = [];
+      if (requestStatus == null) {
+        requestIds.active = [];
+        requestIds.inactive = [];
+      } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+        requestIds.active = [];
+      } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+        requestIds.inactive = [];
+      }
+
+      var numOfRequests = Math.random() * 100;
+      for (var i = 0; i < numOfRequests; i++) {
+        var isActive = Math.random() < 0.5;
+
+        var id = "request" + (100 + i);
+        if (isActive) {
+          if (requestStatus == null || requestStatus == Backend.Request.STATUS_ACTIVE) {
+            requestIds.all.push(id);
+            requestIds.active.push(id);
+          }
+        } else {
+          if (requestStatus == null || requestStatus == Backend.Request.STATUS_INACTIVE) {
+            requestIds.all.push(id);
+            requestIds.inactive.push(id);
+          }
+        }
+      }
+
+      Backend.Cache.setIncomingRequestIds(requestIds);
+    }.bind(this), 1000);
+
     return null;
   }
 }
 
 Backend.removeIncomingRequest = function(requestId, callback) {
+  Backend.Cache.markIncomingRequestIdsInUpdate();
+  
   setTimeout(function() {
-    for (var index in this._cache.incomingRequestIds.active) {
-      if (this._cache.incomingRequestIds.active[index] == requestId) {
-        this._cache.incomingRequestIds.active.splice(index, 1);
-        
-        if (callback != null) {
-          callback.success();
+    var removeFromArray = function(arr, element) {
+      for (var index in arr) {
+        if (arr[index] == element) {
+          arr.splice(index, 1);
+          break;
         }
-        
-        this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED});
-        
-        break;
       }
+      
+      return arr;
+    }
+    
+    var requestIds = Backend.Cache.getIncomingRequestIds();
+    requestIds.all = removeFromArray(requestId.all, requestId);
+    requestIds.active = removeFromArray(requestId.active, requestId);
+    requestIds.inactive = removeFromArray(requestId.inactive, requestId);
+    
+    Backend.Cache.setIncomingRequestIds(requestIds);
+
+    if (callback != null) {
+      callback.success();
     }
   }.bind(this), 1000);
 }
 
-
-
-
 Backend.getRequest = function(requestId) {
-  if (this._cache.requests != null) {
-    var request = this._cache.requests[requestId];
-    if (request != null) {
-      return request;
-    }
+  if (Backend.Cache.isRequestInUpdate(requestId)) {
+    return null;
   }
   
-  Backend._pullRequest(requestId);
+  var request = Backend.Cache.getRequest(requestId);
+  
+  if (request != null) {
+    return request;
+  }
+  
+  Backend.Cache.markRequestInUpdate(requestId);
+  setTimeout(function() {
+    Backend.Cache.setRequest(requestId, this._createDummyRequest(requestId));
+  }.bind(this), 1000);
+  
   return null;
 }
 
 Backend.getResponse = function(requestId, responseId) {
-  if (this._cache.responses != null) {
-    var response = this._cache.responses[responseId];
-    
-    if (response != null) {
-      return response;
-    }
+  if (Backend.Cache.isResponseInUpdate(requestId, responseId)) {
+    return null;
+  }
+
+  var response = Backend.Cache.getResponse(requestId, responseId);
+  
+  if (response != null) {
+    return response;
   }
   
-  Backend._pullResponse(requestId, responseId);
+  
+  Backend.Cache.markResponseInUpdate(requestId, responseId);
+  setTimeout(function() {
+    Backend.Cache.setResponse(requestId, responseId, this._createDummyResponse(requestId, responseId));
+  }.bind(this), 1000);
+
   return null;
 }
 
 Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
+  Backend.Cache.markResponseInUpdate(requestId, responseId);
+  
   setTimeout(function() {
-    var existingResponse = this._cache.responses[responseId];
+    var existingResponse = Backend.Cache.getResponse(requestId, responseId);
     for (var key in response) {
-      if (key == "status" && existingResponse[key] != response[key] && response.status == Backend.Response.STATUS_READ) {
-        for (var index in this._cache.incomingResponseIds[requestId].unviewed) {
-          if (this._cache.incomingResponseIds[requestId].unviewed[index] == responseId) {
-            this._cache.incomingResponseIds[requestId].unviewed.splice(index, 1);
-            this._cache.incomingResponseIds[requestId].viewed.push(responseId);
+      if (key == "status" && existingRequest[key] != response[key] && response.status == Backend.Request.STATUS_INACTIVE) {
+        var allResponseIds = Backend.Cache.getIncomingResponseIds(requestId);
+        for (var index in allResponseIds.active) {
+          if (allResponseIds.active[index] == responseId) {
+            allResponseIds.active.splice(index, 1);
+            allResponseIds.inactive.push(requestId);
+            Backend.Cache.setIncomingResponseIds(requestId, allResponseIds);
             break;
           }
         }
       }
-      existingResponse[key] = response[key];
+      
+      existingRequest[key] = request[key];
     }
 
+    Backend.Cache.setResponse(requestId, responseId, existingResponse);
+    
     if (transactionCallback != null) {
       transactionCallback.success();
     }
-
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
   }.bind(this), 1000);
 }
 
-Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
-  if (this._contactInfo[responseId] != null) {
-    if (transactionCallback != null) {
-      transactionCallback.success(this._contactInfo[responseId]);
-    }
-    
-    return this._contactInfo[responseId];
-  }
-  
-  setTimeout(function() {
-    var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
-    
-    var contactIndex = Math.round(Math.random() * (contacts.length - 1));
-    
-    var contactInfo = contacts[contactIndex];
-    
-    this._contactInfo[responseId] = contactInfo;
-    
-    
-    var callback = null;
-    if (transactionCallback != null) {
-      callback = {
-        success: function() {
-          transactionCallback.success(contactInfo);        
-        },
-        failure: function() {
-          transactionCallback.failure()
-        },
-        error: function() {
-          transactionCallback.error();
-        }
-      };
-    }
-    
-    Backend.updateResponse(requestId, responseId, {contact_info_status: Backend.Response.CONTACT_INFO_STATUS_PROVIDED}, callback);
-  }.bind(this), 2000);
-  
-  return null;
-}
-
-
 
 Backend.getIncomingResponseIds = function(requestId, responseStatus) {
-  if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
-    var responseIds = [];
+  if (Backend.Cache.isIncomingResponseIdsInUpdate(requestId)) {
+    return null;
+  }
 
-    if (responseStatus == Backend.Response.STATUS_READ) {
-      responseIds = this._cache.incomingResponseIds[requestId].viewed.slice(0);
+  var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+  
+  var result = null;
+  if (responseIds != null) {
+    if (responseStatus == null) {
+      result = responseIds.all;
+    } else if (responseStatus == Backend.Response.STATUS_READ) {
+      result = responseIds.viewed;
     } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
-      responseIds = this._cache.incomingResponseIds[requestId].unviewed.slice(0);
+      result = responseIds.unviewed;
     } else {
-      responseIds = this._cache.incomingResponseIds[requestId].unviewed.slice(0);
-      for (var index in this._cache.incomingResponseIds[requestId].viewed) {
-        responseIds.push(this._cache.incomingResponseIds[requestId].viewed[index]);
-      }
+      throw "Invalid response status requested: " + responseStatus;
     }
+  }
 
-    return responseIds;
+  if (result != null) {
+    return result;
   } else {
-    Backend._pullIncomingResponseIds(requestId);
+    Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
+
+    setTimeout(function() {
+      var responseIds = {};
+
+      responseIds.all = [];
+      if (responseStatus == null) {
+        responseIds.unviewed = [];
+        responseIds.viewed = [];
+      } else if (responseStatus == Backend.Response.STATUS_READ) {
+        responseIds.viewed = [];
+      } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
+        responseIds.unviewed = [];
+      }
+
+      var numOfResponses = Math.random() * 100;
+      for (var i = 0; i < numOfResponses; i++) {
+        var responseId = requestId + "-response" + i;
+        if (Math.random() < 0.95) {
+          if (responseStatus == null || responseStatus == Backend.Response.STATUS_READ) {
+            responseIds.all.push(responseId);
+            responseIds.viewed.push(responseId);
+          }
+        } else {
+          if (responseStatus == null || responseStatus == Backend.Response.STATUS_UNREAD) {
+            responseIds.all.push(responseId);
+            responseIds.unviewed.push(responseId);
+          }
+        }
+      }
+
+      Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+    }.bind(this), 1000);
+    
     return null;
   }
 }
 
 Backend.removeIncomingResponse = function(requestId, responseId, callback) {
+  Backend.Cache.markIncomingResponseIdsInUpdate();
+  
   setTimeout(function() {
-    var response = Backend.getResponse(requestId, responseId);
-    if (response != null) {
-      var responseList;
-      if (response.status == Backend.Response.STATUS_READ) {
-        responseList = this._cache.incomingResponseIds[requestId].viewed;
-      } else if (response.status == Backend.Response.STATUS_UNREAD) {
-        responseList = this._cache.incomingResponseIds[requestId].unviewed;
-      } else {
-        throw "Incorrect situation";
-      }
-      
-      for (var index in responseList) {
-        if (responseList[index] == responseId) {
-          responseList.splice(index, 1);
-          
-          if (callback != null) {
-            callback.success();
-          }
-          
-          this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
+    var removeFromArray = function(arr, element) {
+      for (var index in arr) {
+        if (arr[index] == element) {
+          arr.splice(index, 1);
           break;
         }
       }
+      
+      return arr;
+    }
+    
+    var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+    responseIds.all = removeFromArray(responseIds.all, responseId);
+    responseIds.viewed = removeFromArray(responseIds.viewed, responseId);
+    responseIds.unviewed = removeFromArray(responseIds.unviewed, responseId);
+    
+    Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+
+    if (callback != null) {
+      callback.success();
     }
   }.bind(this), 1000);
 }
 
 
-
 Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
-  if (this._cache.outgoingResponseIds != null && this._cache.outgoingResponseIds[requestId] != null) {
-    var responseIds = [];
-  
-    if (responseStatus == Backend.Response.STATUS_READ) {
-      responseIds = this._cache.outgoingResponseIds[requestId].viewed.slice(0);
-    } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
-      responseIds = this._cache.outgoingResponseIds[requestId].unviewed.slice(0);
-    } else {
-      responseIds = this._cache.outgoingResponseIds[requestId].unviewed.slice(0);
-      for (var index in this._cache.outgoingResponseIds[requestId].viewed) {
-        responseIds.push(this._cache.outgoingResponseIds[requestId].viewed[index]);
-      }
-    }
+  if (Backend.Cache.isOutgoingResponseIdsInUpdate(requestId)) {
+    return null;
+  }
 
-    return responseIds;
+  var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
+  
+  var result = null;
+  if (responseIds != null) {
+    if (responseStatus == null) {
+      result = responseIds.all;
+    } else if (responseStatus == Backend.Response.STATUS_READ) {
+      result = responseIds.viewed;
+    } else if (responseStatus == Backend.Request.STATUS_UNREAD) {
+      result = responseIds.unviewed;
+    } else {
+      throw "Invalid response status requested: " + responseStatus;
+    }
+  }
+  
+  if (result != null) {
+    return result;
   } else {
-    Backend._pullOutgoingResponseIds(requestId);
+    Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
+
+    setTimeout(function() {
+      var responseIds = {};
+
+      responseIds.all = [];
+      if (responseStatus == null) {
+        responseIds.unviewed = [];
+        responseIds.viewed = [];
+      } else if (responseStatus == Backend.Response.STATUS_READ) {
+        responseIds.viewed = [];
+      } else if (responseStatus == Backend.Reponse.STATUS_UNREAD) {
+        responseIds.unviewed = [];
+      }
+
+      var numOfResponses = Math.random() * 10;
+      for (var i = 0; i < numOfResponses; i++) {
+        var responseId = requestId + "-response" + (100 + i);
+        if (Math.random() < 0.95) {
+          if (responseStatus == null || responseStatus == Backend.Response.STATUS_READ) {
+            responseIds.all.push(responseId);
+            responseIds.viewed.push(responseId);
+          }
+        } else {
+          if (responseStatus == null || responseStatus == Backend.Response.STATUS_UNREAD) {
+            responseIds.all.push(responseId);
+            responseIds.unviewed.push(responseId);
+          }
+        }
+      }
+
+      Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
+    }.bind(this), 1000);
+    
     return null;
   }
 }
 
 
-
-Backend.CacheChangeEvent = {type: null, requestId: null, responseId: null};
-Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED = "outgoing_requests_changed";
-Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED = "incoming_requests_changed";
-Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED = "request_changed";
-Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED = "response_changed";
-Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED = "outgoing_responses_changed";
-Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED = "incoming_responses_changed";
-
-
-Backend.addCacheChangeListener = function(listener) {
-  if (listener != null) {
-    this._cacheChangeListeners.push(listener);
-  }
-}
-
-Backend.removeCacheChangeListener = function(listener) {
-  for (var index in this._cacheChangeListeners) {
-    if (this._cacheChangeListeners[index] == listener) {
-      this._cacheChangeListeners.splice(index, 1);
-    }
-  }
-}
-
-
-
-Backend._pullOutgoingRequestIds = function() {
-  if (this._cache.outgoingRequestIds_pulling != null) {
-    return;
-  }
-  this._cache.outgoingRequestIds_pulling = "";
+Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
+  var response = Backend.Cache.getResponse(requestId, responseId);
   
-  setTimeout(function() {
-    this._cache.outgoingRequestIds = {active: [], inactive: []};
+  if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_PROVIDED) {
+    return response.contact_info;
+  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
+    return null;
+  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE) {
+    Backend.Cache.markContactInfoInUpdate(requestId, responseId);
 
-    var numOfRequests = Math.random() * 100;
-    for (var i = 0; i < numOfRequests; i++) {
-      var isActive = Math.random() < 0.5;
-      
-      var id = "request" + i;
-      if (isActive) {
-        this._cache.outgoingRequestIds.active.push(id);
-      } else {
-        this._cache.outgoingRequestIds.inactive.push(id);
-      }
-    }
+    setTimeout(function() {
+      var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
 
-    this._cache.outgoingRequestIds_pulling = null;
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED});
-  }.bind(this), 1000);
-}
+      var contactIndex = Math.round(Math.random() * (contacts.length - 1));
+      var contactInfo = contacts[contactIndex];
 
-Backend._pullIncomingRequestIds = function() {
-  if (this._cache.incomingRequestIds_pulling != null) {
-    return;
+      Backend.Cache.setContactInfo(requestId, responseId, contactInfo);
+    }.bind(this), 2000);
   }
-  this._cache.incomingRequestIds_pulling = "";
   
-  setTimeout(function() {
-    this._cache.incomingRequestIds = {active: [], inactive: []};
-
-    var numOfRequests = Math.random() * 10;
-    for (var i = 0; i < numOfRequests; i++) {
-      var isActive = Math.random() < 0.5;
-      
-      var id = "request" + (100 + i);
-      if (isActive) {
-        this._cache.incomingRequestIds.active.push(id);
-      } else {
-        this._cache.incomingRequestIds.inactive.push(id);
-      }
-    }
-
-    this._cache.incomingRequestIds_pulling = null;
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED});
-  }.bind(this), 1000);
-}
-
-Backend._pullIncomingResponseIds = function(requestId) {
-  if (this._cache.incomingResponseIds_pulling != null) {
-    if (this._cache.incomingResponseIds_pulling[requestId] != null) {
-      return;
-    }
-  } else {
-    this._cache.incomingResponseIds_pulling = {};
-  }
-  this._cache.incomingResponseIds_pulling[requestId] = "";
-
-  setTimeout(function() {
-    if (this._cache.incomingResponseIds == null) {
-      this._cache.incomingResponseIds = {};
-    }
-
-    this._cache.incomingResponseIds[requestId] = {viewed: [], unviewed: []};
-    var numOfResponses = Math.random() * 100;
-    for (var i = 0; i < numOfResponses; i++) {
-      var responseId = requestId + "-response" + i;
-      if (Math.random() < 0.95) {
-        this._cache.incomingResponseIds[requestId].viewed.push(responseId);
-      } else {
-        this._cache.incomingResponseIds[requestId].unviewed.push(responseId);
-      }
-    }
-
-    this._cache.incomingResponseIds_pulling[requestId] = null;
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId});
-  }.bind(this), 1000);
-}
-
-Backend._pullOutgoingResponseIds = function(requestId) {
-  if (this._cache.outgoingResponseIds_pulling != null) {
-    if (this._cache.outgoingResponseIds_pulling[requestId] != null) {
-      return;
-    }
-  } else {
-    this._cache.outgoingResponseIds_pulling = {};
-  }
-  this._cache.outgoingResponseIds_pulling[requestId] = "";
-
-  setTimeout(function() {
-    if (this._cache.outgoingResponseIds == null) {
-      this._cache.outgoingResponseIds = {};
-    }
-
-    this._cache.outgoingResponseIds[requestId] = {viewed: [], unviewed: []};
-    var numOfResponses = Math.random() * 10;
-    if (numOfResponses > 4) {
-      numOfResponses = 0;
-    }
-    for (var i = 0; i < numOfResponses; i++) {
-      var responseId = requestId + "-response" + (100 + i);
-      if (Math.random() < 0.5) {
-        this._cache.outgoingResponseIds[requestId].viewed.push(responseId);
-      } else {
-        this._cache.outgoingResponseIds[requestId].unviewed.push(responseId);
-      }
-    }
-
-    this._cache.outgoingResponseIds_pulling[requestId] = null;
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId});
-  }.bind(this), 1000);
-}
-
-Backend._pullRequest = function(requestId) {
-  if (this._cache.requests_pulling != null) {
-    if (this._cache.requests_pulling[requestId] != null) {
-      return;
-    }
-  } else {
-    this._cache.requests_pulling = {};
-  }
-  this._cache.requests_pulling[requestId] = "";
-  
-  setTimeout(function() {
-    if (this._cache.requests == null) {
-      this._cache.requests = {};
-    }
-
-    this._cache.requests[requestId] = this._createDummyRequest(requestId);
-
-    this._cache.requests_pulling[requestId] = null;
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId});
-  }.bind(this), 1000);
-}
-
-Backend._pullResponse = function(requestId, responseId) {
-  if (this._cache.responses_pulling != null) {
-    if (this._cache.responses_pulling[responseId] != null) {
-      return;
-    }
-  } else {
-    this._cache.responses_pulling = {};
-  }
-  this._cache.responses_pulling[responseId] = "";
-
-  setTimeout(function() {
-    if (this._cache.responses == null) {
-      this._cache.responses = {};
-    }
-
-    this._cache.responses[responseId] = this._createDummyResponse(requestId, responseId);
-
-    this._cache.responses_pulling[responseId] = null;
-    this._notifyCacheUpdateListeners({type: Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId});
-  }.bind(this), 1000);
+  return null;
 }
 
 
-Backend._notifyCacheUpdateListeners = function(event) {
-  for (var index in this._cacheChangeListeners) {
-    this._cacheChangeListeners[index](event);
-  }
-}
 
 
 
@@ -852,17 +831,20 @@ Backend._createDummyRequest = function(requestId) {
   var numOfExtraLines = Math.round(Math.random() * 5);
 
   var status = Backend.Request.STATUS_INACTIVE;
-  if (this._cache.incomingRequestIds != null) {
-    for (var index in this._cache.incomingRequestIds.active) {
-      if (this._cache.incomingRequestIds.active[index] == requestId) {
+  var requestIds = Backend.Cache.getIncomingRequestIds();
+  if (requestIds != null) {
+    for (var index in requestIds.active) {
+      if (requestIds.active[index] == requestId) {
         status = Backend.Request.STATUS_ACTIVE;
         break;
       }
     }
   }
-  if (this._cache.outgoingRequestIds != null) {
-    for (var index in this._cache.outgoingRequestIds.active) {
-      if (this._cache.outgoingRequestIds.active[index] == requestId) {
+  
+  requestIds = Backend.Cache.getOutgoingRequestIds();
+  if (requestIds != null) {
+    for (var index in requestIds.active) {
+      if (requestIds.active[index] == requestId) {
         status = Backend.Request.STATUS_ACTIVE;
         break;
       }
@@ -897,14 +879,12 @@ Backend._createDummyResponse = function(requestId, responseId) {
   var numOfExtraLines = Math.round(Math.random() * 5);
   var starRating = Math.round(Math.random() * 5);
   
-  var responses = null;
-  if (this._cache.incomingResponseIds != null && this._cache.incomingResponseIds[requestId] != null) {
-    responses = this._cache.incomingResponseIds[requestId];
-  } else {
-    responses = this._cache.outgoingResponseIds[requestId];
+  var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+  if (responseIds == null) {
+    responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
   }
-  for (var index in responses.unviewed) {
-    if (responses.unviewed[index] == responseId) {
+  for (var index in responseIds.unviewed) {
+    if (responseIds.unviewed[index] == responseId) {
       statusUnread = true;
       break;
     }
@@ -938,6 +918,224 @@ Backend._createDummyResponse = function(requestId, responseId) {
 }
 
 
+
+
+// Cache managememnt
+
+Backend.CacheChangeEvent = {type: null, requestId: null, responseId: null};
+Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED = "outgoing_requests_changed";
+Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED = "incoming_requests_changed";
+Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED = "request_changed";
+Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED = "response_changed";
+Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED = "outgoing_responses_changed";
+Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED = "incoming_responses_changed";
+Backend.CacheChangeEvent.TYPE_UPDATE_STARTED = "update_started";
+Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED = "update_finished";
+
+
+Backend.addCacheChangeListener = function(listener) {
+  Backend.Cache.addCacheChangeListener(listener);
+}
+
+Backend.removeCacheChangeListener = function(listener) {
+  Backend.Cache.removeCacheChangeListener(listener);
+}
+
+
+Backend.Cache = {
+  cacheChangeListeners: [],
+  
+  outgoingRequestIdsInProgress: false,
+  outgoingRequestIds: null,
+  incomingRequestIdsInProgress: false,
+  incomingRequestIds: null,
+  requestsInProgress: [],
+  requests: [],
+  incomingResponseIdsInProgress: [],
+  incomingResponseIds: [],
+  outgoingResponseIdsInProgress: [],
+  outgoingResponseIds: [],
+  responsesInProgress: [],
+  responses: [],
+  contactInfosInProgress: [],
+  updateInProgressNotified: false
+};
+
+Backend.Cache.reset = function() {
+  this.cacheChangeListeners = [];
+  
+  this.outgoingRequestIdsInProgress = false;
+  this.outgoingRequestIds = null;
+  this.incomingRequestIdsInProgress = false;
+  this.incomingRequestIds = null;
+  this.requestsInProgress = [];
+  this.requests = [];
+  this.incomingResponseIdsInProgress = [],
+  this.incomingResponseIds = [];
+  this.outgoingResponseIdsInProgress = [];
+  this.outgoingResponseIds = [];
+  this.responsesInProgress = [];
+  this.responses = [];
+  this.contactInfosInProgress = [];
+  this.updateInProgressNotified = false;
+}
+
+Backend.Cache.addCacheChangeListener = function(listener) {
+  if (listener != null) {
+    this.cacheChangeListeners.push(listener);
+  }
+}
+
+Backend.Cache.removeCacheChangeListener = function(listener) {
+  for (var index in this.cacheChangeListeners) {
+    if (this.cacheChangeListeners[index] == listener) {
+      this.cacheChangeListeners.splice(index, 1);
+    }
+  }
+}
+
+Backend.Cache.markOutgoingRequestIdsInUpdate = function() {
+  this.outgoingRequestIdsInProgress = true;
+  this.fireUpdateEvent();
+}
+Backend.Cache.isOutgoingRequestIdsInUpdate = function() {
+  return this.outgoingRequestIdsInProgress;
+}
+Backend.Cache.setOutgoingRequestIds = function(requestIds) {
+  this.outgoingRequestIds = requestIds;
+  this.outgoingRequestIdsInProgress = false;
+
+  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, null, null);
+  this.fireUpdateEvent();
+}
+Backend.Cache.getOutgoingRequestIds = function() {
+  return this.outgoingRequestIdsInProgress == false ? this.outgoingRequestIds : null;
+}
+Backend.Cache.markIncomingRequestIdsInUpdate = function() {
+  this.incomingRequestIdsInProgress = true;
+  this.fireUpdateEvent();
+}
+Backend.Cache.isIncomingRequestIdsInUpdate = function() {
+  return this.incomingRequestIdsInProgress;
+}
+Backend.Cache.setIncomingRequestIds = function(requestIds) {
+  this.incomingRequestIds = requestIds;
+  this.incomingRequestIdsInProgress = false;
+            
+  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, null, null);
+  this.fireUpdateEvent();
+}
+Backend.Cache.getIncomingRequestIds = function() {
+  return this.incomingRequestIdsInProgress == false ? this.incomingRequestIds : null;
+}
+Backend.Cache.markRequestInUpdate = function(requestId) {
+  this.requestsInProgress[requestId] = true;
+  this.fireUpdateEvent();
+}
+Backend.Cache.isRequestInUpdate = function(requestId) {
+  return this.requestsInProgress[requestId] != null;
+}
+Backend.Cache.setRequest = function(requestId, request) {
+  this.requests[requestId] = request;
+  delete this.requestsInProgress[requestId];
+  
+  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId, null);
+  this.fireUpdateEvent();
+}
+Backend.Cache.getRequest = function(requestId) {
+  return this.isRequestInUpdate(requestId) ? null : this.requests[requestId];
+}
+Backend.Cache.markIncomingResponseIdsInUpdate = function(requestId) {
+  return this.incomingResponseIdsInProgress[requestId] = true;
+  this.fireUpdateEvent();
+}
+Backend.Cache.isIncomingResponseIdsInUpdate= function(requestId) {
+  return this.incomingResponseIdsInProgress[requestId] != null;
+}
+Backend.Cache.setIncomingResponseIds = function(requestId, responseIds) {
+  this.incomingResponseIds[requestId] = responseIds;
+  delete this.incomingResponseIdsInProgress[requestId];
+  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId, null);
+  this.fireUpdateEvent();
+}
+Backend.Cache.getIncomingResponseIds = function(requestId) {
+  return this.isIncomingResponseIdsInUpdate(requestId) ? null : this.incomingResponseIds[requestId];
+}
+Backend.Cache.markOutgoingResponseIdsInUpdate = function(requestId) {
+  this.outgoingResponseIdsInProgress[requestId] = true;
+  this.fireUpdateEvent();
+}
+Backend.Cache.isOutgoingResponseIdsInUpdate = function(requestId) {
+  return this.outgoingResponseIdsInProgress[requestId] != null;
+}
+Backend.Cache.setOutgoingResponseIds = function(requestId, responseIds) {
+  this.outgoingResponseIds[requestId] = responseIds;
+  delete this.outgoingResponseIdsInProgress[requestId];
+  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId, null);
+  this.fireUpdateEvent();
+}
+Backend.Cache.getOutgoingResponseIds = function(requestId) {
+  return this.isOutgoingResponseIdsInUpdate(requestId) ? null : this.outgoingResponseIds[requestId];
+}
+Backend.Cache.markResponseInUpdate = function(requestId, responseId) {
+  this.responsesInProgress[responseId] = true;
+  this.fireUpdateEvent();
+}
+Backend.Cache.isResponseInUpdate = function(requestId, responseId) {
+  return this.responsesInProgress[responseId] != null;
+}
+Backend.Cache.setResponse = function(requestId, responseId, response) {
+  this.responses[responseId] = response;
+  delete this.responsesInProgress[responseId];
+  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId, responseId);
+  this.fireUpdateEvent();
+}
+Backend.Cache.getResponse = function(requestId, responseId) {
+  return this.isResponseInUpdate(requestId, responseId) ? null : this.responses[responseId];
+}
+Backend.Cache.markContactInfoInUpdate = function(requestId, responseId) {
+  this.contactInfosInProgress[responseId] = true;
+  this.fireUpdateEvent();
+}
+Backend.Cache.isContactInfoInUpdate = function(requestId, responseId) {
+  return this.contactInfosInProgress[responseId] != null;
+}
+Backend.Cache.setContactInfo = function(requestId, responseId, contactInfo) {
+  var response = getResponse(requestId, responseId);
+  response.contactInfo = contactInfo;
+  response.contactInfoStatus = ResponseObject.CONTACT_INFO_STATUS_PROVIDED;
+  delete this.contactInfosInProgress[responseId];
+  this.setResponse(requestId, responseId, response);
+}
+
+Backend.Cache.isInUpdate = function() {
+  return this.outgoingRequestIdsInProgress == true
+         || this.incomingResponseIdsInProgress.length > 0
+         || this.incomingRequestIdsInProgress == true
+         || this.outgoingResponseIdsInProgress.length > 0
+         || this.requestsInProgress.length > 0
+         || this.responsesInProgress.length > 0
+         || this.contactInfosInProgress.length > 0;
+}
+
+Backend.Cache.fireUpdateEvent = function() {
+  var isCurrentlyInUpdate = this.isInUpdate();
+
+  if (this.updateInProgressNotified && isCurrentlyInUpdate) {
+    this.updateInProgressNotified = true;
+    this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_UPDATE_STARTED, null, null);
+  } else if (this.updateInProgressNotified && !isCurrentlyInUpdate) {
+    this.updateInProgressNotified = false;
+    this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED, null, null);
+  }
+}
+Backend.Cache.notifyCacheListeners = function(type, requestId, responseId) {
+  var event = {type: type, requestId: requestId, responseId: responseId};
+  
+  for (var index in this.cacheChangeListeners) {
+    this.cacheChangeListeners[index](event);
+  }
+}
 
 
 
