@@ -20,6 +20,11 @@ AbstractPage.prototype.destroy = function() {
   this.onDestroy();
 }
 
+AbstractPage.prototype.reset = function() {
+  this._isDefined = false;
+  UIUtils.get$(this._pageElement).empty();
+}
+
 AbstractPage.prototype.reload = function() {
   this._isDefined = false;
   

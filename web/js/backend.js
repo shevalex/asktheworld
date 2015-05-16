@@ -1152,8 +1152,7 @@ Backend.Cache.isInUpdate = function() {
 
 Backend.Cache.fireUpdateEvent = function() {
   var isCurrentlyInUpdate = this.isInUpdate();
-
-  if (this.updateInProgressNotified && isCurrentlyInUpdate) {
+  if (!this.updateInProgressNotified && isCurrentlyInUpdate) {
     this.updateInProgressNotified = true;
     this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_UPDATE_STARTED, null, null);
   } else if (this.updateInProgressNotified && !isCurrentlyInUpdate) {

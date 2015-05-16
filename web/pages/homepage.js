@@ -1,5 +1,5 @@
-HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
-  AbstractPage.call(this, HomePage.name);
+HomePage = ClassUtils.defineClass(AbstractDataPage, function HomePage() {
+  AbstractDataPage.call(this, HomePage.name);
 
   
   this._outgoingRequestsView;
@@ -15,6 +15,8 @@ HomePage = ClassUtils.defineClass(AbstractPage, function HomePage() {
 
 
 HomePage.prototype.definePageContent = function(root) {
+  AbstractDataPage.prototype.definePageContent.call(this, root);
+  
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
 
   var incomingRequestPanel = UIUtils.appendBlock(contentPanel, "IncomingRequestsPanel");
@@ -71,6 +73,8 @@ HomePage.prototype.definePageContent = function(root) {
 }
 
 HomePage.prototype.onShow = function(root) {
+  AbstractDataPage.prototype.onShow.call(this, root);
+  
   this._incomingRequestsLabel.innerHTML = this.getLocale().UpdatingIncomingRequestsTitle;
   this._noIncomingRequestsNote.style.display = "none";
   this._updateIncomingRequests();
@@ -83,6 +87,8 @@ HomePage.prototype.onShow = function(root) {
 }
 
 HomePage.prototype.onHide = function() {
+  AbstractDataPage.prototype.onHide.call(this);
+  
   Backend.removeCacheChangeListener(this._cacheChangeListener);
 }
 
