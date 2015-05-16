@@ -447,7 +447,11 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
     Backend.Cache.markOutgoingRequestIdsInUpdate();
 
     setTimeout(function() {
-      var requestIds = {};
+      var requestIds = Backend.Cache.getOutgoingRequestIds();
+      if (requestIds == null) {
+        requestIds = {};
+      }
+      
 
       if (requestIds.all == null) {
         requestIds.all = [];
@@ -520,7 +524,10 @@ Backend.getIncomingRequestIds = function(requestStatus) {
     Backend.Cache.markIncomingRequestIdsInUpdate();
 
     setTimeout(function() {
-      var requestIds = {};
+      var requestIds = Backend.Cache.getIncomingRequestIds();
+      if (requestIds == null) {
+        requestIds = {};
+      }
 
       if (requestIds.all == null) {
         requestIds.all = [];
@@ -670,7 +677,6 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   }
 
   var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
-  
   var result = null;
   if (responseIds != null) {
     if (responseStatus == null) {
@@ -690,7 +696,10 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
     Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
 
     setTimeout(function() {
-      var responseIds = {};
+      var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+      if (responseIds == null) {
+        responseIds = {};
+      }
 
       if (responseIds.all == null) {
         responseIds.all = [];
@@ -790,7 +799,10 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
     Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
 
     setTimeout(function() {
-      var responseIds = {};
+      var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
+      if (responseIds == null) {
+        responseIds = {};
+      }
 
       if (responseIds.all == null) {
         responseIds.all = [];
@@ -1049,7 +1061,7 @@ Backend.Cache.setOutgoingRequestIds = function(requestIds) {
   this.fireUpdateEvent();
 }
 Backend.Cache.getOutgoingRequestIds = function() {
-  return this.outgoingRequestIdsInProgress == false ? this.outgoingRequestIds : null;
+  return this.outgoingRequestIds;
 }
 Backend.Cache.markIncomingRequestIdsInUpdate = function() {
   this.incomingRequestIdsInProgress = true;
@@ -1066,7 +1078,7 @@ Backend.Cache.setIncomingRequestIds = function(requestIds) {
   this.fireUpdateEvent();
 }
 Backend.Cache.getIncomingRequestIds = function() {
-  return this.incomingRequestIdsInProgress == false ? this.incomingRequestIds : null;
+  return this.incomingRequestIds;
 }
 Backend.Cache.markRequestInUpdate = function(requestId) {
   this.requestsInProgress[requestId] = true;
@@ -1083,7 +1095,7 @@ Backend.Cache.setRequest = function(requestId, request) {
   this.fireUpdateEvent();
 }
 Backend.Cache.getRequest = function(requestId) {
-  return this.isRequestInUpdate(requestId) ? null : this.requests[requestId];
+  return this.requests[requestId];
 }
 Backend.Cache.markIncomingResponseIdsInUpdate = function(requestId) {
   return this.incomingResponseIdsInProgress[requestId] = true;
@@ -1095,11 +1107,13 @@ Backend.Cache.isIncomingResponseIdsInUpdate= function(requestId) {
 Backend.Cache.setIncomingResponseIds = function(requestId, responseIds) {
   this.incomingResponseIds[requestId] = responseIds;
   delete this.incomingResponseIdsInProgress[requestId];
+
   this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId, null);
   this.fireUpdateEvent();
 }
+
 Backend.Cache.getIncomingResponseIds = function(requestId) {
-  return this.isIncomingResponseIdsInUpdate(requestId) ? null : this.incomingResponseIds[requestId];
+  return this.incomingResponseIds[requestId];
 }
 Backend.Cache.markOutgoingResponseIdsInUpdate = function(requestId) {
   this.outgoingResponseIdsInProgress[requestId] = true;
@@ -1115,7 +1129,7 @@ Backend.Cache.setOutgoingResponseIds = function(requestId, responseIds) {
   this.fireUpdateEvent();
 }
 Backend.Cache.getOutgoingResponseIds = function(requestId) {
-  return this.isOutgoingResponseIdsInUpdate(requestId) ? null : this.outgoingResponseIds[requestId];
+  return this.outgoingResponseIds[requestId];
 }
 Backend.Cache.markResponseInUpdate = function(requestId, responseId) {
   this.responsesInProgress[responseId] = true;
@@ -1131,7 +1145,7 @@ Backend.Cache.setResponse = function(requestId, responseId, response) {
   this.fireUpdateEvent();
 }
 Backend.Cache.getResponse = function(requestId, responseId) {
-  return this.isResponseInUpdate(requestId, responseId) ? null : this.responses[responseId];
+  return this.responses[responseId];
 }
 Backend.Cache.markContactInfoInUpdate = function(requestId, responseId) {
   this.contactInfosInProgress[responseId] = true;
