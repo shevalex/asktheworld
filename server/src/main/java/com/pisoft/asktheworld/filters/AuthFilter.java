@@ -56,6 +56,16 @@ public class AuthFilter extends GenericFilterBean {
             // validate the token
             String cr[] = token.split(":");
             if (cr.length > 1) System.out.println("User "+cr[0] +"  Pass: "+cr[1]);
+//TODO: Create authService class to check auth for different resources. 
+//something like this
+//            public Person authenticatePerson(String username, String password) throws AuthenticationException {
+//            List validUsers = this.getHibernateTemplate().findByNamedParam(
+//            "select people from Person people "
+//            + "where people.username = :username "
+//            + "and people.password = :password",
+//            new String[] { "username", "password" },
+//            new String[] { username, password });
+            
             if (cr.length > 1 && db.findUser(cr[0]) != null && db.findUser(cr[0]).getPassword().equals(cr[1])) 
             {
             	//User exist in DB and has uses correct password

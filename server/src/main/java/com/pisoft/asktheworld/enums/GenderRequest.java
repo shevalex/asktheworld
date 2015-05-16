@@ -7,19 +7,20 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Gender {
+public enum GenderRequest {
     MALE("male"),
-    FAMALE("famale");
+    FAMALE("famale"),
+    ALL("all");
 
-	private static Map<String, Gender> map = new HashMap<String, Gender>();
+	private static Map<String, GenderRequest> map = new HashMap<String, GenderRequest>();
 	private final String value;
 	static {
-		   for(Gender s : EnumSet.allOf(Gender.class))
+		   for(GenderRequest s : EnumSet.allOf(GenderRequest.class))
             map.put(s.value, s);
 	}
 
 	@JsonCreator
-	public static Gender forValue(String value) {
+	public static GenderRequest forValue(String value) {
 	    return map.get(value);
 	}
 
@@ -28,7 +29,7 @@ public enum Gender {
 		return value;
 	}
     
-    private Gender(String gender) {
+    private GenderRequest(String gender) {
         this.value = gender;
     }
 
