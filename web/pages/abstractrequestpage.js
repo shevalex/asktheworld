@@ -10,7 +10,7 @@ AbstractRequestPage._AbstractObjectItem = ClassUtils.defineClass(Object, functio
   this._baseCssClass = baseCssClass;
   
   this._container = null;
-  
+
   this._cacheChangeListener = this._cacheChangeListener();
 });
 
@@ -389,7 +389,7 @@ AbstractRequestPage._AbstractItemsView.prototype.setObjectIds = function(objectI
       this._objectItems.push(objectItem);
 
       if (this._containerElement != null) {
-        this._objectItems[index].append(this._containerElement);
+        objectItem.append(this._containerElement);
       }
     }
   }

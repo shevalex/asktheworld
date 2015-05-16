@@ -71,7 +71,12 @@ HomePage.prototype.definePageContent = function(root) {
 }
 
 HomePage.prototype.onShow = function(root) {
+  this._incomingRequestsLabel.innerHTML = this.getLocale().UpdatingIncomingRequestsTitle;
+  this._noIncomingRequestsNote.style.display = "none";
   this._updateIncomingRequests();
+  
+  this._outgoingRequestsLabel.innerHTML = this.getLocale().UpdatingOutgoingRequestsTitle;
+  this._noOutgoingRequestsNote.style.display = "none";
   this._updateOutgoingRequests();
   
   Backend.addCacheChangeListener(this._cacheChangeListener);
@@ -85,9 +90,10 @@ HomePage.prototype.onHide = function() {
 HomePage.prototype._updateOutgoingRequests = function() {
   var outgoingRequestIds = this._getOutgoingRequestIds();
   if (outgoingRequestIds == null) {
-    this._outgoingRequestsLabel.innerHTML = this.getLocale().UpdatingOutgoingRequestsTitle;
-    this._noOutgoingRequestsNote.style.display = "none";
-  } else if (outgoingRequestIds.length == 0) {
+    return;
+  }
+    
+  if (outgoingRequestIds.length == 0) {
     this._outgoingRequestsLabel.innerHTML = this.getLocale().NoOutgoingRequestsTitle;
     this._noOutgoingRequestsNote.style.display = "block";
   } else {
@@ -100,9 +106,10 @@ HomePage.prototype._updateOutgoingRequests = function() {
 HomePage.prototype._updateIncomingRequests = function() {
   var incomingRequestIds = this._getIncomingRequestIds();
   if (incomingRequestIds == null) {
-    this._incomingRequestsLabel.innerHTML = this.getLocale().UpdatingIncomingRequestsTitle;
-    this._noIncomingRequestsNote.style.display = "none";
-  } else if (incomingRequestIds.length == 0) {
+    return;
+  }
+  
+  if (incomingRequestIds.length == 0) {
     this._incomingRequestsLabel.innerHTML = this.getLocale().NoIncomingRequestsTitle;
     this._noIncomingRequestsNote.style.display = "block";
   } else {
