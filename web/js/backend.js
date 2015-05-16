@@ -428,7 +428,7 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
   var result = null;
   if (requestIds != null) {
     if (requestStatus == null) {
-      result = requestIds.all;
+      result = requestIds.active != null && requestIds.inactive != null ? requestIds.all : null;
     } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
       result = requestIds.active;
     } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
@@ -473,7 +473,6 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
       var numOfRequests = Math.floor(Math.random() * 50);
       for (var i = 0; i < numOfRequests; i++) {
         var isActive = Math.random() < 0.5;
-
         if (isActive) {
           if (requestStatus == null || requestStatus == Backend.Request.STATUS_ACTIVE) {
             var id = "request" + (50 + i);
@@ -488,7 +487,7 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
           }
         }
       }
-
+      
       Backend.Cache.setOutgoingRequestIds(requestIds);
     }.bind(this), 1000);
     
@@ -502,7 +501,7 @@ Backend.getIncomingRequestIds = function(requestStatus) {
   var result = null;
   if (requestIds != null) {
     if (requestStatus == null) {
-      result = requestIds.all;
+      result = requestIds.active != null && requestIds.inactive != null ? requestIds.all : null;
     } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
       result = requestIds.active;
     } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
@@ -661,7 +660,7 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   var result = null;
   if (responseIds != null) {
     if (responseStatus == null) {
-      result = responseIds.all;
+      result = responseIds.viewed != null && responseIds.unviewed != null ? responseIds.all : null;
     } else if (responseStatus == Backend.Response.STATUS_READ) {
       result = responseIds.viewed;
     } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
@@ -761,7 +760,7 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
   var result = null;
   if (responseIds != null) {
     if (responseStatus == null) {
-      result = responseIds.all;
+      result = responseIds.viewed != null && responseIds.unviewed != null ? responseIds.all : null;
     } else if (responseStatus == Backend.Response.STATUS_READ) {
       result = responseIds.viewed;
     } else if (responseStatus == Backend.Request.STATUS_UNREAD) {
