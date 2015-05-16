@@ -1135,8 +1135,8 @@ Backend.Cache.isContactInfoInUpdate = function(requestId, responseId) {
 }
 Backend.Cache.setContactInfo = function(requestId, responseId, contactInfo) {
   var response = this.getResponse(requestId, responseId);
-  response.contactInfo = contactInfo;
-  response.contactInfoStatus = Backend.Response.CONTACT_INFO_STATUS_PROVIDED;
+  response.contact_info = contactInfo;
+  response.contact_info_status = Backend.Response.CONTACT_INFO_STATUS_PROVIDED;
   delete this.contactInfosInProgress[responseId];
   this.setResponse(requestId, responseId, response);
 }
