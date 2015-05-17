@@ -449,23 +449,30 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
       }
       
 
+      var generateActive = false;
+      var generateInactive = false;
+      
       if (requestIds.all == null) {
         requestIds.all = [];
       }
       if (requestStatus == null) {
         if (requestIds.active == null) {
           requestIds.active = [];
+          generateActive = true;
         }
         if (requestIds.inactive == null) {
           requestIds.inactive = [];
+          generateInactive = true;
         }
       } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
         if (requestIds.active == null) {
           requestIds.active = [];
+          generateActive = true;
         }
       } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
         if (requestIds.inactive == null) {
           requestIds.inactive = [];
+          generateInactive = true;
         }
       }
 
@@ -473,13 +480,13 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
       for (var i = 0; i < numOfRequests; i++) {
         var isActive = Math.random() < 0.5;
         if (isActive) {
-          if (requestStatus == null || requestStatus == Backend.Request.STATUS_ACTIVE) {
+          if (generateActive) {
             var id = "request" + (50 + i);
             requestIds.all.push(id);
             requestIds.active.push(id);
           }
         } else {
-          if (requestStatus == null || requestStatus == Backend.Request.STATUS_INACTIVE) {
+          if (generateInactive) {
             var id = "request" + i;
             requestIds.all.push(id);
             requestIds.inactive.push(id);
@@ -521,23 +528,30 @@ Backend.getIncomingRequestIds = function(requestStatus) {
         requestIds = {};
       }
 
+      var generateActive = false;
+      var generateInactive = false;
+
       if (requestIds.all == null) {
         requestIds.all = [];
       }
       if (requestStatus == null) {
         if (requestIds.active == null) {
           requestIds.active = [];
+          generateActive = true;
         }
         if (requestIds.inactive == null) {
           requestIds.inactive = [];
+          generateInactive = true;
         }
       } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
         if (requestIds.active == null) {
           requestIds.active = [];
+          generateActive = true;
         }
       } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
         if (requestIds.inactive == null) {
           requestIds.inactive = [];
+          generateInactive = true;
         }
       }
 
@@ -546,13 +560,13 @@ Backend.getIncomingRequestIds = function(requestStatus) {
         var isActive = Math.random() < 0.5;
 
         if (isActive) {
-          if (requestStatus == null || requestStatus == Backend.Request.STATUS_ACTIVE) {
+          if (generateActive) {
             var id = "request" + (100 + 50 + i);
             requestIds.all.push(id);
             requestIds.active.push(id);
           }
         } else {
-          if (requestStatus == null || requestStatus == Backend.Request.STATUS_INACTIVE) {
+          if (generateInactive) {
             var id = "request" + (100 + i);
             requestIds.all.push(id);
             requestIds.inactive.push(id);
@@ -680,36 +694,43 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
         responseIds = {};
       }
 
+      var generateViewed = false;
+      var generateUnviewed = false;
+
       if (responseIds.all == null) {
         responseIds.all = [];
       }
       if (responseStatus == null) {
         if (responseIds.unviewed == null) {
           responseIds.unviewed = [];
+          generateUnviewed = true;
         }
         if (responseIds.viewed == null) {
           responseIds.viewed = [];
+          generateViewed = true;
         }
       } else if (responseStatus == Backend.Response.STATUS_READ) {
         if (responseIds.viewed == null) {
           responseIds.viewed = [];
+          generateViewed = true;
         }
       } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
         if (responseIds.unviewed == null) {
           responseIds.unviewed = [];
+          generateUnviewed = true;
         }
       }
 
       var numOfResponses = Math.floor(Math.random() * 30);
       for (var i = 0; i < numOfResponses; i++) {
         if (Math.random() < 0.95) {
-          if (responseStatus == null || responseStatus == Backend.Response.STATUS_READ) {
+          if (generateViewed) {
             var responseId = requestId + "-response" + (50 + i);
             responseIds.all.push(responseId);
             responseIds.viewed.push(responseId);
           }
         } else {
-          if (responseStatus == null || responseStatus == Backend.Response.STATUS_UNREAD) {
+          if (generateUnviewed) {
             var responseId = requestId + "-response" + i;
             responseIds.all.push(responseId);
             responseIds.unviewed.push(responseId);
@@ -780,36 +801,43 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
         responseIds = {};
       }
 
+      var generateViewed = false;
+      var generateUnviewed = false;
+
       if (responseIds.all == null) {
         responseIds.all = [];
       }
       if (responseStatus == null) {
         if (responseIds.unviewed == null) {
           responseIds.unviewed = [];
+          generateUnviewed = true;
         }
         if (responseIds.viewed == null) {
           responseIds.viewed = [];
+          generateViewed = true;
         }
       } else if (responseStatus == Backend.Response.STATUS_READ) {
         if (responseIds.viewed == null) {
           responseIds.viewed = [];
+          generateViewed = true;
         }
       } else if (responseStatus == Backend.Reponse.STATUS_UNREAD) {
         if (responseIds.unviewed == null) {
           responseIds.unviewed = [];
+          generateUnviewed = true;
         }
       }
 
       var numOfResponses = Math.floor(Math.random() * 5);
       for (var i = 0; i < numOfResponses; i++) {
         if (Math.random() < 0.95) {
-          if (responseStatus == null || responseStatus == Backend.Response.STATUS_READ) {
+          if (generateViewed) {
             var responseId = requestId + "-response" + (100 + 50 + i);
             responseIds.all.push(responseId);
             responseIds.viewed.push(responseId);
           }
         } else {
-          if (responseStatus == null || responseStatus == Backend.Response.STATUS_UNREAD) {
+          if (generateUnviewed) {
             var responseId = requestId + "-response" + (100 + i);
             responseIds.all.push(responseId);
             responseIds.unviewed.push(responseId);
