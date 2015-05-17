@@ -1006,15 +1006,15 @@ Backend.Cache = {
   outgoingRequestIds: null,
   incomingRequestIdsInProgress: false,
   incomingRequestIds: null,
-  requestsInProgress: [],
-  requests: [],
-  incomingResponseIdsInProgress: [],
-  incomingResponseIds: [],
-  outgoingResponseIdsInProgress: [],
-  outgoingResponseIds: [],
-  responsesInProgress: [],
-  responses: [],
-  contactInfosInProgress: [],
+  requestsInProgress: {},
+  requests: {},
+  incomingResponseIdsInProgress: {},
+  incomingResponseIds: {},
+  outgoingResponseIdsInProgress: {},
+  outgoingResponseIds: {},
+  responsesInProgress: {},
+  responses: {},
+  contactInfosInProgress: {},
   updateInProgressNotified: false
 };
 
@@ -1025,15 +1025,15 @@ Backend.Cache.reset = function() {
   this.outgoingRequestIds = null;
   this.incomingRequestIdsInProgress = false;
   this.incomingRequestIds = null;
-  this.requestsInProgress = [];
-  this.requests = [];
-  this.incomingResponseIdsInProgress = [],
-  this.incomingResponseIds = [];
-  this.outgoingResponseIdsInProgress = [];
-  this.outgoingResponseIds = [];
-  this.responsesInProgress = [];
-  this.responses = [];
-  this.contactInfosInProgress = [];
+  this.requestsInProgress = {};
+  this.requests = {};
+  this.incomingResponseIdsInProgress = {},
+  this.incomingResponseIds = {};
+  this.outgoingResponseIdsInProgress = {};
+  this.outgoingResponseIds = {};
+  this.responsesInProgress = {};
+  this.responses = {};
+  this.contactInfosInProgress = {};
   this.updateInProgressNotified = false;
 }
 
@@ -1053,7 +1053,7 @@ Backend.Cache.removeCacheChangeListener = function(listener) {
 
 Backend.Cache.markOutgoingRequestIdsInUpdate = function() {
   this.outgoingRequestIdsInProgress = true;
-  this.fireUpdateEvent();
+  this._fireUpdateEvent();
 }
 Backend.Cache.isOutgoingRequestIdsInUpdate = function() {
   return this.outgoingRequestIdsInProgress;
@@ -1062,15 +1062,15 @@ Backend.Cache.setOutgoingRequestIds = function(requestIds) {
   this.outgoingRequestIds = requestIds;
   this.outgoingRequestIdsInProgress = false;
 
-  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, null, null);
-  this.fireUpdateEvent();
+  this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, null, null);
+  this._fireUpdateEvent();
 }
 Backend.Cache.getOutgoingRequestIds = function() {
   return this.outgoingRequestIds;
 }
 Backend.Cache.markIncomingRequestIdsInUpdate = function() {
-  this.incomingRequestIdsInProgress = true;
-  this.fireUpdateEvent();
+  this._incomingRequestIdsInProgress = true;
+  this._fireUpdateEvent();
 }
 Backend.Cache.isIncomingRequestIdsInUpdate = function() {
   return this.incomingRequestIdsInProgress;
@@ -1079,15 +1079,15 @@ Backend.Cache.setIncomingRequestIds = function(requestIds) {
   this.incomingRequestIds = requestIds;
   this.incomingRequestIdsInProgress = false;
             
-  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, null, null);
-  this.fireUpdateEvent();
+  this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, null, null);
+  this._fireUpdateEvent();
 }
 Backend.Cache.getIncomingRequestIds = function() {
   return this.incomingRequestIds;
 }
 Backend.Cache.markRequestInUpdate = function(requestId) {
   this.requestsInProgress[requestId] = true;
-  this.fireUpdateEvent();
+  this._fireUpdateEvent();
 }
 Backend.Cache.isRequestInUpdate = function(requestId) {
   return this.requestsInProgress[requestId] != null;
@@ -1095,16 +1095,15 @@ Backend.Cache.isRequestInUpdate = function(requestId) {
 Backend.Cache.setRequest = function(requestId, request) {
   this.requests[requestId] = request;
   delete this.requestsInProgress[requestId];
-  
-  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId, null);
-  this.fireUpdateEvent();
+  this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId, null);
+  this._fireUpdateEvent();
 }
 Backend.Cache.getRequest = function(requestId) {
   return this.requests[requestId];
 }
 Backend.Cache.markIncomingResponseIdsInUpdate = function(requestId) {
   return this.incomingResponseIdsInProgress[requestId] = true;
-  this.fireUpdateEvent();
+  this._fireUpdateEvent();
 }
 Backend.Cache.isIncomingResponseIdsInUpdate= function(requestId) {
   return this.incomingResponseIdsInProgress[requestId] != null;
@@ -1113,8 +1112,8 @@ Backend.Cache.setIncomingResponseIds = function(requestId, responseIds) {
   this.incomingResponseIds[requestId] = responseIds;
   delete this.incomingResponseIdsInProgress[requestId];
 
-  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId, null);
-  this.fireUpdateEvent();
+  this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId, null);
+  this._fireUpdateEvent();
 }
 
 Backend.Cache.getIncomingResponseIds = function(requestId) {
@@ -1122,7 +1121,7 @@ Backend.Cache.getIncomingResponseIds = function(requestId) {
 }
 Backend.Cache.markOutgoingResponseIdsInUpdate = function(requestId) {
   this.outgoingResponseIdsInProgress[requestId] = true;
-  this.fireUpdateEvent();
+  this._fireUpdateEvent();
 }
 Backend.Cache.isOutgoingResponseIdsInUpdate = function(requestId) {
   return this.outgoingResponseIdsInProgress[requestId] != null;
@@ -1130,15 +1129,15 @@ Backend.Cache.isOutgoingResponseIdsInUpdate = function(requestId) {
 Backend.Cache.setOutgoingResponseIds = function(requestId, responseIds) {
   this.outgoingResponseIds[requestId] = responseIds;
   delete this.outgoingResponseIdsInProgress[requestId];
-  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId, null);
-  this.fireUpdateEvent();
+  this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId, null);
+  this._fireUpdateEvent();
 }
 Backend.Cache.getOutgoingResponseIds = function(requestId) {
   return this.outgoingResponseIds[requestId];
 }
 Backend.Cache.markResponseInUpdate = function(requestId, responseId) {
   this.responsesInProgress[responseId] = true;
-  this.fireUpdateEvent();
+  this._fireUpdateEvent();
 }
 Backend.Cache.isResponseInUpdate = function(requestId, responseId) {
   return this.responsesInProgress[responseId] != null;
@@ -1146,15 +1145,15 @@ Backend.Cache.isResponseInUpdate = function(requestId, responseId) {
 Backend.Cache.setResponse = function(requestId, responseId, response) {
   this.responses[responseId] = response;
   delete this.responsesInProgress[responseId];
-  this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId, responseId);
-  this.fireUpdateEvent();
+  this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId, responseId);
+  this._fireUpdateEvent();
 }
 Backend.Cache.getResponse = function(requestId, responseId) {
   return this.responses[responseId];
 }
 Backend.Cache.markContactInfoInUpdate = function(requestId, responseId) {
   this.contactInfosInProgress[responseId] = true;
-  this.fireUpdateEvent();
+  this._fireUpdateEvent();
 }
 Backend.Cache.isContactInfoInUpdate = function(requestId, responseId) {
   return this.contactInfosInProgress[responseId] != null;
@@ -1169,27 +1168,27 @@ Backend.Cache.setContactInfo = function(requestId, responseId, contactInfo) {
 
 Backend.Cache.isInUpdate = function() {
   return this.outgoingRequestIdsInProgress == true
-         || this.incomingResponseIdsInProgress.length > 0
+         || !GeneralUtils.isEmpty(this.incomingResponseIdsInProgress)
          || this.incomingRequestIdsInProgress == true
-         || this.outgoingResponseIdsInProgress.length > 0
-         || this.requestsInProgress.length > 0
-         || this.responsesInProgress.length > 0
-         || this.contactInfosInProgress.length > 0;
+         || !GeneralUtils.isEmpty(this.outgoingResponseIdsInProgress)
+         || !GeneralUtils.isEmpty(this.requestsInProgress)
+         || !GeneralUtils.isEmpty(this.responsesInProgress)
+         || !GeneralUtils.isEmpty(this.contactInfosInProgress);
 }
 
-Backend.Cache.fireUpdateEvent = function() {
+Backend.Cache._fireUpdateEvent = function() {
   var isCurrentlyInUpdate = this.isInUpdate();
+  
   if (!this.updateInProgressNotified && isCurrentlyInUpdate) {
     this.updateInProgressNotified = true;
-    this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_UPDATE_STARTED, null, null);
+    this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_UPDATE_STARTED, null, null);
   } else if (this.updateInProgressNotified && !isCurrentlyInUpdate) {
     this.updateInProgressNotified = false;
-    this.notifyCacheListeners(Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED, null, null);
+    this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED, null, null);
   }
 }
-Backend.Cache.notifyCacheListeners = function(type, requestId, responseId) {
+Backend.Cache._notifyCacheListeners = function(type, requestId, responseId) {
   var event = {type: type, requestId: requestId, responseId: responseId};
-  
   for (var index in this.cacheChangeListeners) {
     this.cacheChangeListeners[index](event);
   }

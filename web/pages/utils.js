@@ -45,6 +45,10 @@ GeneralUtils.isEqual = function(obj1, obj2) {
   return true;
 }
 
+GeneralUtils.isEmpty = function(obj) {
+  return Object.keys(obj).length == 0;
+}
+
 
 ResourceUtils = {};
 ResourceUtils.loadResource = function(resourceUrl, isJsonResource, callback) {
