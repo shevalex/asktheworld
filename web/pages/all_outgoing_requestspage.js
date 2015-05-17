@@ -8,6 +8,8 @@ AllOutgoingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function A
 });
 
 AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
+  AbstractRequestPage.prototype.definePageContent.call(this, root);
+  
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
   this._tableLabel = UIUtils.appendLabel(contentPanel, "Title");
@@ -41,12 +43,16 @@ AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
 }
 
 AllOutgoingRequestsPage.prototype.onShow = function(root) {
+  AbstractRequestPage.prototype.onShow.call(this, root);
+  
   this._updateRequests();
   
   Backend.addCacheChangeListener(this._cacheChangeListener);
 }
 
 AllOutgoingRequestsPage.prototype.onHide = function() {
+  AbstractRequestPage.prototype.onHide.call(this);
+  
   Backend.removeCacheChangeListener(this._cacheChangeListener);
 }
 

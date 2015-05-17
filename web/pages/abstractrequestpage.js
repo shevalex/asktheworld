@@ -1,6 +1,18 @@
-AbstractRequestPage = ClassUtils.defineClass(AbstractPage, function AbstractRequestPage(pageId) {
-  AbstractPage.call(this, pageId);
+AbstractRequestPage = ClassUtils.defineClass(AbstractDataPage, function AbstractRequestPage(pageId) {
+  AbstractDataPage.call(this, pageId);
 });
+
+AbstractRequestPage.prototype.definePageContent = function(root) {
+  AbstractDataPage.prototype.definePageContent.call(this, root);
+}
+
+AbstractRequestPage.prototype.onShow = function(root, paramBundle) {
+  AbstractDataPage.prototype.onShow.call(this, root, paramBundle);
+}
+
+AbstractRequestPage.prototype.onHide = function() {
+  AbstractDataPage.prototype.onHide.call(this);
+}
 
 
 

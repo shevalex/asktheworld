@@ -1,5 +1,5 @@
-OutgoingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function OutgoingRequestDetailsPage() {
-  AbstractPage.call(this, OutgoingRequestDetailsPage.name);
+OutgoingRequestDetailsPage = ClassUtils.defineClass(AbstractRequestPage, function OutgoingRequestDetailsPage() {
+  AbstractRequestPage.call(this, OutgoingRequestDetailsPage.name);
   
   this._currentRequestId;
   this._returnPageId;
@@ -18,6 +18,8 @@ OutgoingRequestDetailsPage = ClassUtils.defineClass(AbstractPage, function Outgo
 });
 
 OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
+  AbstractRequestPage.prototype.definePageContent.call(this, root);
+  
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
 
   var backLink = UIUtils.appendLink(contentPanel, "BackLink", this.getLocale().GoBackLink);
@@ -86,6 +88,8 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
 
 
 OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
+  AbstractRequestPage.prototype.onShow.call(this, root, paramBundle);
+  
   this._returnPageId = paramBundle.returnPageId;
   this._currentRequestId = paramBundle.requestId;
   this._type = paramBundle.type;
@@ -103,6 +107,8 @@ OutgoingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
 }
 
 OutgoingRequestDetailsPage.prototype.onHide = function() {
+  AbstractRequestPage.prototype.onHide.call(this);
+  
   this._requestItem.remove();
   this._requestItem = null;  
   UIUtils.get$(this._requestPanel).empty();  

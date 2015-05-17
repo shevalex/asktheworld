@@ -1,5 +1,5 @@
-NewRequestPage = ClassUtils.defineClass(AbstractPage, function NewRequestPage() {
-  AbstractPage.call(this, NewRequestPage.name);
+NewRequestPage = ClassUtils.defineClass(AbstractDataPage, function NewRequestPage() {
+  AbstractDataPage.call(this, NewRequestPage.name);
   
   this._requestTextEditor;
   
@@ -13,6 +13,8 @@ NewRequestPage = ClassUtils.defineClass(AbstractPage, function NewRequestPage() 
 });
 
 NewRequestPage.prototype.definePageContent = function(root) {
+  AbstractDataPage.prototype.definePageContent.call(this, root);
+  
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
   
   UIUtils.appendLabel(contentPanel, "RequestEditorLabel", this.getLocale().RequestEditorLabel);
@@ -61,11 +63,14 @@ NewRequestPage.prototype.definePageContent = function(root) {
   });
 }
 
-NewRequestPage.prototype.onShow = function() {
+NewRequestPage.prototype.onShow = function(root) {
+  AbstractDataPage.prototype.onShow.call(this, root);
+  
   this._resetPage();
 }
 
 NewRequestPage.prototype.onHide = function() {
+  AbstractDataPage.prototype.onHide.call(this);
 }
 
 
