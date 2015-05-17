@@ -173,6 +173,7 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
   var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, function(file) {
     Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
   });
+  attachmentsBar.setAttachments(response.attachments);
   
   var buttonsPanel = UIUtils.appendBlock(this._responsePanel, "ControlButtonsPanel");
   

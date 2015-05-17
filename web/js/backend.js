@@ -405,7 +405,6 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     responseIds.unviewed.push(newResponseId);
     
     response.time = Date.now();
-    response.attachments = [];
     response.age_category = Backend.UserProfile.age;
     response.gender = Backend.UserProfile.gender;
     response.status = Backend.Response.STATUS_UNREAD;

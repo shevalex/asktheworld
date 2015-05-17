@@ -145,9 +145,11 @@ OutgoingRequestDetailsPage.prototype._showEditingRequest = function() {
 
   var requestTextEditor = UIUtils.appendTextEditor(this._requestPanel, "TextEditor");
   requestTextEditor.setValue(request.text);
-  this._attachmentsBar = UIUtils.appendAttachmentBar(this._requestPanel, null, true, function(file) {
+  var attachmentsBar = UIUtils.appendAttachmentBar(this._requestPanel, null, true, function(file) {
     Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
   });
+  attachmentsBar.setAttachments(request.attachments);
+  
   
   var buttonsPanel = UIUtils.appendBlock(this._requestPanel, "ControlButtonsPanel");
   
@@ -160,7 +162,7 @@ OutgoingRequestDetailsPage.prototype._showEditingRequest = function() {
   UIUtils.setClickListener(updateButton, function() {
     var requestText = requestTextEditor.getValue();
     if (requestText != null && requestText != "") {
-      this._updateRequest({text: requestText, attachments: this._attachmentsBar.getAttachments()});
+      this._updateRequest({text: requestText, attachments: attachmentsBar.getAttachments()});
     } else {
       requestText.indicateInvalidInput();
     }
