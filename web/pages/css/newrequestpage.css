@@ -23,6 +23,11 @@
   font: inherit;
 }
 
+#NewRequestPage-ContentPanel-AttachmentBar {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 #NewRequestPage-ContentPanel-ExpertiseCategoryLabel {
   margin-top: 10px;
   font: inherit;
