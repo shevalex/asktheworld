@@ -271,6 +271,9 @@ select {
   background-repeat: no-repeat;
   background-color: transparent;
 }
+.ratingbar-star:hover {
+  background-image: url(../../imgs/star-contour.png);
+}
 .ratingbar-star-empty {
   background-image: url(../../imgs/star-empty.png);
 }
