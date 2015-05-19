@@ -5,6 +5,10 @@ AbstractDataPage = ClassUtils.defineClass(AbstractPage, function AbstractDataPag
 });
 
 AbstractDataPage.prototype.definePageContent = function(root) {
+  if (!Backend.isLogged()) {
+    throw AbstractPage.prototype.NO_CONTENT;
+  }
+  
   this._updateListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_STARTED) {
       Application.showSpinningWheel();
@@ -14,17 +18,15 @@ AbstractDataPage.prototype.definePageContent = function(root) {
   };
 }
 
-AbstractDataPage.prototype.onShow = function(root, paramBundle) {
-//  if (!Backend.isLogged()) {
-//    Application.showPage(LoginPage.name);
-//    return;
-//  }
+AbstractDataPage.prototype.definePageNoContent = function(root) {
+  root.innerHTML = "No Content - TODO: Make it look nicer";
+}
 
+AbstractDataPage.prototype.onShow = function(root, paramBundle) {
   Backend.addCacheChangeListener(this._updateListener);
 }
 
 AbstractDataPage.prototype.onHide = function() {
   Backend.removeCacheChangeListener(this._updateListener);
 }
-
 

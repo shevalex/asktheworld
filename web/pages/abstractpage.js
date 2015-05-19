@@ -14,6 +14,8 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
 });
 
 
+AbstractPage.prototype.NO_CONTENT = "No content";
+
 
 AbstractPage.prototype.destroy = function() {
   this.hide();
@@ -54,13 +56,19 @@ AbstractPage.prototype.show = function(container, paramBundle) {
   this._paramBundle = paramBundle;
   
   container.appendChild(this._pageElement);
-  
   if (!this._isDefined) {
-    this.definePageContent(this._pageElement);
-    this._isDefined = true;
+    try {
+      this.reset();
+      this.definePageContent(this._pageElement);
+      this._isDefined = true;
+    } catch (e) {
+      this.definePageNoContent(this._pageElement);
+    }
   }
 
-  this.onShow(this._pageElement, paramBundle);
+  if (this._isDefined) {
+    this.onShow(this._pageElement, paramBundle);
+  }
 }
 
 AbstractPage.prototype.showAnimated = function(container, paramBundle, completionObserver) {
@@ -72,7 +80,9 @@ AbstractPage.prototype.showAnimated = function(container, paramBundle, completio
 
 AbstractPage.prototype.hide = function() {
   if (this.isShown()) {
-    this.onHide();
+    if (this._isDefined) {
+      this.onHide();
+    }
     this._pageElement.parentElement.removeChild(this._pageElement);
   }
   
@@ -106,6 +116,9 @@ AbstractPage.prototype.getPageId = function() {
 }
 
 AbstractPage.prototype.definePageContent = function(root) {
+}
+
+AbstractPage.prototype.definePageNoContent = function(root) {
 }
 
 AbstractPage.prototype.onShow = function(root, paramBundle) {

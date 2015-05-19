@@ -232,13 +232,17 @@ Application.showPage = function(pageId, paramBundle, observer) {
     this.placeHistory(this._currentPage, paramBundle);
   }.bind(this);
   
+//  if (this._currentPage != null) {
+//    this._currentPage.hideAnimated(function() {
+//      showNewPage();
+//    }.bind(this));
+//  } else {
+//    showNewPage();
+//  }
   if (this._currentPage != null) {
-    this._currentPage.hideAnimated(function() {
-      showNewPage();
-    }.bind(this));
-  } else {
-    showNewPage();
+    this._currentPage.hide();
   }
+  showNewPage();
 }
 
 Application.showChildPage = function(parentPageId, childPageId, paramBundle, observer) {
