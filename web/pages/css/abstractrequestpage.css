@@ -138,7 +138,7 @@
   border-width: 1px;
   border-color: rgb(191, 191, 191);
   
-  background-color: rgb(215, 236, 249);
+  background-color: rgb(235, 245, 254);
   color: rgb(129, 129, 129);
   
   font-family: Verdana;
@@ -192,7 +192,7 @@
   border-width: 1px;
   border-color: rgb(191, 191, 191);
   
-  background-color: rgb(215, 236, 249);
+  background-color: rgb(235, 245, 254);
   color: rgb(129, 129, 129);
   
   font-family: Verdana;
@@ -226,7 +226,7 @@
   border-top-width: 1px;
   border-top-color: rgb(191, 191, 191);
   
-  background-color: rgb(145, 201, 253);
+  background-color: rgb(215, 236, 255);
   color: rgb(39, 39, 39);
 }
 .full-incoming-request-container .request-attachmentbar {
