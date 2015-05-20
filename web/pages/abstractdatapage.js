@@ -19,7 +19,14 @@ AbstractDataPage.prototype.definePageContent = function(root) {
 }
 
 AbstractDataPage.prototype.definePageNoContent = function(root) {
-  root.innerHTML = "No Content - TODO: Make it look nicer";
+  var contentPanel = UIUtils.createBlock("AbstractDataPage-ContentPanel");
+  root.appendChild(contentPanel);
+  UIUtils.appendLabel(contentPanel, "NoContentLabel", I18n.getPageLocale("AbstractDataPage").NoContentLabel);
+  
+  var loginLink = UIUtils.appendButton(contentPanel, "LoginLink", I18n.getPageLocale("AbstractDataPage").LoginLink);
+  UIUtils.setClickListener(loginLink, function() {
+    Application.showPage(LoginPage.name);
+  });
 }
 
 AbstractDataPage.prototype.onShow = function(root, paramBundle) {
