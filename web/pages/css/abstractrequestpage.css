@@ -10,7 +10,7 @@
   background-color: rgb(254, 226, 169);
   color: rgb(129, 129, 129);
   
-  font-family: "Times New Roman";
+  font-family: Verdana;
   font-size: 12px;
 }
 .outgoing-request-container:nth-child(2n) {
@@ -56,7 +56,6 @@
   overflow: hidden;
   white-space: nowrap;
   
-  font-family: Verdana;
   color: rgb(39, 39, 39);
 }
 
@@ -72,7 +71,7 @@
   background-color: rgb(253, 241, 215);
   color: rgb(129, 129, 129);
   
-  font-family: "Times New Roman";
+  font-family: Verdana;
   font-size: 12px;
 }
 .full-outgoing-request-container .request-date-label {
@@ -123,7 +122,6 @@
   border-top-color: rgb(191, 191, 191);
   
   background-color: rgb(254, 226, 169);
-  font-family: Verdana;
   color: rgb(39, 39, 39);
 }
 .full-outgoing-request-container .request-attachmentbar {
@@ -143,7 +141,7 @@
   background-color: rgb(215, 236, 249);
   color: rgb(129, 129, 129);
   
-  font-family: "Times New Roman";
+  font-family: Verdana;
   font-size: 12px;
 }
 .incoming-request-container:nth-child(2n) {
@@ -182,7 +180,6 @@
   overflow: hidden;
   white-space: nowrap;
 
-  font-family: Verdana;
   color: rgb(39, 39, 39);
 }
 
@@ -198,7 +195,7 @@
   background-color: rgb(215, 236, 249);
   color: rgb(129, 129, 129);
   
-  font-family: "Times New Roman";
+  font-family: Verdana;
   font-size: 12px;
 }
 .full-incoming-request-container .request-date-label {
@@ -230,7 +227,6 @@
   border-top-color: rgb(191, 191, 191);
   
   background-color: rgb(145, 201, 253);
-  font-family: Verdana;
   color: rgb(39, 39, 39);
 }
 .full-incoming-request-container .request-attachmentbar {
@@ -246,10 +242,10 @@
   border-width: 1px;
   border-color: rgb(191, 191, 191);
   
-  background-color: rgb(215, 236, 249);
+  background-color: rgb(237, 237, 237);
   color: rgb(129, 129, 129);
   
-  font-family: "Times New Roman";
+  font-family: Verdana;
   font-size: 12px;
 }
 .incoming-response-container:nth-child(2n) {
@@ -265,9 +261,10 @@
 */
 .incoming-response-container .response-header {
   height: 20px;
+  background-color: rgb(247, 247, 247);
 }
 .incoming-response-container .response-header-unread {
-  background-color: rgb(0, 150, 200);
+  background-color: rgb(220, 220, 220);
   color: black;
   font-weight: bold;
 }
@@ -319,8 +316,6 @@
   border-top-width: 1px;
   border-top-color: rgb(191, 191, 191);
   
-  background-color: rgba(220, 220, 220, 0.8);
-  font-family: Verdana;
   color: rgb(39, 39, 39);
 }
 .incoming-response-container .response-attachmentbar {
@@ -332,7 +327,6 @@
 }
 .incoming-response-container .response-contactinfopanel .response-contactinfo {
   padding-top: 5px;
-  font-family: Verdana;
   font-size: 12px;
 }
 .incoming-response-container .response-contactinfopanel .response-starrating {
@@ -348,10 +342,10 @@
   border-width: 1px;
   border-color: rgb(191, 191, 191);
   
-  background-color: rgb(245, 236, 249);
+  background-color: rgb(237, 237, 237);
   color: rgb(129, 129, 129);
   
-  font-family: "Times New Roman";
+  font-family: Verdana;
   font-size: 12px;
 }
 .outgoing-response-container:nth-child(2n) {
@@ -359,9 +353,10 @@
 }
 .outgoing-response-container .response-header {
   height: 20px;
+  background-color: rgb(247, 247, 247);
 }
 .outgoing-response-container .response-header-unread {
-  background-color: rgb(0, 150, 200);
+  background-color: rgb(220, 220, 220);
   color: black;
   font-weight: bold;
 }
@@ -379,8 +374,6 @@
   border-top-width: 1px;
   border-top-color: rgb(191, 191, 191);
   
-  background-color: rgba(220, 220, 220, 0.8);
-  font-family: Verdana;
   color: rgb(39, 39, 39);
 }
 .outgoing-response-container .response-attachmentbar {

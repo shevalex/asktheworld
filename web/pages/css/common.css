@@ -265,11 +265,12 @@ select {
   display: inline-block;
   width: 20px;
   height: 20px;
-  margin-left: 5px;
   
   background-size: contain;
   background-repeat: no-repeat;
   background-color: transparent;
+  
+  cursor: pointer;
 }
 .ratingbar-star:hover {
   background-image: url(../../imgs/star-contour.png);
@@ -285,7 +286,6 @@ select {
 
 .text-editor {
   padding: 5px;
-  margin: 5px;
   height: 100px;
   
   overflow: auto;

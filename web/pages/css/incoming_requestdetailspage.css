@@ -57,6 +57,10 @@
   margin-top: 2px;
 }
 
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-AttachmentBar {
+  margin-top: 5px;
+}
+
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel-ControlButtonsPanel {
 }
 
