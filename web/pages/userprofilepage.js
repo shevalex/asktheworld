@@ -99,7 +99,7 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
     if (newPassword != confirmNewPassword) {
       Application.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
       passwordIncorrect = true;
-    } else if (ValidationUtils.isValidPassword(newPassword)) {
+    } else if (!ValidationUtils.isValidPassword(newPassword)) {
       Application.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
       passwordIncorrect = true;
     }

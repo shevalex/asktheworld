@@ -112,7 +112,7 @@ AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   var targetLabel = UIUtils.appendLabel(this._container, "TargetLabel", "<b>" + I18n.getPageLocale("AbstractRequestPage").TargetLabel + "</b> " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
   UIUtils.addClass(targetLabel, "request-target-label");
   
-  var unreadResponses = Backend.getIncomingResponseIds(this._objectId, Backend.Response.STATUS_READ);
+  var unreadResponses = Backend.getIncomingResponseIds(this._objectId, Backend.Response.STATUS_UNREAD);
   var allResponses = Backend.getIncomingResponseIds(this._objectId);
   var counterText = null;
   if (allResponses != null && unreadResponses != null) {

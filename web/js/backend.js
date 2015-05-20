@@ -643,12 +643,13 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
   setTimeout(function() {
     var existingResponse = Backend.Cache.getResponse(requestId, responseId);
     for (var key in response) {
-      if (key == "status" && existingResponse[key] != response[key] && response.status == Backend.Request.STATUS_INACTIVE) {
+      if (key == "status" && existingResponse[key] != response[key] && response.status == Backend.Response.STATUS_READ) {
         var allResponseIds = Backend.Cache.getIncomingResponseIds(requestId);
-        for (var index in allResponseIds.active) {
-          if (allResponseIds.active[index] == responseId) {
-            allResponseIds.active.splice(index, 1);
-            allResponseIds.inactive.push(requestId);
+        
+        for (var index in allResponseIds.unviewed) {
+          if (allResponseIds.unviewed[index] == responseId) {
+            allResponseIds.unviewed.splice(index, 1);
+            allResponseIds.viewed.push(requestId);
             Backend.Cache.setIncomingResponseIds(requestId, allResponseIds);
             break;
           }
@@ -669,7 +670,7 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 
 Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
-
+  
   var result = null;
   if (responseIds != null) {
     if (responseStatus == null) {
@@ -746,7 +747,7 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
 }
 
 Backend.removeIncomingResponse = function(requestId, responseId, callback) {
-  Backend.Cache.markIncomingResponseIdsInUpdate();
+  Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
   
   setTimeout(function() {
     var removeFromArray = function(arr, element) {
@@ -1102,7 +1103,7 @@ Backend.Cache.getRequest = function(requestId) {
   return this.requests[requestId];
 }
 Backend.Cache.markIncomingResponseIdsInUpdate = function(requestId) {
-  return this.incomingResponseIdsInProgress[requestId] = true;
+  this.incomingResponseIdsInProgress[requestId] = true;
   this._fireUpdateEvent();
 }
 Backend.Cache.isIncomingResponseIdsInUpdate= function(requestId) {
