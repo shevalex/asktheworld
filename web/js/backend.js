@@ -343,7 +343,11 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
         for (var index in allRequestIds.active) {
           if (allRequestIds.active[index] == requestId) {
             allRequestIds.active.splice(index, 1);
-            allRequestIds.inactive.push(requestId);
+            
+            if (allRequestIds.inactive != null) {
+              allRequestIds.inactive.push(requestId);
+            }
+            
             Backend.Cache.setOutgoingRequestIds(allRequestIds);
             break;
           }

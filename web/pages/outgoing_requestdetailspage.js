@@ -67,7 +67,10 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   
   this._cacheChangeListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
-      var requests  = Backend.getOutgoingRequestIds();
+      var requests = Backend.getOutgoingRequestIds();
+      if (requests == null) {
+        return;
+      }
       for (var i = 0; i < requests.length; i++) {
         if (requests[i] == this._currentRequestId) {
           return;
