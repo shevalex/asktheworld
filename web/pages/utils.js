@@ -49,6 +49,17 @@ GeneralUtils.isEmpty = function(obj) {
   return Object.keys(obj).length == 0;
 }
 
+GeneralUtils.removeFromArray = function(arr, element) {
+  for (var index in arr) {
+    if (arr[index] == element) {
+      arr.splice(index, 1);
+      break;
+    }
+  }
+
+  return arr;
+}
+
 
 ResourceUtils = {};
 ResourceUtils.loadResource = function(resourceUrl, isJsonResource, callback) {

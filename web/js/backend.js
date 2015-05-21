@@ -589,21 +589,11 @@ Backend.removeIncomingRequest = function(requestId, callback) {
   Backend.Cache.markIncomingRequestIdsInUpdate();
   
   setTimeout(function() {
-    var removeFromArray = function(arr, element) {
-      for (var index in arr) {
-        if (arr[index] == element) {
-          arr.splice(index, 1);
-          break;
-        }
-      }
-      
-      return arr;
-    }
-    
     var requestIds = Backend.Cache.getIncomingRequestIds();
-    requestIds.all = removeFromArray(requestId.all, requestId);
-    requestIds.active = removeFromArray(requestId.active, requestId);
-    requestIds.inactive = removeFromArray(requestId.inactive, requestId);
+
+    requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
+    requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
+    requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
     
     Backend.Cache.setIncomingRequestIds(requestIds);
 
@@ -754,21 +744,10 @@ Backend.removeIncomingResponse = function(requestId, responseId, callback) {
   Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
   
   setTimeout(function() {
-    var removeFromArray = function(arr, element) {
-      for (var index in arr) {
-        if (arr[index] == element) {
-          arr.splice(index, 1);
-          break;
-        }
-      }
-      
-      return arr;
-    }
-    
     var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
-    responseIds.all = removeFromArray(responseIds.all, responseId);
-    responseIds.viewed = removeFromArray(responseIds.viewed, responseId);
-    responseIds.unviewed = removeFromArray(responseIds.unviewed, responseId);
+    responseIds.all = GeneralUtils.removeFromArray(responseIds.all, responseId);
+    responseIds.viewed = GeneralUtils.removeFromArray(responseIds.viewed, responseId);
+    responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.unviewed, responseId);
     
     Backend.Cache.setIncomingResponseIds(requestId, responseIds);
 
@@ -1074,7 +1053,7 @@ Backend.Cache.getOutgoingRequestIds = function() {
   return this.outgoingRequestIds;
 }
 Backend.Cache.markIncomingRequestIdsInUpdate = function() {
-  this._incomingRequestIdsInProgress = true;
+  this.incomingRequestIdsInProgress = true;
   this._fireUpdateEvent();
 }
 Backend.Cache.isIncomingRequestIdsInUpdate = function() {

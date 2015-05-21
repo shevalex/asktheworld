@@ -56,6 +56,10 @@ IncomingRequestDetailsPage.prototype.definePageContent = function(root) {
   this._cacheChangeListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
       var requests  = Backend.getIncomingRequestIds();
+      if (requests == null) {
+        return;
+      }
+      
       for (var i = 0; i < requests.length; i++) {
         if (requests[i] == this._currentRequestId) {
           return;

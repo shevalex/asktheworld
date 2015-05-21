@@ -28,6 +28,10 @@
   outline: none;
 }
 
+#OutgoingRequestDetailsPage-ContentPanel-RequestPanel-AttachmentBar {
+  margin-top: 5px;;
+}
+
 #OutgoingRequestDetailsPage-ContentPanel-RequestPanel-EditButton {
   float: right;
   margin-top: 2px;
