@@ -434,3 +434,17 @@
   margin-left: 3px;
   margin-right: 3px;
 }
+.request-table .request-table-header {
+  height: 30px;
+}
+.request-table .request-table-header .request-table-header-sorterlabel {
+  float: right;
+  margin-top: 3px;
+  margin-right: 10px;
+}
+.request-table .request-table-header .request-table-header-sorter {
+  float: right;
+  display: inline-block;
+  width: 100px;
+}
+

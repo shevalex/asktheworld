@@ -121,6 +121,7 @@ var Application = {
   _messageTimer: null
 };
 
+
 Application.MESSAGE_TIMEOUT_FAST = 1;
 Application.MESSAGE_TIMEOUT_NORMAL = 5;
 Application.MESSAGE_TIMEOUT_SLOW = 10;
@@ -136,9 +137,9 @@ Application.start = function() {
     Application.restoreFromHistory(hash);
   }
   
-  window.onbeforeunload = function() {
-    return I18n.getLocale().literals.LeaveApplicationMessage;
-  }
+//  window.onbeforeunload = function() {
+//    return I18n.getLocale().literals.LeaveApplicationMessage;
+//  }
   window.onunload = function() {
     Backend.logOut();
   }
@@ -171,6 +172,7 @@ Application.start = function() {
   startupBundle[Application.AUTO_LOGIN_PARAM] = "true";
   
   this.showPage(LoginPage.name, startupBundle);
+//  this.showMenuPage(HomePage.name);
 }
 
 Application.logOut = function() {

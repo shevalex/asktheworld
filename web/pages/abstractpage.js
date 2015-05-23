@@ -62,7 +62,11 @@ AbstractPage.prototype.show = function(container, paramBundle) {
       this.definePageContent(this._pageElement);
       this._isDefined = true;
     } catch (e) {
-      this.definePageNoContent(this._pageElement);
+      if (e == AbstractPage.prototype.NO_CONTENT) {
+        this.definePageNoContent(this._pageElement);
+      } else {
+        console.error(e);
+      }
     }
   }
 

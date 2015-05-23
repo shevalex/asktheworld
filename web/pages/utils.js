@@ -513,7 +513,13 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
       value += selectedItems[index].display;
     }
 
-    selectorText.innerHTML = value != "" ? value : "<br>";
+    var newValue = value != "" ? value : "<br>";
+    if (newValue != selectorText.innerHTML) {
+      selectorText.innerHTML = newValue;
+      if (mChoiceList.changeListener != null) {
+        mChoiceList.changeListener(mChoiceList.getValue());
+      }
+    }
   };
   
   
@@ -626,6 +632,10 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
   
   mChoiceList.indicateInvalidInput = function() {
     UIUtils.indicateInvalidInput(selector);
+  }
+
+  mChoiceList.setChangeListener = function(listener) {
+    this.changeListener = listener;
   }
 
 

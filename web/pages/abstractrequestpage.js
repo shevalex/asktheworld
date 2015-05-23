@@ -503,9 +503,13 @@ AbstractRequestPage._AbstractRequestsTable = ClassUtils.defineClass(Object, func
   this.setRequestIds(null);
 });
 
+AbstractRequestPage._AbstractRequestsTable._TABLE_SORTER = [ {data: "date", display: I18n.getPageLocale("AbstractRequestPage").SortByDate}, {data: "rating", display: I18n.getPageLocale("AbstractRequestPage").SortByRate}];
+
+
+
 AbstractRequestPage._AbstractRequestsTable.prototype.setRequestIds = function(requestIds) {
   this.clear();
-  this._requestIds = requestIds || [];
+  this._requestIds = this._sortByDate(requestIds || []);
   
   if (this._containerElement != null) {
     if (this._requestIds.length == 0 && this._settings.hideWhenEmpty) {
@@ -567,6 +571,26 @@ AbstractRequestPage._AbstractRequestsTable.prototype.setCurrentPage = function(c
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype._appendTableHeader = function() {
+  var header = UIUtils.appendBlock(this._containerElement, "Header");
+  UIUtils.addClass(header, "request-table-header");
+
+  var sorter = header.appendChild(UIUtils.createMultiOptionList(UIUtils.createId(header, "Sorter"), AbstractRequestPage._AbstractRequestsTable._TABLE_SORTER, true));
+  UIUtils.addClass(sorter, "request-table-header-sorter");
+  sorter.setChangeListener(function(value) {
+    var requests = null;
+    if (value == AbstractRequestPage._AbstractRequestsTable._TABLE_SORTER[0].data) {
+      requests = this._sortByDate(this._requestIds);
+    } else if (value == AbstractRequestPage._AbstractRequestsTable._TABLE_SORTER[1].data) {
+      requests = this._sortByRate(this._requestIds);
+    } else {
+      console.error("Unknown sorting requested");
+    }
+    
+    this.setRequestIds(requests);
+  }.bind(this));
+  
+  var sorterLabel = UIUtils.appendLabel(header, "SorterLabel", I18n.getPageLocale("AbstractRequestPage").SorterLabel);
+  UIUtils.addClass(sorterLabel, "request-table-header-sorterlabel");
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype._appendTableFooter = function() {
@@ -630,6 +654,23 @@ AbstractRequestPage._AbstractRequestsTable.prototype._updateTableControl = funct
     }.bind(this, i - 1));
   }
 }
+
+AbstractRequestPage._AbstractRequestsTable.prototype._sortByDate = function(arr) {
+  arr.sort(function(requestId1, requestId2) {
+    return 0;
+  });
+  
+  return arr;
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype._sortByRate = function(arr) {
+  arr.sort(function(requestId1, requestId2) {
+    return 0;
+  });
+  
+  return arr;
+}
+
 
 
 AbstractRequestPage.OutgoingRequestsTable = ClassUtils.defineClass(AbstractRequestPage._AbstractRequestsTable, function OutgoingRequestsTable(tableId, settings) {
