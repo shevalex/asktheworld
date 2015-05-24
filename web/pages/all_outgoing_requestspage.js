@@ -5,6 +5,7 @@ AllOutgoingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function A
   this._tableLabel;
   this._noRequestsNote;
   this._cacheChangeListener;
+  this._sortRule = Backend.REQUEST_IDS_SORT_BY_DATE;
 });
 
 AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
@@ -30,6 +31,20 @@ AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
 
       Application.showMenuPage(OutgoingRequestDetailsPage.name, paramBundle);
     },
+    sortListener: function(sortRule) {
+      var sortRule;
+      if (sortRule == AbstractRequestPage.SORT_BY_DATE) {
+        sortRule = Backend.REQUEST_IDS_SORT_BY_DATE;
+      } else if (sortRule == AbstractRequestPage.SORT_BY_RATE) {
+        sortRule = Backend.REQUEST_IDS_SORT_BY_RATE;
+      } else if (sortRule == AbstractRequestPage.SORT_BY_CATEGORY) {
+        sortRule = Backend.REQUEST_IDS_SORT_BY_CATEGORY;
+      }
+      
+      if (this._sortRule != sortRule) {
+        this._updateRequests();
+      }
+    }.bind(this),
     hideWhenEmpty: true
   });
   this._requestsTable.append(contentPanel);
@@ -57,7 +72,7 @@ AllOutgoingRequestsPage.prototype.onHide = function() {
 }
 
 AllOutgoingRequestsPage.prototype._updateRequests = function() {
-  var requestIds = Backend.getOutgoingRequestIds();
+  var requestIds = Backend.getOutgoingRequestIds(null, this._sortRule);
   if (requestIds == null) {
     this._tableLabel.innerHTML = this.getLocale().UpdatingRequestsTitle;
     this._noRequestsNote.style.display = "none";

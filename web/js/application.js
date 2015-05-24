@@ -171,8 +171,8 @@ Application.start = function() {
   var startupBundle = {};
   startupBundle[Application.AUTO_LOGIN_PARAM] = "true";
   
-  this.showPage(LoginPage.name, startupBundle);
-//  this.showMenuPage(HomePage.name);
+//  this.showPage(LoginPage.name, startupBundle);
+  this.showMenuPage(HomePage.name);
 }
 
 Application.logOut = function() {

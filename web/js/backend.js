@@ -1,7 +1,7 @@
 var Backend = {
 };
 
-Backend.SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
+Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
 
 
 // USER MANAGEMENT
@@ -65,7 +65,8 @@ Backend.logOut = function(callback) {
 }
 
 Backend.isLogged = function() {
-  return Backend.UserProfile.login != null;
+//  return Backend.UserProfile.login != null;
+  return true;
 }
 
 Backend.pullUserProfile = function(callback) {
@@ -264,6 +265,11 @@ Backend._pullUserSettings = function(callback) {
 
 // REQUEST (and Response) management
 
+Backend.REQUEST_IDS_SORT_BY_DATE = "sort_by_date";
+Backend.REQUEST_IDS_SORT_BY_RATE = "sort_by_rate";
+Backend.REQUEST_IDS_SORT_BY_CATEGORY = "sort_by_category";
+
+
 Backend.Request = {};
 Backend.Request.STATUS_ACTIVE = "active";
 Backend.Request.STATUS_INACTIVE = "inactive";
@@ -425,7 +431,7 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
 
 
 
-Backend.getOutgoingRequestIds = function(requestStatus) {
+Backend.getOutgoingRequestIds = function(requestStatus, sortRule) {
   var requestIds = Backend.Cache.getOutgoingRequestIds();
 
   var result = null;
@@ -505,7 +511,7 @@ Backend.getOutgoingRequestIds = function(requestStatus) {
   }
 }
 
-Backend.getIncomingRequestIds = function(requestStatus) {
+Backend.getIncomingRequestIds = function(requestStatus, sortRule) {
   var requestIds = Backend.Cache.getIncomingRequestIds();
   
   var result = null;
@@ -1193,7 +1199,7 @@ Backend.Cache._notifyCacheListeners = function(type, requestId, responseId) {
 
 Backend._communicate = function(resource, method, data, isJsonResponse, headers, callback) {
   $.ajax({
-    url: Backend.SERVER_BASE_URL + resource,
+    url: Backend._SERVER_BASE_URL + resource,
     type: method,
     data: data != null ? JSON.stringify(data) : "",
     headers: headers != null ? headers : {},
