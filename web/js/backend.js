@@ -65,8 +65,7 @@ Backend.logOut = function(callback) {
 }
 
 Backend.isLogged = function() {
-//  return Backend.UserProfile.login != null;
-  return true;
+  return Backend.UserProfile.login != null;
 }
 
 Backend.pullUserProfile = function(callback) {
