@@ -252,9 +252,6 @@
   font-family: Tahoma;
   font-size: 12px;
 }
-.incoming-response-container:nth-child(2n) {
-  background-color: rgb(237, 237, 237);
-}
 .incoming-response-container:hover {
   border-color: black;
 }
@@ -281,7 +278,7 @@
 }
 .incoming-response-container .response-from-label {
   position: absolute;
-  left: 300px;
+  left: 200px;
   top: 3px;
   
   color: inherit;
@@ -357,9 +354,6 @@
   
   font-family: Tahoma;
   font-size: 12px;
-}
-.outgoing-response-container:nth-child(2n) {
-  background-color: rgb(237, 237, 237);
 }
 .outgoing-response-container .response-header {
   height: 20px;
