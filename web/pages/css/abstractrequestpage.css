@@ -326,7 +326,7 @@
   margin: 5px;
 }
 .incoming-response-container .response-contactinfopanel {
-  margin: 5px;
+  margin: 2px 5px 2px 5px;
   height: 20px;
 }
 .incoming-response-container .response-contactinfopanel .response-contactinfo {
@@ -334,12 +334,13 @@
   padding-top: 3px;
   height: 20px;
   
-  font-size: 13px;
+  font-size: 12px;
   color: black;
   font-family: Verdana;
 }
 .incoming-response-container .response-contactinfopanel .response-starrating {
   float: right;
+  margin-top: 3px;
   margin-right: 20px;
 }
 
