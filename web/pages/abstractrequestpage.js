@@ -123,14 +123,6 @@ AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   var counterLabel = UIUtils.appendLabel(this._container, "CounterLabel", counterText);
   UIUtils.addClass(counterLabel, "request-responsecounter-label");
   
-  if (this._settings.fullRecord) {
-    var quantityLabel = UIUtils.appendLabel(this._container, "QuantityLabel", I18n.getPageLocale("AbstractRequestPage").QuantityLabel + " " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_QUANTITY, request.response_quantity));
-    UIUtils.addClass(quantityLabel, "request-quantity-label");
-
-    var timeFrameLabel = UIUtils.appendLabel(this._container, "TimeFrameLabel", I18n.getPageLocale("AbstractRequestPage").TimeFrameLabel + " " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_WAIT_TIME, request.response_wait_time));
-    UIUtils.addClass(timeFrameLabel, "request-timeframe-label");
-  }
-  
   var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", I18n.getPageLocale("AbstractRequestPage").ExpertiseLabel + " " + Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
 }
@@ -150,16 +142,32 @@ AbstractRequestPage.OutgoingRequestItem.prototype._fill = function() {
   requestText.innerHTML = UIUtils.getOneLine(request.text);
 }
   
-AbstractRequestPage.ExtendedOutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractOutgoingRequestItem, function ExtendedOutgoingRequestItem(requestId, settings) {
-  if (settings == null) {
-    settings = {};
-  }
-  settings.fullRecord = true;
+AbstractRequestPage.EditableOutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractOutgoingRequestItem, function EditableOutgoingRequestItem(requestId, settings) {
   AbstractRequestPage._AbstractOutgoingRequestItem.call(this, requestId, "full-outgoing-request-container", settings);
 });
 
-AbstractRequestPage.ExtendedOutgoingRequestItem.prototype._fill = function() {
+AbstractRequestPage.EditableOutgoingRequestItem.prototype._fill = function() {
   AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill.call(this);
+  
+  var request = this._getObject();
+  
+  var quantityLabel = UIUtils.appendLabel(this._container, "QuantityLabel", I18n.getPageLocale("AbstractRequestPage").QuantityLabel + " " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_QUANTITY, request.response_quantity));
+  UIUtils.addClass(quantityLabel, "request-quantity-label");
+
+  var timeFrameLabel = UIUtils.appendLabel(this._container, "TimeFrameLabel", I18n.getPageLocale("AbstractRequestPage").TimeFrameLabel + " " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_WAIT_TIME, request.response_wait_time));
+  UIUtils.addClass(timeFrameLabel, "request-timeframe-label");
+  
+  var bottom = UIUtils.appendBlock(this._container, "HeaderBottom");
+  UIUtils.addClass(bottom, "request-header-bottom");
+}
+
+
+AbstractRequestPage.ExtendedOutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage.EditableOutgoingRequestItem, function ExtendedOutgoingRequestItem(requestId, settings) {
+  AbstractRequestPage.EditableOutgoingRequestItem.call(this, requestId, settings);
+});
+
+AbstractRequestPage.ExtendedOutgoingRequestItem.prototype._fill = function() {
+  AbstractRequestPage.EditableOutgoingRequestItem.prototype._fill.call(this);
   
   var request = this._getObject();
 
@@ -173,19 +181,6 @@ AbstractRequestPage.ExtendedOutgoingRequestItem.prototype._fill = function() {
   }
 }
 
-
-AbstractRequestPage.EditableOutgoingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractOutgoingRequestItem, function EditableOutgoingRequestItem(requestId, settings) {
-  if (settings == null) {
-    settings = {};
-  }
-  settings.fullRecord = true;
-  
-  AbstractRequestPage._AbstractOutgoingRequestItem.call(this, requestId, "full-outgoing-request-container", settings);
-});
-
-AbstractRequestPage.EditableOutgoingRequestItem.prototype._fill = function() {
-  AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill.call(this);
-}
 
 
 

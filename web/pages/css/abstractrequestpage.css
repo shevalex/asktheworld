@@ -114,8 +114,10 @@
   
   color: inherit;
 }
+.full-outgoing-request-container .request-header-bottom {
+  height: 5px;
+}
 .full-outgoing-request-container .request-text {
-  margin-top: 5px;
   padding: 5px;
   
   border-top-style: solid;
