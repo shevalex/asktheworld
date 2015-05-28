@@ -221,36 +221,23 @@ Application.showPage = function(pageId, paramBundle, observer) {
     return;
   }
 
-  var showNewPage = function() {
-    this._currentPage = page;
+  if (paramBundle == null) {
+    paramBundle = {};
+  }
+  paramBundle.page = pageId;
 
-    this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
-    if (paramBundle == null) {
-      paramBundle = {};
-    }
-    paramBundle.page = pageId;
-    
-    this.placeHistory(this._currentPage, paramBundle);
-  }.bind(this);
-  
-//  if (this._currentPage != null) {
-//    this._currentPage.hideAnimated(function() {
-//      showNewPage();
-//    }.bind(this));
-//  } else {
-//    showNewPage();
-//  }
   if (this._currentPage != null) {
     this._currentPage.hide();
   }
-  showNewPage();
+
+  this._currentPage = page;
+  this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
+  this.placeHistory(this._currentPage, paramBundle);
 }
 
 Application.showChildPage = function(parentPageId, childPageId, paramBundle, observer) {
   Application.showPage(parentPageId, null, function() {
     var parentPage = this._getPage(parentPageId);
-    
-    parentPage.showChildPage(childPageId, paramBundle, observer);
     
     if (paramBundle == null) {
       paramBundle = {};
@@ -258,6 +245,7 @@ Application.showChildPage = function(parentPageId, childPageId, paramBundle, obs
     paramBundle.parent = parentPageId;
     paramBundle.page = childPageId;
     
+    parentPage.showChildPage(childPageId, paramBundle, observer);
     this.placeHistory(parentPage.getPage(childPageId), paramBundle);
   }.bind(this));
 }

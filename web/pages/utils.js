@@ -122,6 +122,8 @@ TimeUtils.getDateTimeSrting = function(millis) {
         dayAsString = date.toLocaleDateString();
       }
     }
+  } else {
+    dayAsString = date.toLocaleDateString();
   }
 
   var timeAsString = date.getHours() + ":" + (date.getMinutes() < 10 ? "0" : "") + date.getMinutes();

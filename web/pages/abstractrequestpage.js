@@ -123,7 +123,7 @@ AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   var counterLabel = UIUtils.appendLabel(this._container, "CounterLabel", counterText);
   UIUtils.addClass(counterLabel, "request-responsecounter-label");
   
-  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", I18n.getPageLocale("AbstractRequestPage").ExpertiseLabel + " " + Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
+  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
 }
 
@@ -486,6 +486,7 @@ AbstractRequestPage.SORT_BY_RATE = "rate";
 
 // settings.clickListener(requestId);
 // settings.sortListener(sortRule);
+// settings.pageListener(page);
 // settings.visibleItemCount;
 // settings.hideWhenEmpty;
 // settings.maxNumOfPageButtons
@@ -564,6 +565,7 @@ AbstractRequestPage._AbstractRequestsTable.prototype.getCurrentPage = function()
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype.setCurrentPage = function(currentPage) {
+  var previousPage = this._currentPage;
   this._currentPage = currentPage;
   
   this._beginIndex = this._currentPage * this._visibleItemCount;
@@ -575,6 +577,10 @@ AbstractRequestPage._AbstractRequestsTable.prototype.setCurrentPage = function(c
     this._statusLabel.innerHTML = I18n.getPageLocale("AbstractRequestPage").TableStatusLabelProvider(this._beginIndex + 1, this._endIndex, this._requestIds.length);
     
     this._updateTableControl();
+  }
+  
+  if (this._settings.pageListener != null && previousPage != this._currentPage) {
+    this._settings.pageListener(this._currentPage);
   }
 }
 

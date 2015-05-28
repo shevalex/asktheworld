@@ -612,7 +612,7 @@ Backend.getRequest = function(requestId) {
   var request = Backend.Cache.getRequest(requestId);
   if (request != null || Backend.Cache.isRequestInUpdate(requestId)) {
     //TO BE FEMOVED
-    if (request.status == Backend.Request.STATUS_ACTIVE) {
+    if (request != null && request.status == Backend.Request.STATUS_ACTIVE) {
       var timeToLive = (request.time + request.response_wait_time * 1000 * 60 * 60) - Date.now();
       if (timeToLive < 0) {
         request.status = Backend.Request.STATUS_INACTIVE;
