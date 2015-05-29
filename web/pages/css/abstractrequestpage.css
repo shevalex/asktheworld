@@ -1,5 +1,4 @@
 .outgoing-request-container {
-  position: relative;
   padding: 5px;
   min-width: 500px;
   
@@ -22,37 +21,37 @@
 .outgoing-request-container:active {
   background-color: green;
 }
-.outgoing-request-container .request-date-label {
-  margin-left: 10px;
+.outgoing-request-container .container-header {
+  position: relative;
   height: 15px;
-  
-  color: inherit;
 }
-.outgoing-request-container .request-target-label {
+.outgoing-request-container .container-header .request-date-label {
   position: absolute;
-  left: 300px;
-  top: 5px;
+  left: 10px;
   
   color: inherit;
 }
-.outgoing-request-container .request-responsecounter-label {
+.outgoing-request-container .container-header .request-target-label {
+  position: absolute;
+  left: 250px;
+  
+  color: inherit;
+}
+.outgoing-request-container .container-header .request-expertise-label {
+  position: absolute;
+  right: 200px;
+  
+  color: inherit;
+}
+.outgoing-request-container .container-header .request-responsecounter-label {
   position: absolute;
   right: 20px;
-  top: 5px;
-  
-  color: inherit;
-}
-.outgoing-request-container .request-expertise-label {
-  position: absolute;
-  right: 20px;
-  top: 25px;
   
   color: inherit;
 }
 .outgoing-request-container .request-text {
   margin-left: 30px;
   margin-top: 5px;
-  max-width: 400px;
   overflow: hidden;
   white-space: nowrap;
   
@@ -61,7 +60,6 @@
 }
 
 .full-outgoing-request-container {
-  position: relative;
   padding-top: 5px;
   min-width: 500px;
   
@@ -75,47 +73,47 @@
   font-family: Tahoma;
   font-size: 12px;
 }
-.full-outgoing-request-container .request-date-label {
-  display: block;
-  margin-bottom: 5px;
-  margin-left: 10px;
-  height: 15px;
+.full-outgoing-request-container .container-header {
+  position: relative;
+  height: 40px;
+}
+.full-outgoing-request-container .container-header .request-date-label {
+  position: absolute;
+  left: 10px;
   
   color: inherit;
 }
-.full-outgoing-request-container .request-target-label {
+.full-outgoing-request-container .container-header .request-target-label {
   position: absolute;
   left: 200px;
-  top: 5px;
   
   color: inherit;
 }
-.full-outgoing-request-container .request-expertise-label {
+.full-outgoing-request-container .container-header .request-expertise-label {
   position: absolute;
   right: 200px;
-  top: 5px;
   
   color: inherit;
 }
-.full-outgoing-request-container .request-responsecounter-label {
+.full-outgoing-request-container .container-header .request-responsecounter-label {
   position: absolute;
   right: 20px;
-  top: 5px;
   
   color: inherit;
 }
-.full-outgoing-request-container .request-quantity-label {
-  margin-left: 10px;
+.full-outgoing-request-container .container-header .request-quantity-label {
+  position: absolute;
+  left: 100px;
+  top: 20px;
 
   color: inherit;
 }
-.full-outgoing-request-container .request-timeframe-label {
-  margin-left: 200px;
+.full-outgoing-request-container .container-header .request-timeframe-label {
+  position: absolute;
+  left: 300px;
+  top: 20px;
   
   color: inherit;
-}
-.full-outgoing-request-container .request-header-bottom {
-  height: 5px;
 }
 .full-outgoing-request-container .request-text {
   padding: 5px;
@@ -134,7 +132,6 @@
 
 
 .incoming-request-container {
-  position: relative;
   padding: 5px;
   min-width: 500px;
   
@@ -157,30 +154,31 @@
 .incoming-request-container:active {
   background-color: green;
 }
-.incoming-request-container .request-date-label {
-  margin-left: 10px;
+.incoming-request-container .container-header {
+  position: relative;
   height: 15px;
+}
+.incoming-request-container .container-header .request-date-label {
+  position: absolute;
+  left: 10px;
   
   color: inherit;
 }
-.incoming-request-container .request-expires-label {
+.incoming-request-container .container-header .request-expires-label {
   position: absolute;
   left: 300px;
-  top: 5px;
   
   color: inherit;
 }
-.incoming-request-container .request-expertise-label {
+.incoming-request-container .container-header .request-expertise-label {
   position: absolute;
   right: 20px;
-  top: 25px;
   
   color: inherit;
 }
 .incoming-request-container .request-text {
   margin-left: 30px;
   margin-top: 5px;
-  max-width: 400px;
   overflow: hidden;
   white-space: nowrap;
 
@@ -189,7 +187,6 @@
 }
 
 .full-incoming-request-container {
-  position: relative;
   padding-top: 5px;
   min-width: 500px;
   
@@ -203,23 +200,25 @@
   font-family: Tahoma;
   font-size: 12px;
 }
-.full-incoming-request-container .request-date-label {
-  margin-left: 10px;
+.full-incoming-request-container .container-header {
+  position: relative;
   height: 15px;
+}
+.full-incoming-request-container .container-header .request-date-label {
+  position: absolute;
+  left: 10px;
   
   color: inherit;
 }
-.full-incoming-request-container .request-expires-label {
+.full-incoming-request-container .container-header .request-expires-label {
   position: absolute;
   left: 300px;
-  top: 5px;
   
   color: inherit;
 }
-.full-incoming-request-container .request-expertise-label {
+.full-incoming-request-container .container-header .request-expertise-label {
   position: absolute;
   right: 20px;
-  top: 5px;
   
   color: inherit;
 }
@@ -241,7 +240,6 @@
 
 
 .incoming-response-container {
-  position: relative;
   min-width: 500px;
   
   border-style: solid;
@@ -262,7 +260,9 @@
   background-color: green;
 }
 */
-.incoming-response-container .response-header {
+.incoming-response-container .container-header {
+  padding-top: 3px;
+  position: relative;
   height: 20px;
   background-color: rgb(247, 247, 247);
 }
@@ -271,21 +271,19 @@
   color: black;
   font-weight: bold;
 }
-.incoming-response-container .response-date-label {
+.incoming-response-container .container-header .response-date-label {
   position: absolute;
-  top: 3px;
   left: 10px;
   
   color: inherit;
 }
-.incoming-response-container .response-from-label {
+.incoming-response-container .container-header .response-from-label {
   position: absolute;
   left: 200px;
-  top: 3px;
   
   color: inherit;
 }
-.incoming-response-container .response-remover {
+.incoming-response-container .container-header .response-remover {
   position: absolute;
   top: 0px;
   right: 0px;
@@ -303,13 +301,13 @@
   
   border-radius: 5px;
 }
-.incoming-response-container:hover .response-remover {
+.incoming-response-container:hover .container-header .response-remover {
   display: inline-block;
 }
-.incoming-response-container:hover .response-remover:hover {
+.incoming-response-container .container-header .response-remover:hover {
   background-color: rgb(225, 90, 80);
 }
-.incoming-response-container:hover .response-remover:active {
+.incoming-response-container .container-header .response-remover:active {
   background-color: rgb(225, 60, 50);
 }
 .incoming-response-container .response-text {
@@ -345,7 +343,6 @@
 }
 
 .outgoing-response-container {
-  position: relative;
   min-width: 500px;
   
   border-style: solid;
@@ -358,19 +355,19 @@
   font-family: Tahoma;
   font-size: 12px;
 }
-.outgoing-response-container .response-header {
+.outgoing-response-container .container-header {
+  padding-top: 3px;
+  position: relative;
   height: 20px;
   background-color: rgb(247, 247, 247);
-  font-family: Tahoma;
 }
 .outgoing-response-container .response-header-unread {
   background-color: rgb(220, 220, 220);
   color: black;
   font-weight: bold;
 }
-.outgoing-response-container .response-date-label {
+.outgoing-response-container .container-header .response-date-label {
   position: absolute;
-  top: 3px;
   left: 10px;
   
   color: inherit;

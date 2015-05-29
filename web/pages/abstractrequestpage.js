@@ -22,6 +22,7 @@ AbstractRequestPage._AbstractObjectItem = ClassUtils.defineClass(Object, functio
   this._baseCssClass = baseCssClass;
   
   this._container = null;
+  this._header = null;
 
   this._cacheChangeListener = this._cacheChangeListener();
 });
@@ -41,7 +42,7 @@ AbstractRequestPage._AbstractObjectItem.prototype.append = function(root) {
   }
   
   if (this._getObject() != null) {
-    this._fill();
+    this._refill();
   }
 }
 
@@ -54,6 +55,17 @@ AbstractRequestPage._AbstractObjectItem.prototype.remove = function() {
   this._container = null;
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
+}
+
+AbstractRequestPage._AbstractObjectItem.prototype._refill = function() {
+  this._clear();
+  this._fill();
+}
+AbstractRequestPage._AbstractObjectItem.prototype._clear = function() {
+  UIUtils.get$(this._container).empty();
+  
+  this._header = UIUtils.appendBlock(this._container, "Header");
+  UIUtils.addClass(this._header, "container-header");
 }
 
 AbstractRequestPage._AbstractObjectItem.prototype._cacheChangeListener = function() {
@@ -83,7 +95,7 @@ AbstractRequestPage._AbstractRequestItem.prototype._cacheChangeListener = functi
         && (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED || Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED)) {
 
       if (this._getObject() != null) {
-        this._fill();
+        this._refill();
       }
     }
   }.bind(this);
@@ -102,14 +114,12 @@ AbstractRequestPage._AbstractOutgoingRequestItem = ClassUtils.defineClass(Abstra
 });
 
 AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
-  UIUtils.get$(this._container).empty();
-  
   var request = this._getObject();
-
-  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
+  
+  var dateLabel = UIUtils.appendLabel(this._header, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
   UIUtils.addClass(dateLabel, "request-date-label");
   
-  var targetLabel = UIUtils.appendLabel(this._container, "TargetLabel", I18n.getPageLocale("AbstractRequestPage").TargetLabel + " " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
+  var targetLabel = UIUtils.appendLabel(this._header, "TargetLabel", I18n.getPageLocale("AbstractRequestPage").TargetLabel + " " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
   UIUtils.addClass(targetLabel, "request-target-label");
   
   var unreadResponses = Backend.getIncomingResponseIds(this._objectId, Backend.Response.STATUS_UNREAD);
@@ -120,10 +130,10 @@ AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   } else {
     counterText = "--";
   }
-  var counterLabel = UIUtils.appendLabel(this._container, "CounterLabel", counterText);
+  var counterLabel = UIUtils.appendLabel(this._header, "CounterLabel", counterText);
   UIUtils.addClass(counterLabel, "request-responsecounter-label");
   
-  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
+  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
 }
 
@@ -151,14 +161,11 @@ AbstractRequestPage.EditableOutgoingRequestItem.prototype._fill = function() {
   
   var request = this._getObject();
   
-  var quantityLabel = UIUtils.appendLabel(this._container, "QuantityLabel", I18n.getPageLocale("AbstractRequestPage").QuantityLabel + " " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_QUANTITY, request.response_quantity));
+  var quantityLabel = UIUtils.appendLabel(this._header, "QuantityLabel", I18n.getPageLocale("AbstractRequestPage").QuantityLabel + " " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_QUANTITY, request.response_quantity));
   UIUtils.addClass(quantityLabel, "request-quantity-label");
 
-  var timeFrameLabel = UIUtils.appendLabel(this._container, "TimeFrameLabel", I18n.getPageLocale("AbstractRequestPage").TimeFrameLabel + " " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_WAIT_TIME, request.response_wait_time));
+  var timeFrameLabel = UIUtils.appendLabel(this._header, "TimeFrameLabel", I18n.getPageLocale("AbstractRequestPage").TimeFrameLabel + " " + Application.Configuration.dataToString(Application.Configuration.RESPONSE_WAIT_TIME, request.response_wait_time));
   UIUtils.addClass(timeFrameLabel, "request-timeframe-label");
-  
-  var bottom = UIUtils.appendBlock(this._container, "HeaderBottom");
-  UIUtils.addClass(bottom, "request-header-bottom");
 }
 
 
@@ -189,10 +196,8 @@ AbstractRequestPage._AbstractIncomingRequestItem = ClassUtils.defineClass(Abstra
 });
 
 AbstractRequestPage._AbstractIncomingRequestItem.prototype._fill = function() {
-  UIUtils.get$(this._container).empty();
-  
   var request = this._getObject();
-  var dateLabel = UIUtils.appendLabel(this._container, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
+  var dateLabel = UIUtils.appendLabel(this._header, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
   UIUtils.addClass(dateLabel, "request-date-label");
   
   var expiresLabel;
@@ -202,11 +207,11 @@ AbstractRequestPage._AbstractIncomingRequestItem.prototype._fill = function() {
     var numOfHoursLeft = Math.floor((timeToLive % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var numOfMinutesLeft = Math.floor((timeToLive % (1000 * 60 * 60)) / (1000 * 60));
 
-    expiresLabel = UIUtils.appendLabel(this._container, "ExpiresLabel", I18n.getPageLocale("AbstractRequestPage").ExpiresLabelProvider(numOfDaysLeft, numOfHoursLeft, numOfMinutesLeft));
+    expiresLabel = UIUtils.appendLabel(this._header, "ExpiresLabel", I18n.getPageLocale("AbstractRequestPage").ExpiresLabelProvider(numOfDaysLeft, numOfHoursLeft, numOfMinutesLeft));
     UIUtils.addClass(expiresLabel, "request-expires-label");
   }
   
-  var expertiseLabel = UIUtils.appendLabel(this._container, "ExpertiseLabel", Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
+  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
 }
 
@@ -256,7 +261,7 @@ AbstractRequestPage._AbstractResponseItem.prototype._cacheChangeListener = funct
         && (event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED)) {
 
       if (this._getObject() != null) {
-        this._fill();
+        this._refill();
       }
     }
   }.bind(this);
@@ -275,25 +280,21 @@ AbstractRequestPage.IncomingResponseItem = ClassUtils.defineClass(AbstractReques
   AbstractRequestPage._AbstractResponseItem.call(this, requestId, responseId, "incoming-response-container", settings);
 });
 AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
-  UIUtils.get$(this._container).empty();
-  
   var response = this._getObject();
   var isRead = response.status == Backend.Response.STATUS_READ;
   
-  var responseHeader = UIUtils.appendBlock(this._container, "ResponseHeader");
-  UIUtils.addClass(responseHeader, "response-header");
   if (!isRead) {
-    UIUtils.addClass(responseHeader, "response-header-unread");
+    UIUtils.addClass(this._header, "response-header-unread");
   }
   
-  var dateLabel = UIUtils.appendLabel(responseHeader, "DateLabel", TimeUtils.getDateTimeSrting(response.time));
+  var dateLabel = UIUtils.appendLabel(this._header, "DateLabel", TimeUtils.getDateTimeSrting(response.time));
   UIUtils.addClass(dateLabel, "response-date-label");
   
-  var fromLabel = UIUtils.appendLabel(responseHeader, "FromLabel", I18n.getPageLocale("AbstractRequestPage").FromLabel + " " + Application.Configuration.toUserIdentityString(response.age_category, response.gender));
+  var fromLabel = UIUtils.appendLabel(this._header, "FromLabel", I18n.getPageLocale("AbstractRequestPage").FromLabel + " " + Application.Configuration.toUserIdentityString(response.age_category, response.gender));
   UIUtils.addClass(fromLabel, "response-from-label");
   
   if (this._settings.removeListener != null) {
-    var responseRemover = UIUtils.appendBlock(responseHeader, "Remover");
+    var responseRemover = UIUtils.appendBlock(this._header, "Remover");
     UIUtils.addClass(responseRemover, "response-remover");
 
     UIUtils.setClickListener(responseRemover, function() {
@@ -337,18 +338,14 @@ AbstractRequestPage._AbstractOutgoingResponseItem = ClassUtils.defineClass(Abstr
   AbstractRequestPage._AbstractResponseItem.call(this, requestId, responseId, cssClass, settings);
 });
 AbstractRequestPage._AbstractOutgoingResponseItem.prototype._fill = function() {
-  UIUtils.get$(this._container).empty();
-  
   var response = this._getObject();
   var isRead = response.status == Backend.Response.STATUS_READ;
   
-  var responseHeader = UIUtils.appendBlock(this._container, "ResponseHeader");
-  UIUtils.addClass(responseHeader, "response-header");
   if (!isRead) {
-    UIUtils.addClass(responseHeader, "response-header-unread");
+    UIUtils.addClass(this._header, "response-header-unread");
   }
   
-  var dateLabel = UIUtils.appendLabel(responseHeader, "DateLabel", TimeUtils.getDateTimeSrting(response.time));
+  var dateLabel = UIUtils.appendLabel(this._header, "DateLabel", TimeUtils.getDateTimeSrting(response.time));
   UIUtils.addClass(dateLabel, "response-date-label");
 }
 
