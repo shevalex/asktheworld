@@ -196,17 +196,19 @@ select {
 }
 .attachmentbar .attachmentbar-thumbnail-title {
   position: absolute;
-  bottom: -20px;
+  bottom: -17px;
   left: 0px;
   
   white-space: nowrap;
   
-  font-size: 15px;
+  font-size: 12px;
+  font-family: Verdana;
 
-  color: transparent;
+  color: black;
+  display: none;
 }
 .attachmentbar .attachmentbar-thumbnail:hover .attachmentbar-thumbnail-title {
-  color: black;
+  display: block;
 }
 .attachmentbar .attachmentbar-preview {
   display: block;
