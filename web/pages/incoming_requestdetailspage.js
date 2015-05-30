@@ -102,7 +102,7 @@ IncomingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
       }.bind(this));
     }
     
-    var ignoreButton = UIUtils.appendButton(buttonsPanel, "IgnoreButton", this.getLocale().IgnoreButton);
+    var ignoreButton = UIUtils.appendButton(buttonsPanel, "IgnoreButton", this.getLocale().IgnoreButton, true);
     UIUtils.setClickListener(ignoreButton, function() {
       if (!this._editing) {
         this._ignoreRequest();

@@ -180,14 +180,20 @@ UIUtils.createButton = function(buttonId, text) {
   buttonElement.setAttribute("id", buttonId);
   buttonElement.style.whiteSpace = "nowrap";
   buttonElement.style.overflow = "hidden";
-
+  
   buttonElement.innerHTML = text;
   
   return buttonElement;
 }
 
-UIUtils.appendButton = function(root, buttonId, text) {
-  return root.appendChild(UIUtils.createButton(UIUtils.createId(root, buttonId), text));
+UIUtils.appendButton = function(root, buttonId, text, isCriticalAction) {
+  var button = root.appendChild(UIUtils.createButton(UIUtils.createId(root, buttonId), text));
+  
+  if (isCriticalAction) {
+    UIUtils.addClass(button, "critical-action-button");
+  }
+
+  return button;
 }
 
 

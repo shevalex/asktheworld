@@ -81,7 +81,7 @@
   right: 0px;
   top: 25px;
   width: 100px;
-  height: 200px;
+  max-height: 200px;
   
   z-index: 1;
   
@@ -106,7 +106,6 @@
   right: 0px;
   top: 25px;
   width: 100px;
-  height: 90px;
   
   z-index: 1;
   

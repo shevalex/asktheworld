@@ -24,6 +24,15 @@ button:disabled {
   background-color: rgb(200, 200, 200);
   color: rgb(220, 220, 220);
 }
+.critical-action-button {
+  background-color: rgb(255, 51, 51);
+}
+.critical-action-button:hover {
+  background-color: rgb(255, 100, 100);
+}
+.critical-action-button:active {
+  background-color: rgb(255, 0, 0);
+}
 
 a {
   color: rgb(50, 50, 150);
