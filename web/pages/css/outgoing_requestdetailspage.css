@@ -26,6 +26,11 @@
 
 #OutgoingRequestDetailsPage-ContentPanel-RequestPanel-TextEditor {
   outline: none;
+  
+  border-top-style: none;
+  
+  font-family: Verdana;
+  font-size: 12px;
 }
 
 #OutgoingRequestDetailsPage-ContentPanel-RequestPanel-AttachmentBar {

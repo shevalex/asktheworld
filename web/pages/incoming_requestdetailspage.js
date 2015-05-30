@@ -85,6 +85,33 @@ IncomingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   this._type = paramBundle.type;
   this._navigatableRequestIds = paramBundle.otherRequestIds.split(",");
   
+  this._showRequest();
+  this._showViewableResponse();
+  
+  UIUtils.setEnabled(this._previousButton, this._getPreviousRequestId() != null);
+  UIUtils.setEnabled(this._nextButton, this._getNextRequestId() != null);
+
+  Backend.addCacheChangeListener(this._cacheChangeListener);
+}
+
+IncomingRequestDetailsPage.prototype.onHide = function() {
+  AbstractRequestPage.prototype.onHide.call(this);
+  
+  this._requestItem.remove();
+  UIUtils.get$(this._requestPanel).empty();
+
+  if (this._responseItem != null) {
+    this._responseItem.remove();
+    this._responseItem = null;
+  }
+  UIUtils.get$(this._responsePanel).empty();
+  
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
+}
+
+IncomingRequestDetailsPage.prototype._showRequest = function() {
+  UIUtils.get$(this._requestPanel).empty();
+  
   var request = Backend.getRequest(this._currentRequestId);
   this._requestItem = new AbstractRequestPage.ExtendedIncomingRequestItem(this._currentRequestId);
   this._requestItem.append(this._requestPanel);
@@ -109,28 +136,6 @@ IncomingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
       }
     }.bind(this));
   }
-  
-  this._showViewableResponse();
-  
-  UIUtils.setEnabled(this._previousButton, this._getPreviousRequestId() != null);
-  UIUtils.setEnabled(this._nextButton, this._getNextRequestId() != null);
-
-  Backend.addCacheChangeListener(this._cacheChangeListener);
-}
-
-IncomingRequestDetailsPage.prototype.onHide = function() {
-  AbstractRequestPage.prototype.onHide.call(this);
-  
-  this._requestItem.remove();
-  UIUtils.get$(this._requestPanel).empty();
-
-  if (this._responseItem != null) {
-    this._responseItem.remove();
-    this._responseItem = null;
-  }
-  UIUtils.get$(this._responsePanel).empty();
-  
-  Backend.removeCacheChangeListener(this._cacheChangeListener);
 }
 
 IncomingRequestDetailsPage.prototype._showViewableResponse = function() {
@@ -305,6 +310,7 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, resp
 
   var response = {
     text: responseText,
+    time: Date.now(),
     attachments: attachments
   }
   
@@ -321,6 +327,7 @@ IncomingRequestDetailsPage.prototype._createResponse = function(responseText, at
   var callback = {
     success: function() {
       this._onCompletion();
+      page._showRequest();
       page._showViewableResponse();
     },
     failure: function() {

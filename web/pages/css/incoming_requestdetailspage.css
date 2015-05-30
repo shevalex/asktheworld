@@ -50,6 +50,9 @@
 
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel-TextEditor {
   outline: none;
+  
+  font-family: Verdana;
+  font-size: 12px;
 }
 
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel-EditButton {
