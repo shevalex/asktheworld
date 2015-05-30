@@ -5,6 +5,7 @@ ActiveIncomingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, functio
   this._tableLabel;
   this._noRequestsNote;
   this._cacheChangeListener;
+  this._refreshTimer;
   this._sortRule = Backend.REQUEST_IDS_SORT_BY_DATE;
 });
 
@@ -59,12 +60,17 @@ ActiveIncomingRequestsPage.prototype.onShow = function(root) {
   this._updateRequests();
   
   Backend.addCacheChangeListener(this._cacheChangeListener);
+  
+  this._refreshTimer = setInterval(function() {
+    this._requestsTable.refresh();
+  }.bind(this), 60000);
 }
 
 ActiveIncomingRequestsPage.prototype.onHide = function() {
   AbstractRequestPage.prototype.onHide.call(this);
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
+  clearInterval(this._refreshTimer);
 }
 
 ActiveIncomingRequestsPage.prototype._updateRequests = function() {

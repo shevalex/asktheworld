@@ -876,7 +876,6 @@ Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
 
 
 
-
 Backend._createDummyRequest = function(requestId) {
   var quantity = Math.round(Math.random() * 3);
   var waitTime = Math.round(Math.random() * 3);

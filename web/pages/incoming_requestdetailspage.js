@@ -16,6 +16,8 @@ IncomingRequestDetailsPage = ClassUtils.defineClass(AbstractRequestPage, functio
   this._responseItem = null;
   this._cacheChangeListener;
   
+  this._refreshTimer;
+  
   this._updating = false;
   this._editing = false;
 });
@@ -92,6 +94,10 @@ IncomingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
   UIUtils.setEnabled(this._nextButton, this._getNextRequestId() != null);
 
   Backend.addCacheChangeListener(this._cacheChangeListener);
+  
+  this._refreshTimer = setInterval(function() {
+    this._requestItem.refresh();
+  }.bind(this), 60000);
 }
 
 IncomingRequestDetailsPage.prototype.onHide = function() {
@@ -107,6 +113,7 @@ IncomingRequestDetailsPage.prototype.onHide = function() {
   UIUtils.get$(this._responsePanel).empty();
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
+  clearInterval(this._refreshTimer);
 }
 
 IncomingRequestDetailsPage.prototype._showRequest = function() {

@@ -9,8 +9,8 @@ HomePage = ClassUtils.defineClass(AbstractDataPage, function HomePage() {
   this._noIncomingRequestsNote;
   this._noOutgoingRequestsNote;
   
-  
   this._cacheChangeListener;
+  this._refreshTimer;
 });
 
 
@@ -84,12 +84,17 @@ HomePage.prototype.onShow = function(root) {
   this._updateOutgoingRequests();
   
   Backend.addCacheChangeListener(this._cacheChangeListener);
+  
+  this._refreshTimer = setInterval(function() {
+    this._incomingRequestsView.refresh();
+  }.bind(this), 60000);
 }
 
 HomePage.prototype.onHide = function() {
   AbstractDataPage.prototype.onHide.call(this);
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
+  clearInterval(this._refreshTimer);
 }
 
 

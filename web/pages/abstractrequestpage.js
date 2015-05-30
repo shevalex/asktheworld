@@ -42,7 +42,7 @@ AbstractRequestPage._AbstractObjectItem.prototype.append = function(root) {
   }
   
   if (this._getObject() != null) {
-    this._refill();
+    this.refresh();
   }
 }
 
@@ -57,7 +57,7 @@ AbstractRequestPage._AbstractObjectItem.prototype.remove = function() {
   Backend.removeCacheChangeListener(this._cacheChangeListener);
 }
 
-AbstractRequestPage._AbstractObjectItem.prototype._refill = function() {
+AbstractRequestPage._AbstractObjectItem.prototype.refresh = function() {
   this._clear();
   this._fill();
 }
@@ -95,7 +95,7 @@ AbstractRequestPage._AbstractRequestItem.prototype._cacheChangeListener = functi
         && (event.type == Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED || Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED)) {
 
       if (this._getObject() != null) {
-        this._refill();
+        this.refresh();
       }
     }
   }.bind(this);
@@ -115,7 +115,7 @@ AbstractRequestPage._AbstractOutgoingRequestItem = ClassUtils.defineClass(Abstra
 
 AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   var request = this._getObject();
-  
+
   var dateLabel = UIUtils.appendLabel(this._header, "DateLabel", TimeUtils.getDateTimeSrting(request.time));
   UIUtils.addClass(dateLabel, "request-date-label");
   
@@ -206,7 +206,6 @@ AbstractRequestPage._AbstractIncomingRequestItem.prototype._fill = function() {
     var numOfDaysLeft = Math.floor(timeToLive / (1000 * 60 * 60 * 24));
     var numOfHoursLeft = Math.floor((timeToLive % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var numOfMinutesLeft = Math.floor((timeToLive % (1000 * 60 * 60)) / (1000 * 60));
-
     expiresLabel = UIUtils.appendLabel(this._header, "ExpiresLabel", I18n.getPageLocale("AbstractRequestPage").ExpiresLabelProvider(numOfDaysLeft, numOfHoursLeft, numOfMinutesLeft));
     UIUtils.addClass(expiresLabel, "request-expires-label");
   }
@@ -261,7 +260,7 @@ AbstractRequestPage._AbstractResponseItem.prototype._cacheChangeListener = funct
         && (event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED)) {
 
       if (this._getObject() != null) {
-        this._refill();
+        this.refresh();
       }
     }
   }.bind(this);
@@ -433,6 +432,12 @@ AbstractRequestPage._AbstractItemsView.prototype.remove = function() {
   UIUtils.get$(this._rootElement).remove();
 }
 
+AbstractRequestPage._AbstractItemsView.prototype.refresh = function() {
+  for (var index in this._objectItems) {
+    this._objectItems[index].refresh();
+  }
+}
+
 AbstractRequestPage._AbstractItemsView.prototype._createItem = function(objectId) {
   throw "Undefined";
 }
@@ -555,6 +560,10 @@ AbstractRequestPage._AbstractRequestsTable.prototype.clear = function() {
 AbstractRequestPage._AbstractRequestsTable.prototype.remove = function() {
   this.clear();
   UIUtils.get$(this._rootElement).remove();
+}
+
+AbstractRequestPage._AbstractRequestsTable.prototype.refresh = function() {
+  this._requestsView.refresh();
 }
 
 AbstractRequestPage._AbstractRequestsTable.prototype.getCurrentPage = function() {
