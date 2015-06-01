@@ -33,14 +33,14 @@
 }
 .outgoing-request-container .container-header .request-target-label {
   position: absolute;
-  left: 250px;
+  left: 200px;
   
   color: inherit;
 }
 .outgoing-request-container .container-header .request-expertise-label {
   padding: 0px 5px 1px 5px;
   position: absolute;
-  right: 200px;
+  left: 450px;
   
   border-radius: 4px;
   background-color: red;
@@ -101,7 +101,7 @@
 }
 .full-outgoing-request-container .container-header .request-expertise-label {
   position: absolute;
-  right: 200px;
+  left: 450px;
   top: 2px;
   
   color: inherit;
@@ -115,14 +115,14 @@
 }
 .full-outgoing-request-container .container-header .request-quantity-label {
   position: absolute;
-  left: 100px;
+  left: 200px;
   top: 20px;
 
   color: inherit;
 }
 .full-outgoing-request-container .container-header .request-timeframe-label {
   position: absolute;
-  left: 300px;
+  left: 400px;
   top: 20px;
   
   color: inherit;
@@ -177,7 +177,7 @@
 }
 .incoming-request-container .container-header .request-expires-label {
   position: absolute;
-  left: 300px;
+  left: 200px;
   
   color: inherit;
 }
@@ -229,7 +229,7 @@
 }
 .full-incoming-request-container .container-header .request-expires-label {
   position: absolute;
-  left: 300px;
+  left: 200px;
   top: 2px;
   
   color: inherit;
@@ -342,7 +342,7 @@
 }
 .incoming-response-container .response-contactinfopanel {
   margin: 2px 5px 2px 5px;
-  height: 20px;
+  height: 23px;
 }
 .incoming-response-container .response-contactinfopanel .response-contactinfo {
   display: inline-block;
@@ -352,6 +352,7 @@
   font-size: 12px;
   color: black;
   font-family: Verdana;
+  font-style: italic;
 }
 .incoming-response-container .response-contactinfopanel .response-starrating {
   float: right;
