@@ -35,6 +35,8 @@ MenuPage.prototype.onHide = function() {
   this._lastShownPageId = this._activePage.getPageId();
   this._lastShownPageBundle = this._activePage.getParamBundle();
 
+  this._activePage.hide();
+  
   this._selectedMenuItemId = null;
   this._activePage = null;
   

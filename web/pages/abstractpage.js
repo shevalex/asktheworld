@@ -24,26 +24,22 @@ AbstractPage.prototype.destroy = function() {
 
 AbstractPage.prototype.reset = function() {
   this._isDefined = false;
-  UIUtils.get$(this._pageElement).empty();
+  this._pageElement.innerHTML = "";
 }
 
 AbstractPage.prototype.reload = function() {
-  this._isDefined = false;
-  
-  var isShown = this.isShown();
+  if (!this.isShown()) {
+    this.reset();
+    return;
+  }
 
   var parent = this._pageElement.parentElement;
   var paramBundle = this._paramBundle;
   
-  if (isShown) {
-    this.hide();
-  }
+  this.hide();
+  this.reset();
   
-  this._pageElement.innerHTML = "";
-  
-  if (isShown) {
-    this.show(parent, paramBundle);
-  }
+  this.show(parent, paramBundle);
 }
 
 AbstractPage.prototype.show = function(container, paramBundle) {
