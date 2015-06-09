@@ -234,15 +234,11 @@ Application.showPage = function(pageId, paramBundle, observer) {
 
   this._currentPage = page;
   this.placeHistory(this._currentPage, paramBundle);
-  this._currentPage.showAnimated(this._rootContainer, paramBundle, function() {
-    if (page.getActivePage != null && page.getActivePage() != null) {
-      Application.placeHistory(page.getActivePage(), paramBundle);
-    }
-    
-    if (observer != null) {
-      observer();
-    }
-  });
+
+  this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
+  if (page.getActivePage != null && page.getActivePage() != null) {
+    Application.placeHistory(page.getActivePage(), paramBundle);
+  }
 }
 
 Application.showChildPage = function(parentPageId, childPageId, paramBundle, observer) {

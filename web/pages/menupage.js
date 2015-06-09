@@ -19,11 +19,7 @@ MenuPage.prototype.definePageContent = function(root) {
 }
 
 MenuPage.prototype.onShow = function(root, paramBundle) {
-  if (paramBundle == null || paramBundle.childPageId == null) {
-    return;
-  }
-  
-  var menuItemId = UIUtils.createId(this._menuPanel, paramBundle.childPageId);
+  var menuItemId = UIUtils.createId(this._menuPanel, paramBundle.page);
   var pageIsMenuItem = UIUtils.get$(menuItemId).length > 0;
   if (pageIsMenuItem) {
     if (this._selectedMenuItemId != null) {
