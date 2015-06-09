@@ -213,8 +213,8 @@ Application.showPage = function(pageId, paramBundle, observer) {
     throw "Page does not exist " + pageId;
     return;
   }
-
-  if (this._currentPage == page && Application.isEqualBundle(this._currentPage.getParamBundle(), paramBundle)) {
+  
+  if (this._currentPage == page && page.getActivePage == null && Application.isEqualBundle(this._currentPage.getParamBundle(), paramBundle)) {
     if (observer != null) {
       observer();
     }
@@ -224,30 +224,35 @@ Application.showPage = function(pageId, paramBundle, observer) {
   if (paramBundle == null) {
     paramBundle = {};
   }
-  paramBundle.page = pageId;
+  if (paramBundle.page == null) {
+    paramBundle.page = pageId;
+  }
 
-  if (this._currentPage != null) {
+  if (this._currentPage != null && this._currentPage != page) {
     this._currentPage.hide();
   }
 
   this._currentPage = page;
-  this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
   this.placeHistory(this._currentPage, paramBundle);
+  this._currentPage.showAnimated(this._rootContainer, paramBundle, function() {
+    if (page.getActivePage != null && page.getActivePage() != null) {
+      Application.placeHistory(page.getActivePage(), paramBundle);
+    }
+    
+    if (observer != null) {
+      observer();
+    }
+  });
 }
 
 Application.showChildPage = function(parentPageId, childPageId, paramBundle, observer) {
-  Application.showPage(parentPageId, null, function() {
-    var parentPage = this._getPage(parentPageId);
-    
-    if (paramBundle == null) {
-      paramBundle = {};
-    }
-    paramBundle.parent = parentPageId;
-    paramBundle.page = childPageId;
-    
-    parentPage.showChildPage(childPageId, paramBundle, observer);
-    this.placeHistory(parentPage.getPage(childPageId), paramBundle);
-  }.bind(this));
+  if (paramBundle == null) {
+    paramBundle = {};
+  }
+  paramBundle.parent = parentPageId;
+  paramBundle.page = childPageId;
+
+  this.showPage(parentPageId, paramBundle, observer);
 }
 
 Application.showMenuPage = function(childPageId, paramBundle, observer) {

@@ -72,10 +72,14 @@ AbstractPage.prototype.show = function(container, paramBundle) {
 }
 
 AbstractPage.prototype.showAnimated = function(container, paramBundle, completionObserver) {
-  this.show(container, paramBundle)
+  var isShown = this.isShown();
   
-  this._pageElement.style.display = "none";
-  $("#" + this._pageId).slideDown("slow", completionObserver);
+  this.show(container, paramBundle);
+  
+  if (!isShown) {
+    this._pageElement.style.display = "none";
+    $("#" + this._pageId).slideDown("slow", completionObserver);
+  }
 }
 
 AbstractPage.prototype.hide = function() {
