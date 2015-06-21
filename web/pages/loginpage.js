@@ -62,7 +62,11 @@ LoginPage.prototype.definePageContent = function(root) {
 
 
 LoginPage.prototype.onShow = function(root, paramBundle) {
-  var autoSignAllowed = paramBundle != null && paramBundle[Application.AUTO_LOGIN_PARAM] == "true";
+  if (Application.AutoLogin) {
+    var autoSignAllowed = true;
+    Application.AutoLogin = false;
+  }
+  
   
   var remember = window.localStorage.remember == "yes";
 

@@ -126,7 +126,7 @@ Application.MESSAGE_TIMEOUT_FAST = 1;
 Application.MESSAGE_TIMEOUT_NORMAL = 5;
 Application.MESSAGE_TIMEOUT_SLOW = 10;
 
-Application.AUTO_LOGIN_PARAM = "^autoLogin";
+Application.AutoLogin = "true";
 
 
 Application.start = function() {
@@ -168,10 +168,7 @@ Application.start = function() {
   Application._setupLanguageChooser();
 
   
-  var startupBundle = {};
-  startupBundle[Application.AUTO_LOGIN_PARAM] = "true";
-  
-  this.showPage(LoginPage.name, startupBundle);
+  this.showPage(LoginPage.name);
 }
 
 Application.logOut = function() {
@@ -440,16 +437,6 @@ Application.isEqualBundle = function(bundle1, bundle2) {
 Application.restoreFromHistory = function(hash) {
   var historyBundle = Application._deserialize(hash);
   Application._restorePage(historyBundle);
-  
-//  if (historyBundle.parent != null) {
-//    if (historyBundle.page != null) {
-//      Application.showChildPage(historyBundle.parent, historyBundle.page, historyBundle);
-//    } else {
-//      console.error("Icorrect hash - parent without child: " + hash);
-//    }
-//  } else {
-//    Application._restorePage(historyBundle);
-//  }
 }
 
 Application._restorePage = function(paramBundle) {
