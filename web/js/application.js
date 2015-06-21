@@ -207,20 +207,13 @@ Application.reload = function() {
 
 // PAGE MANAGEMENT
 
-Application.showPage = function(pageId, paramBundle, observer) {
+Application.showPage = function(pageId, paramBundle) {
   var page = this._getPage(pageId);
   if (page == null)  {
     throw "Page does not exist " + pageId;
     return;
   }
   
-  if (this._currentPage == page && page.getActivePage == null && Application.isEqualBundle(this._currentPage.getParamBundle(), paramBundle)) {
-    if (observer != null) {
-      observer();
-    }
-    return;
-  }
-
   if (paramBundle == null) {
     paramBundle = {};
   }
@@ -228,27 +221,28 @@ Application.showPage = function(pageId, paramBundle, observer) {
     paramBundle.page = pageId;
   }
 
-  if (this._currentPage != null && this._currentPage != page) {
-    this._currentPage.hide();
-  }
-
-  this._currentPage = page;
-  this.placeHistory(this._currentPage, paramBundle);
-
-  this._currentPage.showAnimated(this._rootContainer, paramBundle, observer);
-  if (page.getActivePage != null && page.getActivePage() != null) {
-    Application.placeHistory(page.getActivePage(), paramBundle);
-  }
+  this.placeHistory(page, paramBundle);
 }
 
-Application.showChildPage = function(parentPageId, childPageId, paramBundle, observer) {
+Application.showChildPage = function(parentPageId, childPageId, paramBundle) {
+  var page = this._getPage(parentPageId);
+  if (page == null)  {
+    throw "Page does not exist " + parentPageId;
+    return;
+  }
+  var page = this._getPage(childPageId);
+  if (page == null)  {
+    throw "Page does not exist " + childPageId;
+    return;
+  }
+
   if (paramBundle == null) {
     paramBundle = {};
   }
   paramBundle.parent = parentPageId;
   paramBundle.page = childPageId;
 
-  this.showPage(parentPageId, paramBundle, observer);
+  this.placeHistory(page, paramBundle);
 }
 
 Application.showMenuPage = function(childPageId, paramBundle, observer) {
@@ -445,26 +439,43 @@ Application.isEqualBundle = function(bundle1, bundle2) {
 
 Application.restoreFromHistory = function(hash) {
   var historyBundle = Application._deserialize(hash);
+  Application._restorePage(historyBundle);
   
-  if (historyBundle.parent != null) {
-    if (historyBundle.page != null) {
-      Application.showChildPage(historyBundle.parent, historyBundle.page, historyBundle);
-    } else {
-      console.error("Icorrect hash - parent without child: " + hash);
-    }
-  } else {
-    if (historyBundle.page != null) {
-      Application.showPage(historyBundle.page, historyBundle);
-    } else {
-      //console.error("Incorrect hash - no page:" + hash);
-      Application.showPage(LoginPage.name);
-    }
-  }
+//  if (historyBundle.parent != null) {
+//    if (historyBundle.page != null) {
+//      Application.showChildPage(historyBundle.parent, historyBundle.page, historyBundle);
+//    } else {
+//      console.error("Icorrect hash - parent without child: " + hash);
+//    }
+//  } else {
+//    Application._restorePage(historyBundle);
+//  }
 }
+
+Application._restorePage = function(paramBundle) {
+  var pageId = paramBundle.parent != null ? paramBundle.parent : paramBundle.page;
+  
+  var page = this._getPage(pageId);
+  if (page == null)  {
+    throw "Page does not exist " + pageId;
+    return;
+  }
+  
+  if (this._currentPage != null && this._currentPage != page) {
+    this._currentPage.hide();
+  }
+
+  this._currentPage = page;
+  this._currentPage.showAnimated(this._rootContainer, paramBundle);
+}
+
 
 Application.placeHistory = function(page, paramBundle) {
   if (page.hasHistory()) {
-    window.location.hash = Application._serialize(paramBundle);
+    var newHash = Application._serialize(paramBundle);
+    if (newHash != window.location.hash) {
+      window.location.hash = newHash;
+    }
   }
 }
 
