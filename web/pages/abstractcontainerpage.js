@@ -3,7 +3,6 @@ AbstractContainerPage = ClassUtils.defineClass(AbstractPage, function AbstractCo
   
   this._activePage;
   
-  this._animationObserver;
   this._isAnimated = false;
 
   this._pages = [];
@@ -42,10 +41,6 @@ AbstractContainerPage.prototype.show = function(container, paramBundle) {
 
   if (paramBundle != null && paramBundle.page != null && paramBundle.page != this.getPageId()) {
     var newPage = this.getPage(paramBundle.page);
-    if (newPage == null) {
-      console.error("No page for id " + paramBundle.page + " in containing page " + paramBundle.parent);
-      return;
-    }
 
     if (this._activePage == newPage && Application.isEqualBundle(this._activePage.getParamBundle(), paramBundle)) {
       return;
@@ -56,19 +51,18 @@ AbstractContainerPage.prototype.show = function(container, paramBundle) {
     }
 
     this._activePage = newPage;
-    
     if (this._isAnimated) {
-      this._activePage.showAnimated(this.getPageContainer(), paramBundle, this._animationObserver);
+      this._activePage.showAnimated(this.getPageContainer(), paramBundle);
     } else {
       this._activePage.show(this.getPageContainer(), paramBundle);
     }
   }
 }
 
-AbstractContainerPage.prototype.showAnimated = function(container, paramBundle, observer) {
-  this._animationObserver = observer;
+AbstractContainerPage.prototype.showAnimated = function(container, paramBundle) {
   this._isAnimated = true;
-  AbstractPage.prototype.showAnimated.call(this, container, paramBundle, observer);
+  //AbstractPage.prototype.show.call(this, container, paramBundle);
+  this.show(container, paramBundle);
   this._isAnimated = false;
 }
 
@@ -96,8 +90,8 @@ AbstractContainerPage.prototype.getPage = function(pageId) {
   var page = this._pages[pageId];
   if (page == null) {
     if (window[pageId] == null) {
-      console.error("requested unsupported page: " + pageId);
-      return null;
+      console.warn("requested unsupported page: " + pageId);
+      pageId = PageNotFoundPage.name;
     }
     
     page = new window[pageId]();

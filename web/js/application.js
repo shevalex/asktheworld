@@ -326,8 +326,8 @@ Application._getPage = function(pageId) {
   var page = this._pages[pageId];
   if (page == null) {
     if (window[pageId] == null) {
-      console.error("requested unsupported page: " + pageId);
-      return null;
+      console.warn("requested unsupported page: " + pageId);
+      pageId = PageNotFoundPage.name;
     }
     
     page = new window[pageId]();
@@ -443,10 +443,6 @@ Application._restorePage = function(paramBundle) {
   var pageId = paramBundle.parent != null ? paramBundle.parent : paramBundle.page;
   
   var page = this._getPage(pageId);
-  if (page == null)  {
-    throw "Page does not exist " + pageId;
-    return;
-  }
   
   if (this._currentPage != null && this._currentPage != page) {
     this._currentPage.hide();

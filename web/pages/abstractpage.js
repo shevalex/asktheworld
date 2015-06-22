@@ -11,10 +11,15 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
   this._isDefined = false;
   
   this._paramBundle = null;
+  
+  this._animationObserver = null;
 });
 
 
 AbstractPage.prototype.NO_CONTENT = "No content";
+
+AbstractPage.prototype.PAGE_HID = "hid";
+AbstractPage.prototype.PAGE_SHOWN = "shown";
 
 
 AbstractPage.prototype.destroy = function() {
@@ -71,14 +76,20 @@ AbstractPage.prototype.show = function(container, paramBundle) {
   }
 }
 
-AbstractPage.prototype.showAnimated = function(container, paramBundle, completionObserver) {
+AbstractPage.prototype.showAnimated = function(container, paramBundle) {
   var isShown = this.isShown();
-  
+
   this.show(container, paramBundle);
   
   if (!isShown) {
     this._pageElement.style.display = "none";
-    $("#" + this._pageId).slideDown("slow", completionObserver);
+    $("#" + this._pageId).slideDown("slow", function() {
+      if (this._animationObserver != null) {
+        this._animationObserver(AbstractPage.prototype.PAGE_SHOWN);
+      }
+    });
+  } else if (this._animationObserver != null) {
+    this._animationObserver(AbstractPage.prototype.PAGE_SHOWN);
   }
 }
 
@@ -93,17 +104,17 @@ AbstractPage.prototype.hide = function() {
   this._paramBundle = null;
 }
 
-AbstractPage.prototype.hideAnimated = function(completionObserver) {
+AbstractPage.prototype.hideAnimated = function() {
   if (this.isShown()) {
     this.onHide();
     $("#" + this._pageId).slideUp("fast", function() {
       this._pageElement.parentElement.removeChild(this._pageElement);
-      if (completionObserver != null) {
-        completionObserver();
+      if (this._animationObserver != null) {
+        this._animationObserver(AbstractPage.prototype.PAGE_HID);
       }
     }.bind(this));
-  } else if (completionObserver != null) {
-    completionObserver();
+  } else if (this._animationObserver != null) {
+    this._animationObserver(AbstractPage.prototype.PAGE_HID);
   }
 }
 
@@ -132,6 +143,10 @@ AbstractPage.prototype.onHide = function() {
 }
 
 AbstractPage.prototype.onDestroy = function() {
+}
+
+AbstractPage.prototype.setAnimationObserver = function(observer) {
+  this._animationObserver = observer;
 }
 
 
