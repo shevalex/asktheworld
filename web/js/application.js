@@ -130,8 +130,10 @@ Application.AutoLogin = "true";
 
 
 Application.start = function() {
-  this._rootContainer = document.getElementById("RootContainer");
+  window.location.hash = ""; // we need to reset hash to guarantee to start over from scratch
   
+  this._rootContainer = document.getElementById("RootContainer");
+
   window.onhashchange = function() {
     var hash = window.location.hash.substr(1); 
     Application.restoreFromHistory(hash);
@@ -218,7 +220,7 @@ Application.showPage = function(pageId, paramBundle) {
     paramBundle.page = pageId;
   }
 
-  this.placeHistory(page, paramBundle);
+  this._placeHistory(page, paramBundle);
 }
 
 Application.showChildPage = function(parentPageId, childPageId, paramBundle) {
@@ -239,7 +241,7 @@ Application.showChildPage = function(parentPageId, childPageId, paramBundle) {
   paramBundle.parent = parentPageId;
   paramBundle.page = childPageId;
 
-  this.placeHistory(page, paramBundle);
+  this._placeHistory(page, paramBundle);
 }
 
 Application.showMenuPage = function(childPageId, paramBundle, observer) {
@@ -441,7 +443,6 @@ Application.restoreFromHistory = function(hash) {
 
 Application._restorePage = function(paramBundle) {
   var pageId = paramBundle.parent != null ? paramBundle.parent : paramBundle.page;
-  
   var page = this._getPage(pageId);
   
   if (this._currentPage != null && this._currentPage != page) {
@@ -453,17 +454,18 @@ Application._restorePage = function(paramBundle) {
 }
 
 
-Application.placeHistory = function(page, paramBundle) {
+Application.goBack = function() {
+  window.history.back();
+}
+
+
+Application._placeHistory = function(page, paramBundle) {
   if (page.hasHistory()) {
     var newHash = Application._serialize(paramBundle);
     if (newHash != window.location.hash) {
       window.location.hash = newHash;
     }
   }
-}
-
-Application.goBack = function() {
-  window.history.back();
 }
 
 
