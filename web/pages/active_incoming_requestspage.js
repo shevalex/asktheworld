@@ -28,6 +28,11 @@ ActiveIncomingRequestsPage.prototype.definePageContent = function(root) {
 
       Application.showMenuPage(IncomingRequestDetailsPage.name, paramBundle);
     },
+    pageListener: function(currentPage) {
+      var paramBundle = page.getParamBundle() || {};
+      paramBundle.tablePage = currentPage;
+      Application.showPage(page.getPageId(), paramBundle);
+    },
     sortListener: function(sortRule) {
       var sortRule;
       if (sortRule == AbstractRequestPage.SORT_BY_DATE) {
@@ -86,6 +91,13 @@ ActiveIncomingRequestsPage.prototype._updateRequests = function() {
     this._noRequestsNote.style.display = "none";
   }
   this._requestsTable.setRequestIds(requestIds);
+  
+  var tablePageNum = 0;
+  var paramBundle = this.getParamBundle();
+  if (paramBundle != null && paramBundle.tablePage != null) {
+    tablePageNum = parseInt(paramBundle.tablePage);
+  }
+  this._requestsTable.setCurrentPage(tablePageNum);
 }
 
 ActiveIncomingRequestsPage.prototype._getRequestIds = function() {

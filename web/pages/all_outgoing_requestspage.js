@@ -2,7 +2,6 @@ AllOutgoingRequestsPage = ClassUtils.defineClass(AbstractRequestPage, function A
   AbstractRequestPage.call(this, AllOutgoingRequestsPage.name);
   
   this._requestsTable;
-  this._tablePage = 0;
   this._tableLabel;
   this._noRequestsNote;
   this._cacheChangeListener;
@@ -35,8 +34,7 @@ AllOutgoingRequestsPage.prototype.definePageContent = function(root) {
     pageListener: function(currentPage) {
       var paramBundle = page.getParamBundle() || {};
       paramBundle.tablePage = currentPage;
-      Application.placeHistory(page, paramBundle);
-      page._tablePage = currentPage;
+      Application.showPage(page.getPageId(), paramBundle);
     },
     sortListener: function(sortRule) {
       var sortRule;
@@ -92,9 +90,10 @@ AllOutgoingRequestsPage.prototype._updateRequests = function() {
   }
   this._requestsTable.setRequestIds(requestIds);
   
+  var tablePageNum = 0;
   var paramBundle = this.getParamBundle();
   if (paramBundle != null && paramBundle.tablePage != null) {
-    this._tablePage = parseInt(paramBundle.tablePage);
+    tablePageNum = parseInt(paramBundle.tablePage);
   }
-  this._requestsTable.setCurrentPage(this._tablePage);
+  this._requestsTable.setCurrentPage(tablePageNum);
 }
