@@ -3,6 +3,7 @@ IncomingRequestDetailsPage = ClassUtils.defineClass(AbstractRequestPage, functio
   
   this._currentRequestId;
   this._returnPageId;
+  this._requestStatus;
   this._navigatableRequestIds;
   
   this._previousButton;
@@ -24,7 +25,7 @@ IncomingRequestDetailsPage = ClassUtils.defineClass(AbstractRequestPage, functio
 
 IncomingRequestDetailsPage.prototype.definePageContent = function(root) {
   AbstractRequestPage.prototype.definePageContent.call(this, root);
-  
+
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
 
   var backLink = UIUtils.appendLink(contentPanel, "BackLink", this.getLocale().GoBackLink);
@@ -37,6 +38,7 @@ IncomingRequestDetailsPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(this._previousButton, function() {
     Application.showMenuPage(IncomingRequestDetailsPage.name, {
       requestId: this._getPreviousRequestId(),
+      requestStatus: this._requestStatus,
       returnPageId: this._returnPageId,
       otherRequestIds: this._navigatableRequestIds.join(",")
     });
@@ -46,6 +48,7 @@ IncomingRequestDetailsPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(this._nextButton, function() {
     Application.showMenuPage(IncomingRequestDetailsPage.name, {
       requestId: this._getNextRequestId(),
+      requestStatus: this._requestStatus,
       returnPageId: this._returnPageId,
       otherRequestIds: this._navigatableRequestIds.join(",")
     });
@@ -80,9 +83,23 @@ IncomingRequestDetailsPage.prototype.definePageContent = function(root) {
 
 
 IncomingRequestDetailsPage.prototype.onShow = function(root, paramBundle) {
+  //Check if request is still valid
+  var requestFound = false;
+  var incomingRequestIds = Backend.getIncomingRequestIds(paramBundle.requestStatus);
+  for (var index in incomingRequestIds) {
+    if (incomingRequestIds[index] == paramBundle.requestId) {
+      requestFound = true;
+      break;
+    }
+  }
+  if (!requestFound) {
+    throw AbstractPage.prototype.EXPIRED;
+  }
+  
   AbstractRequestPage.prototype.onShow.call(this, root, paramBundle);
   
   this._returnPageId = paramBundle.returnPageId;
+  this._requestStatus = paramBundle.requestStatus;
   this._currentRequestId = paramBundle.requestId;
   this._type = paramBundle.type;
   this._navigatableRequestIds = paramBundle.otherRequestIds.split(",");
@@ -371,3 +388,4 @@ IncomingRequestDetailsPage.prototype._ignoreRequest = function() {
 
   Backend.removeIncomingRequest(this._currentRequestId);
 }
+

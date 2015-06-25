@@ -18,15 +18,22 @@ AbstractDataPage.prototype.definePageContent = function(root) {
   };
 }
 
-AbstractDataPage.prototype.definePageNoContent = function(root) {
+AbstractDataPage.prototype.definePageNoContent = function(root, reason) {
   var contentPanel = UIUtils.createBlock("AbstractDataPage-ContentPanel");
   root.appendChild(contentPanel);
-  UIUtils.appendLabel(contentPanel, "NoContentLabel", I18n.getPageLocale("AbstractDataPage").NoContentLabel);
   
-  var loginLink = UIUtils.appendButton(contentPanel, "LoginLink", I18n.getPageLocale("AbstractDataPage").LoginLink);
-  UIUtils.setClickListener(loginLink, function() {
-    Application.showPage(LoginPage.name);
-  });
+  if (reason == AbstractPage.prototype.NO_CONTENT) {
+    UIUtils.appendLabel(contentPanel, "ReasonLabel", I18n.getPageLocale("AbstractDataPage").NoContentLabel);
+
+    var loginLink = UIUtils.appendButton(contentPanel, "LoginLink", I18n.getPageLocale("AbstractDataPage").LoginLink);
+    UIUtils.setClickListener(loginLink, function() {
+      Application.showPage(LoginPage.name);
+    });
+  } else if (reason == AbstractPage.prototype.EXPIRED) {
+    UIUtils.appendLabel(contentPanel, "ReasonLabel", I18n.getPageLocale("AbstractDataPage").ExpiredLabel);
+  } else {
+    UIUtils.appendLabel(contentPanel, "ReasonLabel", I18n.getPageLocale("AbstractDataPage").CannotDisplayLabel);
+  }
 }
 
 AbstractDataPage.prototype.onShow = function(root, paramBundle) {

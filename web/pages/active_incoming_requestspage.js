@@ -22,6 +22,7 @@ ActiveIncomingRequestsPage.prototype.definePageContent = function(root) {
     clickListener: function(requestId) {
       var paramBundle = {
         returnPageId: ActiveIncomingRequestsPage.name,
+        requestStatus: Backend.Request.STATUS_ACTIVE,
         requestId: requestId,
         otherRequestIds: page._getRequestIds().join(",")
       }

@@ -29,6 +29,7 @@ HomePage.prototype.definePageContent = function(root) {
         type: "incoming",
         returnPageId: HomePage.name,
         requestId: requestId,
+        requestStatus: Backend.Request.STATUS_ACTIVE,
         otherRequestIds: page._getIncomingRequestIds().join(",")
       }
 

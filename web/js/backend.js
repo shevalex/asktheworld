@@ -270,10 +270,12 @@ Backend.REQUEST_IDS_SORT_BY_CATEGORY = "sort_by_category";
 
 
 Backend.Request = {};
+Backend.Request.STATUS_ALL = "all";
 Backend.Request.STATUS_ACTIVE = "active";
 Backend.Request.STATUS_INACTIVE = "inactive";
 
 Backend.Response = {};
+Backend.Response.STATUS_ALL = "all";
 Backend.Response.STATUS_UNREAD = "unread";
 Backend.Response.STATUS_READ = "read";
 Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE = "no";
@@ -435,7 +437,7 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule) {
 
   var result = null;
   if (requestIds != null) {
-    if (requestStatus == null) {
+    if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
       result = requestIds.active != null && requestIds.inactive != null ? requestIds.all : null;
     } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
       result = requestIds.active;
@@ -464,7 +466,7 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule) {
       if (requestIds.all == null) {
         requestIds.all = [];
       }
-      if (requestStatus == null) {
+      if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
         if (requestIds.active == null) {
           requestIds.active = [];
           generateActive = true;
@@ -515,7 +517,7 @@ Backend.getIncomingRequestIds = function(requestStatus, sortRule) {
   
   var result = null;
   if (requestIds != null) {
-    if (requestStatus == null) {
+    if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
       result = requestIds.active != null && requestIds.inactive != null ? requestIds.all : null;
     } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
       result = requestIds.active;
@@ -543,7 +545,7 @@ Backend.getIncomingRequestIds = function(requestStatus, sortRule) {
       if (requestIds.all == null) {
         requestIds.all = [];
       }
-      if (requestStatus == null) {
+      if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
         if (requestIds.active == null) {
           requestIds.active = [];
           generateActive = true;
@@ -680,7 +682,7 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   
   var result = null;
   if (responseIds != null) {
-    if (responseStatus == null) {
+    if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
       result = responseIds.viewed != null && responseIds.unviewed != null ? responseIds.all : null;
     } else if (responseStatus == Backend.Response.STATUS_READ) {
       result = responseIds.viewed;
@@ -708,7 +710,7 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
       if (responseIds.all == null) {
         responseIds.all = [];
       }
-      if (responseStatus == null) {
+      if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
         if (responseIds.unviewed == null) {
           responseIds.unviewed = [];
           generateUnviewed = true;
@@ -776,7 +778,7 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
 
   var result = null;
   if (responseIds != null) {
-    if (responseStatus == null) {
+    if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
       result = responseIds.viewed != null && responseIds.unviewed != null ? responseIds.all : null;
     } else if (responseStatus == Backend.Response.STATUS_READ) {
       result = responseIds.viewed;
@@ -804,7 +806,7 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
       if (responseIds.all == null) {
         responseIds.all = [];
       }
-      if (responseStatus == null) {
+      if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
         if (responseIds.unviewed == null) {
           responseIds.unviewed = [];
           generateUnviewed = true;

@@ -23,6 +23,7 @@ AllIncomingRequestsPage.prototype.definePageContent = function(root) {
       var paramBundle = {
         returnPageId: AllIncomingRequestsPage.name,
         requestId: requestId,
+        requestStatus: Backend.Request.STATUS_ALL,
         otherRequestIds: ""
       }
 

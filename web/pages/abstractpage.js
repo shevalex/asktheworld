@@ -17,6 +17,7 @@ AbstractPage = ClassUtils.defineClass(Object, function AbstractPage(pageId) {
 
 
 AbstractPage.prototype.NO_CONTENT = "No content";
+AbstractPage.prototype.EXPIRED = "Expired";
 
 AbstractPage.prototype.PAGE_HID = "hid";
 AbstractPage.prototype.PAGE_SHOWN = "shown";
@@ -57,22 +58,25 @@ AbstractPage.prototype.show = function(container, paramBundle) {
   this._paramBundle = paramBundle;
   
   container.appendChild(this._pageElement);
+  
   if (!this._isDefined) {
     try {
       this.reset();
       this.definePageContent(this._pageElement);
       this._isDefined = true;
     } catch (e) {
-      if (e == AbstractPage.prototype.NO_CONTENT) {
-        this.definePageNoContent(this._pageElement);
-      } else {
-        console.error(e);
-      }
+      this.definePageNoContent(this._pageElement, e);
     }
   }
 
   if (this._isDefined) {
-    this.onShow(this._pageElement, paramBundle);
+    try {
+      this.onShow(this._pageElement, paramBundle);
+    } catch (e) {
+      // we now need to re-define the page
+      this.reset();
+      this.definePageNoContent(this._pageElement, e);
+    }
   }
 }
 
@@ -133,7 +137,7 @@ AbstractPage.prototype.getPageId = function() {
 AbstractPage.prototype.definePageContent = function(root) {
 }
 
-AbstractPage.prototype.definePageNoContent = function(root) {
+AbstractPage.prototype.definePageNoContent = function(root, reason) {
 }
 
 AbstractPage.prototype.onShow = function(root, paramBundle) {
