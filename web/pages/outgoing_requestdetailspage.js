@@ -249,12 +249,8 @@ OutgoingRequestDetailsPage.prototype._updateRequest = function(requestAttributes
     
     _onCompletion: function() {
       page._updating = false;
-      
-      Application.hideSpinningWheel();
     }
   }
-
-  Application.showSpinningWheel();
 
   Backend.updateRequest(this._currentRequestId, requestAttributesToUpdate, callback);
 }

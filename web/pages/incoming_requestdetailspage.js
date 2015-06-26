@@ -325,12 +325,8 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, resp
     
     _onCompletion: function() {
       page._updating = false;
-      
-      Application.hideSpinningWheel();
     }
   }
-
-  Application.showSpinningWheel();
 
   var response = {
     text: responseText,
@@ -365,12 +361,8 @@ IncomingRequestDetailsPage.prototype._createResponse = function(responseText, at
     
     _onCompletion: function() {
       page._updating = false;
-      
-      Application.hideSpinningWheel();
     }
   }
-
-  Application.showSpinningWheel();
 
   var response = {
     text: responseText, 

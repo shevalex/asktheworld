@@ -1,5 +1,5 @@
-UserProfilePage = ClassUtils.defineClass(AbstractPage, function UserProfilePage() {
-  AbstractPage.call(this, UserProfilePage.name);
+UserProfilePage = ClassUtils.defineClass(AbstractDataPage, function UserProfilePage() {
+  AbstractDataPage.call(this, UserProfilePage.name);
   
   
   this._nameElement;

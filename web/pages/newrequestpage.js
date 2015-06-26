@@ -115,7 +115,6 @@ NewRequestPage.prototype._createRequest = function() {
     _onCompletion: function() {
       page._updating = false;
       
-      Application.hideSpinningWheel();
       Application.showMenuPage(ActiveOutgoingRequestsPage.name);
     }
   }
@@ -130,8 +129,6 @@ NewRequestPage.prototype._createRequest = function() {
     expertise_category: this._requestExpertiseCategoryElement.getSelectedData()
   }
   
-  Application.showSpinningWheel();
-
   Backend.createRequest(request, callback);
 }
 
