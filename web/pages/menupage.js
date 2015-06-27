@@ -31,7 +31,10 @@ MenuPage.prototype.onShow = function(root, paramBundle) {
 }
 
 MenuPage.prototype.onHide = function() {
-  this._selectedMenuItemId = null;
+  if (this._selectedMenuItemId != null) {
+    UIUtils.get$(this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
+    this._selectedMenuItemId = null;
+  }
   this._activePage = null;
   
   this._contentPanel.innerHTML = "";
