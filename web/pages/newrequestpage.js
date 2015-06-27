@@ -20,9 +20,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
   UIUtils.appendLabel(contentPanel, "RequestEditorLabel", this.getLocale().RequestEditorLabel);
   this._requestTextEditor = UIUtils.appendTextEditor(contentPanel, "TextEditor");
 
-  this._attachmentsBar = UIUtils.appendAttachmentBar(contentPanel, null, true, function(file) {
-    Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
-  });
+  this._attachmentsBar = UIUtils.appendAttachmentBar(contentPanel, null, true, Account.canOpenFileController);
   
   UIUtils.appendLabel(contentPanel, "ExpertiseCategoryLabel", this.getLocale().ExpertiseCategoryLabel);
   this._requestExpertiseCategoryElement = contentPanel.appendChild(UIUtils.createMultiOptionList(UIUtils.createId(contentPanel, "ExpertiseCategory"), Application.Configuration.EXPERTISES, true));

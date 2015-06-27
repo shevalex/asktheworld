@@ -1,5 +1,5 @@
 
-var Application = {
+ Application = {
   Configuration: {
     LANGUAGES: [ {data: "eng", display: I18n.getLocale().literals.LanguageEnglish}, {data: "rus", display: I18n.getLocale().literals.LanguageRussian}, {data: "ger", display: I18n.getLocale().literals.LanguageGerman}, {data: "esp", display: I18n.getLocale().literals.LanguageSpanish}, {data: "fra", display: I18n.getLocale().literals.LanguageFrench}, {data: "por", display: I18n.getLocale().literals.LanguagePortugeese}, {data: "grc", display: I18n.getLocale().literals.LanguageGreece}, {data: "gon", display: I18n.getLocale().literals.LanguageGondurasee}],
     EXPERTISES: [ {data: "general", display: I18n.getLocale().literals.ExpertiseGeneral}, {data: "law", display: I18n.getLocale().literals.ExpertiseLaw}, {data: "medicine", display: I18n.getLocale().literals.ExpertiseMedicine}, {data: "construction", display: I18n.getLocale().literals.ExpertiseConstruction}],

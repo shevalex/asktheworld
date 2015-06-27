@@ -154,9 +154,7 @@ OutgoingRequestDetailsPage.prototype._showEditingRequest = function() {
 
   var requestTextEditor = UIUtils.appendTextEditor(this._requestPanel, "TextEditor");
   requestTextEditor.setValue(request.text);
-  var attachmentsBar = UIUtils.appendAttachmentBar(this._requestPanel, null, true, function(file) {
-    Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
-  });
+  var attachmentsBar = UIUtils.appendAttachmentBar(this._requestPanel, null, true, Account.canOpenFileController);
   attachmentsBar.setAttachments(request.attachments);
   
   
