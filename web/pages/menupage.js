@@ -3,11 +3,8 @@ MenuPage = ClassUtils.defineClass(AbstractContainerPage, function MenuPage() {
   
   this._contentPanel;
   this._selectedMenuItemId;
+  this._activePage;
   
-//  this._lastShownPageBundle;
-//  this._lastShownPageId;
-  
-
   this._menuPanel;
 });
 
