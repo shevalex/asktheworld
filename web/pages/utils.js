@@ -777,17 +777,17 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, openFileCont
       });
 
       if (FileUtils.isImage(attachment)) {
-        previewElement.style.backgroundImage = "url(" + attachment.data + ")";
+        previewElement.style.backgroundImage = attachment.data != null ? "url(" + attachment.data + ")" : attachment.url;
       } else if (FileUtils.isVideo(attachment)) {
         var videoElement = UIUtils.appendElement(previewElement, "video", "VideoPreview");
         UIUtils.addClass(videoElement, "attachmentbar-preview-video");
-        videoElement.src = attachment.data;
+        videoElement.src = attachment.data != null ? attachment.data : attachment.url;
         videoElement.autoplay = true;
         videoElement.controls = true;
       } else if (FileUtils.isAudio(attachment)) {
         var audioElement = UIUtils.appendElement(previewElement, "audio", "AudioPreview");
         UIUtils.addClass(audioElement, "attachmentbar-preview-audio");
-        audioElement.src = attachment.data;
+        audioElement.src = attachment.data != null ? attachment.data : attachment.url;
         audioElement.autoplay = true;
         audioElement.controls = true;
       }
