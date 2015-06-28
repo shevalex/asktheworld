@@ -790,6 +790,8 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, openFileCont
         audioElement.src = attachment.data != null ? attachment.data : attachment.url;
         audioElement.autoplay = true;
         audioElement.controls = true;
+      } else {
+        console.error("Preview for this format is not supported");
       }
         
 
@@ -812,6 +814,12 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, openFileCont
       UIUtils.setClickListener(thumbnail, openPreview.bind(this, attachment));
     } else {
       UIUtils.addClass(thumbnail, "attachmentbar-thumbnail-default");
+      
+      if (attachment.url != null) {
+        UIUtils.setClickListener(thumbnail, function() {
+          window.open(attachment.url);
+        }.bind(this, attachment));
+      }
     }
   }
   
