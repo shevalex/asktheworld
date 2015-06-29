@@ -3,11 +3,8 @@ MenuPage = ClassUtils.defineClass(AbstractContainerPage, function MenuPage() {
   
   this._contentPanel;
   this._selectedMenuItemId;
+  this._activePage;
   
-//  this._lastShownPageBundle;
-//  this._lastShownPageId;
-  
-
   this._menuPanel;
 });
 
@@ -31,7 +28,10 @@ MenuPage.prototype.onShow = function(root, paramBundle) {
 }
 
 MenuPage.prototype.onHide = function() {
-  this._selectedMenuItemId = null;
+  if (this._selectedMenuItemId != null) {
+    UIUtils.get$(this._selectedMenuItemId).removeClass("menupage-menuitem-selected");
+    this._selectedMenuItemId = null;
+  }
   this._activePage = null;
   
   this._contentPanel.innerHTML = "";

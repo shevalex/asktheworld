@@ -209,9 +209,7 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
 
   var responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
   responseTextEditor.setValue(response.text);
-  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, function(file) {
-    Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
-  });
+  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, Account.canOpenFileController);
   attachmentsBar.setAttachments(response.attachments);
   
   var buttonsPanel = UIUtils.appendBlock(this._responsePanel, "ControlButtonsPanel");
@@ -241,9 +239,7 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
   UIUtils.get$(this._responsePanel).empty();
 
   var responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
-  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, function(file) {
-    Application.showMessage(I18n.getLocale().literals.FileTooBigMessage);
-  });
+  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, Account.canOpenFileController);
   
   var buttonsPanel = UIUtils.appendBlock(this._responsePanel, "ControlButtonsPanel");
   
@@ -325,12 +321,8 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, resp
     
     _onCompletion: function() {
       page._updating = false;
-      
-      Application.hideSpinningWheel();
     }
   }
-
-  Application.showSpinningWheel();
 
   var response = {
     text: responseText,
@@ -365,12 +357,8 @@ IncomingRequestDetailsPage.prototype._createResponse = function(responseText, at
     
     _onCompletion: function() {
       page._updating = false;
-      
-      Application.hideSpinningWheel();
     }
   }
-
-  Application.showSpinningWheel();
 
   var response = {
     text: responseText, 

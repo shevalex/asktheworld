@@ -87,9 +87,19 @@ ValidationUtils.isValidPassword = function(password) {
 
 FileUtils = {};
 FileUtils.IMAGE_FILE_TYPE = "image";
+FileUtils.VIDEO_FILE_TYPE = "video";
+FileUtils.AUDIO_FILE_TYPE = "audio";
 
 FileUtils.isImage = function(file) {
   return file.type.indexOf(FileUtils.IMAGE_FILE_TYPE) == 0;
+}
+
+FileUtils.isVideo = function(file) {
+  return file.type.indexOf(FileUtils.VIDEO_FILE_TYPE) == 0;
+}
+
+FileUtils.isAudio = function(file) {
+  return file.type.indexOf(FileUtils.AUDIO_FILE_TYPE) == 0;
 }
 
 FileUtils.loadFile = function(file, loadObserver) {
@@ -194,6 +204,20 @@ UIUtils.appendButton = function(root, buttonId, text, isCriticalAction) {
   }
 
   return button;
+}
+
+
+
+UIUtils.createElement = function(type, elementId) {
+  var el = document.createElement(type);
+  if (elementId != null) {
+    el.setAttribute("id", elementId);
+  }
+  
+  return el;
+}
+UIUtils.appendElement = function(root, type, id) {
+  return root.appendChild(UIUtils.createElement(type, UIUtils.createId(root, id)));
 }
 
 
@@ -657,7 +681,7 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
 
 
 
-UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFileListener) {
+UIUtils.appendAttachmentBar = function(root, attachments, editable, openFileController) {
   var attachmentBar = UIUtils.appendBlock(root, "AttachmentBar");
   UIUtils.addClass(attachmentBar, "attachmentbar");
   
@@ -683,10 +707,7 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFi
         var selectedFile = files[0];
         UIUtils.get$(fileChooser).remove();
 
-        if (selectedFile.size > 5 * 1024000) {
-          if (cannotOpenFileListener != null) {
-            cannotOpenFileListener(selectedFile);
-          }
+        if (openFileController != null && !openFileController(selectedFile)) {
           return;
         }
 
@@ -741,30 +762,64 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, cannotOpenFi
       });
     }
 
+    
+    var openPreview = function(attachment) {
+      var previewElement = UIUtils.appendBlock(attachmentsPanel, "Preview");
+      UIUtils.addClass(previewElement, "attachmentbar-preview");
+
+      var previewCloser = UIUtils.appendBlock(previewElement, "X");
+      UIUtils.addClass(previewCloser, "attachmentbar-preview-x");
+
+      UIUtils.removeIfClickedOutside(previewElement);
+
+      UIUtils.setClickListener(previewCloser, function() {
+        UIUtils.get$(previewElement).remove();
+      });
+
+      if (FileUtils.isImage(attachment)) {
+        previewElement.style.backgroundImage = attachment.data != null ? "url(" + attachment.data + ")" : attachment.url;
+      } else if (FileUtils.isVideo(attachment)) {
+        var videoElement = UIUtils.appendElement(previewElement, "video", "VideoPreview");
+        UIUtils.addClass(videoElement, "attachmentbar-preview-video");
+        videoElement.src = attachment.data != null ? attachment.data : attachment.url;
+        videoElement.autoplay = true;
+        videoElement.controls = true;
+      } else if (FileUtils.isAudio(attachment)) {
+        var audioElement = UIUtils.appendElement(previewElement, "audio", "AudioPreview");
+        UIUtils.addClass(audioElement, "attachmentbar-preview-audio");
+        audioElement.src = attachment.data != null ? attachment.data : attachment.url;
+        audioElement.autoplay = true;
+        audioElement.controls = true;
+      } else {
+        console.error("Preview for this format is not supported");
+      }
+        
+
+      var previewTitle = UIUtils.appendBlock(previewElement, "Title");
+      UIUtils.addClass(previewTitle, "attachmentbar-preview-title");
+      previewTitle.innerHTML = attachment.name;
+    }
+    
     if (FileUtils.isImage(attachment)) {
       thumbnail.style.backgroundImage = "url(" + attachment.data + ")";
 
-      UIUtils.setClickListener(thumbnail, function(attachment) {
-        var previewElement = UIUtils.appendBlock(attachmentsPanel, "Preview");
-        UIUtils.addClass(previewElement, "attachmentbar-preview");
-
-        var previewCloser = UIUtils.appendBlock(previewElement, "X");
-        UIUtils.addClass(previewCloser, "attachmentbar-preview-x");
-
-        UIUtils.removeIfClickedOutside(previewElement);
-
-        UIUtils.setClickListener(previewCloser, function() {
-          UIUtils.get$(previewElement).remove();
-        });
-
-        previewElement.style.backgroundImage = "url(" + attachment.data + ")";
-
-        var previewTitle = UIUtils.appendBlock(previewElement, "Title");
-        UIUtils.addClass(previewTitle, "attachmentbar-preview-title");
-        previewTitle.innerHTML = attachment.name;
-      }.bind(this, attachment));
+      UIUtils.setClickListener(thumbnail, openPreview.bind(this, attachment));
+    } else if (FileUtils.isVideo(attachment)) {
+      UIUtils.addClass(thumbnail, "attachmentbar-thumbnail-video");
+      
+      UIUtils.setClickListener(thumbnail, openPreview.bind(this, attachment));
+    } else if (FileUtils.isAudio(attachment)) {
+      UIUtils.addClass(thumbnail, "attachmentbar-thumbnail-audio");
+      
+      UIUtils.setClickListener(thumbnail, openPreview.bind(this, attachment));
     } else {
-      // TBD provide special icons for other file types
+      UIUtils.addClass(thumbnail, "attachmentbar-thumbnail-default");
+      
+      if (attachment.url != null) {
+        UIUtils.setClickListener(thumbnail, function() {
+          window.open(attachment.url);
+        }.bind(this, attachment));
+      }
     }
   }
   

@@ -42,5 +42,6 @@ AbstractDataPage.prototype.onShow = function(root, paramBundle) {
 
 AbstractDataPage.prototype.onHide = function() {
   Backend.removeCacheChangeListener(this._updateListener);
+  Application.hideSpinningWheel();
 }
 

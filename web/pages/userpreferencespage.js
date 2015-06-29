@@ -1,5 +1,5 @@
-UserPreferencesPage = ClassUtils.defineClass(AbstractPage, function UserPreferencesPage() {
-  AbstractPage.call(this, UserPreferencesPage.name);
+UserPreferencesPage = ClassUtils.defineClass(AbstractDataPage, function UserPreferencesPage() {
+  AbstractDataPage.call(this, UserPreferencesPage.name);
   
   this._quantityElement;
   this._waitTimeElement;
