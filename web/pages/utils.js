@@ -712,7 +712,7 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, openFileCont
         }
 
         FileUtils.loadFile(selectedFile, function(file, dataUrl) {
-          attachmentBar.addAttachment({data: dataUrl, name: file.name, type: file.type, loaded: true});
+          attachmentBar.addAttachment({data: dataUrl, name: file.name, type: file.type, url: null});
         });
       });
     });

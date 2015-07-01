@@ -286,6 +286,8 @@ Backend.Response.CONTACT_INFO_STATUS_PROVIDED = "provided";
 
 Backend.createRequest = function(request, transactionCallback) {
   Backend.Cache.markOutgoingRequestIdsInUpdate();
+
+  // TODO: Temporary - to be removed
   var newRequestId = "request" + Backend.Cache.getOutgoingRequestIds().all.length;
   Backend.Cache.markRequestInUpdate(newRequestId);
   
@@ -305,18 +307,21 @@ Backend.createRequest = function(request, transactionCallback) {
       transactionCallback.success();
     }
   }.bind(this), 1000);
+  // END OF Temporary
   
   
-  /*
+  /* processed, NOT integrated
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
-        Backend._updateRequestCache();
-        transactionCallback.success(xhr.getResponseHeader("Location"));
+        var newRequestId = xhr.getResponseHeader("Location");
+        Backend._pullRequest(newRequestId); //TODO: remove, this is temporary. It should be replaced with events
+        Backend._pullOutgoingRequestIds(); //TODO: remove, this is temporary. It should be replaced with events
+        transactionCallback.success(newRequestId);
       }
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 400 || xhr.status == 401) {
+      if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403) {
         transactionCallback.failure();
       } else {
         transactionCallback.error();
@@ -326,14 +331,14 @@ Backend.createRequest = function(request, transactionCallback) {
 
   this._communicate("request", "POST",
     { 
-      user_id: Backend.UserProfile.userId,
+      user_id: Backend.getUserProfile().userId,
       text: request.text,
-      pictures: request.pictures,
-      audios: request.audios,
-      response_quantity: requestParams.quantity,
-      response_wait_time: requestParams.waitTime,
-      response_age_group: requestParams.age,
-      response_gender: requestParams.gender
+      attachments: request.attachments, // each attachment: {name, url, data, type}
+      response_quantity: request.response_quantity,
+      response_wait_time: request.response_wait_time,
+      response_age_group: request.response_age_group,
+      response_gender: request.response_gender,
+      expertise_category: request.expertise_category
     },
     false, this._getAuthenticationHeader(), communicationCallback);
     */
@@ -342,6 +347,7 @@ Backend.createRequest = function(request, transactionCallback) {
 Backend.updateRequest = function(requestId, request, transactionCallback) {
   Backend.Cache.markRequestInUpdate(requestId);
   
+  // TODO: Temporary - to be removed
   setTimeout(function() {
     var existingRequest = Backend.Cache.getRequest(requestId);
     for (var key in request) {
@@ -370,17 +376,18 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
       transactionCallback.success();
     }
   }.bind(this), 1000);
+  // END OF Temporary
 
-  /*
+  /* processed, NOT integrated
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        Backend._updateRequestCache();
+        Backend._pullRequest(requestId); //TODO: remove, this is temporary. It should be replaced with events
         transactionCallback.success();
       }
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 400 || xhr.status == 401) {
+      if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
         transactionCallback.failure();
       } else {
         transactionCallback.error();
@@ -390,46 +397,80 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
 
   this._communicate("request/" + requestId, "PUT",
     { 
-      user_id: Backend.UserProfile.userId,
+      user_id: Backend.getUserProfile().userId,
       text: request.text,
-      pictures: request.pictures,
-      audios: request.audios,
-      response_quantity: requestParams.quantity,
-      response_wait_time: requestParams.waitTime,
-      response_age_group: requestParams.age,
-      response_gender: requestParams.gender,
-      status: requestParams.status
+      attachments: request.attachments, // each attachment: {name, url, data, type}
+      response_quantity: request.response_quantity,
+      response_wait_time: request.response_wait_time,
+      response_age_group: request.response_age_group,
+      response_gender: request.response_gender,
+      expertise_category: request.expertise_category,
+      status: request.status
     },
     false, this._getAuthenticationHeader(), communicationCallback);
     */
 }
 
-
-Backend.createResponse = function(requestId, response, transactionCallback) {
-  Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
-  var newResponseId = requestId + "-response" + Backend.Cache.getOutgoingResponseIds(requestId).all.length;
-  Backend.Cache.markResponseInUpdate(requestId, newResponseId);
-  
-  setTimeout(function() {
-    var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
-    responseIds.all.push(newResponseId);
-    responseIds.unviewed.push(newResponseId);
-    
-    response.time = Date.now();
-    response.age_category = Backend.UserProfile.age;
-    response.gender = Backend.UserProfile.gender;
-    response.status = Backend.Response.STATUS_UNREAD;
-
-    Backend.Cache.setResponse(requestId, newResponseId, response);
-    Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
-    
-    if (transactionCallback != null) {
-      transactionCallback.success(newResponseId);
+Backend.getRequest = function(requestId) {
+  var request = Backend.Cache.getRequest(requestId);
+  if (request != null || Backend.Cache.isRequestInUpdate(requestId)) {
+    //TO BE REMOVED
+    if (request != null && request.status == Backend.Request.STATUS_ACTIVE) {
+      var timeToLive = (request.time + request.response_wait_time * 1000 * 60 * 60) - Date.now();
+      if (timeToLive < 0) {
+        request.status = Backend.Request.STATUS_INACTIVE;
+      }
     }
-  }.bind(this), 1000);
+    
+    return request;
+  }
+  
+  Backend._pullRequest(requestId);
+  return null;
 }
 
+Backend._pullRequest = function(requestId) {
+  Backend.Cache.markRequestInUpdate(requestId);
+  
+  // TODO: Temporary - to be removed
+  setTimeout(function() {
+    Backend.Cache.setRequest(requestId, this._createDummyRequest(requestId));
+  }.bind(this), 1000);
+  // END OF Temporary
+  
+  /* processed, NOT integrated
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        var request = {
+          text: data.text,
+          time: data.time,
+          attachments: data.attachments,
+          response_quantity: data.response_quantity,
+          response_wait_time: data.response_wait_time,
+          response_age_group: data.response_age_group,
+          response_gender: data.response_gender,
+          expertise_category: data.expertise_category,
+          status: data.status
+        };
+      
+        Backend.Cache.setRequest(requestId, request);
+        transactionCallback.success();
+      }
+    },
+    error: function(xhr, status, error) {
+      if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+        transactionCallback.failure();
+      } else {
+        transactionCallback.error();
+      }
+      Backend.Cache.setRequest(requestId, null);
+    }
+  }
 
+  this._communicate("request/" + requestId, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  */
+}
 
 
 Backend.getOutgoingRequestIds = function(requestStatus, sortRule) {
@@ -610,26 +651,30 @@ Backend.removeIncomingRequest = function(requestId, callback) {
   }.bind(this), 1000);
 }
 
-Backend.getRequest = function(requestId) {
-  var request = Backend.Cache.getRequest(requestId);
-  if (request != null || Backend.Cache.isRequestInUpdate(requestId)) {
-    //TO BE FEMOVED
-    if (request != null && request.status == Backend.Request.STATUS_ACTIVE) {
-      var timeToLive = (request.time + request.response_wait_time * 1000 * 60 * 60) - Date.now();
-      if (timeToLive < 0) {
-        request.status = Backend.Request.STATUS_INACTIVE;
-      }
-    }
-    
-    return request;
-  }
+
+
+Backend.createResponse = function(requestId, response, transactionCallback) {
+  Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
+  var newResponseId = requestId + "-response" + Backend.Cache.getOutgoingResponseIds(requestId).all.length;
+  Backend.Cache.markResponseInUpdate(requestId, newResponseId);
   
-  Backend.Cache.markRequestInUpdate(requestId);
   setTimeout(function() {
-    Backend.Cache.setRequest(requestId, this._createDummyRequest(requestId));
+    var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
+    responseIds.all.push(newResponseId);
+    responseIds.unviewed.push(newResponseId);
+    
+    response.time = Date.now();
+    response.age_category = Backend.UserProfile.age;
+    response.gender = Backend.UserProfile.gender;
+    response.status = Backend.Response.STATUS_UNREAD;
+
+    Backend.Cache.setResponse(requestId, newResponseId, response);
+    Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
+    
+    if (transactionCallback != null) {
+      transactionCallback.success(newResponseId);
+    }
   }.bind(this), 1000);
-  
-  return null;
 }
 
 Backend.getResponse = function(requestId, responseId) {
