@@ -128,6 +128,7 @@ public class DB {
 		//Assign it to right users
 		//Find users base on request
 		List<ATWUser> users = findIncomingRequestUsers(request);
+		System.out.println("USER List size: "+users!=null?users.size():"null");
 		//TODO: shuffle ?
 		
 		//TODO: what we should do if list is empty or smaller than user wants?
@@ -156,15 +157,11 @@ public class DB {
 	private List<ATWUser> findIncomingRequestUsers(ATWRequest request) {
 		String gender = request.getResponse_gender();
 		String age = request.getResponse_age_group();
-		//TODO: it should not be here. 
-		if (gender == null || GenderRequest.ALL.equals(gender)){
-			gender = "%";
-		}
-		if (age == null || AgeRequest.ALL.equals(age)){
-			age = "%";
-		}
-		System.out.println("Gender "+gender + "    Age "+ age);
-		return users.findUserByAgeAndGender(age, gender);
+		AgeRequest ar = AgeRequest.forValue(age); //TODO: MUST use Age enum
+		Gender gr = Gender.forValue(gender);
+		
+		System.out.println("Gender "+gender + "    Age "+ age + " Enums: Age=" + ar + "  Gender=" + gr);
+		return users.findUserByAgeAndGender(ar, gr);
 		
 	}
 	public ATWRequest getRequest(int id) {

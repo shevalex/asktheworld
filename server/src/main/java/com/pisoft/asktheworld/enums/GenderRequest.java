@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum GenderRequest {
     MALE("male"),
     FAMALE("famale"),
+    OTHER("other"), //TODO: do we need this here? 
     ALL("all");
 
 	private static Map<String, GenderRequest> map = new HashMap<String, GenderRequest>();
@@ -21,7 +22,7 @@ public enum GenderRequest {
 
 	@JsonCreator
 	public static GenderRequest forValue(String value) {
-	    return map.get(value);
+	    return map.get(value.toLowerCase());
 	}
 
 	@JsonValue

@@ -34,4 +34,10 @@ public enum AgeRequest {
 	public String toValue() {
 		return value;
 	}
+	public String toQueryString() {
+		if (this == ALL) {
+			return "%";
+		}
+		return toValue();
+	}
 }

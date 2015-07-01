@@ -36,8 +36,8 @@ public class ATWUser implements Serializable {
 	private String password;
 	@Column
 	private String languages[];
-	@Column
-	private Gender gender;
+	@Column(columnDefinition="default 2") //TODO: need to add default value 
+	private Gender gender = Gender.OTHER; //TODO: default value is not working
 	@Column
 	private String name;
 	@Column

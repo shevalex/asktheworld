@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.pisoft.asktheworld.enums.AgeRequest;
+import com.pisoft.asktheworld.enums.Gender;
+
 @Repository
 public class UserDAOImpl extends AbstractDAO<ATWUser>{
 	private String findByLoginQuery = "select u from " + ATWUser.class.getName() + " u where u.login=?1";
@@ -33,12 +36,12 @@ public class UserDAOImpl extends AbstractDAO<ATWUser>{
 
 	private String findUserByAgeAndGender = "select u from " + ATWUser.class.getName() + " u where"+ 
 			" u.age_category like ?1 and " +
-			" u.gender like ?2";
+			" ( u.gender = ?2 or ?2 is null )"; //Fucking magic!
 
-	public List<ATWUser> findUserByAgeAndGender(String age, String gender) {
+	public List<ATWUser> findUserByAgeAndGender(AgeRequest age, Gender gender) {
 		@SuppressWarnings("unchecked")
 		List<ATWUser> list =  entityManager.createQuery(findUserByAgeAndGender)
-				.setParameter(1, age)
+				.setParameter(1, age.toQueryString()) //TODO: change age category to enum (int) 
 				.setParameter(2, gender)
 				.getResultList();
 		//TODO: Clean this up

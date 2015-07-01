@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Gender {
     MALE("male"),
-    FAMALE("famale");
+    FAMALE("famale"),
+    OTHER("other");
+    
 
 	private static Map<String, Gender> map = new HashMap<String, Gender>();
 	private final String value;
