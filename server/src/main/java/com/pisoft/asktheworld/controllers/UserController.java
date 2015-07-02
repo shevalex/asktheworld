@@ -38,7 +38,7 @@ public class UserController {
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
 		//check if user exist (by name)
-		//TODO: rework this fucing logic
+		//TODO: rework this fucking logic
 		ATWUser existUser = db.findUser(user.getLogin());
 		ATWUser newUser = null;
 		if (existUser == null) {

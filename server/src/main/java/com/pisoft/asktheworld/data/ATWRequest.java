@@ -38,14 +38,9 @@ public class ATWRequest implements Serializable {
 	private String text;
 	
 	@Embedded
-	@ElementCollection
-    //@CollectionTable(name = "ATWPicture", joinColumns =@JoinColumn(name="request_id"))
-	private List<ATWPicture> pictures = new ArrayList<ATWPicture>();
-
-	@Embedded
-	@ElementCollection
-    //@CollectionTable(name = "ATWAudio", joinColumns = @JoinColumn(name="request_id"))
-	private List<ATWAudio> audios = new ArrayList<ATWAudio>();
+	@ElementCollection  //JFI: ElementCollection operation are always cascaded with EntityManager 
+    //@CollectionTable(name = "ATWAttachment", joinColumns =@JoinColumn(name="request_id"))
+	private List<ATWAttachment> attachments = new ArrayList<ATWAttachment>();
 
 	@Column
 	private int response_quantity;
@@ -57,8 +52,9 @@ public class ATWRequest implements Serializable {
 	private String response_gender = "all"; //TODO: default value
 	@Column
 	private String status;
+	@Column
+	private String expertise_category;
 	
-
 	@Version
 	@Column(name="UPDATE_TS")
 	private Calendar modificationDate;
@@ -84,17 +80,11 @@ public class ATWRequest implements Serializable {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public List<ATWPicture> getPictures() {
-		return pictures;
+	public List<ATWAttachment> getAttachments() {
+		return attachments;
 	}
-	public void setPictures(List<ATWPicture> pictures) {
-		this.pictures = pictures;
-	}
-	public List<ATWAudio> getAudios() {
-		return audios;
-	}
-	public void setAudios(List<ATWAudio> audios) {
-		this.audios = audios;
+	public void setAttachments(List<ATWAttachment> attachments) {
+		this.attachments = attachments;
 	}
 	public int getResponse_quantity() {
 		return response_quantity;
@@ -126,4 +116,11 @@ public class ATWRequest implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public String getExpertise_category() {
+		return expertise_category;
+	}
+	public void setExpertise_category(String expertise_category) {
+		this.expertise_category = expertise_category;
+	}
+
 }
