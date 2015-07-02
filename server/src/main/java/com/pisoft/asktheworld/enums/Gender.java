@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Gender {
     MALE("male"),
-    FAMALE("famale"),
+    FEMALE("female"),
     OTHER("other");
     
 
@@ -21,15 +21,20 @@ public enum Gender {
 	}
 
 	@JsonCreator
-	public static Gender forValue(String value) {
-	    return map.get(value);
+	public static Gender forValueJson(String value) {
+	    Gender g = forValue(value);
+		return g!=null?g:OTHER;  
 	}
 
 	@JsonValue
-	public String toValue() {
+	public String toValueJason() {
 		return value;
 	}
-    
+
+	public static Gender forValue(String value) {
+	    return map.get(value.toLowerCase()); //TODO: is toLowCase quick enought? 
+	}
+
     private Gender(String gender) {
         this.value = gender;
     }

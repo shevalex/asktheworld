@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum GenderRequest {
     MALE("male"),
-    FAMALE("famale"),
+    FEMALE("female"),
     OTHER("other"), //TODO: do we need this here? 
     ALL("all");
 
