@@ -1,7 +1,8 @@
 var Backend = {
 };
 
-Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
+//Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
+Backend._SERVER_BASE_URL = "http://127.0.0.1:8080/";
 
 
 // USER MANAGEMENT
@@ -288,43 +289,48 @@ Backend.createRequest = function(request, transactionCallback) {
   Backend.Cache.markOutgoingRequestIdsInUpdate();
 
   // TODO: Temporary - to be removed
-  var newRequestId = "request" + Backend.Cache.getOutgoingRequestIds().all.length;
-  Backend.Cache.markRequestInUpdate(newRequestId);
-  
-  setTimeout(function() {
-    var requestIds = Backend.Cache.getOutgoingRequestIds();
-    requestIds.all.push(newRequestId);
-    requestIds.active.push(newRequestId);
-    Backend.Cache.setOutgoingRequestIds(requestIds);
-    Backend.Cache.setIncomingResponseIds(newRequestId, []);
-    
-    request.time = Date.now();
-    request.status = Backend.Request.STATUS_ACTIVE;
-    
-    Backend.Cache.setRequest(newRequestId, request);
-    
-    if (transactionCallback != null) {
-      transactionCallback.success();
-    }
-  }.bind(this), 1000);
+//  var newRequestId = "request" + Backend.Cache.getOutgoingRequestIds().all.length;
+//  Backend.Cache.markRequestInUpdate(newRequestId);
+//  
+//  setTimeout(function() {
+//    var requestIds = Backend.Cache.getOutgoingRequestIds();
+//    requestIds.all.push(newRequestId);
+//    requestIds.active.push(newRequestId);
+//    Backend.Cache.setOutgoingRequestIds(requestIds);
+//    Backend.Cache.setIncomingResponseIds(newRequestId, []);
+//    
+//    request.time = Date.now();
+//    request.status = Backend.Request.STATUS_ACTIVE;
+//    
+//    Backend.Cache.setRequest(newRequestId, request);
+//    
+//    if (transactionCallback != null) {
+//      transactionCallback.success();
+//    }
+//  }.bind(this), 1000);
   // END OF Temporary
   
   
-  /* processed, NOT integrated
+  /* processed, NOT integrated*/
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
         var newRequestId = xhr.getResponseHeader("Location");
         Backend._pullRequest(newRequestId); //TODO: remove, this is temporary. It should be replaced with events
         Backend._pullOutgoingRequestIds(); //TODO: remove, this is temporary. It should be replaced with events
-        transactionCallback.success(newRequestId);
+        
+        if (transactionCallback != null) {
+          transactionCallback.success(newRequestId);
+        }
       }
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403) {
-        transactionCallback.failure();
-      } else {
-        transactionCallback.error();
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
       }
     }
   }
@@ -340,57 +346,61 @@ Backend.createRequest = function(request, transactionCallback) {
       response_gender: request.response_gender,
       expertise_category: request.expertise_category
     },
-    false, this._getAuthenticationHeader(), communicationCallback);
-    */
+  false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.updateRequest = function(requestId, request, transactionCallback) {
   Backend.Cache.markRequestInUpdate(requestId);
   
   // TODO: Temporary - to be removed
-  setTimeout(function() {
-    var existingRequest = Backend.Cache.getRequest(requestId);
-    for (var key in request) {
-      if (key == "status" && existingRequest[key] != request[key] && request.status == Backend.Request.STATUS_INACTIVE) {
-        var allRequestIds = Backend.Cache.getOutgoingRequestIds();
-        for (var index in allRequestIds.active) {
-          if (allRequestIds.active[index] == requestId) {
-            allRequestIds.active.splice(index, 1);
-            
-            if (allRequestIds.inactive != null) {
-              allRequestIds.inactive.push(requestId);
-            }
-            
-            Backend.Cache.setOutgoingRequestIds(allRequestIds);
-            break;
-          }
-        }
-      }
-      
-      existingRequest[key] = request[key];
-    }
-
-    Backend.Cache.setRequest(requestId, existingRequest);
-    
-    if (transactionCallback != null) {
-      transactionCallback.success();
-    }
-  }.bind(this), 1000);
+//  setTimeout(function() {
+//    var existingRequest = Backend.Cache.getRequest(requestId);
+//    for (var key in request) {
+//      if (key == "status" && existingRequest[key] != request[key] && request.status == Backend.Request.STATUS_INACTIVE) {
+//        var allRequestIds = Backend.Cache.getOutgoingRequestIds();
+//        for (var index in allRequestIds.active) {
+//          if (allRequestIds.active[index] == requestId) {
+//            allRequestIds.active.splice(index, 1);
+//            
+//            if (allRequestIds.inactive != null) {
+//              allRequestIds.inactive.push(requestId);
+//            }
+//            
+//            Backend.Cache.setOutgoingRequestIds(allRequestIds);
+//            break;
+//          }
+//        }
+//      }
+//      
+//      existingRequest[key] = request[key];
+//    }
+//
+//    Backend.Cache.setRequest(requestId, existingRequest);
+//    
+//    if (transactionCallback != null) {
+//      transactionCallback.success();
+//    }
+//  }.bind(this), 1000);
   // END OF Temporary
 
-  /* processed, NOT integrated
+  /* processed, NOT integrated*/
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
         Backend._pullRequest(requestId); //TODO: remove, this is temporary. It should be replaced with events
-        transactionCallback.success();
+        
+        if (transactionCallback != null) {
+          transactionCallback.success();
+          }
       }
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
-        transactionCallback.failure();
-      } else {
-        transactionCallback.error();
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
       }
     }
   }
@@ -407,8 +417,7 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
       expertise_category: request.expertise_category,
       status: request.status
     },
-    false, this._getAuthenticationHeader(), communicationCallback);
-    */
+  false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getRequest = function(requestId) {
@@ -429,16 +438,16 @@ Backend.getRequest = function(requestId) {
   return null;
 }
 
-Backend._pullRequest = function(requestId) {
+Backend._pullRequest = function(requestId, transactionCallback) {
   Backend.Cache.markRequestInUpdate(requestId);
   
   // TODO: Temporary - to be removed
-  setTimeout(function() {
-    Backend.Cache.setRequest(requestId, this._createDummyRequest(requestId));
-  }.bind(this), 1000);
+//  setTimeout(function() {
+//    Backend.Cache.setRequest(requestId, this._createDummyRequest(requestId));
+//  }.bind(this), 1000);
   // END OF Temporary
   
-  /* processed, NOT integrated
+  /* processed, NOT integrated*/
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -455,21 +464,25 @@ Backend._pullRequest = function(requestId) {
         };
       
         Backend.Cache.setRequest(requestId, request);
-        transactionCallback.success();
+        
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
       }
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
-        transactionCallback.failure();
-      } else {
-        transactionCallback.error();
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
       }
       Backend.Cache.setRequest(requestId, null);
     }
   }
 
   this._communicate("request/" + requestId, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
-  */
 }
 
 
@@ -479,7 +492,7 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule, transactionCal
   var result = null;
   if (requestIds != null) {
     if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
-      result = requestIds.active != null && requestIds.inactive != null ? requestIds.all : null;
+      result = requestIds.all;
     } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
       result = requestIds.active;
     } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
@@ -492,100 +505,124 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule, transactionCal
   if (result != null || Backend.Cache.isOutgoingRequestIdsInUpdate()) {
     return result;
   } else {
-    Backend.Cache.markOutgoingRequestIdsInUpdate();
-
-    // Temporary code - to be removed
-    setTimeout(function() {
-      var requestIds = Backend.Cache.getOutgoingRequestIds();
-      if (requestIds == null) {
-        requestIds = {};
-      }
-      
-
-      var generateActive = false;
-      var generateInactive = false;
-      
-      if (requestIds.all == null) {
-        requestIds.all = [];
-      }
-      if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
-        if (requestIds.active == null) {
-          requestIds.active = [];
-          generateActive = true;
-        }
-        if (requestIds.inactive == null) {
-          requestIds.inactive = [];
-          generateInactive = true;
-        }
-      } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
-        if (requestIds.active == null) {
-          requestIds.active = [];
-          generateActive = true;
-        }
-      } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-        if (requestIds.inactive == null) {
-          requestIds.inactive = [];
-          generateInactive = true;
-        }
-      }
-
-      var numOfRequests = Math.floor(Math.random() * 50);
-      for (var i = 0; i < numOfRequests; i++) {
-        var isActive = Math.random() < 0.5;
-        if (isActive) {
-          if (generateActive) {
-            var id = "request" + (50 + i);
-            requestIds.all.push(id);
-            requestIds.active.push(id);
-          }
-        } else {
-          if (generateInactive) {
-            var id = "request" + i;
-            requestIds.all.push(id);
-            requestIds.inactive.push(id);
-          }
-        }
-      }
-      
-      Backend.Cache.setOutgoingRequestIds(requestIds);
-    }.bind(this), 1000);
-    // End of temporary code
-    
-    /* processed, NOT integrated
-    var communicationCallback = {
-      success: function(data, status, xhr) {
-        if (xhr.status == 200) {
-          Backend.Cache.setOutgoingRequestIds(data);
-          transactionCallback.success();
-        }
-      },
-      error: function(xhr, status, error) {
-        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
-          transactionCallback.failure();
-        } else {
-          transactionCallback.error();
-        }
-        Backend.Cache.setOutgoingRequestIds(null);
-      }
-    }
-    
-    var statusQuery;
-    if (requestStatus == Backend.Request.STATUS_ACTIVE) {
-      statusQuery = "active";
-    } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-      statusQuery = "inactive";
-    } else {
-      statusQuery = "all";
-    }
-
-    this._communicate("user/" + Backend.getUserProfile.userId + "/requests/outgoing?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
-    */
+    Backend._pullOutgoingRequestIds(requestStatus, sortRule, transactionCallback);
     
     return null;
   }
 }
 
-Backend.getIncomingRequestIds = function(requestStatus, sortRule) {
+Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionCallback) {
+  Backend.Cache.markOutgoingRequestIdsInUpdate();
+
+    // Temporary code - to be removed
+//    setTimeout(function() {
+//      var requestIds = Backend.Cache.getOutgoingRequestIds();
+//      if (requestIds == null) {
+//        requestIds = {};
+//      }
+//      
+//
+//      var generateActive = false;
+//      var generateInactive = false;
+//      
+//      if (requestIds.all == null) {
+//        requestIds.all = [];
+//      }
+//      if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
+//        if (requestIds.active == null) {
+//          requestIds.active = [];
+//          generateActive = true;
+//        }
+//        if (requestIds.inactive == null) {
+//          requestIds.inactive = [];
+//          generateInactive = true;
+//        }
+//      } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+//        if (requestIds.active == null) {
+//          requestIds.active = [];
+//          generateActive = true;
+//        }
+//      } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+//        if (requestIds.inactive == null) {
+//          requestIds.inactive = [];
+//          generateInactive = true;
+//        }
+//      }
+//
+//      var numOfRequests = Math.floor(Math.random() * 50);
+//      for (var i = 0; i < numOfRequests; i++) {
+//        var isActive = Math.random() < 0.5;
+//        if (isActive) {
+//          if (generateActive) {
+//            var id = "request" + (50 + i);
+//            requestIds.all.push(id);
+//            requestIds.active.push(id);
+//          }
+//        } else {
+//          if (generateInactive) {
+//            var id = "request" + i;
+//            requestIds.all.push(id);
+//            requestIds.inactive.push(id);
+//          }
+//        }
+//      }
+//      
+//      Backend.Cache.setOutgoingRequestIds(requestIds);
+//    }.bind(this), 1000);
+    // End of temporary code
+  
+  /* processed, NOT integrated*/
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        var requestIds = {};
+
+        if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
+          requestIds.all = data;
+          requestIds.active = null;
+          requestIds.inactive = null;
+        } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+          requestIds.all = null;
+          requestIds.active = data;
+          requestIds.inactive = null;
+        } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+          requestIds.all = null;
+          requestIds.active = null;
+          requestIds.inactive = data;
+        }
+
+        Backend.Cache.setOutgoingRequestIds(requestIds);
+
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+      Backend.Cache.setOutgoingRequestIds(null);
+    }
+  }
+
+  var statusQuery;
+  if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+    statusQuery = "active";
+  } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+    statusQuery = "inactive";
+  } else {
+    statusQuery = "all";
+  }
+
+  this._communicate("user/" + Backend.getUserProfile.userId + "/requests/outgoing?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+}
+
+Backend.getIncomingRequestIds = function(requestStatus, sortRule, transactionCallback) {
   var requestIds = Backend.Cache.getIncomingRequestIds();
   
   var result = null;
@@ -604,84 +641,173 @@ Backend.getIncomingRequestIds = function(requestStatus, sortRule) {
   if (result != null || Backend.Cache.isIncomingRequestIdsInUpdate()) {
     return result;
   } else {
-    Backend.Cache.markIncomingRequestIdsInUpdate();
-
-    setTimeout(function() {
-      var requestIds = Backend.Cache.getIncomingRequestIds();
-      if (requestIds == null) {
-        requestIds = {};
-      }
-
-      var generateActive = false;
-      var generateInactive = false;
-
-      if (requestIds.all == null) {
-        requestIds.all = [];
-      }
-      if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
-        if (requestIds.active == null) {
-          requestIds.active = [];
-          generateActive = true;
-        }
-        if (requestIds.inactive == null) {
-          requestIds.inactive = [];
-          generateInactive = true;
-        }
-      } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
-        if (requestIds.active == null) {
-          requestIds.active = [];
-          generateActive = true;
-        }
-      } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-        if (requestIds.inactive == null) {
-          requestIds.inactive = [];
-          generateInactive = true;
-        }
-      }
-
-      var numOfRequests = Math.floor(Math.random() * 50);
-      for (var i = 0; i < numOfRequests; i++) {
-        var isActive = Math.random() < 0.5;
-
-        if (isActive) {
-          if (generateActive) {
-            var id = "request" + (100 + 50 + i);
-            requestIds.all.push(id);
-            requestIds.active.push(id);
-          }
-        } else {
-          if (generateInactive) {
-            var id = "request" + (100 + i);
-            requestIds.all.push(id);
-            requestIds.inactive.push(id);
-          }
-        }
-      }
-
-      Backend.Cache.setIncomingRequestIds(requestIds);
-    }.bind(this), 1000);
+    Backend._pullIncomingRequestIds(requestStatus, sortRule, transactionCallback);
 
     return null;
   }
 }
 
-Backend.removeIncomingRequest = function(requestId, callback) {
+Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionCallback) {
+  Backend.Cache.markIncomingRequestIdsInUpdate();
+
+//    setTimeout(function() {
+//      var requestIds = Backend.Cache.getIncomingRequestIds();
+//      if (requestIds == null) {
+//        requestIds = {};
+//      }
+//
+//      var generateActive = false;
+//      var generateInactive = false;
+//
+//      if (requestIds.all == null) {
+//        requestIds.all = [];
+//      }
+//      if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
+//        if (requestIds.active == null) {
+//          requestIds.active = [];
+//          generateActive = true;
+//        }
+//        if (requestIds.inactive == null) {
+//          requestIds.inactive = [];
+//          generateInactive = true;
+//        }
+//      } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+//        if (requestIds.active == null) {
+//          requestIds.active = [];
+//          generateActive = true;
+//        }
+//      } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+//        if (requestIds.inactive == null) {
+//          requestIds.inactive = [];
+//          generateInactive = true;
+//        }
+//      }
+//
+//      var numOfRequests = Math.floor(Math.random() * 50);
+//      for (var i = 0; i < numOfRequests; i++) {
+//        var isActive = Math.random() < 0.5;
+//
+//        if (isActive) {
+//          if (generateActive) {
+//            var id = "request" + (100 + 50 + i);
+//            requestIds.all.push(id);
+//            requestIds.active.push(id);
+//          }
+//        } else {
+//          if (generateInactive) {
+//            var id = "request" + (100 + i);
+//            requestIds.all.push(id);
+//            requestIds.inactive.push(id);
+//          }
+//        }
+//      }
+//
+//      Backend.Cache.setIncomingRequestIds(requestIds);
+//    }.bind(this), 1000);
+  
+  /* processed, NOT integrated*/
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        var requestIds = {};
+
+        if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
+          requestIds.all = data;
+          requestIds.active = null;
+          requestIds.inactive = null;
+        } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+          requestIds.all = null;
+          requestIds.active = data;
+          requestIds.inactive = null;
+        } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+          requestIds.all = null;
+          requestIds.active = null;
+          requestIds.inactive = data;
+        }
+
+        Backend.Cache.setIncomingRequestIds(requestIds);
+
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+      Backend.Cache.setIncomingRequestIds(null);
+    }
+  }
+
+  var statusQuery;
+  if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+    statusQuery = "active";
+  } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+    statusQuery = "inactive";
+  } else {
+    statusQuery = "all";
+  }
+
+  this._communicate("user/" + Backend.getUserProfile.userId + "/requests/incoming?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+}
+
+
+Backend.removeIncomingRequest = function(requestId, transactionCallback) {
   Backend.Cache.markIncomingRequestIdsInUpdate();
   
-  setTimeout(function() {
-    var requestIds = Backend.Cache.getIncomingRequestIds();
+//  setTimeout(function() {
+//    var requestIds = Backend.Cache.getIncomingRequestIds();
+//
+//    requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
+//    requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
+//    requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
+//    
+//    Backend.Cache.setIncomingRequestIds(requestIds);
+//
+//    if (transactionCallback != null) {
+//      transactionCallback.success();
+//    }
+//  }.bind(this), 1000);
+  
+  /* processed, NOT integrated*/
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        var requestIds = Backend.Cache.getIncomingRequestIds();
 
-    requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
-    requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
-    requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
-    
-    Backend.Cache.setIncomingRequestIds(requestIds);
+        requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
+        requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
+        requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
 
-    if (callback != null) {
-      callback.success();
+        Backend.Cache.setIncomingRequestIds(requestIds);
+
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+      Backend.Cache.setIncomingRequestIds(null);
     }
-  }.bind(this), 1000);
+  }
+
+  this._communicate("user/" + Backend.getUserProfile.userId + "/requests/incoming/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
+
+
+
 
 
 
