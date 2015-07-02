@@ -473,7 +473,7 @@ Backend._pullRequest = function(requestId) {
 }
 
 
-Backend.getOutgoingRequestIds = function(requestStatus, sortRule) {
+Backend.getOutgoingRequestIds = function(requestStatus, sortRule, transactionCallback) {
   var requestIds = Backend.Cache.getOutgoingRequestIds();
 
   var result = null;
@@ -494,6 +494,7 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule) {
   } else {
     Backend.Cache.markOutgoingRequestIdsInUpdate();
 
+    // Temporary code - to be removed
     setTimeout(function() {
       var requestIds = Backend.Cache.getOutgoingRequestIds();
       if (requestIds == null) {
@@ -548,6 +549,37 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule) {
       
       Backend.Cache.setOutgoingRequestIds(requestIds);
     }.bind(this), 1000);
+    // End of temporary code
+    
+    /* processed, NOT integrated
+    var communicationCallback = {
+      success: function(data, status, xhr) {
+        if (xhr.status == 200) {
+          Backend.Cache.setOutgoingRequestIds(data);
+          transactionCallback.success();
+        }
+      },
+      error: function(xhr, status, error) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+        Backend.Cache.setOutgoingRequestIds(null);
+      }
+    }
+    
+    var statusQuery;
+    if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+      statusQuery = "active";
+    } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
+      statusQuery = "inactive";
+    } else {
+      statusQuery = "all";
+    }
+
+    this._communicate("user/" + Backend.getUserProfile.userId + "/requests/outgoing?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+    */
     
     return null;
   }
