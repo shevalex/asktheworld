@@ -8,8 +8,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Age {
-    TEENS("teens"),
-    ADULTS("adults"),
+    CHILDREN("children"),
+	TEENAGER("teenager"),
+	YOUNG("young"),
+	ADULTS("adults"),
     SENIORS("senior");
     
     
