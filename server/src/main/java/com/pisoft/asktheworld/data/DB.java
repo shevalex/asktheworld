@@ -229,11 +229,14 @@ public class DB {
 		//TODO: move selecting and sorting into DAO layer? 
 		ATWUser user = getUser(id);
 		List<Integer> requestsIDs;
-		RequestStatus rStatus = RequestStatus.valueOf(status); 
+		RequestStatus rStatus = RequestStatus.forValue(status); 
 		//if staus is all, return without filtrations
+		System.out.println("User id="+id+"  status "+status);
 		if(rStatus == RequestStatus.ALL) {
+			System.out.println("Requests all statuses");
 			requestsIDs = user.getIncomingRequestsIDs();
 		} else {
+			System.out.println("Requests just statuses "+rStatus);
 			//this list should not be null
 			List<ATWRequest> requests = user.getIncomingRequests();
 			requestsIDs = new ArrayList<Integer>();

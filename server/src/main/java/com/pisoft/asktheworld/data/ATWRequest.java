@@ -51,7 +51,7 @@ public class ATWRequest implements Serializable {
 	@Column
 	private String response_gender = "all"; //TODO: default value
 	@Column
-	private String status;
+	private String status = "active";
 	@Column
 	private String expertise_category;
 	
