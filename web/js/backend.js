@@ -578,17 +578,17 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
         var requestIds = {};
 
         if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
-          requestIds.all = data;
+          requestIds.all = data.requests;
           requestIds.active = null;
           requestIds.inactive = null;
         } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
           requestIds.all = null;
-          requestIds.active = data;
+          requestIds.active = data.requests;
           requestIds.inactive = null;
         } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
           requestIds.all = null;
           requestIds.active = null;
-          requestIds.inactive = data;
+          requestIds.inactive = data.requests;
         }
 
         Backend.Cache.setOutgoingRequestIds(requestIds);
@@ -712,17 +712,17 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
         var requestIds = {};
 
         if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
-          requestIds.all = data;
+          requestIds.all = data.requests;
           requestIds.active = null;
           requestIds.inactive = null;
         } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
           requestIds.all = null;
-          requestIds.active = data;
+          requestIds.active = data.requests;
           requestIds.inactive = null;
         } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
           requestIds.all = null;
           requestIds.active = null;
-          requestIds.inactive = data;
+          requestIds.inactive = data.requests;
         }
 
         Backend.Cache.setIncomingRequestIds(requestIds);
