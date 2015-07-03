@@ -69,8 +69,10 @@ public class AuthFilter extends GenericFilterBean {
             if (cr.length > 1 && db.findUser(cr[0]) != null && db.findUser(cr[0]).getPassword().equals(cr[1])) 
             {
             	//User exist in DB and has uses correct password
-
+            	//TODO: remove this. It is not working properly. Need correct auth procedure 
             	//check url
+            	int index = sr.getRequestURL().indexOf("/user");
+            	if(index >= 0) {
             	String pattern = sr.getRequestURL().substring(sr.getRequestURL().indexOf("/user"));
             	System.out.println("Path info: " +pattern);
             	UsernamePasswordAuthenticationToken authentication;
@@ -87,7 +89,8 @@ public class AuthFilter extends GenericFilterBean {
                 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails((HttpServletRequest) request));
                 // set the authentication into the SecurityContext
-                SecurityContextHolder.getContext().setAuthentication( authentication);         
+                SecurityContextHolder.getContext().setAuthentication( authentication);
+            	}
             }
         } else {
         	System.out.println("No token in request");
