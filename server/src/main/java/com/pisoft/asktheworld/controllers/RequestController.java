@@ -84,7 +84,7 @@ public class RequestController {
 		if(list == null) {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<String>(Arrays.toString(list.toArray()), HttpStatus.OK);
+		return new ResponseEntity<String>("{\"requests\":"+Arrays.toString(list.toArray())+"}", HttpStatus.OK);
 	}
 	
 	//For specific user incoming requests 
@@ -96,7 +96,7 @@ public class RequestController {
 		if(list == null) {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<String>(Arrays.toString(list.toArray()), HttpStatus.OK);
+		return new ResponseEntity<String>("{\"requests\":"+Arrays.toString(list.toArray())+"}", HttpStatus.OK);
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE, value="/user/{user_id}/requests/incoming/{requestID}")
