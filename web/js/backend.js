@@ -709,20 +709,22 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        var requestIds = {};
-
-        if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
-          requestIds.all = data.requests;
-          requestIds.active = null;
-          requestIds.inactive = null;
-        } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
+        var requestIds = Backend.Cache.getIncomingRequestIds();
+        if (requestIds == null) {
+          requestIds = {};
+        }
+        
+        if (data.active != null) {
+          requestIds.active = data.active;
+        }
+        if (data.inactive != null) {
+          requestIds.inactive = data.inactive;
+        }
+        
+        if (data.active != null && data.inactive != null) {
+          requestIds.all = data.active.concat(data.inactive);
+        } else {
           requestIds.all = null;
-          requestIds.active = data.requests;
-          requestIds.inactive = null;
-        } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-          requestIds.all = null;
-          requestIds.active = null;
-          requestIds.inactive = data.requests;
         }
 
         Backend.Cache.setIncomingRequestIds(requestIds);
