@@ -206,11 +206,13 @@ public class DB {
 		//test it here not necessary but leave it for protection now
 		ATWUser existUser = getUser(id);
 		List<ATWRequest> list = null;
+		RequestStatus rStatus = RequestStatus.forValue(status); 
+		
 		if(existUser != null) {
-			if (status != null) {
-				list = requests.findOutgoingRequestsByUserId(id, status, sorting);
-			} else {
+			if(rStatus == RequestStatus.ALL) {
 				list = requests.findOutgoingRequestsByUserId(id, sorting);
+			} else {
+				list = requests.findOutgoingRequestsByUserId(id, status, sorting);
 			}
 		}
 		return list;

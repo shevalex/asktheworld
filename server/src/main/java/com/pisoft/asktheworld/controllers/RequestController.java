@@ -85,7 +85,7 @@ public class RequestController {
 
 	//For specific user outgoing requests
 	@RequestMapping(method=RequestMethod.GET, value="/user/{user_id}/requests/outgoing")
-	public ResponseEntity<String> getOutgoingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false) String  status,
+	public ResponseEntity<String> getOutgoingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false, defaultValue="all") String  status,
 			@RequestParam(value="sorting", required = false, defaultValue="chronologically") String  sorting) {
 		//TODO: check if user id is correct?  I am not sure that we should check this
 		List<Integer> list = db.getUserOutgoingRequestsIDs(id, status, sorting);
