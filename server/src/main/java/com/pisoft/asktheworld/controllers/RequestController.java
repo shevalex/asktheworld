@@ -5,9 +5,12 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.enterprise.inject.Produces;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +28,11 @@ import com.pisoft.asktheworld.data.DB;
 public class RequestController {
 	@Autowired
 	private DB db;
+	private static HttpHeaders responseHeaders;
+	static {
+		responseHeaders = new HttpHeaders();
+		responseHeaders.setContentType(MediaType.APPLICATION_JSON);
+	}
 	
 	@RequestMapping(method = RequestMethod.POST, value="request")
 	public ResponseEntity<String> createRequest(@RequestBody ATWRequest request) {
@@ -84,7 +92,7 @@ public class RequestController {
 		if(list == null) {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<String>("{\"requests\":"+Arrays.toString(list.toArray())+"}", HttpStatus.OK);
+		return new ResponseEntity<String>("{\"requests\":"+Arrays.toString(list.toArray())+"}", responseHeaders, HttpStatus.OK);
 	}
 	
 	//For specific user incoming requests 
@@ -96,7 +104,7 @@ public class RequestController {
 		if(list == null) {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<String>("{\"requests\":"+Arrays.toString(list.toArray())+"}", HttpStatus.OK);
+		return new ResponseEntity<String>("{\"requests\":"+Arrays.toString(list.toArray())+"}", responseHeaders, HttpStatus.OK);
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE, value="/user/{user_id}/requests/incoming/{requestID}")
