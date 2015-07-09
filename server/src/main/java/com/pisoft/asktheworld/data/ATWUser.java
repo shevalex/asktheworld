@@ -159,6 +159,4 @@ Hibernate:
 	public List<ATWRequest> getIncomingRequests() {
 		return incomingRequets;
 	}
-	
-	
 }

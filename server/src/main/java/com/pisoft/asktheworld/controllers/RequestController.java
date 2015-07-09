@@ -2,6 +2,7 @@ package com.pisoft.asktheworld.controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pisoft.asktheworld.data.ATWRequest;
 import com.pisoft.asktheworld.data.ATWUser;
 import com.pisoft.asktheworld.data.DB;
+import com.pisoft.asktheworld.enums.RequestStatus;
 
 @RestController
 public class RequestController {
@@ -88,11 +90,13 @@ public class RequestController {
 	public ResponseEntity<String> getOutgoingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false, defaultValue="all") String  status,
 			@RequestParam(value="sorting", required = false, defaultValue="chronologically") String  sorting) {
 		//TODO: check if user id is correct?  I am not sure that we should check this
-		List<Integer> list = db.getUserOutgoingRequestsIDs(id, status, sorting);
-		if(list == null) {
+		List<Integer> activeList = new ArrayList<Integer>();
+		List<Integer> inactiveList = new ArrayList<Integer>();
+
+		if(db.getUserOutgoingRequestsIDs(id, status, sorting, activeList, inactiveList) == null) {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<String>("{\"requests\":"+Arrays.toString(list.toArray())+"}", responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<String>("{\"active\":"+Arrays.toString(activeList.toArray())+", \"inactive\":"+Arrays.toString(inactiveList.toArray())+"}", responseHeaders, HttpStatus.OK);
 	}
 	
 	//For specific user incoming requests 
@@ -100,11 +104,12 @@ public class RequestController {
 	public ResponseEntity<String> getIncomingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false, defaultValue="all") String  status,
 			@RequestParam(value="sorting", required = false, defaultValue="chronologically") String  sorting) {
 		//TODO: check if user id is correct?  I am not sure that we need to check this
-		List<Integer> list = db.getUserIncomingRequestsIDs(id, status, sorting);
-		if(list == null) {
+		List<Integer> activeList = new ArrayList<Integer>();
+		List<Integer> inactiveList = new ArrayList<Integer>();
+		if (db.getUserIncomingRequestsIDs(id, status, sorting, activeList, inactiveList) == null) {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<String>("{\"requests\":"+Arrays.toString(list.toArray())+"}", responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<String>("{\"active\":"+Arrays.toString(activeList.toArray())+", \"inactive\":"+Arrays.toString(inactiveList.toArray())+"}", responseHeaders, HttpStatus.OK);
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE, value="/user/{user_id}/requests/incoming/{requestID}")
@@ -118,11 +123,5 @@ public class RequestController {
 //~/user/{user id}/requests/incoming
 //status=<request status to match against the returned request ids>. If not specified, all requests will be returned.
 //sorting=”chronologically” | … TBD
-
-
-	
-	
-	
-	
 
 }

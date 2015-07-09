@@ -9,20 +9,18 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum RequestStatus {
 	ACTIVE("active"),
-	EXPIRED("expired"),
-	DELETED("deleted"),
+	INACTIVE("inactive"),
 	ALL("all");
-		
+
+	private final String status;
+	
 	private RequestStatus(String s) {
 		status = s;
 	}
 	
-	
 	public boolean equals(String s) {
 		return s == this.status;
 	}
-	
-	private final String status;
 	
 	private static Map<String, RequestStatus> map = new HashMap<String, RequestStatus>();
 
@@ -33,7 +31,8 @@ public enum RequestStatus {
 
 	@JsonCreator
 	public static RequestStatus forValue(String value) {
-	    return map.get(value);
+	    RequestStatus rs = map.get(value.toLowerCase()); 
+		return rs!=null?rs:ALL;
 	}
 
 	@JsonValue

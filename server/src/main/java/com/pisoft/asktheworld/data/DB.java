@@ -192,27 +192,25 @@ public class DB {
 	 * @param sorting - sorting field. Now we support just creation time sorting  
 	 * @return list of outgoing requests ids or empty list 
 	 */
-	public List<Integer> getUserOutgoingRequestsIDs(int id, String status, String sorting) {
-		List<Integer> listIDs = null;
-		List<ATWRequest> listRequests = findUserOutgoingRequests(id, status, sorting);
-		if(listRequests != null) {
-			listIDs = new ArrayList<Integer>();
-			for(Iterator<ATWRequest> it = listRequests.iterator(); it.hasNext(); listIDs.add(it.next().getId()));
-		}
-		return listIDs;
+	public ATWUser getUserOutgoingRequestsIDs(int id, String status, String sorting, List<Integer> active, List<Integer> inactive) {
+		ATWUser user = getUser(id);
+		if(user == null) return null;
+		RequestStatus rStatus = RequestStatus.forValue(status);
+		List<ATWRequest> listRequests = findUserOutgoingRequests(id, rStatus, sorting);
+		fillRequestsArrays(listRequests,  rStatus, active, inactive);
+		return user;
 	}
 
-	public List<ATWRequest> findUserOutgoingRequests(int id, String status, String sorting) {
+	public List<ATWRequest> findUserOutgoingRequests(int id, RequestStatus status, String sorting) {
 		//test it here not necessary but leave it for protection now
 		ATWUser existUser = getUser(id);
 		List<ATWRequest> list = null;
-		RequestStatus rStatus = RequestStatus.forValue(status); 
 		
 		if(existUser != null) {
-			if(rStatus == RequestStatus.ALL) {
+			if(status == RequestStatus.ALL) {
 				list = requests.findOutgoingRequestsByUserId(id, sorting);
 			} else {
-				list = requests.findOutgoingRequestsByUserId(id, status, sorting);
+				list = requests.findOutgoingRequestsByUserId(id, status.toValue(), sorting);
 			}
 		}
 		return list;
@@ -226,30 +224,16 @@ public class DB {
 	 * @param sorting is not supported yet
 	 * @return list of ids or empty list
 	 */
-	public List<Integer> getUserIncomingRequestsIDs(int id, String status, String sorting) {
+	public ATWUser getUserIncomingRequestsIDs(int id, String status, String sorting, List<Integer> active, List<Integer> inactive) {
 		//TODO: add support for sorting
 		//TODO: move selecting and sorting into DAO layer? 
 		ATWUser user = getUser(id);
-		List<Integer> requestsIDs;
-		RequestStatus rStatus = RequestStatus.forValue(status); 
-		//if staus is all, return without filtrations
+		if ( user == null) return user;
+		RequestStatus rStatus = RequestStatus.forValue(status);
 		System.out.println("User id="+id+"  status "+status);
-		if(rStatus == RequestStatus.ALL) {
-			System.out.println("Requests all statuses");
-			requestsIDs = user.getIncomingRequestsIDs();
-		} else {
-			System.out.println("Requests just statuses "+rStatus);
-			//this list should not be null
-			List<ATWRequest> requests = user.getIncomingRequests();
-			requestsIDs = new ArrayList<Integer>();
-			for(Iterator<ATWRequest> it = requests.iterator(); it.hasNext(); ) {
-				ATWRequest r = it.next();
-				if (rStatus.equals(r.getStatus())) {
-					requestsIDs.add(r.getId());
-				}
-			}
-		}
-		return requestsIDs;
+		List<ATWRequest> requests = user.getIncomingRequests();
+		fillRequestsArrays(requests, rStatus, active, inactive);
+		return user;
 	}
 
 	/**
@@ -318,5 +302,31 @@ public class DB {
 			}
 		}
 		return null;
+	}
+	
+	private void fillRequestsArrays(List<ATWRequest> requests, RequestStatus status, List<Integer> active, List<Integer> inactive) {
+		if(status == RequestStatus.ALL) {
+			for(Iterator<ATWRequest> it = requests.iterator(); it.hasNext(); ) {
+				ATWRequest r = it.next();
+				RequestStatus currStat = RequestStatus.forValue(r.getStatus());
+				if (RequestStatus.ACTIVE == currStat) {
+					active.add(r.getId());
+				}
+				if (RequestStatus.INACTIVE == currStat) {
+					inactive.add(r.getId());
+				}
+			} //end for
+		} else {
+			//this list should not be null
+			for(Iterator<ATWRequest> it = requests.iterator(); it.hasNext(); ) {
+				ATWRequest r = it.next();
+				if (status == RequestStatus.forValue(r.getStatus())) {
+					if (status == RequestStatus.ACTIVE)
+						active.add(r.getId());
+					else
+						inactive.add(r.getId());
+				}
+			} //end for
+		}		
 	}
 }
