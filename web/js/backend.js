@@ -1422,7 +1422,7 @@ Backend._communicate = function(resource, method, data, isJsonResponse, headers,
     request.setRequestHeader(name, headers[name]);
   }
 
-  request.send();  
+  request.send(data != null ? JSON.stringify(data) : "");  
   
 //  $.ajax({
 //    url: Backend._SERVER_BASE_URL + resource,
