@@ -1405,16 +1405,35 @@ Backend.Cache._notifyCacheListeners = function(type, requestId, responseId) {
 
 
 Backend._communicate = function(resource, method, data, isJsonResponse, headers, callback) {
-  $.ajax({
-    url: Backend._SERVER_BASE_URL + resource,
-    type: method,
-    data: data != null ? JSON.stringify(data) : "",
-    headers: headers != null ? headers : {},
-    contentType: "application/json; charset=utf-8",
-    dataType: isJsonResponse ? "json" : "text",
-    success: callback.success,
-    error: callback.error
-  });
+  var request = new XMLHttpRequest();
+  request.onreadystatechange = function() {
+    if (request.readyState == 4) {
+      if (request.status >= 200 && request.status < 300) {
+        callback.success(JSON.parse(request.responseText), request.status, request);
+      } else {
+        callback.error(request, request.status, request.responseText);
+      }
+    }
+  }
+  
+  request.open(method, Backend._SERVER_BASE_URL + resource, true);
+  request.setRequestHeader("content-type", "application/json");
+  for (var name in headers) {
+    request.setRequestHeader(name, headers[name]);
+  }
+
+  request.send();  
+  
+//  $.ajax({
+//    url: Backend._SERVER_BASE_URL + resource,
+//    type: method,
+//    data: data != null ? JSON.stringify(data) : "",
+//    headers: headers != null ? headers : {},
+//    contentType: "application/json; charset=utf-8",
+//    dataType: isJsonResponse ? "json" : "text",
+//    success: callback.success,
+//    error: callback.error
+//  });
 }
 
 Backend._getAuthenticationHeader = function(login, password) {
