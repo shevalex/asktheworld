@@ -4,7 +4,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.inject.Produces;
 
@@ -30,11 +32,6 @@ import com.pisoft.asktheworld.enums.RequestStatus;
 public class RequestController {
 	@Autowired
 	private DB db;
-	private static HttpHeaders responseHeaders;
-	static {
-		responseHeaders = new HttpHeaders();
-		responseHeaders.setContentType(MediaType.APPLICATION_JSON);
-	}
 	
 	@RequestMapping(method = RequestMethod.POST, value="request")
 	public ResponseEntity<String> createRequest(@RequestBody ATWRequest request) {
@@ -87,29 +84,38 @@ public class RequestController {
 
 	//For specific user outgoing requests
 	@RequestMapping(method=RequestMethod.GET, value="/user/{user_id}/requests/outgoing")
-	public ResponseEntity<String> getOutgoingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false, defaultValue="all") String  status,
+	public ResponseEntity<Map<String, List<Integer>>> getOutgoingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false, defaultValue="all") String  status,
 			@RequestParam(value="sorting", required = false, defaultValue="chronologically") String  sorting) {
 		//TODO: check if user id is correct?  I am not sure that we should check this
 		List<Integer> activeList = new ArrayList<Integer>();
 		List<Integer> inactiveList = new ArrayList<Integer>();
 
 		if(db.getUserOutgoingRequestsIDs(id, status, sorting, activeList, inactiveList) == null) {
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String, List<Integer>>>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<String>("{\"active\":"+Arrays.toString(activeList.toArray())+", \"inactive\":"+Arrays.toString(inactiveList.toArray())+"}", responseHeaders, HttpStatus.OK);
+		//TODO: Map is not good here. Overhead. We need simple pair
+		Map<String, List<Integer>> map = new HashMap<String, List<Integer>>(2);
+		map.put("active", activeList);
+		map.put("inactive", inactiveList);
+		
+		return new ResponseEntity<Map<String, List<Integer>>>(map, HttpStatus.OK);
 	}
 	
 	//For specific user incoming requests 
 	@RequestMapping(method=RequestMethod.GET, value="/user/{user_id}/requests/incoming")
-	public ResponseEntity<String> getIncomingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false, defaultValue="all") String  status,
+	public ResponseEntity<Map<String, List<Integer>>> getIncomingRequests(@PathVariable("user_id") int id, @RequestParam(value="status", required = false, defaultValue="all") String  status,
 			@RequestParam(value="sorting", required = false, defaultValue="chronologically") String  sorting) {
 		//TODO: check if user id is correct?  I am not sure that we need to check this
 		List<Integer> activeList = new ArrayList<Integer>();
 		List<Integer> inactiveList = new ArrayList<Integer>();
 		if (db.getUserIncomingRequestsIDs(id, status, sorting, activeList, inactiveList) == null) {
-			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String, List<Integer>>>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<String>("{\"active\":"+Arrays.toString(activeList.toArray())+", \"inactive\":"+Arrays.toString(inactiveList.toArray())+"}", responseHeaders, HttpStatus.OK);
+		Map<String, List<Integer>> map = new HashMap<String, List<Integer>>(2);
+		map.put("active", activeList);
+		map.put("inactive", inactiveList);
+		
+		return new ResponseEntity<Map<String, List<Integer>>>(map, HttpStatus.OK);
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE, value="/user/{user_id}/requests/incoming/{requestID}")
