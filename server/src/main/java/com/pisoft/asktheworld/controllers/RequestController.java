@@ -47,7 +47,7 @@ public class RequestController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return new ResponseEntity<String>(""+request.getId(), headers, HttpStatus.CONFLICT);
+			return new ResponseEntity<String>(""+request.getId(), headers, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
