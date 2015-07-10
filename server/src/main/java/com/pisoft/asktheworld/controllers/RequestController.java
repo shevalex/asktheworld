@@ -47,7 +47,7 @@ public class RequestController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return new ResponseEntity<String>(""+request.getId(), headers, HttpStatus.OK);
+			return new ResponseEntity<String>(""+request.getId(), headers, HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 		}
@@ -57,7 +57,7 @@ public class RequestController {
 	public ResponseEntity<Void> deleteUser(@PathVariable("requestID") int id) {
 		ATWRequest request = db.deleteRequest(id);
 		//TODO: Need check for owner (403 error)
-		return new ResponseEntity<Void>( request != null ? HttpStatus.CREATED : HttpStatus.NOT_FOUND);
+		return new ResponseEntity<Void>( request != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 	
 	
