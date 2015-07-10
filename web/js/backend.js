@@ -1162,7 +1162,7 @@ Backend.removeIncomingResponse = function(requestId, responseId, callback) {
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/incoming/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/incoming/" + responseId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
