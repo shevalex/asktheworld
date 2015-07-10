@@ -1101,7 +1101,7 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
           transactionCallback.error();
         }
       }
-      Backend.Cache.setIncomingResponseIds(null);
+      Backend.Cache.setIncomingResponseIds(requestId, null);
     }
   }
 
@@ -1282,7 +1282,7 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
           transactionCallback.error();
         }
       }
-      Backend.Cache.setOutgoingResponseIds(null);
+      Backend.Cache.setOutgoingResponseIds(requestId, null);
     }
   }
 
