@@ -311,7 +311,6 @@ Backend.createRequest = function(request, transactionCallback) {
   // END OF Temporary
   
   
-  /* processed, NOT integrated*/
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
@@ -383,7 +382,6 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
 //  }.bind(this), 1000);
   // END OF Temporary
 
-  /* processed, NOT integrated*/
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -391,7 +389,7 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
         
         if (transactionCallback != null) {
           transactionCallback.success();
-          }
+        }
       }
     },
     error: function(xhr, status, error) {
@@ -447,7 +445,6 @@ Backend._pullRequest = function(requestId, transactionCallback) {
 //  }.bind(this), 1000);
   // END OF Temporary
   
-  /* processed, NOT integrated*/
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -571,7 +568,6 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
 //    }.bind(this), 1000);
     // End of temporary code
   
-  /* processed, NOT integrated*/
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -707,7 +703,6 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
 //      Backend.Cache.setIncomingRequestIds(requestIds);
 //    }.bind(this), 1000);
   
-  /* processed, NOT integrated*/
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -778,12 +773,12 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
 //    }
 //  }.bind(this), 1000);
   
-  /* processed, NOT integrated*/
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
         var requestIds = Backend.Cache.getIncomingRequestIds();
 
+        //TODO: This needs to be cleaned to repull from the server
         requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
         requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
         requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
@@ -813,30 +808,64 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
 
 
 
-
-
 Backend.createResponse = function(requestId, response, transactionCallback) {
   Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
-  var newResponseId = requestId + "-response" + Backend.Cache.getOutgoingResponseIds(requestId).all.length;
-  Backend.Cache.markResponseInUpdate(requestId, newResponseId);
+//  var newResponseId = requestId + "-response" + Backend.Cache.getOutgoingResponseIds(requestId).all.length;
+//  Backend.Cache.markResponseInUpdate(requestId, newResponseId);
+//  
+//  setTimeout(function() {
+//    var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
+//    responseIds.all.push(newResponseId);
+//    responseIds.unviewed.push(newResponseId);
+//    
+//    response.time = Date.now();
+//    response.age_category = Backend.getUserProfile().age;
+//    response.gender = Backend.getUserProfile().gender;
+//    response.status = Backend.Response.STATUS_UNREAD;
+//
+//    Backend.Cache.setResponse(requestId, newResponseId, response);
+//    Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
+//    
+//    if (transactionCallback != null) {
+//      transactionCallback.success(newResponseId);
+//    }
+//  }.bind(this), 1000);
   
-  setTimeout(function() {
-    var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
-    responseIds.all.push(newResponseId);
-    responseIds.unviewed.push(newResponseId);
-    
-    response.time = Date.now();
-    response.age_category = Backend.getUserProfile().age;
-    response.gender = Backend.getUserProfile().gender;
-    response.status = Backend.Response.STATUS_UNREAD;
-
-    Backend.Cache.setResponse(requestId, newResponseId, response);
-    Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
-    
-    if (transactionCallback != null) {
-      transactionCallback.success(newResponseId);
+  
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 201) {
+        var newResponseId = xhr.getResponseHeader("Location");
+        Backend._pullResponse(newResponseId); //TODO: remove, this is temporary. It should be replaced with events
+        Backend._pullOutgoingResponseIds(); //TODO: remove, this is temporary. It should be replaced with events
+        
+        if (transactionCallback != null) {
+          transactionCallback.success(newResponseId);
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
     }
-  }.bind(this), 1000);
+  }
+
+  this._communicate("response", "POST",
+    { 
+      user_id: Backend.getUserProfile().userId,
+      requestId: requestId,
+      text: response.text,
+      age_category: Backend.getUserProfile().age,
+      gender: Backend.getUserProfile().gender,
+      attachments: response.attachments, // each attachment: {name, url, data, type}
+      contact_info_status: Backend.getUserPreferences().contactVisible ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE
+    },
+  false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getResponse = function(requestId, responseId) {
@@ -845,42 +874,114 @@ Backend.getResponse = function(requestId, responseId) {
     return response;
   }
   
-  Backend.Cache.markResponseInUpdate(requestId, responseId);
-  setTimeout(function() {
-    Backend.Cache.setResponse(requestId, responseId, this._createDummyResponse(requestId, responseId));
-  }.bind(this), 1000);
-
+  Backend._pullResponse(requestId, responseId);
   return null;
 }
+
+Backend._pullResponse = function(requestId, responseId, transactionCallback) {
+   Backend.Cache.markResponseInUpdate(requestId, responseId);
+  
+  // TODO: Temporary - to be removed
+//  setTimeout(function() {
+//    Backend.Cache.setResponse(requestId, responseId, this._createDummyResponse(requestId, responseId));
+//  }.bind(this), 1000);
+  // END OF Temporary
+  
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        var response = {
+          time: data.time,
+          text:  data.text,
+          attachments: data.attachments,
+          age_category: data.age_category,
+          gender: data.gender,
+          status: data.status,
+          contact_info_status: data.contact_info_status,
+          star_rating: data.star_rating
+        };
+      
+        Backend.Cache.setResponse(requestId, responseId, response);
+        
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+      Backend.Cache.setResponse(requestId, responseId, null);
+    }
+  }
+
+  this._communicate("response/" + responseId, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+}
+
 
 Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
   Backend.Cache.markResponseInUpdate(requestId, responseId);
   
-  setTimeout(function() {
-    var existingResponse = Backend.Cache.getResponse(requestId, responseId);
-    for (var key in response) {
-      if (key == "status" && existingResponse[key] != response[key] && response.status == Backend.Response.STATUS_READ) {
-        var allResponseIds = Backend.Cache.getIncomingResponseIds(requestId);
+//  setTimeout(function() {
+//    var existingResponse = Backend.Cache.getResponse(requestId, responseId);
+//    for (var key in response) {
+//      if (key == "status" && existingResponse[key] != response[key] && response.status == Backend.Response.STATUS_READ) {
+//        var allResponseIds = Backend.Cache.getIncomingResponseIds(requestId);
+//        
+//        for (var index in allResponseIds.unviewed) {
+//          if (allResponseIds.unviewed[index] == responseId) {
+//            allResponseIds.unviewed.splice(index, 1);
+//            allResponseIds.viewed.push(requestId);
+//            Backend.Cache.setIncomingResponseIds(requestId, allResponseIds);
+//            break;
+//          }
+//        }
+//      }
+//      
+//      existingResponse[key] = response[key];
+//    }
+//
+//    Backend.Cache.setResponse(requestId, responseId, existingResponse);
+//    
+//    if (transactionCallback != null) {
+//      transactionCallback.success();
+//    }
+//  }.bind(this), 1000);
+  
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        Backend._pullResponse(requestId, responseId); //TODO: remove, this is temporary. It should be replaced with events
         
-        for (var index in allResponseIds.unviewed) {
-          if (allResponseIds.unviewed[index] == responseId) {
-            allResponseIds.unviewed.splice(index, 1);
-            allResponseIds.viewed.push(requestId);
-            Backend.Cache.setIncomingResponseIds(requestId, allResponseIds);
-            break;
-          }
+        if (transactionCallback != null) {
+          transactionCallback.success();
         }
       }
-      
-      existingResponse[key] = response[key];
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
     }
+  }
 
-    Backend.Cache.setResponse(requestId, responseId, existingResponse);
-    
-    if (transactionCallback != null) {
-      transactionCallback.success();
-    }
-  }.bind(this), 1000);
+  this._communicate("response/" + responseId, "PUT",
+    { 
+      text: response.text,
+      attachments: response.attachments, // each attachment: {name, url, data, type}
+      star_rating: response.star_rating,
+      status: response.status
+    },
+  false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -890,7 +991,7 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   var result = null;
   if (responseIds != null) {
     if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
-      result = responseIds.viewed != null && responseIds.unviewed != null ? responseIds.all : null;
+      result = responseIds.all;
     } else if (responseStatus == Backend.Response.STATUS_READ) {
       result = responseIds.viewed;
     } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
@@ -903,80 +1004,165 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   if (result != null || Backend.Cache.isIncomingResponseIdsInUpdate(requestId)) {
     return result;
   } else {
-    Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
-
-    setTimeout(function() {
-      var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
-      if (responseIds == null) {
-        responseIds = {};
-      }
-
-      var generateViewed = false;
-      var generateUnviewed = false;
-
-      if (responseIds.all == null) {
-        responseIds.all = [];
-      }
-      if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
-        if (responseIds.unviewed == null) {
-          responseIds.unviewed = [];
-          generateUnviewed = true;
-        }
-        if (responseIds.viewed == null) {
-          responseIds.viewed = [];
-          generateViewed = true;
-        }
-      } else if (responseStatus == Backend.Response.STATUS_READ) {
-        if (responseIds.viewed == null) {
-          responseIds.viewed = [];
-          generateViewed = true;
-        }
-      } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
-        if (responseIds.unviewed == null) {
-          responseIds.unviewed = [];
-          generateUnviewed = true;
-        }
-      }
-
-      var numOfResponses = Math.floor(Math.random() * 30);
-      for (var i = 0; i < numOfResponses; i++) {
-        if (Math.random() < 0.95) {
-          if (generateViewed) {
-            var responseId = requestId + "-response" + (50 + i);
-            responseIds.all.push(responseId);
-            responseIds.viewed.push(responseId);
-          }
-        } else {
-          if (generateUnviewed) {
-            var responseId = requestId + "-response" + i;
-            responseIds.all.push(responseId);
-            responseIds.unviewed.push(responseId);
-          }
-        }
-      }
-
-      Backend.Cache.setIncomingResponseIds(requestId, responseIds);
-    }.bind(this), 1000);
-    
+    Backend._pullIncomingResponseIds(requestId, responseStatus);
     return null;
   }
+}
+
+Backend._pullIncomingResponseIds = function(requestId, responseStatus, transactionCallback) {
+    Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
+
+//    setTimeout(function() {
+//      var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+//      if (responseIds == null) {
+//        responseIds = {};
+//      }
+//
+//      var generateViewed = false;
+//      var generateUnviewed = false;
+//
+//      if (responseIds.all == null) {
+//        responseIds.all = [];
+//      }
+//      if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
+//        if (responseIds.unviewed == null) {
+//          responseIds.unviewed = [];
+//          generateUnviewed = true;
+//        }
+//        if (responseIds.viewed == null) {
+//          responseIds.viewed = [];
+//          generateViewed = true;
+//        }
+//      } else if (responseStatus == Backend.Response.STATUS_READ) {
+//        if (responseIds.viewed == null) {
+//          responseIds.viewed = [];
+//          generateViewed = true;
+//        }
+//      } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
+//        if (responseIds.unviewed == null) {
+//          responseIds.unviewed = [];
+//          generateUnviewed = true;
+//        }
+//      }
+//
+//      var numOfResponses = Math.floor(Math.random() * 30);
+//      for (var i = 0; i < numOfResponses; i++) {
+//        if (Math.random() < 0.95) {
+//          if (generateViewed) {
+//            var responseId = requestId + "-response" + (50 + i);
+//            responseIds.all.push(responseId);
+//            responseIds.viewed.push(responseId);
+//          }
+//        } else {
+//          if (generateUnviewed) {
+//            var responseId = requestId + "-response" + i;
+//            responseIds.all.push(responseId);
+//            responseIds.unviewed.push(responseId);
+//          }
+//        }
+//      }
+//
+//      Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+//    }.bind(this), 1000);
+  
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+        if (responseIds == null) {
+          responseIds = {};
+        }
+        
+        if (data.viewed != null) {
+          responseIds.viewed = data.viewed;
+        }
+        if (data.unviewed != null) {
+          responseIds.unviewed = data.unviewed;
+        }
+        
+        if (data.viewed != null && data.unviewed != null) {
+          responseIds.all = data.viewed.concat(data.unviewed);
+        } else {
+          responseIds.all = null;
+        }
+
+        Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+      Backend.Cache.setIncomingResponseIds(null);
+    }
+  }
+
+  var statusQuery;
+  if (responseStatus == Backend.Response.STATUS_READ) {
+    statusQuery = "viewed";
+  } else if (responseStatus == Backend.Request.STATUS_UNREAD) {
+    statusQuery = "unviewed";
+  } else {
+    statusQuery = "all";
+  }
+
+  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/incoming/" + requestId + "?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.removeIncomingResponse = function(requestId, responseId, callback) {
   Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
   
-  setTimeout(function() {
-    var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
-    responseIds.all = GeneralUtils.removeFromArray(responseIds.all, responseId);
-    responseIds.viewed = GeneralUtils.removeFromArray(responseIds.viewed, responseId);
-    responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.unviewed, responseId);
-    
-    Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+//  setTimeout(function() {
+//    var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+//    responseIds.all = GeneralUtils.removeFromArray(responseIds.all, responseId);
+//    responseIds.viewed = GeneralUtils.removeFromArray(responseIds.viewed, responseId);
+//    responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.unviewed, responseId);
+//    
+//    Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+//
+//    if (callback != null) {
+//      callback.success();
+//    }
+//  }.bind(this), 1000);
+  
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
 
-    if (callback != null) {
-      callback.success();
+        //TODO: This needs to be cleaned to repull from the server
+        responseIds.all = GeneralUtils.removeFromArray(responseIds.all, responseId);
+        responseIds.viewed = GeneralUtils.removeFromArray(responseIds.active, responseId);
+        responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.inactive, responseId);
+
+        Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+      Backend.Cache.setIncomingResponseIds(requestId, null);
     }
-  }.bind(this), 1000);
+  }
+
+  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/incoming/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -986,7 +1172,7 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
   var result = null;
   if (responseIds != null) {
     if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
-      result = responseIds.viewed != null && responseIds.unviewed != null ? responseIds.all : null;
+      result = responseIds.all;
     } else if (responseStatus == Backend.Response.STATUS_READ) {
       result = responseIds.viewed;
     } else if (responseStatus == Backend.Request.STATUS_UNREAD) {
@@ -999,64 +1185,119 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
   if (result != null || Backend.Cache.isOutgoingResponseIdsInUpdate(requestId)) {
     return result;
   } else {
-    Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
-
-    setTimeout(function() {
-      var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
-      if (responseIds == null) {
-        responseIds = {};
-      }
-
-      var generateViewed = false;
-      var generateUnviewed = false;
-
-      if (responseIds.all == null) {
-        responseIds.all = [];
-      }
-      if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
-        if (responseIds.unviewed == null) {
-          responseIds.unviewed = [];
-          generateUnviewed = true;
-        }
-        if (responseIds.viewed == null) {
-          responseIds.viewed = [];
-          generateViewed = true;
-        }
-      } else if (responseStatus == Backend.Response.STATUS_READ) {
-        if (responseIds.viewed == null) {
-          responseIds.viewed = [];
-          generateViewed = true;
-        }
-      } else if (responseStatus == Backend.Reponse.STATUS_UNREAD) {
-        if (responseIds.unviewed == null) {
-          responseIds.unviewed = [];
-          generateUnviewed = true;
-        }
-      }
-
-      var numOfResponses = Math.floor(Math.random() * 5);
-      for (var i = 0; i < numOfResponses; i++) {
-        if (Math.random() < 0.95) {
-          if (generateViewed) {
-            var responseId = requestId + "-response" + (100 + 50 + i);
-            responseIds.all.push(responseId);
-            responseIds.viewed.push(responseId);
-          }
-        } else {
-          if (generateUnviewed) {
-            var responseId = requestId + "-response" + (100 + i);
-            responseIds.all.push(responseId);
-            responseIds.unviewed.push(responseId);
-          }
-        }
-      }
-
-      Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
-    }.bind(this), 1000);
-    
+    Backend._pullOutgoingResponseIds(requestId, responseStatus);
     return null;
   }
 }
+
+Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transactionCallback) {
+    Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
+
+//    setTimeout(function() {
+//      var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
+//      if (responseIds == null) {
+//        responseIds = {};
+//      }
+//
+//      var generateViewed = false;
+//      var generateUnviewed = false;
+//
+//      if (responseIds.all == null) {
+//        responseIds.all = [];
+//      }
+//      if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
+//        if (responseIds.unviewed == null) {
+//          responseIds.unviewed = [];
+//          generateUnviewed = true;
+//        }
+//        if (responseIds.viewed == null) {
+//          responseIds.viewed = [];
+//          generateViewed = true;
+//        }
+//      } else if (responseStatus == Backend.Response.STATUS_READ) {
+//        if (responseIds.viewed == null) {
+//          responseIds.viewed = [];
+//          generateViewed = true;
+//        }
+//      } else if (responseStatus == Backend.Reponse.STATUS_UNREAD) {
+//        if (responseIds.unviewed == null) {
+//          responseIds.unviewed = [];
+//          generateUnviewed = true;
+//        }
+//      }
+//
+//      var numOfResponses = Math.floor(Math.random() * 5);
+//      for (var i = 0; i < numOfResponses; i++) {
+//        if (Math.random() < 0.95) {
+//          if (generateViewed) {
+//            var responseId = requestId + "-response" + (100 + 50 + i);
+//            responseIds.all.push(responseId);
+//            responseIds.viewed.push(responseId);
+//          }
+//        } else {
+//          if (generateUnviewed) {
+//            var responseId = requestId + "-response" + (100 + i);
+//            responseIds.all.push(responseId);
+//            responseIds.unviewed.push(responseId);
+//          }
+//        }
+//      }
+//
+//      Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
+//    }.bind(this), 1000);
+  
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
+        if (responseIds == null) {
+          responseIds = {};
+        }
+        
+        if (data.viewed != null) {
+          responseIds.viewed = data.viewed;
+        }
+        if (data.unviewed != null) {
+          responseIds.unviewed = data.unviewed;
+        }
+        
+        if (data.viewed != null && data.unviewed != null) {
+          responseIds.all = data.viewed.concat(data.unviewed);
+        } else {
+          responseIds.all = null;
+        }
+
+        Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
+
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+      Backend.Cache.setOutgoingResponseIds(null);
+    }
+  }
+
+  var statusQuery;
+  if (responseStatus == Backend.Response.STATUS_READ) {
+    statusQuery = "viewed";
+  } else if (responseStatus == Backend.Request.STATUS_UNREAD) {
+    statusQuery = "unviewed";
+  } else {
+    statusQuery = "all";
+  }
+
+  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/outgoing/" + requestId + "?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+}
+
 
 
 Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
