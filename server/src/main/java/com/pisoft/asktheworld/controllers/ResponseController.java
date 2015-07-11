@@ -30,7 +30,8 @@ public class ResponseController {
 	private DB db;
 
 	@RequestMapping(method = RequestMethod.POST, value="response")
-	public ResponseEntity<String> createRequest(@RequestBody ATWResponse response) {
+	public ResponseEntity<String> createResponse(@RequestBody ATWResponse response) {
+		//TODO: replace with db.existRequest Now, we dont check is this request is incoming for particular user
 		ATWUser existUser = db.getUser(response.getUser_id());
 		ATWRequest existRequest = db.getRequest(response.getRequestId());
 		
@@ -113,7 +114,7 @@ public class ResponseController {
 	}
 
 	
-	@RequestMapping(method=RequestMethod.DELETE, value="/responseuser/{user_id}/responses/incomming/{responseID}")
+	@RequestMapping(method=RequestMethod.DELETE, value="/user/{user_id}/responses/incomming/{responseID}")
 	public ResponseEntity<Void> deleteIncommingResponses(@PathVariable("user_id") int user_id, @PathVariable("responseID") int responseID) {
 		//TODO: add security
 		//TODO: check if user id is correct?  I am not sure that we need to check this
