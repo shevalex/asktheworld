@@ -95,15 +95,15 @@ public class ResponseController {
 		return new ResponseEntity<Map<String, List<Integer>>>(map, HttpStatus.OK);
 	}
 
-	@RequestMapping(method=RequestMethod.GET, value="/user/{user_id}/responses/incomming/{requestID}")
-	public ResponseEntity<Map<String, List<Integer>>> getIncommingResponses(@PathVariable("user_id") int user_id, @PathVariable("requestID") int requestID,
+	@RequestMapping(method=RequestMethod.GET, value="/user/{user_id}/responses/incoming/{requestID}")
+	public ResponseEntity<Map<String, List<Integer>>> getIncomingResponses(@PathVariable("user_id") int user_id, @PathVariable("requestID") int requestID,
 			@RequestParam(value="status", required = false, defaultValue="all") String  status,
 			@RequestParam(value="sorting", required = false, defaultValue="chronologically") String  sorting) {
 		//TODO: check if user id is correct?  I am not sure that we need to check this
 		List<Integer> viewedList = new ArrayList<Integer>();
 		List<Integer> unviewedList = new ArrayList<Integer>();
 		ResponseStatus rs = ResponseStatus.forValue(status);
-		if (db.getIncommingResponseIDs(user_id, requestID, rs, sorting, viewedList, unviewedList) == null) {
+		if (db.getIncomingResponseIDs(user_id, requestID, rs, sorting, viewedList, unviewedList) == null) {
 			return new ResponseEntity<Map<String, List<Integer>>>(HttpStatus.NOT_FOUND);
 		}
 		Map<String, List<Integer>> map = new HashMap<String, List<Integer>>(2);
@@ -114,11 +114,11 @@ public class ResponseController {
 	}
 
 	
-	@RequestMapping(method=RequestMethod.DELETE, value="/user/{user_id}/responses/incomming/{responseID}")
-	public ResponseEntity<Void> deleteIncommingResponses(@PathVariable("user_id") int user_id, @PathVariable("responseID") int responseID) {
+	@RequestMapping(method=RequestMethod.DELETE, value="/user/{user_id}/responses/incoming/{responseID}")
+	public ResponseEntity<Void> deleteIncomingResponses(@PathVariable("user_id") int user_id, @PathVariable("responseID") int responseID) {
 		//TODO: add security
 		//TODO: check if user id is correct?  I am not sure that we need to check this
-		ATWResponse response = db.deleteIncommingResponse(user_id, responseID);
+		ATWResponse response = db.deleteIncomingResponse(user_id, responseID);
 		return new ResponseEntity<Void>( response != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 

@@ -369,14 +369,16 @@ public class DB {
 	}
 	
 	//TODO: change return type. 
-	public Object  getIncommingResponseIDs(int user_id, int requestID,
+	public Object  getIncomingResponseIDs(int user_id, int requestID,
 			ResponseStatus status, String sorting, List<Integer> viewedList,
 			List<Integer> unviewedList) {
+		System.out.println("User "+user_id+ "     and request "+requestID);
 		if (!requests.exist(requestID, user_id)) {
 			return null;
 		}
-		
+		System.out.println("Exist!!");		
 		List<ATWResponse> list = responses.findResponsesByRequestId(requestID);
+		System.out.println("List "+list);
 		for(Iterator<ATWResponse> it = list.iterator(); it.hasNext();) {
 			ATWResponse r = it.next();
 			if(ResponseStatus.forValue(r.getStatus()) == ResponseStatus.UNVIEWED && (status == ResponseStatus.ALL || status == ResponseStatus.UNVIEWED)) {
@@ -392,7 +394,7 @@ public class DB {
 		return responses.deleteById(id);
 	}
 
-	public ATWResponse deleteIncommingResponse(int user_id, int responseID) {
+	public ATWResponse deleteIncomingResponse(int user_id, int responseID) {
 		// TODO Auto-generated method stub
 		return responses.markDeleted(responseID, user_id, true);
 	}

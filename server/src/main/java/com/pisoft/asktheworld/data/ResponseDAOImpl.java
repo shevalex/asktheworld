@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
-	private String findByRequestID = "select r from "+ATWResponse.class.getName()+" r where r.requestId=?1 and where r.deleted=false";
+	private String findByRequestID = "select r from "+ATWResponse.class.getName()+" r where r.requestId=?1 and r.deleted=false";
 	private String findByRequestAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.requestId=?2 and r.user_id=?1";
 	private String findByResponseAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.id=?1 and r.user_id=?2";
 
