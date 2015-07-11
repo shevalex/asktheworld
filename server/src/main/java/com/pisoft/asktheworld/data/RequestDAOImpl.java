@@ -14,6 +14,8 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 			" r.id not in ?2 and " +
 			" r.response_age_group in ?3 and " +
 			" r.response_gender in ?4";
+	private String countByIdAndUserId = "select count(r) from "+ATWRequest.class.getName()+" r where r.id=?1 and r.user_id=?2";
+	
 	public RequestDAOImpl() {
 		super();
 		setTClass(ATWRequest.class);
@@ -57,5 +59,13 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 		return list;
 	}
 	
-	
+	public boolean exist(int requestID, int user_id) {
+		long count = (long) entityManager.createQuery(countByIdAndUserId)
+				.setParameter(1, requestID)
+				.setParameter(2, user_id)
+				.getSingleResult();
+		System.out.println("Count of request with user id "+ count);
+		return count >0;
+	}
+
 }

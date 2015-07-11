@@ -124,10 +124,12 @@ public class RequestController {
 		ATWRequest request = db.deleteUserIncomingRequests(userId, requestId);
         return new ResponseEntity<Void>( request != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
+	
+	
 
 
 //~/user/{user id}/requests/incoming
 //status=<request status to match against the returned request ids>. If not specified, all requests will be returned.
 //sorting=”chronologically” | … TBD
-
+	
 }

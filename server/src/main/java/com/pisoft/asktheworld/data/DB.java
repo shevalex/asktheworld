@@ -8,6 +8,7 @@ import com.pisoft.asktheworld.enums.Age;
 import com.pisoft.asktheworld.enums.AgeRequest;
 import com.pisoft.asktheworld.enums.Gender;
 import com.pisoft.asktheworld.enums.GenderRequest;
+import com.pisoft.asktheworld.enums.ResponseStatus;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,9 @@ public class DB {
 	private UserSettingsDAOImpl settings;
 	@Autowired
 	private RequestDAOImpl requests;
-	
+	@Autowired
+	private ResponseDAOImpl responses;
+
 	
 	
 	public ATWUser getUser(int id) {
@@ -329,4 +332,69 @@ public class DB {
 			} //end for
 		}		
 	}
+	public ATWResponse addResponse(ATWResponse response) {
+		responses.create(response);
+		return response;
+	}
+	public ATWResponse updateResponse(ATWResponse response) {
+		ATWResponse existResponse = getResponse(response.getId());
+		if(existResponse != null) {
+			existResponse = responses.update(response);
+		}
+		return existResponse;		
+	}
+	public ATWResponse getResponse(int id) {
+		return responses.findById(id);
+	}
+
+	//TODO: change return type. 
+	public Object  getOutgongResponseIDs(int user_id, int requestID,
+			ResponseStatus status, String sorting, List<Integer> viewedList,
+			List<Integer> unviewedList) {
+		if(!users.exist(user_id) || !requests.exist(requestID)) {
+			return null;
+		}
+
+		List<ATWResponse> list = responses.findResponsesByUserIdAndRequestId(user_id, requestID);
+		for(Iterator<ATWResponse> it = list.iterator(); it.hasNext();) {
+			ATWResponse r = it.next();
+			if(ResponseStatus.forValue(r.getStatus()) == ResponseStatus.UNVIEWED && (status == ResponseStatus.ALL || status == ResponseStatus.UNVIEWED)) {
+				unviewedList.add(r.getId());
+			}
+			if(ResponseStatus.forValue(r.getStatus()) == ResponseStatus.VIEWED && (status == ResponseStatus.ALL || status == ResponseStatus.VIEWED)) {
+				viewedList.add(r.getId());
+			}
+		}
+		return list; 
+	}
+	
+	//TODO: change return type. 
+	public Object  getIncommingResponseIDs(int user_id, int requestID,
+			ResponseStatus status, String sorting, List<Integer> viewedList,
+			List<Integer> unviewedList) {
+		if (!requests.exist(requestID, user_id)) {
+			return null;
+		}
+		
+		List<ATWResponse> list = responses.findResponsesByRequestId(requestID);
+		for(Iterator<ATWResponse> it = list.iterator(); it.hasNext();) {
+			ATWResponse r = it.next();
+			if(ResponseStatus.forValue(r.getStatus()) == ResponseStatus.UNVIEWED && (status == ResponseStatus.ALL || status == ResponseStatus.UNVIEWED)) {
+				unviewedList.add(r.getId());
+			}
+			if(ResponseStatus.forValue(r.getStatus()) == ResponseStatus.VIEWED && (status == ResponseStatus.ALL || status == ResponseStatus.VIEWED)) {
+				viewedList.add(r.getId());
+			}
+		}
+		return list;
+	}
+	public ATWResponse deleteResponse(int id) {
+		return responses.deleteById(id);
+	}
+
+	public ATWResponse deleteIncommingResponse(int user_id, int responseID) {
+		// TODO Auto-generated method stub
+		return responses.markDeleted(responseID, user_id, true);
+	}
+	
 }

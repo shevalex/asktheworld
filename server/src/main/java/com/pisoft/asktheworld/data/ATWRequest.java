@@ -31,7 +31,7 @@ public class ATWRequest implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@JsonIgnore
-	@Column(name="request_id")
+	@Column
 	private int id;
 
 	@Column
