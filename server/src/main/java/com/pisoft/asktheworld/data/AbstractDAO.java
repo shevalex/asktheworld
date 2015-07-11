@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AbstractDAO<T extends Serializable> {
 	protected Class<T> tClass;
-	private String countByID = "select count(obj) from "+tClass.getName()+" obj where obj.id=?1";
+	//private String countByID = "select count(obj) from "+tClass.getName()+" obj where obj.id=?1";
 	 
 	@PersistenceContext
 	protected EntityManager entityManager;
@@ -50,7 +50,7 @@ public abstract class AbstractDAO<T extends Serializable> {
 	}
 	
 	public boolean exist(int id) {
-		long count = (long) entityManager.createQuery(countByID)
+		long count = (long) entityManager.createQuery("select count(obj) from "+tClass.getName()+" obj where obj.id=?1")
 				.setParameter(1, id)
 				.getSingleResult();
 		System.out.println("Count of items with id "+ count);

@@ -93,7 +93,7 @@ public class ATWUser implements Serializable {
 	@ManyToMany
 	@JoinTable(name="USER_INC_REQ",  
 	      joinColumns=@JoinColumn(name="USER_ID", referencedColumnName="id"), inverseForeignKey=@ForeignKey(value=ConstraintMode.NO_CONSTRAINT),
-	      inverseJoinColumns = @JoinColumn(name="REQ_ID", referencedColumnName="request_id", foreignKey=@ForeignKey(value=ConstraintMode.NO_CONSTRAINT), columnDefinition="int4 REFERENCES ATWRequest(request_id) ON DELETE CASCADE") ) //TODO: I am not sure that this will work for not postgres  
+	      inverseJoinColumns = @JoinColumn(name="REQ_ID", referencedColumnName="id", foreignKey=@ForeignKey(value=ConstraintMode.NO_CONSTRAINT), columnDefinition="int4 REFERENCES ATWRequest(id) ON DELETE CASCADE") ) //TODO: I am not sure that this will work for not postgres  
 //TODO: the result of this code is below. We dont need to alter foreign key REQ_ID. It is described in table creation 
 /**
 Hibernate: 
