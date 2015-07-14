@@ -55,7 +55,7 @@ public class ATWResponse implements Serializable {
 	@Column(nullable = false)
 	String status = "unviewed";
 	
-	@Column(nullable = false)
+	@Column
 	int start_rating = 0;
 	
 	@Column(nullable = false)
@@ -132,5 +132,20 @@ public class ATWResponse implements Serializable {
 	public void setContact_info_status(ContactInfoStatus contact_info_status) {
 		this.contact_info_status = contact_info_status;
 	}
-	
+
+	public List<ATWAttachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<ATWAttachment> attachments) {
+		this.attachments = attachments;
+	}
+
+	public String getAge_category() {
+		return age_category;
+	}
+
+	public void setAge_category(String age_category) {
+		this.age_category = age_category;
+	}
 }
