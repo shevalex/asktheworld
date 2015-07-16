@@ -1506,7 +1506,7 @@ Backend.Cache.removeCacheChangeListener = function(listener) {
 }
 
 Backend.Cache.markOutgoingRequestIdsInUpdate = function(isInUpdate) {
-  this.outgoingRequestIdsInProgress = isInUpdate || true;
+  this.outgoingRequestIdsInProgress = isInUpdate != null ? isInUpdate : true;
   this._fireUpdateEvent();
 }
 Backend.Cache.isOutgoingRequestIdsInUpdate = function() {
@@ -1523,7 +1523,7 @@ Backend.Cache.getOutgoingRequestIds = function() {
 }
 
 Backend.Cache.markIncomingRequestIdsInUpdate = function(isInUpdate) {
-  this.incomingRequestIdsInProgress = isInUpdate || true;
+  this.incomingRequestIdsInProgress = isInUpdate != null ? isInUpdate : true;
   this._fireUpdateEvent();
 }
 Backend.Cache.isIncomingRequestIdsInUpdate = function() {
@@ -1540,7 +1540,7 @@ Backend.Cache.getIncomingRequestIds = function() {
 }
 
 Backend.Cache.markRequestInUpdate = function(requestId, isInUpdate) {
-  this.requestsInProgress[requestId] = isInUpdate || true;
+  this.requestsInProgress[requestId] = isInUpdate != null ? isInUpdate : true;
   if (!this.requestsInProgress[requestId]) {
     delete this.requestsInProgress[requestId];
   }
@@ -1560,7 +1560,7 @@ Backend.Cache.getRequest = function(requestId) {
 }
 
 Backend.Cache.markIncomingResponseIdsInUpdate = function(requestId, isInUpdate) {
-  this.incomingResponseIdsInProgress[requestId] = isInUpdate || true;
+  this.incomingResponseIdsInProgress[requestId] = isInUpdate != null ? isInUpdate : true;
   if (!this.incomingResponseIdsInProgress[requestId]) {
     delete this.incomingResponseIdsInProgress[requestId];
   }
@@ -1580,7 +1580,7 @@ Backend.Cache.getIncomingResponseIds = function(requestId) {
 }
 
 Backend.Cache.markOutgoingResponseIdsInUpdate = function(requestId, isInUpdate) {
-  this.outgoingResponseIdsInProgress[requestId] = isInUpdate || true;
+  this.outgoingResponseIdsInProgress[requestId] = isInUpdate != null ? isInUpdate : true;
   if (!this.outgoingResponseIdsInProgress[requestId]) {
     delete this.outgoingResponseIdsInProgress[requestId];
   }
@@ -1600,7 +1600,7 @@ Backend.Cache.getOutgoingResponseIds = function(requestId) {
 }
 
 Backend.Cache.markResponseInUpdate = function(requestId, responseId, isInUpdate) {
-  this.responsesInProgress[responseId] = isInUpdate || true;
+  this.responsesInProgress[responseId] = isInUpdate != null ? isInUpdate : true;
   if (!this.responsesInProgress[responseId]) {
     delete this.responsesInProgress[responseId];
   }
@@ -1620,7 +1620,7 @@ Backend.Cache.getResponse = function(requestId, responseId) {
 }
 
 Backend.Cache.markContactInfoInUpdate = function(requestId, responseId, isInUpdate) {
-  this.contactInfosInProgress[responseId] = isInUpdate || true;
+  this.contactInfosInProgress[responseId] = isInUpdate != null ? isInUpdate : true;
   if (!this.contactInfosInProgress[responseId]) {
     delete this.contactInfosInProgress[responseId];
   }
