@@ -308,7 +308,6 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, resp
   var callback = {
     success: function() {
       this._onCompletion();
-      page._showViewableResponse();
     },
     failure: function() {
       Application.showMessage(page.getLocale().ResponseUpdateFailedMessage);
@@ -321,6 +320,7 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, resp
     
     _onCompletion: function() {
       page._updating = false;
+      page._showViewableResponse();
     }
   }
 
@@ -343,8 +343,6 @@ IncomingRequestDetailsPage.prototype._createResponse = function(responseText, at
   var callback = {
     success: function() {
       this._onCompletion();
-      page._showRequest();
-      page._showViewableResponse();
     },
     failure: function() {
       Application.showMessage(page.getLocale().ResponseCreateFailedMessage);
@@ -357,6 +355,8 @@ IncomingRequestDetailsPage.prototype._createResponse = function(responseText, at
     
     _onCompletion: function() {
       page._updating = false;
+      page._showRequest();
+      page._showViewableResponse();
     }
   }
 

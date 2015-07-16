@@ -836,8 +836,8 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
         var newResponseId = xhr.getResponseHeader("Location");
-        Backend._pullResponse(newResponseId); //TODO: remove, this is temporary. It should be replaced with events
-        Backend._pullOutgoingResponseIds(); //TODO: remove, this is temporary. It should be replaced with events
+        Backend._pullResponse(requestId, newResponseId); //TODO: remove, this is temporary. It should be replaced with events
+        Backend._pullOutgoingResponseIds(requestId); //TODO: remove, this is temporary. It should be replaced with events
         
         if (transactionCallback != null) {
           transactionCallback.success(newResponseId);
@@ -971,6 +971,7 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
           transactionCallback.error();
         }
       }
+      Backend.Cache.setResponse(requestId, responseId, null);
     }
   }
 
