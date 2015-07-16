@@ -1486,6 +1486,10 @@ Backend.Cache.reset = function() {
 Backend.Cache.addCacheChangeListener = function(listener) {
   if (listener != null) {
     this.cacheChangeListeners.push(listener);
+    
+    if (Backend.Cache.isInUpdate()) {
+      listener({type: Backend.CacheChangeEvent.TYPE_UPDATE_STARTED});
+    }
   }
 }
 
