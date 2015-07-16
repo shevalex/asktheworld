@@ -53,20 +53,20 @@ public class ATWResponse implements Serializable {
 	private ContactInfoStatus contact_info_status = ContactInfoStatus.NO; //TODO: default value is not working
 	
 	@Column(nullable = false)
-	String status = "unviewed";
+	private String status = "unviewed";
 	
-	@Column
-	int start_rating = 0;
-	
-	@Column(nullable = false)
-	String age_category;
+	@Column(name="start_rating")
+	private int star_rating = 0;
 	
 	@Column(nullable = false)
-	String gender;
+	private String age_category;
+	
+	@Column(nullable = false)
+	private String gender;
 	
 	@Column(nullable = false)
 	@JsonIgnore
-	boolean deleted = false;
+	private boolean deleted = false;
 	
 
 	public String getStatus() {
@@ -77,12 +77,12 @@ public class ATWResponse implements Serializable {
 		this.status = status;
 	}
 
-	public int getStart_rating() {
-		return start_rating;
+	public int getStar_rating() {
+		return star_rating;
 	}
 
-	public void setStart_rating(int start_rating) {
-		this.start_rating = start_rating;
+	public void setStar_rating(int star_rating) {
+		this.star_rating = star_rating;
 	}
 
 	public String getGender() {
