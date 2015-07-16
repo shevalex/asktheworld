@@ -331,6 +331,7 @@ Backend.createRequest = function(request, transactionCallback) {
           transactionCallback.error();
         }
       }
+      Backend.Cache.markOutgoingRequestIdsInUpdate(false);
     }
   }
 
@@ -400,6 +401,7 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
           transactionCallback.error();
         }
       }
+      Backend.Cache.markRequestInUpdate(requestId, false);
     }
   }
 
@@ -475,7 +477,7 @@ Backend._pullRequest = function(requestId, transactionCallback) {
           transactionCallback.error();
         }
       }
-      Backend.Cache.setRequest(requestId, null);
+      Backend.Cache.markRequestInUpdate(requestId, false);
     }
   }
 
@@ -604,7 +606,7 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
           transactionCallback.error();
         }
       }
-      Backend.Cache.setOutgoingRequestIds(null);
+      Backend.Cache.markOutgoingRequestIdsInUpdate(false);
     }
   }
 
@@ -739,7 +741,7 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
           transactionCallback.error();
         }
       }
-      Backend.Cache.setIncomingRequestIds(null);
+      Backend.Cache.markIncomingRequestIdsInUpdate(false);
     }
   }
 
@@ -798,7 +800,7 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
           transactionCallback.error();
         }
       }
-      Backend.Cache.setIncomingRequestIds(null);
+      Backend.Cache.markIncomingRequestIdsInUpdate(false);
     }
   }
 
@@ -852,6 +854,7 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
           transactionCallback.error();
         }
       }
+      Backend.Cache.markOutgoingResponseIdsInUpdate(requestId, false);
     }
   }
 
@@ -916,7 +919,7 @@ Backend._pullResponse = function(requestId, responseId, transactionCallback) {
           transactionCallback.error();
         }
       }
-      Backend.Cache.setResponse(requestId, responseId, null);
+      Backend.Cache.markResponseInUpdate(requestId, responseId, false);
     }
   }
 
@@ -971,7 +974,7 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
           transactionCallback.error();
         }
       }
-      Backend.Cache.setResponse(requestId, responseId, null);
+      Backend.Cache.markResponseInUpdate(requestId, responseId, false);
     }
   }
 
@@ -1102,7 +1105,7 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
           transactionCallback.error();
         }
       }
-      Backend.Cache.setIncomingResponseIds(requestId, null);
+      Backend.Cache.markIncomingResponseIdsInUpdate(requestId, false);
     }
   }
 
@@ -1159,7 +1162,7 @@ Backend.removeIncomingResponse = function(requestId, responseId, callback) {
           transactionCallback.error();
         }
       }
-      Backend.Cache.setIncomingResponseIds(requestId, null);
+      Backend.Cache.markIncomingResponseIdsInUpdate(requestId, false);
     }
   }
 
@@ -1283,7 +1286,7 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
           transactionCallback.error();
         }
       }
-      Backend.Cache.setOutgoingResponseIds(requestId, null);
+      Backend.Cache.markOutgoingResponseIdsInUpdate(requestId, false);
     }
   }
 
@@ -1502,8 +1505,8 @@ Backend.Cache.removeCacheChangeListener = function(listener) {
   }
 }
 
-Backend.Cache.markOutgoingRequestIdsInUpdate = function() {
-  this.outgoingRequestIdsInProgress = true;
+Backend.Cache.markOutgoingRequestIdsInUpdate = function(isInUpdate) {
+  this.outgoingRequestIdsInProgress = isInUpdate || true;
   this._fireUpdateEvent();
 }
 Backend.Cache.isOutgoingRequestIdsInUpdate = function() {
@@ -1511,16 +1514,16 @@ Backend.Cache.isOutgoingRequestIdsInUpdate = function() {
 }
 Backend.Cache.setOutgoingRequestIds = function(requestIds) {
   this.outgoingRequestIds = requestIds;
-  this.outgoingRequestIdsInProgress = false;
-
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, null, null);
-  this._fireUpdateEvent();
+  
+  this.markOutgoingRequestIdsInUpdate(false);
 }
 Backend.Cache.getOutgoingRequestIds = function() {
   return this.outgoingRequestIds;
 }
-Backend.Cache.markIncomingRequestIdsInUpdate = function() {
-  this.incomingRequestIdsInProgress = true;
+
+Backend.Cache.markIncomingRequestIdsInUpdate = function(isInUpdate) {
+  this.incomingRequestIdsInProgress = isInUpdate || true;
   this._fireUpdateEvent();
 }
 Backend.Cache.isIncomingRequestIdsInUpdate = function() {
@@ -1528,16 +1531,19 @@ Backend.Cache.isIncomingRequestIdsInUpdate = function() {
 }
 Backend.Cache.setIncomingRequestIds = function(requestIds) {
   this.incomingRequestIds = requestIds;
-  this.incomingRequestIdsInProgress = false;
-            
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, null, null);
-  this._fireUpdateEvent();
+  
+  this.markIncomingRequestIdsInUpdate(false);
 }
 Backend.Cache.getIncomingRequestIds = function() {
   return this.incomingRequestIds;
 }
-Backend.Cache.markRequestInUpdate = function(requestId) {
-  this.requestsInProgress[requestId] = true;
+
+Backend.Cache.markRequestInUpdate = function(requestId, isInUpdate) {
+  this.requestsInProgress[requestId] = isInUpdate || true;
+  if (!this.requestsInProgress[requestId]) {
+    delete this.requestsInProgress[requestId];
+  }
   this._fireUpdateEvent();
 }
 Backend.Cache.isRequestInUpdate = function(requestId) {
@@ -1545,15 +1551,19 @@ Backend.Cache.isRequestInUpdate = function(requestId) {
 }
 Backend.Cache.setRequest = function(requestId, request) {
   this.requests[requestId] = request;
-  delete this.requestsInProgress[requestId];
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId, null);
-  this._fireUpdateEvent();
+  
+  this.markRequestInUpdate(requestId, false);
 }
 Backend.Cache.getRequest = function(requestId) {
   return this.requests[requestId];
 }
-Backend.Cache.markIncomingResponseIdsInUpdate = function(requestId) {
-  this.incomingResponseIdsInProgress[requestId] = true;
+
+Backend.Cache.markIncomingResponseIdsInUpdate = function(requestId, isInUpdate) {
+  this.incomingResponseIdsInProgress[requestId] = isInUpdate || true;
+  if (!this.incomingResponseIdsInProgress[requestId]) {
+    delete this.incomingResponseIdsInProgress[requestId];
+  }
   this._fireUpdateEvent();
 }
 Backend.Cache.isIncomingResponseIdsInUpdate= function(requestId) {
@@ -1561,17 +1571,19 @@ Backend.Cache.isIncomingResponseIdsInUpdate= function(requestId) {
 }
 Backend.Cache.setIncomingResponseIds = function(requestId, responseIds) {
   this.incomingResponseIds[requestId] = responseIds;
-  delete this.incomingResponseIdsInProgress[requestId];
-
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId, null);
-  this._fireUpdateEvent();
+  
+  this.markIncomingResponseIdsInUpdate(requestId, false);
 }
-
 Backend.Cache.getIncomingResponseIds = function(requestId) {
   return this.incomingResponseIds[requestId];
 }
-Backend.Cache.markOutgoingResponseIdsInUpdate = function(requestId) {
-  this.outgoingResponseIdsInProgress[requestId] = true;
+
+Backend.Cache.markOutgoingResponseIdsInUpdate = function(requestId, isInUpdate) {
+  this.outgoingResponseIdsInProgress[requestId] = isInUpdate || true;
+  if (!this.outgoingResponseIdsInProgress[requestId]) {
+    delete this.outgoingResponseIdsInProgress[requestId];
+  }
   this._fireUpdateEvent();
 }
 Backend.Cache.isOutgoingResponseIdsInUpdate = function(requestId) {
@@ -1579,15 +1591,19 @@ Backend.Cache.isOutgoingResponseIdsInUpdate = function(requestId) {
 }
 Backend.Cache.setOutgoingResponseIds = function(requestId, responseIds) {
   this.outgoingResponseIds[requestId] = responseIds;
-  delete this.outgoingResponseIdsInProgress[requestId];
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId, null);
-  this._fireUpdateEvent();
+  
+  this.markOutgoingResponseIdsInUpdate(requestId, false);
 }
 Backend.Cache.getOutgoingResponseIds = function(requestId) {
   return this.outgoingResponseIds[requestId];
 }
-Backend.Cache.markResponseInUpdate = function(requestId, responseId) {
-  this.responsesInProgress[responseId] = true;
+
+Backend.Cache.markResponseInUpdate = function(requestId, responseId, isInUpdate) {
+  this.responsesInProgress[responseId] = isInUpdate || true;
+  if (!this.responsesInProgress[responseId]) {
+    delete this.responsesInProgress[responseId];
+  }
   this._fireUpdateEvent();
 }
 Backend.Cache.isResponseInUpdate = function(requestId, responseId) {
@@ -1595,15 +1611,19 @@ Backend.Cache.isResponseInUpdate = function(requestId, responseId) {
 }
 Backend.Cache.setResponse = function(requestId, responseId, response) {
   this.responses[responseId] = response;
-  delete this.responsesInProgress[responseId];
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId, responseId);
-  this._fireUpdateEvent();
+  
+  this.markResponseInUpdate(requestId, responseId, false);
 }
 Backend.Cache.getResponse = function(requestId, responseId) {
   return this.responses[responseId];
 }
-Backend.Cache.markContactInfoInUpdate = function(requestId, responseId) {
-  this.contactInfosInProgress[responseId] = true;
+
+Backend.Cache.markContactInfoInUpdate = function(requestId, responseId, isInUpdate) {
+  this.contactInfosInProgress[responseId] = isInUpdate || true;
+  if (!this.contactInfosInProgress[responseId]) {
+    delete this.contactInfosInProgress[responseId];
+  }
   this._fireUpdateEvent();
 }
 Backend.Cache.isContactInfoInUpdate = function(requestId, responseId) {
