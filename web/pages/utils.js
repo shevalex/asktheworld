@@ -60,6 +60,24 @@ GeneralUtils.removeFromArray = function(arr, element) {
   return arr;
 }
 
+GeneralUtils.merge = function(source, properties) {
+  var result = {};
+  
+  if (source != null) {
+    for (var propNames in source) {
+      result[propNames] = source[propNames];
+    }
+  }
+  if (properties != null) {
+    for (var propNames in properties) {
+      result[propNames] = properties[propNames];
+    }
+  }
+  
+  return result;
+}
+
+
 
 ResourceUtils = {};
 ResourceUtils.loadResource = function(resourceUrl, isJsonResource, callback) {
