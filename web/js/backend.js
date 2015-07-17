@@ -1,8 +1,8 @@
 var Backend = {
 };
 
-//Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
-Backend._SERVER_BASE_URL = "http://127.0.0.1:8080/";
+Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
+//Backend._SERVER_BASE_URL = "http://127.0.0.1:8080/";
 
 
 // USER MANAGEMENT
@@ -145,14 +145,14 @@ Backend.updateUserProfile = function(userProfile, currentPassword, callback) {
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId, "PUT",
+  this._communicate("user/" + Backend.getUserProfile().userId, "PUT", GeneralUtils.add(Backend.getUserProfile(), 
     { 
       password: userProfile.password,
       gender: userProfile.gender,
       age_category: userProfile.age,
       name: userProfile.name,
       languages: userProfile.languages
-    },
+    }),
     false, this._getAuthenticationHeader(Backend.getUserProfile().login, currentPassword), communicationCallback);
 
   return true;
@@ -220,7 +220,7 @@ Backend.updateUserPreferences = function(userPreferences, callback) {
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/settings", "PUT",
+  this._communicate("user/" + Backend.getUserProfile().userId + "/settings", "PUT", GeneralUtils.add(Backend.getUserPreferences(),
     { 
       default_response_quantity: userPreferences.responseQuantity,
       default_response_wait_time: userPreferences.responseWaitTime,
@@ -229,7 +229,7 @@ Backend.updateUserPreferences = function(userPreferences, callback) {
       inquiry_quantity_per_day: userPreferences.dailyInquiryLimit,
       inquiry_gender_preference: userPreferences.inquiryGender,
       inquiry_age_group_preference: userPreferences.inquiryAge
-    },
+    }),
     false, this._getAuthenticationHeader(), communicationCallback);
 
   return true;
@@ -383,10 +383,12 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
 //  }.bind(this), 1000);
   // END OF Temporary
 
+  var updatedRequest = GeneralUtils.add(Backend.Cache.getRequest(requestId), request);
+  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        Backend._pullRequest(requestId); //TODO: remove, this is temporary. It should be replaced with events
+        Backend.Cache.setRequest(requestId, updatedRequest);
         
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -405,19 +407,7 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
     }
   }
 
-  this._communicate("request/" + requestId, "PUT",
-    { 
-      user_id: Backend.getUserProfile().userId,
-      text: request.text,
-      attachments: request.attachments, // each attachment: {name, url, data, type}
-      response_quantity: request.response_quantity,
-      response_wait_time: request.response_wait_time,
-      response_age_group: request.response_age_group,
-      response_gender: request.response_gender,
-      expertise_category: request.expertise_category,
-      status: request.status
-    },
-  false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("request/" + requestId, "PUT", updatedRequest, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getRequest = function(requestId) {
@@ -956,10 +946,12 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 //    }
 //  }.bind(this), 1000);
   
+  var updatedResponse = GeneralUtils.add(Backend.Cache.getResponse(requestId, responseId), response);
+  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        Backend._pullResponse(requestId, responseId); //TODO: remove, this is temporary. It should be replaced with events
+        Backend.Cache.setResponse(requestId, responseId, updatedResponse);
         
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -978,14 +970,7 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
     }
   }
 
-  this._communicate("response/" + responseId, "PUT",
-    { 
-      text: response.text,
-      attachments: response.attachments, // each attachment: {name, url, data, type}
-      star_rating: response.star_rating,
-      status: response.status
-    },
-  false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("response/" + responseId, "PUT", updatedResponse, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 

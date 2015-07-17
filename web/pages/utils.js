@@ -60,6 +60,18 @@ GeneralUtils.removeFromArray = function(arr, element) {
   return arr;
 }
 
+GeneralUtils.add = function(obj, properties) {
+  if (obj == null) {
+    return null;  
+  }
+  for (var propNames in properties) {
+    if (properties[propNames] != null) {
+      obj[propNames] = properties[propNames];
+    }
+  }
+}
+
+
 
 ResourceUtils = {};
 ResourceUtils.loadResource = function(resourceUrl, isJsonResource, callback) {
