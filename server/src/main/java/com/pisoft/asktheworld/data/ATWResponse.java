@@ -2,6 +2,7 @@ package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -11,8 +12,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 import com.pisoft.asktheworld.enums.ContactInfoStatus;
 
 @Entity
@@ -55,7 +59,7 @@ public class ATWResponse implements Serializable {
 	@Column(nullable = false)
 	private String status = "unviewed";
 	
-	@Column(name="start_rating")
+	@Column
 	private int star_rating = 0;
 	
 	@Column(nullable = false)
@@ -69,6 +73,15 @@ public class ATWResponse implements Serializable {
 	private boolean deleted = false;
 	
 
+	@Version
+	@Column(name="UPDATE_TS")
+	@JsonSerialize(using = CalendarSerializer.class)
+	private Calendar modificationDate;
+		     
+	@Column(name="CREATION_TS", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
+	@JsonSerialize(using = CalendarSerializer.class)
+	private Calendar time;
+	
 	public String getStatus() {
 		return status;
 	}

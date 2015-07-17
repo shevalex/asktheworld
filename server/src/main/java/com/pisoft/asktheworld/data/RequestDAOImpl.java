@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
-	private String findByUserIdQuery = "select r from " + ATWRequest.class.getName() + " r where r.user_id=?1 order by r.creationDate DESC";
-	private String findByUserIdAndStatusQuery = "select r from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.status=?2 order by r.creationDate DESC";
+	private String findByUserIdQuery = "select r from " + ATWRequest.class.getName() + " r where r.user_id=?1 order by r.time DESC";
+	private String findByUserIdAndStatusQuery = "select r from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.status=?2 order by r.time DESC";
 	private String findForUserQuery = "select r from " + ATWRequest.class.getName() + " r where"+ 
 			" r.user_id <> ?1 and " +
 			" r.status = 'active' and "+

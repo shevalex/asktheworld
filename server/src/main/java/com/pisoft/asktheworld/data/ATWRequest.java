@@ -63,7 +63,8 @@ public class ATWRequest implements Serializable {
 	private Calendar modificationDate;
 		     
 	@Column(name="CREATION_TS", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
-	private Calendar creationDate;
+	@JsonSerialize(using = CalendarSerializer.class)
+	private Calendar time;
 	
 	public int getId() {
 		return id;
