@@ -145,7 +145,7 @@ Backend.updateUserProfile = function(userProfile, currentPassword, callback) {
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId, "PUT", GeneralUtils.add(Backend.getUserProfile(), 
+  this._communicate("user/" + Backend.getUserProfile().userId, "PUT", GeneralUtils.merge(Backend.getUserProfile(), 
     { 
       password: userProfile.password,
       gender: userProfile.gender,
@@ -220,7 +220,7 @@ Backend.updateUserPreferences = function(userPreferences, callback) {
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/settings", "PUT", GeneralUtils.add(Backend.getUserPreferences(),
+  this._communicate("user/" + Backend.getUserProfile().userId + "/settings", "PUT", GeneralUtils.merge(Backend.getUserPreferences(),
     { 
       default_response_quantity: userPreferences.responseQuantity,
       default_response_wait_time: userPreferences.responseWaitTime,
@@ -383,7 +383,7 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
 //  }.bind(this), 1000);
   // END OF Temporary
 
-  var updatedRequest = GeneralUtils.add(Backend.Cache.getRequest(requestId), request);
+  var updatedRequest = GeneralUtils.merge(Backend.Cache.getRequest(requestId), request);
   
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -440,19 +440,7 @@ Backend._pullRequest = function(requestId, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        var request = {
-          text: data.text,
-          time: data.time,
-          attachments: data.attachments,
-          response_quantity: data.response_quantity,
-          response_wait_time: data.response_wait_time,
-          response_age_group: data.response_age_group,
-          response_gender: data.response_gender,
-          expertise_category: data.expertise_category,
-          status: data.status
-        };
-      
-        Backend.Cache.setRequest(requestId, request);
+        Backend.Cache.setRequest(requestId, data);
         
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -883,18 +871,7 @@ Backend._pullResponse = function(requestId, responseId, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        var response = {
-          time: data.time,
-          text:  data.text,
-          attachments: data.attachments,
-          age_category: data.age_category,
-          gender: data.gender,
-          status: data.status,
-          contact_info_status: data.contact_info_status,
-          star_rating: data.star_rating
-        };
-      
-        Backend.Cache.setResponse(requestId, responseId, response);
+        Backend.Cache.setResponse(requestId, responseId, data);
         
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -946,7 +923,7 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 //    }
 //  }.bind(this), 1000);
   
-  var updatedResponse = GeneralUtils.add(Backend.Cache.getResponse(requestId, responseId), response);
+  var updatedResponse = GeneralUtils.merge(Backend.Cache.getResponse(requestId, responseId), response);
   
   var communicationCallback = {
     success: function(data, status, xhr) {

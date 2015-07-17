@@ -60,15 +60,21 @@ GeneralUtils.removeFromArray = function(arr, element) {
   return arr;
 }
 
-GeneralUtils.add = function(obj, properties) {
-  if (obj == null) {
-    return null;  
-  }
-  for (var propNames in properties) {
-    if (properties[propNames] != null) {
-      obj[propNames] = properties[propNames];
+GeneralUtils.merge = function(source, properties) {
+  var result = {};
+  
+  if (source != null) {
+    for (var propNames in source) {
+      result[propNames] = source[propNames];
     }
   }
+  if (properties != null) {
+    for (var propNames in properties) {
+      result[propNames] = properties[propNames];
+    }
+  }
+  
+  return result;
 }
 
 
