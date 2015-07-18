@@ -315,12 +315,22 @@ Backend.createRequest = function(request, transactionCallback) {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
         var newRequestId = xhr.getResponseHeader("Location");
-        Backend._pullRequest(newRequestId); //TODO: remove, this is temporary. It should be replaced with events
         Backend._pullOutgoingRequestIds(); //TODO: remove, this is temporary. It should be replaced with events
+        Backend._pullRequest(newRequestId, {
+          success: function() {
+            transactionCallback.success(newRequestId);
+          },
+          failure: function() {
+            transactionCallback.failure();
+          },
+          error: function() {
+            transactionCallback.error();
+          }
+        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
         
-        if (transactionCallback != null) {
-          transactionCallback.success(newRequestId);
-        }
+//        if (transactionCallback != null) {
+//          transactionCallback.success(newRequestId);
+//        }
       }
     },
     error: function(xhr, status, error) {
@@ -383,16 +393,24 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
 //  }.bind(this), 1000);
   // END OF Temporary
 
-  var updatedRequest = GeneralUtils.merge(Backend.Cache.getRequest(requestId), request);
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        Backend.Cache.setRequest(requestId, updatedRequest);
+        Backend._pullRequest(requestId, {
+          success: function() {
+            transactionCallback.success();
+          },
+          failure: function() {
+            transactionCallback.failure();
+          },
+          error: function() {
+            transactionCallback.error();
+          }
+        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
         
-        if (transactionCallback != null) {
-          transactionCallback.success();
-        }
+//        if (transactionCallback != null) {
+//          transactionCallback.success();
+//        }
       }
     },
     error: function(xhr, status, error) {
@@ -407,7 +425,7 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
     }
   }
 
-  this._communicate("request/" + requestId, "PUT", updatedRequest, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("request/" + requestId, "PUT", GeneralUtils.merge(Backend.Cache.getRequest(requestId), request), false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getRequest = function(requestId) {
@@ -459,7 +477,7 @@ Backend._pullRequest = function(requestId, transactionCallback) {
     }
   }
 
-  this._communicate("request/" + requestId, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("request/" + requestId, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -597,7 +615,7 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
     statusQuery = "all";
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/requests/outgoing?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().userId + "/requests/outgoing?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getIncomingRequestIds = function(requestStatus, sortRule, transactionCallback) {
@@ -732,7 +750,7 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
     statusQuery = "all";
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/requests/incoming?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().userId + "/requests/incoming?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -781,7 +799,7 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
       Backend.Cache.markIncomingRequestIdsInUpdate(false);
     }
   }
-
+  
   this._communicate("user/" + Backend.getUserProfile().userId + "/requests/incoming/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
@@ -816,12 +834,22 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
         var newResponseId = xhr.getResponseHeader("Location");
-        Backend._pullResponse(requestId, newResponseId); //TODO: remove, this is temporary. It should be replaced with events
         Backend._pullOutgoingResponseIds(requestId); //TODO: remove, this is temporary. It should be replaced with events
+        Backend._pullResponse(requestId, newResponseId, {
+          success: function() {
+            transactionCallback.success(newResponseId);
+          },
+          failure: function() {
+            transactionCallback.failure();
+          },
+          error: function() {
+            transactionCallback.error();
+          }
+        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
         
-        if (transactionCallback != null) {
-          transactionCallback.success(newResponseId);
-        }
+//        if (transactionCallback != null) {
+//          transactionCallback.success(newResponseId);
+//        }
       }
     },
     error: function(xhr, status, error) {
@@ -890,7 +918,7 @@ Backend._pullResponse = function(requestId, responseId, transactionCallback) {
     }
   }
 
-  this._communicate("response/" + responseId, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("response/" + responseId, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -923,16 +951,24 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 //    }
 //  }.bind(this), 1000);
   
-  var updatedResponse = GeneralUtils.merge(Backend.Cache.getResponse(requestId, responseId), response);
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        Backend.Cache.setResponse(requestId, responseId, updatedResponse);
+        Backend._pullResponse(requestId, responseId, {
+          success: function() {
+            transactionCallback.success();
+          },
+          failure: function() {
+            transactionCallback.failure();
+          },
+          error: function() {
+            transactionCallback.error();
+          }
+        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
         
-        if (transactionCallback != null) {
-          transactionCallback.success();
-        }
+//        if (transactionCallback != null) {
+//          transactionCallback.success();
+//        }
       }
     },
     error: function(xhr, status, error) {
@@ -947,7 +983,7 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
     }
   }
 
-  this._communicate("response/" + responseId, "PUT", updatedResponse, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("response/" + responseId, "PUT", GeneralUtils.merge(Backend.Cache.getResponse(requestId, responseId), response), false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -1080,7 +1116,7 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
     statusQuery = "all";
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/incoming/" + requestId + "?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/incoming/" + requestId + "?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.removeIncomingResponse = function(requestId, responseId, callback) {
@@ -1261,7 +1297,7 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
     statusQuery = "all";
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/outgoing/" + requestId + "?status=" + statusQuery, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/outgoing/" + requestId + "?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -1637,7 +1673,7 @@ Backend._communicate = function(resource, method, data, isJsonResponse, headers,
   request.onreadystatechange = function() {
     if (request.readyState == 4) {
       if (request.status >= 200 && request.status < 300) {
-        callback.success(JSON.parse(request.responseText), request.status, request);
+        callback.success(isJsonResponse ? JSON.parse(request.responseText) : request.responseText, request.status, request);
       } else {
         callback.error(request, request.status, request.responseText);
       }
