@@ -288,29 +288,6 @@ Backend.Response.CONTACT_INFO_STATUS_PROVIDED = "provided";
 Backend.createRequest = function(request, transactionCallback) {
   Backend.Cache.markOutgoingRequestIdsInUpdate();
 
-  // TODO: Temporary - to be removed
-//  var newRequestId = "request" + Backend.Cache.getOutgoingRequestIds().all.length;
-//  Backend.Cache.markRequestInUpdate(newRequestId);
-//  
-//  setTimeout(function() {
-//    var requestIds = Backend.Cache.getOutgoingRequestIds();
-//    requestIds.all.push(newRequestId);
-//    requestIds.active.push(newRequestId);
-//    Backend.Cache.setOutgoingRequestIds(requestIds);
-//    Backend.Cache.setIncomingResponseIds(newRequestId, []);
-//    
-//    request.time = Date.now();
-//    request.status = Backend.Request.STATUS_ACTIVE;
-//    
-//    Backend.Cache.setRequest(newRequestId, request);
-//    
-//    if (transactionCallback != null) {
-//      transactionCallback.success();
-//    }
-//  }.bind(this), 1000);
-  // END OF Temporary
-  
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
@@ -362,37 +339,6 @@ Backend.createRequest = function(request, transactionCallback) {
 Backend.updateRequest = function(requestId, request, transactionCallback) {
   Backend.Cache.markRequestInUpdate(requestId);
   
-  // TODO: Temporary - to be removed
-//  setTimeout(function() {
-//    var existingRequest = Backend.Cache.getRequest(requestId);
-//    for (var key in request) {
-//      if (key == "status" && existingRequest[key] != request[key] && request.status == Backend.Request.STATUS_INACTIVE) {
-//        var allRequestIds = Backend.Cache.getOutgoingRequestIds();
-//        for (var index in allRequestIds.active) {
-//          if (allRequestIds.active[index] == requestId) {
-//            allRequestIds.active.splice(index, 1);
-//            
-//            if (allRequestIds.inactive != null) {
-//              allRequestIds.inactive.push(requestId);
-//            }
-//            
-//            Backend.Cache.setOutgoingRequestIds(allRequestIds);
-//            break;
-//          }
-//        }
-//      }
-//      
-//      existingRequest[key] = request[key];
-//    }
-//
-//    Backend.Cache.setRequest(requestId, existingRequest);
-//    
-//    if (transactionCallback != null) {
-//      transactionCallback.success();
-//    }
-//  }.bind(this), 1000);
-  // END OF Temporary
-
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -449,12 +395,6 @@ Backend.getRequest = function(requestId) {
 Backend._pullRequest = function(requestId, transactionCallback) {
   Backend.Cache.markRequestInUpdate(requestId);
   
-  // TODO: Temporary - to be removed
-//  setTimeout(function() {
-//    Backend.Cache.setRequest(requestId, this._createDummyRequest(requestId));
-//  }.bind(this), 1000);
-  // END OF Temporary
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -509,63 +449,6 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule, transactionCal
 Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionCallback) {
   Backend.Cache.markOutgoingRequestIdsInUpdate();
 
-    // Temporary code - to be removed
-//    setTimeout(function() {
-//      var requestIds = Backend.Cache.getOutgoingRequestIds();
-//      if (requestIds == null) {
-//        requestIds = {};
-//      }
-//      
-//
-//      var generateActive = false;
-//      var generateInactive = false;
-//      
-//      if (requestIds.all == null) {
-//        requestIds.all = [];
-//      }
-//      if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
-//        if (requestIds.active == null) {
-//          requestIds.active = [];
-//          generateActive = true;
-//        }
-//        if (requestIds.inactive == null) {
-//          requestIds.inactive = [];
-//          generateInactive = true;
-//        }
-//      } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
-//        if (requestIds.active == null) {
-//          requestIds.active = [];
-//          generateActive = true;
-//        }
-//      } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-//        if (requestIds.inactive == null) {
-//          requestIds.inactive = [];
-//          generateInactive = true;
-//        }
-//      }
-//
-//      var numOfRequests = Math.floor(Math.random() * 50);
-//      for (var i = 0; i < numOfRequests; i++) {
-//        var isActive = Math.random() < 0.5;
-//        if (isActive) {
-//          if (generateActive) {
-//            var id = "request" + (50 + i);
-//            requestIds.all.push(id);
-//            requestIds.active.push(id);
-//          }
-//        } else {
-//          if (generateInactive) {
-//            var id = "request" + i;
-//            requestIds.all.push(id);
-//            requestIds.inactive.push(id);
-//          }
-//        }
-//      }
-//      
-//      Backend.Cache.setOutgoingRequestIds(requestIds);
-//    }.bind(this), 1000);
-    // End of temporary code
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -646,61 +529,6 @@ Backend.getIncomingRequestIds = function(requestStatus, sortRule, transactionCal
 Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionCallback) {
   Backend.Cache.markIncomingRequestIdsInUpdate();
 
-//    setTimeout(function() {
-//      var requestIds = Backend.Cache.getIncomingRequestIds();
-//      if (requestIds == null) {
-//        requestIds = {};
-//      }
-//
-//      var generateActive = false;
-//      var generateInactive = false;
-//
-//      if (requestIds.all == null) {
-//        requestIds.all = [];
-//      }
-//      if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
-//        if (requestIds.active == null) {
-//          requestIds.active = [];
-//          generateActive = true;
-//        }
-//        if (requestIds.inactive == null) {
-//          requestIds.inactive = [];
-//          generateInactive = true;
-//        }
-//      } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
-//        if (requestIds.active == null) {
-//          requestIds.active = [];
-//          generateActive = true;
-//        }
-//      } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-//        if (requestIds.inactive == null) {
-//          requestIds.inactive = [];
-//          generateInactive = true;
-//        }
-//      }
-//
-//      var numOfRequests = Math.floor(Math.random() * 50);
-//      for (var i = 0; i < numOfRequests; i++) {
-//        var isActive = Math.random() < 0.5;
-//
-//        if (isActive) {
-//          if (generateActive) {
-//            var id = "request" + (100 + 50 + i);
-//            requestIds.all.push(id);
-//            requestIds.active.push(id);
-//          }
-//        } else {
-//          if (generateInactive) {
-//            var id = "request" + (100 + i);
-//            requestIds.all.push(id);
-//            requestIds.inactive.push(id);
-//          }
-//        }
-//      }
-//
-//      Backend.Cache.setIncomingRequestIds(requestIds);
-//    }.bind(this), 1000);
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -757,20 +585,6 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
 Backend.removeIncomingRequest = function(requestId, transactionCallback) {
   Backend.Cache.markIncomingRequestIdsInUpdate();
   
-//  setTimeout(function() {
-//    var requestIds = Backend.Cache.getIncomingRequestIds();
-//
-//    requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
-//    requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
-//    requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
-//    
-//    Backend.Cache.setIncomingRequestIds(requestIds);
-//
-//    if (transactionCallback != null) {
-//      transactionCallback.success();
-//    }
-//  }.bind(this), 1000);
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -808,27 +622,6 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
 
 Backend.createResponse = function(requestId, response, transactionCallback) {
   Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
-//  var newResponseId = requestId + "-response" + Backend.Cache.getOutgoingResponseIds(requestId).all.length;
-//  Backend.Cache.markResponseInUpdate(requestId, newResponseId);
-//  
-//  setTimeout(function() {
-//    var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
-//    responseIds.all.push(newResponseId);
-//    responseIds.unviewed.push(newResponseId);
-//    
-//    response.time = Date.now();
-//    response.age_category = Backend.getUserProfile().age;
-//    response.gender = Backend.getUserProfile().gender;
-//    response.status = Backend.Response.STATUS_UNREAD;
-//
-//    Backend.Cache.setResponse(requestId, newResponseId, response);
-//    Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
-//    
-//    if (transactionCallback != null) {
-//      transactionCallback.success(newResponseId);
-//    }
-//  }.bind(this), 1000);
-  
   
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -890,12 +683,6 @@ Backend.getResponse = function(requestId, responseId) {
 Backend._pullResponse = function(requestId, responseId, transactionCallback) {
    Backend.Cache.markResponseInUpdate(requestId, responseId);
   
-  // TODO: Temporary - to be removed
-//  setTimeout(function() {
-//    Backend.Cache.setResponse(requestId, responseId, this._createDummyResponse(requestId, responseId));
-//  }.bind(this), 1000);
-  // END OF Temporary
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -921,35 +708,73 @@ Backend._pullResponse = function(requestId, responseId, transactionCallback) {
   this._communicate("response/" + responseId, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
+Backend.getResponseWithContactInfo = function(requestId, responseId, transactionCallback) {
+  var response = Backend.Cache.getResponse(requestId, responseId);
+  
+  if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_PROVIDED) {
+    if (transactionCallback != null) {
+      transactionCallback.success();
+    }
+    return response;
+  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
+    if (transactionCallback != null) {
+      transactionCallback.failure();
+    }
+    return null;
+  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE) {
+    Backend._pullResponseWithContactInfo(requestId, responseId, transactionCallback)
+    return null;
+  } else {
+    debug.error("Unsupported contact_info_status");
+  }
+}
+
+Backend._pullResponseWithContactInfo = function(requestId, responseId, transactionCallback) {
+  Backend.Cache.markResponseInUpdate(requestId, responseId);
+  
+    setTimeout(function() {
+      var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
+
+      var contactIndex = Math.round(Math.random() * (contacts.length - 1));
+      var contactInfo = contacts[contactIndex];
+      
+      var response = Backend.Cache.getResponse(requestId, responseId);
+      response.contact_info_status = Backend.Response.CONTACT_INFO_STATUS_PROVIDED;
+      response.contact_info = contactInfo;
+
+      Backend.Cache.setResponse(requestId, responseId, response);
+    }.bind(this), 2000);
+  
+/*  
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        Backend.Cache.setResponse(requestId, responseId, data);
+        
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+      Backend.Cache.markResponseInUpdate(requestId, responseId, false);
+    }
+  }
+
+  this._communicate("response/" + responseId + "?contactinfo", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  */
+}
+
 
 Backend.updateResponse = function(requestId, responseId, response, transactionCallback) {
   Backend.Cache.markResponseInUpdate(requestId, responseId);
-  
-//  setTimeout(function() {
-//    var existingResponse = Backend.Cache.getResponse(requestId, responseId);
-//    for (var key in response) {
-//      if (key == "status" && existingResponse[key] != response[key] && response.status == Backend.Response.STATUS_READ) {
-//        var allResponseIds = Backend.Cache.getIncomingResponseIds(requestId);
-//        
-//        for (var index in allResponseIds.unviewed) {
-//          if (allResponseIds.unviewed[index] == responseId) {
-//            allResponseIds.unviewed.splice(index, 1);
-//            allResponseIds.viewed.push(requestId);
-//            Backend.Cache.setIncomingResponseIds(requestId, allResponseIds);
-//            break;
-//          }
-//        }
-//      }
-//      
-//      existingResponse[key] = response[key];
-//    }
-//
-//    Backend.Cache.setResponse(requestId, responseId, existingResponse);
-//    
-//    if (transactionCallback != null) {
-//      transactionCallback.success();
-//    }
-//  }.bind(this), 1000);
   
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -1012,61 +837,8 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
 }
 
 Backend._pullIncomingResponseIds = function(requestId, responseStatus, transactionCallback) {
-    Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
+  Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
 
-//    setTimeout(function() {
-//      var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
-//      if (responseIds == null) {
-//        responseIds = {};
-//      }
-//
-//      var generateViewed = false;
-//      var generateUnviewed = false;
-//
-//      if (responseIds.all == null) {
-//        responseIds.all = [];
-//      }
-//      if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
-//        if (responseIds.unviewed == null) {
-//          responseIds.unviewed = [];
-//          generateUnviewed = true;
-//        }
-//        if (responseIds.viewed == null) {
-//          responseIds.viewed = [];
-//          generateViewed = true;
-//        }
-//      } else if (responseStatus == Backend.Response.STATUS_READ) {
-//        if (responseIds.viewed == null) {
-//          responseIds.viewed = [];
-//          generateViewed = true;
-//        }
-//      } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
-//        if (responseIds.unviewed == null) {
-//          responseIds.unviewed = [];
-//          generateUnviewed = true;
-//        }
-//      }
-//
-//      var numOfResponses = Math.floor(Math.random() * 30);
-//      for (var i = 0; i < numOfResponses; i++) {
-//        if (Math.random() < 0.95) {
-//          if (generateViewed) {
-//            var responseId = requestId + "-response" + (50 + i);
-//            responseIds.all.push(responseId);
-//            responseIds.viewed.push(responseId);
-//          }
-//        } else {
-//          if (generateUnviewed) {
-//            var responseId = requestId + "-response" + i;
-//            responseIds.all.push(responseId);
-//            responseIds.unviewed.push(responseId);
-//          }
-//        }
-//      }
-//
-//      Backend.Cache.setIncomingResponseIds(requestId, responseIds);
-//    }.bind(this), 1000);
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -1121,19 +893,6 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
 
 Backend.removeIncomingResponse = function(requestId, responseId, callback) {
   Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
-  
-//  setTimeout(function() {
-//    var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
-//    responseIds.all = GeneralUtils.removeFromArray(responseIds.all, responseId);
-//    responseIds.viewed = GeneralUtils.removeFromArray(responseIds.viewed, responseId);
-//    responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.unviewed, responseId);
-//    
-//    Backend.Cache.setIncomingResponseIds(requestId, responseIds);
-//
-//    if (callback != null) {
-//      callback.success();
-//    }
-//  }.bind(this), 1000);
   
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -1193,61 +952,8 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
 }
 
 Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transactionCallback) {
-    Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
+  Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
 
-//    setTimeout(function() {
-//      var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
-//      if (responseIds == null) {
-//        responseIds = {};
-//      }
-//
-//      var generateViewed = false;
-//      var generateUnviewed = false;
-//
-//      if (responseIds.all == null) {
-//        responseIds.all = [];
-//      }
-//      if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
-//        if (responseIds.unviewed == null) {
-//          responseIds.unviewed = [];
-//          generateUnviewed = true;
-//        }
-//        if (responseIds.viewed == null) {
-//          responseIds.viewed = [];
-//          generateViewed = true;
-//        }
-//      } else if (responseStatus == Backend.Response.STATUS_READ) {
-//        if (responseIds.viewed == null) {
-//          responseIds.viewed = [];
-//          generateViewed = true;
-//        }
-//      } else if (responseStatus == Backend.Reponse.STATUS_UNREAD) {
-//        if (responseIds.unviewed == null) {
-//          responseIds.unviewed = [];
-//          generateUnviewed = true;
-//        }
-//      }
-//
-//      var numOfResponses = Math.floor(Math.random() * 5);
-//      for (var i = 0; i < numOfResponses; i++) {
-//        if (Math.random() < 0.95) {
-//          if (generateViewed) {
-//            var responseId = requestId + "-response" + (100 + 50 + i);
-//            responseIds.all.push(responseId);
-//            responseIds.viewed.push(responseId);
-//          }
-//        } else {
-//          if (generateUnviewed) {
-//            var responseId = requestId + "-response" + (100 + i);
-//            responseIds.all.push(responseId);
-//            responseIds.unviewed.push(responseId);
-//          }
-//        }
-//      }
-//
-//      Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
-//    }.bind(this), 1000);
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -1302,125 +1008,6 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
 
 
 
-Backend.getContactInfo = function(requestId, responseId, transactionCallback) {
-  var response = Backend.Cache.getResponse(requestId, responseId);
-  
-  if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_PROVIDED) {
-    return response.contact_info;
-  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
-    return null;
-  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE) {
-    Backend.Cache.markContactInfoInUpdate(requestId, responseId);
-
-    setTimeout(function() {
-      var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
-
-      var contactIndex = Math.round(Math.random() * (contacts.length - 1));
-      var contactInfo = contacts[contactIndex];
-
-      Backend.Cache.setContactInfo(requestId, responseId, contactInfo);
-    }.bind(this), 2000);
-  }
-  
-  return null;
-}
-
-
-
-
-Backend._createDummyRequest = function(requestId) {
-  var quantity = Math.round(Math.random() * 3);
-  var waitTime = Math.round(Math.random() * 3);
-  var age = Math.round(Math.random() * 5);
-  var gender = Math.round(Math.random() * 2);
-  var numOfExtraLines = Math.round(Math.random() * 5);
-
-  var status = Backend.Request.STATUS_INACTIVE;
-  var requestIds = Backend.Cache.getIncomingRequestIds();
-  if (requestIds != null) {
-    for (var index in requestIds.active) {
-      if (requestIds.active[index] == requestId) {
-        status = Backend.Request.STATUS_ACTIVE;
-        break;
-      }
-    }
-  }
-  
-  requestIds = Backend.Cache.getOutgoingRequestIds();
-  if (requestIds != null) {
-    for (var index in requestIds.active) {
-      if (requestIds.active[index] == requestId) {
-        status = Backend.Request.STATUS_ACTIVE;
-        break;
-      }
-    }
-  }
-
-  var text = "This is the request with the id " + requestId;
-  for (var i = 0; i < numOfExtraLines; i++) {
-    text += "<br>line " + (i + 2);
-  }
-  
-  var request = {
-    time: Date.now(),
-    text: text,
-    attachments: [],
-    response_quantity: Application.Configuration.RESPONSE_QUANTITY[quantity].data,
-    response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[waitTime].data,
-    response_age_group: Application.Configuration.AGE_CATEGORY_PREFERENCE[age].data,
-    response_gender: Application.Configuration.GENDER_PREFERENCE[gender].data,
-    expertise_category: Application.Configuration.EXPERTISES[0].data,
-    status: status
-  };
-    
-  return request;
-}
-
-Backend._createDummyResponse = function(requestId, responseId) {
-  var age = Math.round(Math.random() * 4);
-  var gender = Math.round(Math.random());
-  var contactStatus = Math.round(Math.random() * 2);
-  var statusUnread = false;
-  var numOfExtraLines = Math.round(Math.random() * 5);
-  var starRating = Math.round(Math.random() * 5);
-  
-  var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
-  if (responseIds == null) {
-    responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
-  }
-  for (var index in responseIds.unviewed) {
-    if (responseIds.unviewed[index] == responseId) {
-      statusUnread = true;
-      break;
-    }
-  }
-  
-  if (contactStatus == 0) {
-    contactInfoStatus = Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE;
-  } else if (contactStatus == 1) {
-    contactInfoStatus = Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE;
-  } else if (contactStatus == 2) {
-    contactInfoStatus = Backend.Response.CONTACT_INFO_STATUS_PROVIDED;
-  }
-  
-  var text = "This is the response " + responseId + " to the request " + requestId;
-  for (var i = 0; i < numOfExtraLines; i++) {
-    text += "<br>line " + (i + 2);
-  }
-  
-  var response = {
-    time: Date.now(),
-    text:  text,
-    attachments: [],
-    age_category: Application.Configuration.AGE_CATEGORIES[age].data,
-    gender: Application.Configuration.GENDERS[gender].data,
-    status: statusUnread ? Backend.Response.STATUS_UNREAD : Backend.Response.STATUS_READ,
-    contact_info_status: contactInfoStatus,
-    star_rating: starRating
-  }
-
-  return response;
-}
 
 
 
@@ -1462,7 +1049,6 @@ Backend.Cache = {
   outgoingResponseIds: {},
   responsesInProgress: {},
   responses: {},
-  contactInfosInProgress: {},
   updateInProgressNotified: false
 };
 
@@ -1481,7 +1067,6 @@ Backend.Cache.reset = function() {
   this.outgoingResponseIds = {};
   this.responsesInProgress = {};
   this.responses = {};
-  this.contactInfosInProgress = {};
   this.updateInProgressNotified = false;
 }
 
@@ -1617,32 +1202,13 @@ Backend.Cache.getResponse = function(requestId, responseId) {
   return this.responses[responseId];
 }
 
-Backend.Cache.markContactInfoInUpdate = function(requestId, responseId, isInUpdate) {
-  this.contactInfosInProgress[responseId] = isInUpdate != null ? isInUpdate : true;
-  if (!this.contactInfosInProgress[responseId]) {
-    delete this.contactInfosInProgress[responseId];
-  }
-  this._fireUpdateEvent();
-}
-Backend.Cache.isContactInfoInUpdate = function(requestId, responseId) {
-  return this.contactInfosInProgress[responseId] != null;
-}
-Backend.Cache.setContactInfo = function(requestId, responseId, contactInfo) {
-  var response = this.getResponse(requestId, responseId);
-  response.contact_info = contactInfo;
-  response.contact_info_status = Backend.Response.CONTACT_INFO_STATUS_PROVIDED;
-  delete this.contactInfosInProgress[responseId];
-  this.setResponse(requestId, responseId, response);
-}
-
 Backend.Cache.isInUpdate = function() {
   return this.outgoingRequestIdsInProgress == true
          || !GeneralUtils.isEmpty(this.incomingResponseIdsInProgress)
          || this.incomingRequestIdsInProgress == true
          || !GeneralUtils.isEmpty(this.outgoingResponseIdsInProgress)
          || !GeneralUtils.isEmpty(this.requestsInProgress)
-         || !GeneralUtils.isEmpty(this.responsesInProgress)
-         || !GeneralUtils.isEmpty(this.contactInfosInProgress);
+         || !GeneralUtils.isEmpty(this.responsesInProgress);
 }
 
 Backend.Cache._fireUpdateEvent = function() {
