@@ -148,7 +148,7 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
     name: name,
     gender: this._genderElement.getSelectedData(),
     languages: this._languagesElement.getSelectedData(),
-    age: this._ageElement.getSelectedData()
+    age_category: this._ageElement.getSelectedData()
   };
 
   if (newPassword.length > 0) {

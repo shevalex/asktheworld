@@ -7,20 +7,20 @@ Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
 
 // USER MANAGEMENT
 
-Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age: null, name: null, userId: null};
+Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age_category: null, name: null, userId: null};
 Backend.UserPreferences = {
-  responseQuantity: Application.Configuration.RESPONSE_QUANTITY[0].data,
-  responseWaitTime: Application.Configuration.RESPONSE_WAIT_TIME[0].data,
-  requestTargetAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
-  requestTargetGender: Application.Configuration.GENDER_PREFERENCE[0].data,
-  dailyInquiryLimit: Application.Configuration.INQUIRY_LIMIT_PREFERENCE[0].data,
-  inquiryAge: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
-  inquiryGender: Application.Configuration.GENDER_PREFERENCE[0].data,
+  default_response_quantity: Application.Configuration.RESPONSE_QUANTITY[0].data,
+  default_response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[0].data,
+  default_response_age_group_preference: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
+  default_gender_preference: Application.Configuration.GENDER_PREFERENCE[0].data,
+  inquiry_quantity_per_day: Application.Configuration.INQUIRY_LIMIT_PREFERENCE[0].data,
+  inquiry_age_group_preference: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
+  inquiry_gender_preference: Application.Configuration.GENDER_PREFERENCE[0].data,
 
   expertises: [Application.Configuration.EXPERTISES[0]],
-  contactVisible: false,
-  contactName: "",
-  contactInfo: ""
+  contact_info_requestable: false,
+  contact_name: "",
+  contact_info: ""
 };
 
 Backend.getUserProfile = function() {
@@ -31,27 +31,29 @@ Backend.getUserPreferences = function() {
   return this.UserPreferences;
 }
 
-Backend.logIn = function(login, password, callback) {
+Backend.logIn = function(login, password, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
+      Backend.UserProfile = data;
       Backend.UserProfile.login = login;
       Backend.UserProfile.password = password;
-      Backend.UserProfile.userId = data.userId;
 
-      Backend._pullUserSettings(callback);
+      Backend._pullUserSettings(transactionCallback);
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 401 || xhr.status == 404) {
-        callback.failure();
-      } else {
-        callback.error();
+      if (transactionCallback != null) {
+        if (xhr.status == 401 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
       }
     }
   }
   this._communicate("user?login=" + login, "GET", null, true, this._getAuthenticationHeader(login, password), communicationCallback);
 }
 
-Backend.logOut = function(callback) {
+Backend.logOut = function(transactionCallback) {
   Backend.UserProfile.login = null;
   Backend.UserProfile.password = null;
   Backend.UserProfile.name = null;
@@ -60,8 +62,8 @@ Backend.logOut = function(callback) {
   Backend.Cache.reset();
   
   //We may need to inform the server maybe?
-  if (callback != null) {
-    callback();
+  if (transactionCallback != null) {
+    transactionCallback.success();
   }
 }
 
@@ -69,25 +71,28 @@ Backend.isLogged = function() {
   return Backend.getUserProfile().login != null;
 }
 
-Backend.pullUserProfile = function(callback) {
+Backend.pullUserProfile = function(transactionCallback) {
   if (Backend.getUserProfile().userId == null) {
     throw "Must login or register first";
   }
 
   var communicationCallback = {
     success: function(data, status, xhr) {
-      Backend.UserProfile.languages = data.languages;
-      Backend.UserProfile.gender = data.gender;
-      Backend.UserProfile.name = data.name;
-      Backend.UserProfile.age = data.age_category;
-
-      callback.success();
+      var password = Backend.UserProfile.password; // temporary
+      Backend.UserProfile = GeneralUtils.merge(Backend.getUserProfile(), data);
+      Backend.UserProfile.password = password; // temporary
+      
+      if (transactionCallback != null) {
+        transactionCallback.success();
+      }
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 401 || xhr.status == 404) {
-        callback.failure();
-      } else {
-        callback.error();
+      if (transactionCallback != null) {
+        if (xhr.status == 401 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
       }
     }
   }
@@ -95,7 +100,7 @@ Backend.pullUserProfile = function(callback) {
   this._communicate("user/" + Backend.getUserProfile().userId, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
-Backend.registerUser = function(userProfile, callback) {
+Backend.registerUser = function(userProfile, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
@@ -103,88 +108,82 @@ Backend.registerUser = function(userProfile, callback) {
         Backend.UserProfile.password = userProfile.password;
         Backend.UserProfile.userId = xhr.getResponseHeader("Location");
         
-        Backend._pullUserSettings(callback);
-      } else {
-        callback.error();
+        Backend._pullUserSettings(transactionCallback);
+      } else if (transactionCallback != null) {
+        transactionCallback.error();
       }
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 409) {
-        callback.conflict();
-      } else {
-        callback.error();
+      if (transactionCallback != null) {
+        if (xhr.status == 409) {
+          transactionCallback.conflict();
+        } else {
+          transactionCallback.error();
+        }
       }
     }
   }
-  this._communicate("user", "POST",
-    {
-      login: userProfile.login,
-      password: userProfile.password,
-      gender: userProfile.gender,
-      age_category: userProfile.age,
-      name: userProfile.name,
-      languages: userProfile.languages
-    }, 
-    false, {}, communicationCallback);
+  this._communicate("user", "POST", userProfile, false, {}, communicationCallback);
 }
 
-Backend.updateUserProfile = function(userProfile, currentPassword, callback) {
+Backend.updateUserProfile = function(userProfile, currentPassword, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (userProfile.password != null) {
         Backend.UserProfile.password = userProfile.password;
       }
-      Backend.pullUserProfile(callback);
+      Backend.pullUserProfile(transactionCallback);
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 401) {
-        callback.failure();
-      } else {
-        callback.error();
+      if (transactionCallback != null) {
+        if (xhr.status == 401) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
       }
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId, "PUT", GeneralUtils.merge(Backend.getUserProfile(), 
-    { 
-      password: userProfile.password,
-      gender: userProfile.gender,
-      age_category: userProfile.age,
-      name: userProfile.name,
-      languages: userProfile.languages
-    }),
-    false, this._getAuthenticationHeader(Backend.getUserProfile().login, currentPassword), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().userId, "PUT", Backend.getUserProfile(), false, this._getAuthenticationHeader(Backend.getUserProfile().login, currentPassword), communicationCallback);
 
   return true;
 }
 
-Backend.pullUserPreferences = function(callback) {
+Backend.pullUserPreferences = function(transactionCallback) {
   if (Backend.getUserProfile().userId == null) {
     throw "Must login or register first";
   }
   
   var communicationCallback = {
     success: function(data, status, xhr) {
-      Backend.UserPreferences.requestTargetAge = data.default_response_age_group_preference || Backend.UserPreferences.requestTargetAge;
-      Backend.UserPreferences.requestTargetGender = data.default_gender_preference || Backend.UserPreferences.requestTargetGender;
-      Backend.UserPreferences.responseQuantity = data.default_response_quantity || Backend.UserPreferences.responseQuantity;
-      Backend.UserPreferences.responseWaitTime = data.default_response_wait_time || Backend.UserPreferences.responseWaitTime;
-      Backend.UserPreferences.dailyInquiryLimit = data.inquiry_quantity_per_day || Backend.UserPreferences.dailyInquiryLimit;
-      Backend.UserPreferences.inquiryAge = data.inquiry_age_group_preference || Backend.UserPreferences.inquiryAge;
-      Backend.UserPreferences.inquiryGender = data.inquiry_gender_preference || Backend.UserPreferences.inquiryGender;
+      //Temporary
+//      Backend.UserPreferences.default_response_age_group_preference = data.default_response_age_group_preference || Backend.UserPreferences.default_response_age_group_preference;
+//      Backend.UserPreferences.default_gender_preference = data.default_gender_preference || Backend.UserPreferences.default_gender_preference;
+//      Backend.UserPreferences.default_response_quantity = data.default_response_quantity || Backend.UserPreferences.default_response_quantity;
+//      Backend.UserPreferences.default_response_wait_time = data.default_response_wait_time || Backend.UserPreferences.default_response_wait_time;
+//      Backend.UserPreferences.inquiry_quantity_per_day = data.inquiry_quantity_per_day || Backend.UserPreferences.inquiry_quantity_per_day;
+//      Backend.UserPreferences.inquiry_age_group_preference = data.inquiry_age_group_preference || Backend.UserPreferences.inquiry_age_group_preference;
+//      Backend.UserPreferences.inquiry_gender_preference = data.inquiry_gender_preference || Backend.UserPreferences.inquiry_gender_preference;
+//
+//      Backend.UserPreferences.expertises = data.expertises || Backend.UserPreferences.expertises;
+//      Backend.UserPreferences.contact_info_requestable = data.contact_info_requestable || Backend.UserPreferences.contact_info_requestable;
+//      Backend.UserPreferences.contact_name = data.contact_name || Backend.UserPreferences.contact_name;
+//      Backend.UserPreferences.contact_info = data.contact_info || Backend.UserPreferences.contact_info;
+      
+      Backend.UserPreferences = GeneralUtils.merge(Backend.getUserPreferences(), data);
 
-      Backend.UserPreferences.expertises = data.expertises || Backend.UserPreferences.expertises;
-      Backend.UserPreferences.contactVisible = data.contact_info_requestable || Backend.UserPreferences.contactVisible;
-      Backend.UserPreferences.contactName = data.contact_name || Backend.UserPreferences.contactName;
-      Backend.UserPreferences.contactInfo = data.contact_info || Backend.UserPreferences.contactInfo;
-
-      callback.success();
+      if (transactionCallback != null) {
+        transactionCallback.success();
+      }
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 401 || xhr.status == 404) {
-        callback.failure();
-      } else {
-        callback.error();
+      if (transactionCallback != null) { 
+        if (xhr.status == 401 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
       }
     }
   }
@@ -192,67 +191,68 @@ Backend.pullUserPreferences = function(callback) {
   this._communicate("user/" + Backend.getUserProfile().userId + "/settings", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
-Backend.updateUserPreferences = function(userPreferences, callback) {
+Backend.updateUserPreferences = function(userPreferences, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
-      Backend.UserPreferences.requestTargetAge = userPreferences.requestTargetAge;
-      Backend.UserPreferences.requestTargetGender = userPreferences.requestTargetGender;
-      Backend.UserPreferences.responseQuantity = userPreferences.responseQuantity;
-      Backend.UserPreferences.responseWaitTime = userPreferences.responseWaitTime;
-      Backend.UserPreferences.dailyInquiryLimit = userPreferences.dailyInquiryLimit;
-      Backend.UserPreferences.inquiryAge = userPreferences.inquiryAge;
-      Backend.UserPreferences.inquiryGender = userPreferences.inquiryGender;
-      
-      Backend.UserPreferences.expertises = userPreferences.expertises;
-      Backend.UserPreferences.contactVisible = userPreferences.contactVisible;
-      Backend.UserPreferences.contactName = userPreferences.contactName;
-      Backend.UserPreferences.contactInfo = userPreferences.contactInfo;
+      Backend.UserPreferences = userPreferences; // Temporary. To be replaced
+      //Backend.UserPreferences = data;
 
-      callback.success();
-//      Backend.pullUserPreferences(callback);
+      if (transactionCallback != null) {
+        transactionCallback.success();
+      }
     },
     error: function(xhr, status, error) {
-      if (xhr.status == 401) {
-        callback.failure();
-      } else {
-        callback.error();
+      if (transactionCallback != null) {
+        if (xhr.status == 401) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
       }
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/settings", "PUT", GeneralUtils.merge(Backend.getUserPreferences(),
-    { 
-      default_response_quantity: userPreferences.responseQuantity,
-      default_response_wait_time: userPreferences.responseWaitTime,
-      default_response_age_group_preference: userPreferences.requestTargetAge,
-      default_gender_preference: userPreferences.requestTargetGender,
-      inquiry_quantity_per_day: userPreferences.dailyInquiryLimit,
-      inquiry_gender_preference: userPreferences.inquiryGender,
-      inquiry_age_group_preference: userPreferences.inquiryAge
-    }),
-    false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().userId + "/settings", "PUT", GeneralUtils.merge(Backend.getUserPreferences(), userPreferences), false, this._getAuthenticationHeader(), communicationCallback);
 
   return true;
 }
 
-Backend.resetUserPassword = function(login, callback) {
-  //TODO
-  setTimeout(function() {
-    callback.success();
-  }, 2000);
+Backend.resetUserPassword = function(login, transactionCallback) {
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (transactionCallback != null) {
+        transactionCallback.success();
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) { 
+        if (xhr.status == 401 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+    }
+  }
+  
+  this._communicate("user/" + Backend.getUserProfile().userId + "?reset_password", "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
-Backend._pullUserSettings = function(callback) {
+Backend._pullUserSettings = function(transactionCallback) {
   var callbackAdapter = {
     success: function() {
-      Backend.pullUserPreferences(callback);
+      Backend.pullUserPreferences(transactionCallback);
     },
     failure: function() {
-      callback.failure();
+      if (transactionCallback != null) {
+        transactionCallback.failure();
+      }
     },
     error: function() {
-      callback.error();
+      if (transactionCallback != null) {
+        transactionCallback.error();
+      }
     }
   }
   
@@ -665,7 +665,7 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
       age_category: Backend.getUserProfile().age,
       gender: Backend.getUserProfile().gender,
       attachments: response.attachments, // each attachment: {name, url, data, type}
-      contact_info_status: Backend.getUserPreferences().contactVisible ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE
+      contact_info_status: Backend.getUserPreferences().contact_info_requestable ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE
     },
   false, this._getAuthenticationHeader(), communicationCallback);
 }

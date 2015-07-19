@@ -81,10 +81,10 @@ NewRequestPage.prototype._resetPage = function() {
   this._requestTextEditor.focus();
   this._attachmentsBar.setAttachments(null);
 
-  this._requestGenderElement.selectData(Backend.getUserPreferences().requestTargetGender);
-  this._requestAgeElement.selectData(Backend.getUserPreferences().requestTargetAge);
-  this._requestQuantityElement.selectData(Backend.getUserPreferences().responseQuantity);
-  this._requestWaitTimeElement.selectData(Backend.getUserPreferences().responseWaitTime);
+  this._requestGenderElement.selectData(Backend.getUserPreferences().default_gender_preference);
+  this._requestAgeElement.selectData(Backend.getUserPreferences().default_response_age_group_preference);
+  this._requestQuantityElement.selectData(Backend.getUserPreferences().default_response_quantity);
+  this._requestWaitTimeElement.selectData(Backend.getUserPreferences().default_response_wait_time);
   
   this._requestExpertiseCategoryElement.selectChoices([Application.Configuration.EXPERTISES[0]]);
 }

@@ -89,18 +89,18 @@ UserPreferencesPage.prototype.onHide = function() {
 
 
 UserPreferencesPage.prototype._resetParameters = function() {
-  this._quantityElement.selectData(Backend.getUserPreferences().responseQuantity);
-  this._waitTimeElement.selectData(Backend.getUserPreferences().responseWaitTime);
-  this._ageElement.selectData(Backend.getUserPreferences().requestTargetAge);
-  this._genderElement.selectData(Backend.getUserPreferences().requestTargetGender);
-  this._inquiryLimitElement.selectData(Backend.getUserPreferences().dailyInquiryLimit);
-  this._inquiryAgeElement.selectData(Backend.getUserPreferences().inquiryAge);
-  this._inquiryGenderElement.selectData(Backend.getUserPreferences().inquiryGender);
+  this._quantityElement.selectData(Backend.getUserPreferences().default_response_quantity);
+  this._waitTimeElement.selectData(Backend.getUserPreferences().default_response_wait_time);
+  this._ageElement.selectData(Backend.getUserPreferences().default_response_age_group_preference);
+  this._genderElement.selectData(Backend.getUserPreferences().default_gender_preference);
+  this._inquiryLimitElement.selectData(Backend.getUserPreferences().inquiry_quantity_per_day);
+  this._inquiryAgeElement.selectData(Backend.getUserPreferences().inquiry_age_group_preference);
+  this._inquiryGenderElement.selectData(Backend.getUserPreferences().inquiry_gender_preference);
   
   this._expertiseElement.selectChoices(Backend.getUserPreferences().expertises);
-  this._makeContactInfoRequestableCheckbox.setValue(Backend.getUserPreferences().contactVisible);
-  this._nameElement.setValue(Backend.getUserPreferences().contactName);
-  this._contactElement.setValue(Backend.getUserPreferences().contactInfo);
+  this._makeContactInfoRequestableCheckbox.setValue(Backend.getUserPreferences().contact_info_requestable);
+  this._nameElement.setValue(Backend.getUserPreferences().contact_name);
+  this._contactElement.setValue(Backend.getUserPreferences().contact_info);
 }
 
 
@@ -157,18 +157,18 @@ UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
   Application.showSpinningWheel();
 
   var userPreferences = {
-    responseQuantity: this._quantityElement.getSelectedData(),
-    responseWaitTime: this._waitTimeElement.getSelectedData(),
-    requestTargetAge: this._ageElement.getSelectedData(),
-    requestTargetGender: this._genderElement.getSelectedData(),
-    dailyInquiryLimit: this._inquiryLimitElement.getSelectedData(),
-    inquiryAge: this._inquiryAgeElement.getSelectedData(),
-    inquiryGender: this._inquiryGenderElement.getSelectedData(),
+    default_response_quantity: this._quantityElement.getSelectedData(),
+    default_response_wait_time: this._waitTimeElement.getSelectedData(),
+    default_response_age_group_preference: this._ageElement.getSelectedData(),
+    default_gender_preference: this._genderElement.getSelectedData(),
+    inquiry_quantity_per_day: this._inquiryLimitElement.getSelectedData(),
+    inquiry_age_group_preference: this._inquiryAgeElement.getSelectedData(),
+    inquiry_gender_preference: this._inquiryGenderElement.getSelectedData(),
 
     expertises: this._expertiseElement.getSelectedData(),
-    contactVisible: this._makeContactInfoRequestableCheckbox.getValue(),
-    contactName: this._nameElement.getValue(),
-    contactInfo: this._contactElement.getValue()
+    contact_info_requestable: this._makeContactInfoRequestableCheckbox.getValue(),
+    contact_name: this._nameElement.getValue(),
+    contact_info: this._contactElement.getValue()
   };
   
   Backend.updateUserPreferences(userPreferences, callback);
