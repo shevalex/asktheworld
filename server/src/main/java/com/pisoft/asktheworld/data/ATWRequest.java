@@ -59,7 +59,7 @@ public class ATWRequest implements Serializable {
 	
 	@Version
 	@Column(name="UPDATE_TS")
-	@JsonSerialize(using = CalendarSerializer.class)
+	//@JsonSerialize(using = CalendarSerializer.class)
 	private Calendar modificationDate;
 		     
 	@Column(name="CREATION_TS", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
