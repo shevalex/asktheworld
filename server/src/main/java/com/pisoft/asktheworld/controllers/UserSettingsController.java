@@ -20,10 +20,10 @@ public class UserSettingsController {
 
 	@Secured({"ROLE_ADMIN","ROLE_REAL_USER"})
 	@RequestMapping(method = RequestMethod.PUT, value="/user/{userID}/settings")
-	public ResponseEntity<Void> updateUserSettings(@PathVariable("userID") int id, @RequestBody ATWUserSettings settings) {
+	public ResponseEntity<ATWUserSettings> updateUserSettings(@PathVariable("userID") int id, @RequestBody ATWUserSettings settings) {
 		settings.setId(id);
 		settings = db.updateUserSettings(settings);
-		return new ResponseEntity<Void>(settings != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+		return new ResponseEntity<ATWUserSettings>(settings, settings != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 	
 	@Secured({"ROLE_ADMIN","ROLE_REAL_USER"})

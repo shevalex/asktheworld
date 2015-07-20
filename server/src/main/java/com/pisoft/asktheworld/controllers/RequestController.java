@@ -34,12 +34,12 @@ public class RequestController {
 	private DB db;
 	
 	@RequestMapping(method = RequestMethod.POST, value="request")
-	public ResponseEntity<String> createRequest(@RequestBody ATWRequest request) {
+	public ResponseEntity<ATWRequest> createRequest(@RequestBody ATWRequest request) {
 		//check if user exist (by name)
 		//TODO: rework this fucking logic
 		ATWUser existUser = db.getUser(request.getUser_id());
 		if (existUser != null) {
-			db.addRequest(request);
+			request = db.addRequest(request);
 			HttpHeaders headers = new HttpHeaders();
 			try {
 				headers.setLocation(new URI(""+request.getId()));
@@ -47,9 +47,9 @@ public class RequestController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return new ResponseEntity<String>(""+request.getId(), headers, HttpStatus.CREATED);
+			return new ResponseEntity<ATWRequest>(request, headers, HttpStatus.CREATED);
 		} else {
-			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<ATWRequest>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -73,12 +73,12 @@ public class RequestController {
 	
 	
 	@RequestMapping(method=RequestMethod.PUT, value="/request/{requestID}")
-	public ResponseEntity<Void> updateUser(@PathVariable("requestID") int id, @RequestBody ATWRequest request) {
+	public ResponseEntity<ATWRequest> updateUser(@PathVariable("requestID") int id, @RequestBody ATWRequest request) {
 		request.setId(id);
 		request= db.updateRequest(request);
 		//TODO: need check for values (400 error)
 		//TODO: Need to check for owner (403 error). Chould we check here or in filter? 
-		return new ResponseEntity<Void>( request != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+		return new ResponseEntity<ATWRequest>( request, request != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 		
 	}
 

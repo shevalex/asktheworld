@@ -31,11 +31,11 @@ public class UserController {
 	private DB db;
 
 	@RequestMapping(method = RequestMethod.POST, value="user")
-	public ResponseEntity<String> createUser(@RequestBody ATWUser user) {
+	public ResponseEntity<ATWUser> createUser(@RequestBody ATWUser user) {
 		//check name, pass, year
 		if(!db.verifyString(user.getLogin()) || !db.verifyString(user.getPassword())) {
 			//error wrong arguments
-			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<ATWUser>(HttpStatus.BAD_REQUEST);
 		}
 		//check if user exist (by name)
 		//TODO: rework this fucking logic
@@ -53,9 +53,9 @@ public class UserController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return new ResponseEntity<String>(""+existUser.getId(), headers, newUser != null ? HttpStatus.CREATED : HttpStatus.CONFLICT);
+			return new ResponseEntity<ATWUser>(existUser, headers, newUser != null ? HttpStatus.CREATED : HttpStatus.CONFLICT);
 		} else {
-			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ATWUser>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -78,10 +78,10 @@ public class UserController {
 	
 	@Secured({"ROLE_ADMIN","ROLE_REAL_USER"})
 	@RequestMapping(method=RequestMethod.PUT, value="/user/{userID}")
-	public ResponseEntity<Void> updateUser(@PathVariable("userID") int id, @RequestBody ATWUser user) {
+	public ResponseEntity<ATWUser> updateUser(@PathVariable("userID") int id, @RequestBody ATWUser user) {
 		user.setId(id);
 		user = db.updateUser(user);
-		return new ResponseEntity<Void>( user != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+		return new ResponseEntity<ATWUser>( user, user != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 
 	@Secured({"ROLE_ADMIN", "ROLE_USER"})

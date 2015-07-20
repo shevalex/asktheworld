@@ -30,13 +30,13 @@ public class ResponseController {
 	private DB db;
 
 	@RequestMapping(method = RequestMethod.POST, value="response")
-	public ResponseEntity<String> createResponse(@RequestBody ATWResponse response) {
+	public ResponseEntity<ATWResponse> createResponse(@RequestBody ATWResponse response) {
 		//TODO: replace with db.existRequest Now, we dont check is this request is incoming for particular user
 		ATWUser existUser = db.getUser(response.getUser_id());
 		ATWRequest existRequest = db.getRequest(response.getRequestId());
 		
 		if (existUser != null && existRequest != null) {
-			db.addResponse(response);
+			response = db.addResponse(response);
 			HttpHeaders headers = new HttpHeaders();
 			try {
 				headers.setLocation(new URI(""+response.getId()));
@@ -44,19 +44,19 @@ public class ResponseController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return new ResponseEntity<String>(""+response.getId(), headers, HttpStatus.CREATED);
+			return new ResponseEntity<ATWResponse>(response, headers, HttpStatus.CREATED);
 		} else { //if user or request is not exist
-			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<ATWResponse>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
 	@RequestMapping(method=RequestMethod.PUT, value="/response/{responseID}")
-	public ResponseEntity<Void> updateUser(@PathVariable("responseID") int id, @RequestBody ATWResponse response) {
+	public ResponseEntity<ATWResponse> updateUser(@PathVariable("responseID") int id, @RequestBody ATWResponse response) {
 		response.setId(id);
 		response = db.updateResponse(response);
 		//TODO: need check for values (400 error)
 		//TODO: Need to check for owner (403 error). Chould we check here or in filter? 
-		return new ResponseEntity<Void>( response != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+		return new ResponseEntity<ATWResponse>( response, response != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 	
 	@RequestMapping(method=RequestMethod.DELETE, value="/response/{responseID}")
@@ -121,5 +121,20 @@ public class ResponseController {
 		ATWResponse response = db.deleteIncomingResponse(user_id, responseID);
 		return new ResponseEntity<Void>( response != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
+/*
+	//TEST API, delete in release
+	//TODO: is there any way to control availability API through release/debug configuration 
+	@RequestMapping(method=RequestMethod.GET, value="/responses/all")
+	public ResponseEntity<List<ATWResponse>> getAllResponses() {
+		List<ATWResponse> responses = db.getResponses();
+		return new ResponseEntity<List<ATWResponse>>( responses,HttpStatus.OK);
+	}
+
+	@RequestMapping(method=RequestMethod.GET, value="/responses/{user_id}")
+	public ResponseEntity<List<ATWResponse>> getAllResponses(@PathVariable("user_id") int user_id) {
+		List<ATWResponse> responses = db.getResponses(user_id);
+		return new ResponseEntity<List<ATWResponse>>( responses,HttpStatus.OK);
+	}
+/**/
 
 }
