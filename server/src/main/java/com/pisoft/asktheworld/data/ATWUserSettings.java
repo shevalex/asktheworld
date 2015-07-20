@@ -1,6 +1,8 @@
 package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,16 +32,48 @@ public class ATWUserSettings implements Serializable {
 	@Column
 	private int default_response_wait_time = 1; //hour  
 	@Column
-	String default_response_age_group_preference;
+	String default_response_age_group_preference = "all";
 	//”: [“teens”, “adult”, “senior”],  
 	@Column
 	private int inquiry_quantity_per_day = 5;
 	@Column
-	private String inquiry_gender_preference = "any";
+	private String inquiry_gender_preference = "all";
 	@Column
-	private String inquiry_age_group_preference;
+	private String inquiry_age_group_preference = "all";
 	//[“teens”, “adult”, “senior”]
+	@Column
+	private String expertises[];
+	@Column(nullable = false)
+	private boolean contact_info_requestable = false;
+	@Column
+	private String contact_name = "";
+	@Column
+	private String contact_info = "";
 
+	public String[] getExpertises() {
+		return expertises;
+	}
+	public void setExpertises(String[] expertises) {
+		this.expertises = expertises;
+	}
+	public boolean isContact_info_requestable() {
+		return contact_info_requestable;
+	}
+	public void setContact_info_requestable(boolean contact_info_requestable) {
+		this.contact_info_requestable = contact_info_requestable;
+	}
+	public String getContact_name() {
+		return contact_name;
+	}
+	public void setContact_name(String contact_name) {
+		this.contact_name = contact_name;
+	}
+	public String getContact_info() {
+		return contact_info;
+	}
+	public void setContact_info(String contact_info) {
+		this.contact_info = contact_info;
+	}
 	public String getDefault_gender_preference() {
 		return default_gender_preference;
 	}
