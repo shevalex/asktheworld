@@ -183,11 +183,13 @@ Application.logOut = function() {
   this.hideSpinningWheel();
   this.hideDialog();
 
-  Backend.logOut(function() {
-    $("#Title-Options-Separator").css("display", "none");
-    $("#Title-Options-User").css("display", "none");
-    
-    window.localStorage.remember = "no";
+  Backend.logOut({
+    success: function() {
+      $("#Title-Options-Separator").css("display", "none");
+      $("#Title-Options-User").css("display", "none");
+
+      window.localStorage.remember = "no";
+    }
   });
 }
 

@@ -166,7 +166,7 @@ RegisterPage.prototype._signUp = function() {
     name: name,
     gender: this._genderElement.getSelectedData(),
     languages: this._languagesElement.getSelectedData(),
-    age: this._ageElement.getSelectedData(),
+    age_category: this._ageElement.getSelectedData(),
   };
 
   this._signing = true;

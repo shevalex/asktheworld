@@ -315,15 +315,12 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   UIUtils.addClass(contactInfoPanel, "response-contactinfopanel");
   
   if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_PROVIDED) {  
-    var contactInfo = Backend.getContactInfo(this._requestId, this._objectId);
-    if (contactInfo != null) {
-      var contactInfo = UIUtils.appendLabel(contactInfoPanel, "ContactInfoLabel", contactInfo.contact_name + ", " + contactInfo.contact_info);
-      UIUtils.addClass(contactInfo, "response-contactinfo");
-    }
+    var contactInfo = UIUtils.appendLabel(contactInfoPanel, "ContactInfoLabel", response.contact_info.contact_name + ", " + response.contact_info.contact_info);
+    UIUtils.addClass(contactInfo, "response-contactinfo");
   } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE) {
     var requestContactInfoButton = UIUtils.appendButton(contactInfoPanel, "RequestContactButton", I18n.getPageLocale("AbstractRequestPage").RequestContactButton);
     UIUtils.setClickListener(requestContactInfoButton, function() {
-      Backend.getContactInfo(this._requestId, this._objectId);
+      Backend.getResponseWithContactInfo(this._requestId, this._objectId);
     }.bind(this));
   }
   
