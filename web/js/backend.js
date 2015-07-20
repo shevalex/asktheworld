@@ -7,7 +7,7 @@ Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
 
 // USER MANAGEMENT
 
-Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age_category: null, name: null, userId: null};
+Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age_category: null, name: null, user_id: null};
 Backend.UserPreferences = {
   default_response_quantity: Application.Configuration.RESPONSE_QUANTITY[0].data,
   default_response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[0].data,
@@ -36,7 +36,7 @@ Backend.logIn = function(login, password, transactionCallback) {
     success: function(data, status, xhr) {
       Backend.UserProfile.login = login;
       Backend.UserProfile.password = password;
-      Backend.UserProfile.userId = data.userId;
+      Backend.UserProfile.user_id = data.user_id;
 
       Backend._pullUserSettings(transactionCallback);
     },
@@ -57,7 +57,7 @@ Backend.logOut = function(transactionCallback) {
   Backend.UserProfile.login = null;
   Backend.UserProfile.password = null;
   Backend.UserProfile.name = null;
-  Backend.UserProfile.userId = null;
+  Backend.UserProfile.user_id = null;
   
   Backend.Cache.reset();
   
@@ -72,7 +72,7 @@ Backend.isLogged = function() {
 }
 
 Backend.pullUserProfile = function(transactionCallback) {
-  if (Backend.getUserProfile().userId == null) {
+  if (Backend.getUserProfile().user_id == null) {
     throw "Must login or register first";
   }
 
@@ -97,18 +97,17 @@ Backend.pullUserProfile = function(transactionCallback) {
     }
   }
   
-  this._communicate("user/" + Backend.getUserProfile().userId, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.registerUser = function(userProfile, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
-        Backend.UserProfile = data; //Temporary - should be replaced with data
-//        Backend.UserProfile.login = userProfile.login;
+        Backend.UserProfile = data;
         Backend.UserProfile.password = userProfile.password;
-        Backend.UserProfile.userId = xhr.getResponseHeader("Location");
-        
+        Backend.UserProfile.user_id = xhr.getResponseHeader("Location");
+
         Backend._pullUserSettings(transactionCallback);
       } else if (transactionCallback != null) {
         transactionCallback.error();
@@ -124,7 +123,7 @@ Backend.registerUser = function(userProfile, transactionCallback) {
       }
     }
   }
-  this._communicate("user", "POST", userProfile, false, {}, communicationCallback);
+  this._communicate("user", "POST", userProfile, true, {}, communicationCallback);
 }
 
 Backend.updateUserProfile = function(userProfile, currentPassword, transactionCallback) {
@@ -147,13 +146,13 @@ Backend.updateUserProfile = function(userProfile, currentPassword, transactionCa
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId, "PUT", GeneralUtils.merge(Backend.getUserProfile(), userProfile), false, this._getAuthenticationHeader(Backend.getUserProfile().login, currentPassword), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id, "PUT", GeneralUtils.merge(Backend.getUserProfile(), userProfile), false, this._getAuthenticationHeader(Backend.getUserProfile().login, currentPassword), communicationCallback);
 
   return true;
 }
 
 Backend.pullUserPreferences = function(transactionCallback) {
-  if (Backend.getUserProfile().userId == null) {
+  if (Backend.getUserProfile().user_id == null) {
     throw "Must login or register first";
   }
   
@@ -190,7 +189,7 @@ Backend.pullUserPreferences = function(transactionCallback) {
     }
   }
   
-  this._communicate("user/" + Backend.getUserProfile().userId + "/settings", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/settings", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.updateUserPreferences = function(userPreferences, transactionCallback) {
@@ -214,7 +213,7 @@ Backend.updateUserPreferences = function(userPreferences, transactionCallback) {
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/settings", "PUT", GeneralUtils.merge(Backend.getUserPreferences(), userPreferences), false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/settings", "PUT", GeneralUtils.merge(Backend.getUserPreferences(), userPreferences), false, this._getAuthenticationHeader(), communicationCallback);
 
   return true;
 }
@@ -237,7 +236,7 @@ Backend.resetUserPassword = function(login, transactionCallback) {
     }
   }
   
-  this._communicate("user/" + Backend.getUserProfile().userId + "?reset_password", "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "?reset_password", "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -326,7 +325,7 @@ Backend.createRequest = function(request, transactionCallback) {
 
   this._communicate("request", "POST",
     { 
-      user_id: Backend.getUserProfile().userId,
+      user_id: Backend.getUserProfile().user_id,
       text: request.text,
       attachments: request.attachments, // each attachment: {name, url, data, type}
       response_quantity: request.response_quantity,
@@ -500,7 +499,7 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
     statusQuery = "all";
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/requests/outgoing?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/requests/outgoing?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getIncomingRequestIds = function(requestStatus, sortRule, transactionCallback) {
@@ -580,7 +579,7 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
     statusQuery = "all";
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/requests/incoming?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/requests/incoming?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -616,7 +615,7 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
     }
   }
   
-  this._communicate("user/" + Backend.getUserProfile().userId + "/requests/incoming/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/requests/incoming/" + requestId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -661,7 +660,7 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
 
   this._communicate("response", "POST",
     { 
-      user_id: Backend.getUserProfile().userId,
+      user_id: Backend.getUserProfile().user_id,
       requestId: requestId,
       text: response.text,
       age_category: Backend.getUserProfile().age_category,
@@ -890,7 +889,7 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
     statusQuery = "all";
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/incoming/" + requestId + "?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/responses/incoming/" + requestId + "?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.removeIncomingResponse = function(requestId, responseId, callback) {
@@ -925,7 +924,7 @@ Backend.removeIncomingResponse = function(requestId, responseId, callback) {
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/incoming/" + responseId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/responses/incoming/" + responseId, "DELETE", null, false, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -1005,7 +1004,7 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
     statusQuery = "all";
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId + "/responses/outgoing/" + requestId + "?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/responses/outgoing/" + requestId + "?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
