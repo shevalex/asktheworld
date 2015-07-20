@@ -59,7 +59,9 @@ public class DB {
 	public ATWUser getUser(int id) {
 		return users.findById(id);
 	}
-	
+	public boolean isUserExist(int id){
+		return users.exist(id);
+	}
 	public ATWUser findUser(String login) {
 		ATWUser u = users.findByLogin(login);
 		return u;
@@ -88,8 +90,12 @@ public class DB {
 	
 	
 	public ATWUser updateUser(ATWUser user){
-		ATWUser existUser = getUser(user.getUser_id());
-		if( existUser != null) {
+		if(isUserExist(user.getUser_id())) {
+			return users.update(user);
+		}
+		return null;
+/*		ATWUser existUser = getUser(user.getUser_id());
+ 		if( existUser != null) {
 			if(verifyString(user.getPassword())) existUser.setPassword(user.getPassword());
 			//if(verifyString(user.getGender())) existUser.setGender(user.getGender());
 			if(verifyAge(user.getAge_category())) existUser.setAge_category(user.getAge_category());
@@ -97,6 +103,7 @@ public class DB {
 			users.update(existUser);
 		}
 		return existUser;
+/**/		
 	}
 	
 	
@@ -171,6 +178,10 @@ public class DB {
 		return requests.findById(id);
 	}
 	
+	public boolean isRequestExist(int id) {
+		return requests.exist(id);
+	}
+	
 	public ATWRequest deleteRequest(int id){
 		ATWRequest request = getRequest(id);
 		if(request != null) {
@@ -179,11 +190,10 @@ public class DB {
 		return request;
 	}
 	public ATWRequest updateRequest(ATWRequest request) {
-		ATWRequest existRequest = getRequest(request.getId());
-		if(existRequest != null) {
-			existRequest = requests.update(request);
+		if(isRequestExist(request.getId())) {
+			return requests.update(request);
 		}
-		return existRequest;
+		return null;
 	}
 	
 	
@@ -337,14 +347,17 @@ public class DB {
 		return response;
 	}
 	public ATWResponse updateResponse(ATWResponse response) {
-		ATWResponse existResponse = getResponse(response.getId());
-		if(existResponse != null) {
-			existResponse = responses.update(response);
+		if(isResponseExist(response.getId())) {
+			return responses.update(response);
 		}
-		return existResponse;		
+		return null;		
 	}
 	public ATWResponse getResponse(int id) {
 		return responses.findById(id);
+	}
+	
+	public boolean isResponseExist(int id) {
+		return responses.exist(id);
 	}
 
 	//TODO: change return type. 
