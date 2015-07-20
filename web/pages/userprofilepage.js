@@ -64,7 +64,7 @@ UserProfilePage.prototype.onHide = function() {
 UserProfilePage.prototype._resetParameters = function() {
   this._nameElement.setValue(Backend.getUserProfile().name);
   this._genderElement.selectData(Backend.getUserProfile().gender);
-  this._ageElement.selectData(Backend.getUserProfile().age);
+  this._ageElement.selectData(Backend.getUserProfile().age_category);
   this._languagesElement.selectChoices(Backend.getUserProfile().languages);
   
   this._newPasswordElement.setValue("");

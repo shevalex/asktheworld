@@ -34,9 +34,9 @@ Backend.getUserPreferences = function() {
 Backend.logIn = function(login, password, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
-      Backend.UserProfile = data;
       Backend.UserProfile.login = login;
       Backend.UserProfile.password = password;
+      Backend.UserProfile.userId = data.userId;
 
       Backend._pullUserSettings(transactionCallback);
     },
@@ -104,7 +104,8 @@ Backend.registerUser = function(userProfile, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
-        Backend.UserProfile.login = userProfile.login;
+        Backend.UserProfile = data; //Temporary - should be replaced with data
+//        Backend.UserProfile.login = userProfile.login;
         Backend.UserProfile.password = userProfile.password;
         Backend.UserProfile.userId = xhr.getResponseHeader("Location");
         
@@ -129,10 +130,11 @@ Backend.registerUser = function(userProfile, transactionCallback) {
 Backend.updateUserProfile = function(userProfile, currentPassword, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
+      Backend.UserProfile = data;
       if (userProfile.password != null) {
         Backend.UserProfile.password = userProfile.password;
       }
-      Backend.pullUserProfile(transactionCallback);
+//      Backend.pullUserProfile(transactionCallback);
     },
     error: function(xhr, status, error) {
       if (transactionCallback != null) {
@@ -145,7 +147,7 @@ Backend.updateUserProfile = function(userProfile, currentPassword, transactionCa
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().userId, "PUT", Backend.getUserProfile(), false, this._getAuthenticationHeader(Backend.getUserProfile().login, currentPassword), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().userId, "PUT", GeneralUtils.merge(Backend.getUserProfile(), userProfile), false, this._getAuthenticationHeader(Backend.getUserProfile().login, currentPassword), communicationCallback);
 
   return true;
 }
@@ -662,7 +664,7 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
       user_id: Backend.getUserProfile().userId,
       requestId: requestId,
       text: response.text,
-      age_category: Backend.getUserProfile().age,
+      age_category: Backend.getUserProfile().age_category,
       gender: Backend.getUserProfile().gender,
       attachments: response.attachments, // each attachment: {name, url, data, type}
       contact_info_status: Backend.getUserPreferences().contact_info_requestable ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE
