@@ -293,22 +293,26 @@ Backend.createRequest = function(request, transactionCallback) {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
         var newRequestId = xhr.getResponseHeader("Location");
-        Backend._pullOutgoingRequestIds(); //TODO: remove, this is temporary. It should be replaced with events
-        Backend._pullRequest(newRequestId, {
-          success: function() {
-            transactionCallback.success(newRequestId);
-          },
-          failure: function() {
-            transactionCallback.failure();
-          },
-          error: function() {
-            transactionCallback.error();
-          }
-        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
+        Backend.Cache.setRequest(newRequestId, data);
         
-//        if (transactionCallback != null) {
-//          transactionCallback.success(newRequestId);
-//        }
+        Backend._pullOutgoingRequestIds(); //TODO: remove, this is temporary. It should be replaced with events
+        
+//        Backend._pullRequest(newRequestId, {
+//          success: function() {
+//            transactionCallback.success(newRequestId);
+//          },
+//          failure: function() {
+//            transactionCallback.failure();
+//          },
+//          error: function() {
+//            transactionCallback.error();
+//          }
+//        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
+        
+        
+        if (transactionCallback != null) {
+          transactionCallback.success(newRequestId);
+        }
       }
     },
     error: function(xhr, status, error) {
@@ -334,7 +338,7 @@ Backend.createRequest = function(request, transactionCallback) {
       response_gender: request.response_gender,
       expertise_category: request.expertise_category
     },
-  false, this._getAuthenticationHeader(), communicationCallback);
+  true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.updateRequest = function(requestId, request, transactionCallback) {
@@ -628,22 +632,24 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
         var newResponseId = xhr.getResponseHeader("Location");
-        Backend._pullOutgoingResponseIds(requestId); //TODO: remove, this is temporary. It should be replaced with events
-        Backend._pullResponse(requestId, newResponseId, {
-          success: function() {
-            transactionCallback.success(newResponseId);
-          },
-          failure: function() {
-            transactionCallback.failure();
-          },
-          error: function() {
-            transactionCallback.error();
-          }
-        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
+        Backend.Cache.setResponse(requestId, newResponseId, data);
         
-//        if (transactionCallback != null) {
-//          transactionCallback.success(newResponseId);
-//        }
+        Backend._pullOutgoingResponseIds(requestId); //TODO: remove, this is temporary. It should be replaced with events
+//        Backend._pullResponse(requestId, newResponseId, {
+//          success: function() {
+//            transactionCallback.success(newResponseId);
+//          },
+//          failure: function() {
+//            transactionCallback.failure();
+//          },
+//          error: function() {
+//            transactionCallback.error();
+//          }
+//        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
+        
+        if (transactionCallback != null) {
+          transactionCallback.success(newResponseId);
+        }
       }
     },
     error: function(xhr, status, error) {
@@ -668,7 +674,7 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
       attachments: response.attachments, // each attachment: {name, url, data, type}
       contact_info_status: Backend.getUserPreferences().contact_info_requestable ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE
     },
-  false, this._getAuthenticationHeader(), communicationCallback);
+  true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getResponse = function(requestId, responseId) {
