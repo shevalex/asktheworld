@@ -347,21 +347,22 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        Backend._pullRequest(requestId, {
-          success: function() {
-            transactionCallback.success();
-          },
-          failure: function() {
-            transactionCallback.failure();
-          },
-          error: function() {
-            transactionCallback.error();
-          }
-        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
-        
-//        if (transactionCallback != null) {
-//          transactionCallback.success();
-//        }
+//        Backend._pullRequest(requestId, {
+//          success: function() {
+//            transactionCallback.success();
+//          },
+//          failure: function() {
+//            transactionCallback.failure();
+//          },
+//          error: function() {
+//            transactionCallback.error();
+//          }
+//        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
+
+        Backend.Cache.setRequest(requestId, data);
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
       }
     },
     error: function(xhr, status, error) {
@@ -376,7 +377,7 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
     }
   }
 
-  this._communicate("request/" + requestId, "PUT", GeneralUtils.merge(Backend.Cache.getRequest(requestId), request), false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("request/" + requestId, "PUT", GeneralUtils.merge(Backend.Cache.getRequest(requestId), request), true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getRequest = function(requestId) {
@@ -786,21 +787,22 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        Backend._pullResponse(requestId, responseId, {
-          success: function() {
-            transactionCallback.success();
-          },
-          failure: function() {
-            transactionCallback.failure();
-          },
-          error: function() {
-            transactionCallback.error();
-          }
-        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
-        
-//        if (transactionCallback != null) {
-//          transactionCallback.success();
-//        }
+//        Backend._pullResponse(requestId, responseId, {
+//          success: function() {
+//            transactionCallback.success();
+//          },
+//          failure: function() {
+//            transactionCallback.failure();
+//          },
+//          error: function() {
+//            transactionCallback.error();
+//          }
+//        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
+
+        Backend.Cache.setResponse(requestId, responseId, data);
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
       }
     },
     error: function(xhr, status, error) {
@@ -815,7 +817,7 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
     }
   }
 
-  this._communicate("response/" + responseId, "PUT", GeneralUtils.merge(Backend.Cache.getResponse(requestId, responseId), response), false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("response/" + responseId, "PUT", GeneralUtils.merge(Backend.Cache.getResponse(requestId, responseId), response), true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
