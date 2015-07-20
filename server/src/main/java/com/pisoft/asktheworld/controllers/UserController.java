@@ -92,7 +92,7 @@ public class UserController {
 			if (user == null) {
 				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 			} else {
-				return new ResponseEntity<String>("{\"userId\":"+user.getId()+"}", HttpStatus.OK);
+				return new ResponseEntity<String>("{\"user_id\":"+user.getId()+"}", HttpStatus.OK);
 			}
 		}
 		return new ResponseEntity<String>("{\"users\":"+Arrays.toString(db.getIDs())+"}", HttpStatus.OK);
