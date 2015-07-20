@@ -23,6 +23,7 @@ import javax.validation.Constraint;
 import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pisoft.asktheworld.enums.Gender;
 
 @Entity
@@ -34,9 +35,9 @@ public class ATWUser implements Serializable {
  
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column
+	@Column(name="id")
 	@JsonIgnore	
-	private int id;
+	private int user_id;
 	
 	@Column
 	private String login;
@@ -51,17 +52,19 @@ public class ATWUser implements Serializable {
 	@Column
 	private String age_category;
 
+	@JsonProperty()
+	public int getUser_id() {
+		return user_id;
+	}
+	@JsonIgnore
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
+	}
 	public Gender getGender() {
 		return gender;
 	}
 	public void setGender(Gender gender) {
 		this.gender = gender;
-	}
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
 	}
 	public String getLogin() {
 		return login;
@@ -118,7 +121,7 @@ Hibernate:
 	
 	public ATWUser createCopy() {
 		ATWUser user  = new ATWUser();
-		user.setId(getId());
+		user.setUser_id(getUser_id());
 		user.setLogin(getLogin());
 		user.setGender(getGender());
 		user.setAge_category(getAge_category());

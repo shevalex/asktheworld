@@ -69,7 +69,7 @@ public class DB {
 		if (findUser(user.getLogin()) == null) {
 			users.create(user);
 			ATWUserSettings userSettings = new ATWUserSettings();
-			userSettings.setId(user.getId());
+			userSettings.setId(user.getUser_id());
 			settings.create(userSettings);
 			System.out.println("USer setting created with id " + userSettings.getId());
 			return user;
@@ -88,7 +88,7 @@ public class DB {
 	
 	
 	public ATWUser updateUser(ATWUser user){
-		ATWUser existUser = getUser(user.getId());
+		ATWUser existUser = getUser(user.getUser_id());
 		if( existUser != null) {
 			if(verifyString(user.getPassword())) existUser.setPassword(user.getPassword());
 			//if(verifyString(user.getGender())) existUser.setGender(user.getGender());
@@ -104,7 +104,7 @@ public class DB {
 		List<ATWUser> allUsers = users.findAll();
 		int ids[] = new int[allUsers.size()];
 		int i = 0;
-		for(Iterator<ATWUser> it = allUsers.iterator(); it.hasNext(); ids[i++] = it.next().getId());
+		for(Iterator<ATWUser> it = allUsers.iterator(); it.hasNext(); ids[i++] = it.next().getUser_id());
 		return ids;
 	}
 	
@@ -141,7 +141,7 @@ public class DB {
 			for(Iterator<ATWUser> it = users.iterator(); it.hasNext();) {
 				ATWUser user = it.next();
 				//skip current user
-				if(user.getId() == request.getUser_id()) continue;
+				if(user.getUser_id() == request.getUser_id()) continue;
 				//TODO: filter base on number requests per day
 				
 				//assign request to users
@@ -270,7 +270,7 @@ public class DB {
 	 * @return
 	 */
 	private List<ATWRequest> getNewIncomingRequests(ATWUser user, int number){
-		int id = user.getId();
+		int id = user.getUser_id();
 		//TODO: we need to optimize here. This list will grow up. Probably we need just Active request here
 		List<Integer> userIncomingRequests = user.getIncomingRequestsIDs();
 		//List should not be empty
@@ -397,6 +397,12 @@ public class DB {
 	public ATWResponse deleteIncomingResponse(int user_id, int responseID) {
 		// TODO Auto-generated method stub
 		return responses.markDeleted(responseID, user_id, true);
+	}
+	public List<ATWResponse> getResponses() {
+		return responses.findAll();
+	}
+	public List<ATWResponse> getResponses(int user_id) {
+		return responses.findByUserId(user_id);
 	}
 	
 }

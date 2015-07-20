@@ -48,7 +48,7 @@ public class UserController {
 		if (existUser != null) {
 			HttpHeaders headers = new HttpHeaders();
 			try {
-				headers.setLocation(new URI(""+existUser.getId()));
+				headers.setLocation(new URI(""+existUser.getUser_id()));
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -79,7 +79,7 @@ public class UserController {
 	@Secured({"ROLE_ADMIN","ROLE_REAL_USER"})
 	@RequestMapping(method=RequestMethod.PUT, value="/user/{userID}")
 	public ResponseEntity<ATWUser> updateUser(@PathVariable("userID") int id, @RequestBody ATWUser user) {
-		user.setId(id);
+		user.setUser_id(id);
 		user = db.updateUser(user);
 		return new ResponseEntity<ATWUser>( user, user != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
@@ -92,7 +92,7 @@ public class UserController {
 			if (user == null) {
 				return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 			} else {
-				return new ResponseEntity<String>("{\"user_id\":"+user.getId()+"}", HttpStatus.OK);
+				return new ResponseEntity<String>("{\"user_id\":"+user.getUser_id()+"}", HttpStatus.OK);
 			}
 		}
 		return new ResponseEntity<String>("{\"users\":"+Arrays.toString(db.getIDs())+"}", HttpStatus.OK);

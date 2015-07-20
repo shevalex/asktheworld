@@ -77,7 +77,7 @@ public class AuthFilter extends GenericFilterBean {
             	System.out.println("Path info: " +pattern);
             	UsernamePasswordAuthenticationToken authentication;
             	// build an Authentication object with the user's info
-            	if(pattern.startsWith("/user/"+db.findUser(cr[0]).getId())) {
+            	if(pattern.startsWith("/user/"+db.findUser(cr[0]).getUser_id())) {
             		System.out.println("Pattern presents");
                     authentication = 
                             new UsernamePasswordAuthenticationToken(cr[0], cr[1], cr[0].equals("Alex") ? admin:realUser );
