@@ -17,11 +17,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ATWRequest implements Serializable {
 	/**
 	 * 

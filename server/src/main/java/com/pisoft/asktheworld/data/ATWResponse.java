@@ -15,11 +15,14 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 import com.pisoft.asktheworld.enums.ContactInfoStatus;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ATWResponse implements Serializable {
 	/**
 	 * 
@@ -72,7 +75,6 @@ public class ATWResponse implements Serializable {
 	@JsonIgnore
 	private boolean deleted = false;
 	
-
 	@Version
 	@Column(name="UPDATE_TS")
 	//@JsonSerialize(using = CalendarSerializer.class)
