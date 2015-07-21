@@ -134,6 +134,10 @@ Backend.updateUserProfile = function(userProfile, currentPassword, transactionCa
         Backend.UserProfile.password = userProfile.password;
       }
 //      Backend.pullUserProfile(transactionCallback);
+      
+      if (transactionCallback != null) {
+        transactionCallback.success();
+      }
     },
     error: function(xhr, status, error) {
       if (transactionCallback != null) {
