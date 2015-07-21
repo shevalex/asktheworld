@@ -25,7 +25,7 @@ public class ATWUserSettings implements Serializable {
 	private int id;
 	
 	@Column
-	private String default_gender_preference;
+	private String default_gender_preference = "all";
 	//”: [“teens”, “adult”, “senior”],
 	@Column
 	private int	default_response_quantity = 5;
@@ -42,7 +42,7 @@ public class ATWUserSettings implements Serializable {
 	private String inquiry_age_group_preference = "all";
 	//[“teens”, “adult”, “senior”]
 	@Column
-	private String expertises[];
+	private String expertises[] = {"general"};
 	@Column(nullable = false)
 	private boolean contact_info_requestable = false;
 	@Column
