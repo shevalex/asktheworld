@@ -110,9 +110,11 @@ UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
   }
   
   if (this._makeContactInfoRequestableCheckbox.getValue()) {
-    if (this._expertiseElement.getSelectedData().length == 0) {
+    if (this._expertiseElement.getSelectedData().length == 0 
+        || this._expertiseElement.getSelectedData().length == 1 && this._expertiseElement.getSelectedData() == Application.Configuration.EXPERTISES[0].data) {
+      
       this._expertiseElement.indicateInvalidInput();
-      Application.showMessage(this.getLocale().NoExpertiseMessage);
+      Application.showMessage(this.getLocale().NoProfessionalExpertiseMessage);
       return;
     }
     if (this._nameElement.getValue() == "") {
