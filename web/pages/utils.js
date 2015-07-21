@@ -1033,6 +1033,10 @@ UIUtils.setClickListener = function(element, listener) {
   UIUtils.get$(element).click(listener);
 }
 
+UIUtils.setHoverListener = function(element, listener) {
+  UIUtils.get$(element).hover(listener);
+}
+
 UIUtils.removeIfClickedOutside = function(component) {
   UIUtils.listenOutsideClicks(component, function() {
     UIUtils.get$(component).remove();

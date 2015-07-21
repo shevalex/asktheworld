@@ -284,6 +284,9 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   
   if (!isRead) {
     UIUtils.addClass(this._header, "response-header-unread");
+    UIUtils.setHoverListener(this._header, function() {
+      Backend.updateResponse(this._requestId, this._objectId, {status: Backend.Response.STATUS_READ});
+    }.bind(this));
   }
   
   var dateLabel = UIUtils.appendLabel(this._header, "DateLabel", TimeUtils.getDateTimeSrting(response.time));

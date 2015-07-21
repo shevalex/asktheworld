@@ -282,8 +282,8 @@ Backend.Request.STATUS_INACTIVE = "inactive";
 
 Backend.Response = {};
 Backend.Response.STATUS_ALL = "all";
-Backend.Response.STATUS_UNREAD = "unread";
-Backend.Response.STATUS_READ = "read";
+Backend.Response.STATUS_UNREAD = "unviewed";
+Backend.Response.STATUS_READ = "viewed";
 Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE = "no";
 Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE = "can_provide";
 Backend.Response.CONTACT_INFO_STATUS_PROVIDED = "provided";
@@ -499,16 +499,11 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
     }
   }
 
-  var statusQuery;
-  if (requestStatus == Backend.Request.STATUS_ACTIVE) {
-    statusQuery = "active";
-  } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-    statusQuery = "inactive";
-  } else {
-    statusQuery = "all";
+  if (requestStatus == null) {
+    requestStatus = Backend.Request.STATUS_ALL;
   }
 
-  this._communicate("user/" + Backend.getUserProfile().user_id + "/requests/outgoing?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/requests/outgoing?status=" + requestStatus, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getIncomingRequestIds = function(requestStatus, sortRule, transactionCallback) {
@@ -579,16 +574,10 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
     }
   }
 
-  var statusQuery;
-  if (requestStatus == Backend.Request.STATUS_ACTIVE) {
-    statusQuery = "active";
-  } else if (requestStatus == Backend.Request.STATUS_INACTIVE) {
-    statusQuery = "inactive";
-  } else {
-    statusQuery = "all";
+  if (requestStatus == null) {
+    requestStatus = Backend.Request.STATUS_ALL;
   }
-
-  this._communicate("user/" + Backend.getUserProfile().user_id + "/requests/incoming?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/requests/incoming?status=" + requestStatus, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -892,16 +881,11 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
     }
   }
 
-  var statusQuery;
-  if (responseStatus == Backend.Response.STATUS_READ) {
-    statusQuery = "viewed";
-  } else if (responseStatus == Backend.Request.STATUS_UNREAD) {
-    statusQuery = "unviewed";
-  } else {
-    statusQuery = "all";
+  if (responseStatus == null) {
+    responseStatus = Backend.Response.STATUS_ALL;
   }
 
-  this._communicate("user/" + Backend.getUserProfile().user_id + "/responses/incoming/" + requestId + "?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/responses/incoming/" + requestId + "?status=" + responseStatus, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.removeIncomingResponse = function(requestId, responseId, callback) {
@@ -1007,16 +991,10 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
     }
   }
 
-  var statusQuery;
-  if (responseStatus == Backend.Response.STATUS_READ) {
-    statusQuery = "viewed";
-  } else if (responseStatus == Backend.Request.STATUS_UNREAD) {
-    statusQuery = "unviewed";
-  } else {
-    statusQuery = "all";
+  if (responseStatus == null) {
+    responseStatus = Backend.Response.STATUS_ALL;
   }
-
-  this._communicate("user/" + Backend.getUserProfile().user_id + "/responses/outgoing/" + requestId + "?status=" + statusQuery, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/responses/outgoing/" + requestId + "?status=" + responseStatus, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
