@@ -2,10 +2,9 @@ package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
@@ -13,13 +12,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Version;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 
 
 @Entity
@@ -32,9 +34,9 @@ public class ATWRequest implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="id")
 	@JsonIgnore
-	@Column
-	private int id;
+	private int request_id;
 
 	@Column
 	private int user_id;
@@ -59,20 +61,21 @@ public class ATWRequest implements Serializable {
 	@Column
 	private String expertise_category;
 	
-	@Version
-	@Column(name="UPDATE_TS")
-	//@JsonSerialize(using = CalendarSerializer.class)
-	private Calendar modificationDate;
+	@Temporal(TemporalType.TIMESTAMP)
+
+	@Column(name="UPDATE_TS", nullable = false)
+	private Date modificationDate;
 		     
-	@Column(name="CREATION_TS", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
-	@JsonSerialize(using = CalendarSerializer.class)
-	private Calendar time;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="CREATION_TS", nullable = false, updatable=false)
+	@JsonSerialize(using = DateSerializer.class)
+	private Date time;
 	
 	public int getId() {
-		return id;
+		return request_id;
 	}
 	public void setId(int id) {
-		this.id = id;
+		this.request_id = id;
 	}
 	public int getUser_id() {
 		return user_id;
@@ -127,6 +130,16 @@ public class ATWRequest implements Serializable {
 	}
 	public void setExpertise_category(String expertise_category) {
 		this.expertise_category = expertise_category;
+	}
+	
+	@PrePersist
+	void createdAt() {
+		time = modificationDate = new Date();
+	}
+
+	@PreUpdate
+	void updatedAt() {
+		modificationDate = new Date();
 	}
 
 }

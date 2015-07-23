@@ -3,6 +3,7 @@ package com.pisoft.asktheworld.data;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,6 +13,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import com.pisoft.asktheworld.enums.ContactInfoStatus;
 
 @Entity
@@ -32,8 +38,8 @@ public class ATWResponse implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@JsonIgnore
-	@Column
-	private int id;
+	@Column(name="id")
+	private int response_id;
 	
 	@Column
 	private int user_id;
@@ -75,14 +81,14 @@ public class ATWResponse implements Serializable {
 	@JsonIgnore
 	private boolean deleted = false;
 	
-	@Version
-	@Column(name="UPDATE_TS")
-	//@JsonSerialize(using = CalendarSerializer.class)
-	private Calendar modificationDate;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="UPDATE_TS", nullable = false)
+	private Date modificationDate;
 		     
-	@Column(name="CREATION_TS", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable=false, updatable=false)
-	@JsonSerialize(using = CalendarSerializer.class)
-	private Calendar time;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="CREATION_TS", nullable = false, updatable=false)
+	@JsonSerialize(using = DateSerializer.class)
+	private Date time;
 	
 	public String getStatus() {
 		return status;
@@ -109,11 +115,11 @@ public class ATWResponse implements Serializable {
 	}
 
 	public int getId() {
-		return id;
+		return response_id;
 	}
 
 	public void setId(int id) {
-		this.id = id;
+		this.response_id = id;
 	}
 
 	public int getUser_id() {
@@ -162,5 +168,15 @@ public class ATWResponse implements Serializable {
 
 	public void setAge_category(String age_category) {
 		this.age_category = age_category;
+	}
+	
+	@PrePersist
+	void createdAt() {
+		time = modificationDate = new Date();
+	}
+
+	@PreUpdate
+	void updatedAt() {
+		modificationDate = new Date();
 	}
 }
