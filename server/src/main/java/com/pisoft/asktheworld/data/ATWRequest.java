@@ -17,9 +17,9 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 
@@ -69,6 +69,7 @@ public class ATWRequest implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATION_TS", nullable = false, updatable=false)
 	@JsonSerialize(using = DateSerializer.class)
+	@JsonDeserialize
 	private Date time;
 	
 	public int getId() {

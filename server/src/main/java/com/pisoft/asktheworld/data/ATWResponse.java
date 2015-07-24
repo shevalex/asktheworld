@@ -2,7 +2,6 @@ package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,13 +16,11 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.CalendarSerializer;
 import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import com.pisoft.asktheworld.enums.ContactInfoStatus;
 
@@ -88,6 +85,7 @@ public class ATWResponse implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATION_TS", nullable = false, updatable=false)
 	@JsonSerialize(using = DateSerializer.class)
+	@JsonDeserialize
 	private Date time;
 	
 	public String getStatus() {
