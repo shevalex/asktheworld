@@ -115,7 +115,6 @@ Hibernate:
         foreign key (USER_ID) 
         references ATWUser	
  */
-	
 	private List<ATWRequest> incomingRequets = new ArrayList<ATWRequest>();
 	
 	
@@ -153,12 +152,13 @@ Hibernate:
 		return incomingRequets.remove(request)?request:null;
 	}
 	
+	@JsonIgnore
 	public List<Integer> getIncomingRequestsIDs(){
 		List<Integer> reqstsIds = new ArrayList<Integer>();
 		for(Iterator<ATWRequest> it =incomingRequets.iterator(); it.hasNext(); reqstsIds.add(it.next().getId()));
 		return reqstsIds;
 	}
-	
+	@JsonIgnore
 	public List<ATWRequest> getIncomingRequests() {
 		return incomingRequets;
 	}
