@@ -100,9 +100,22 @@ public class ResponseController {
 			@RequestParam(value="status", required = false, defaultValue="all") String  status,
 			@RequestParam(value="sorting", required = false, defaultValue="chronologically") String  sorting) {
 		//TODO: check if user id is correct?  I am not sure that we need to check this
-		List<Integer> viewedList = new ArrayList<Integer>();
-		List<Integer> unviewedList = new ArrayList<Integer>();
+		List<Integer> viewedList = null;
+		List<Integer> unviewedList = null;
 		ResponseStatus rs = ResponseStatus.forValue(status);
+		switch(rs){
+		case UNVIEWED:
+			unviewedList = new ArrayList<Integer>();
+			break;
+		case VIEWED:
+			viewedList = new ArrayList<Integer>();
+			break;
+		case ALL:
+		default:
+			unviewedList = new ArrayList<Integer>();
+			viewedList = new ArrayList<Integer>();
+			break;
+		}
 		if (db.getIncomingResponseIDs(user_id, requestID, rs, sorting, viewedList, unviewedList) == null) {
 			return new ResponseEntity<Map<String, List<Integer>>>(HttpStatus.NOT_FOUND);
 		}

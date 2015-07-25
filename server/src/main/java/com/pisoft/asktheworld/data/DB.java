@@ -394,10 +394,10 @@ public class DB {
 		System.out.println("List "+list);
 		for(Iterator<ATWResponse> it = list.iterator(); it.hasNext();) {
 			ATWResponse r = it.next();
-			if(ResponseStatus.forValue(r.getStatus()) == ResponseStatus.UNVIEWED && (status == ResponseStatus.ALL || status == ResponseStatus.UNVIEWED)) {
+			if(ResponseStatus.forValue(r.getStatus()) == ResponseStatus.UNVIEWED && unviewedList != null) {
 				unviewedList.add(r.getId());
 			}
-			if(ResponseStatus.forValue(r.getStatus()) == ResponseStatus.VIEWED && (status == ResponseStatus.ALL || status == ResponseStatus.VIEWED)) {
+			if(ResponseStatus.forValue(r.getStatus()) == ResponseStatus.VIEWED && viewedList != null) {
 				viewedList.add(r.getId());
 			}
 		}
