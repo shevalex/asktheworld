@@ -458,10 +458,10 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
           requestIds = {};
         }
         
-        if (requestStatus == Backend.Request.STATUS_ALL || requestStatus = Backend.Request.STATUS_ACTIVE) {
+        if (requestStatus == Backend.Request.STATUS_ALL || requestStatus == Backend.Request.STATUS_ACTIVE) {
           requestIds.active = data.active;
         }
-        if (requestStatus == Backend.Request.STATUS_ALL || requestStatus = Backend.Request.STATUS_INACTIVE) {
+        if (requestStatus == Backend.Request.STATUS_ALL || requestStatus == Backend.Request.STATUS_INACTIVE) {
           requestIds.inactive = data.inactive;
         }
         
