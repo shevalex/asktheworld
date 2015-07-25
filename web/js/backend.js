@@ -269,8 +269,8 @@ Backend.Request.STATUS_INACTIVE = "inactive";
 
 Backend.Response = {};
 Backend.Response.STATUS_ALL = "all";
-Backend.Response.STATUS_UNREAD = "unviewed";
-Backend.Response.STATUS_READ = "viewed";
+Backend.Response.STATUS_UNVIEWED = "unviewed";
+Backend.Response.STATUS_VIEWED = "viewed";
 Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE = "no";
 Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE = "can_provide";
 Backend.Response.CONTACT_INFO_STATUS_PROVIDED = "provided";
@@ -809,9 +809,9 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
   if (responseIds != null) {
     if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
       result = responseIds.all;
-    } else if (responseStatus == Backend.Response.STATUS_READ) {
+    } else if (responseStatus == Backend.Response.STATUS_VIEWED) {
       result = responseIds.viewed;
-    } else if (responseStatus == Backend.Response.STATUS_UNREAD) {
+    } else if (responseStatus == Backend.Response.STATUS_UNVIEWED) {
       result = responseIds.unviewed;
     } else {
       throw "Invalid response status requested: " + responseStatus;
@@ -841,10 +841,10 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
           responseIds = {};
         }
         
-        if (responseStatus == Backend.Response.STATUS_ALL || responseStatus == Backend.Response.STATUS_READ) {
+        if (responseStatus == Backend.Response.STATUS_ALL || responseStatus == Backend.Response.STATUS_VIEWED) {
           responseIds.viewed = data.viewed;
         }
-        if (responseStatus == Backend.Response.STATUS_ALL || responseStatus == Backend.Response.STATUS_UNREAD) {
+        if (responseStatus == Backend.Response.STATUS_ALL || responseStatus == Backend.Response.STATUS_UNVIEWED) {
           responseIds.unviewed = data.unviewed;
         }
         
@@ -919,9 +919,9 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
   if (responseIds != null) {
     if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
       result = responseIds.all;
-    } else if (responseStatus == Backend.Response.STATUS_READ) {
+    } else if (responseStatus == Backend.Response.STATUS_VIEWED) {
       result = responseIds.viewed;
-    } else if (responseStatus == Backend.Request.STATUS_UNREAD) {
+    } else if (responseStatus == Backend.Response.STATUS_UNVIEWED) {
       result = responseIds.unviewed;
     } else {
       throw "Invalid response status requested: " + responseStatus;
@@ -951,10 +951,10 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
           responseIds = {};
         }
         
-        if (responseStatus == Backend.Response.STATUS_ALL || responseStatus == Backend.Response.STATUS_READ) {
+        if (responseStatus == Backend.Response.STATUS_ALL || responseStatus == Backend.Response.STATUS_VIEWED) {
           responseIds.viewed = data.viewed;
         }
-        if (responseStatus == Backend.Response.STATUS_ALL || responseStatus == Backend.Response.STATUS_UNREAD) {
+        if (responseStatus == Backend.Response.STATUS_ALL || responseStatus == Backend.Response.STATUS_UNVIEWED) {
           responseIds.unviewed = data.unviewed;
         }
         

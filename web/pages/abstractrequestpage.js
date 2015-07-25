@@ -122,7 +122,7 @@ AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   var targetLabel = UIUtils.appendLabel(this._header, "TargetLabel", I18n.getPageLocale("AbstractRequestPage").TargetLabel + " " + Application.Configuration.toTargetGroupString(request.response_age_group, request.response_gender));
   UIUtils.addClass(targetLabel, "request-target-label");
   
-  var unreadResponses = Backend.getIncomingResponseIds(this._objectId, Backend.Response.STATUS_UNREAD);
+  var unreadResponses = Backend.getIncomingResponseIds(this._objectId, Backend.Response.STATUS_UNVIEWED);
   var allResponses = Backend.getIncomingResponseIds(this._objectId);
   var counterText = null;
   if (allResponses != null && unreadResponses != null) {
@@ -280,13 +280,13 @@ AbstractRequestPage.IncomingResponseItem = ClassUtils.defineClass(AbstractReques
 });
 AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   var response = this._getObject();
-  var isRead = response.status == Backend.Response.STATUS_READ;
+  var isRead = response.status == Backend.Response.STATUS_VIEWED;
   
   if (!isRead) {
     UIUtils.addClass(this._header, "response-header-unread");
 // Maybe
 //    UIUtils.setHoverListener(this._header, function() {
-//      Backend.updateResponse(this._requestId, this._objectId, {status: Backend.Response.STATUS_READ});
+//      Backend.updateResponse(this._requestId, this._objectId, {status: Backend.Response.STATUS_VIEWED});
 //    }.bind(this));
   }
   
@@ -339,7 +339,7 @@ AbstractRequestPage._AbstractOutgoingResponseItem = ClassUtils.defineClass(Abstr
 });
 AbstractRequestPage._AbstractOutgoingResponseItem.prototype._fill = function() {
   var response = this._getObject();
-  var isRead = response.status == Backend.Response.STATUS_READ;
+  var isRead = response.status == Backend.Response.STATUS_VIEWED;
   
   if (!isRead) {
     UIUtils.addClass(this._header, "response-header-unread");
