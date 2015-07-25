@@ -51,12 +51,12 @@ OutgoingRequestDetailsPage.prototype.definePageContent = function(root) {
   this._incomingResponsesView = new AbstractRequestPage.IncomingResponsesView("ResponseView", {
     clickListener: function(requestId, responseId) {
       var response = Backend.getResponse(requestId, responseId);
-      if (response.status == Backend.Response.STATUS_UNREAD) {
-        Backend.updateResponse(requestId, responseId, {status: Backend.Response.STATUS_READ});
+      if (response.status == Backend.Response.STATUS_UNVIEWED) {
+        Backend.updateResponse(requestId, responseId, {status: Backend.Response.STATUS_VIEWED});
       }
     },
     ratingChangeListener: function(requestId, responseId, rating) {
-      Backend.updateResponse(requestId, responseId, {star_rating: rating});
+      Backend.updateResponse(requestId, responseId, {star_rating: rating, status: Backend.Response.STATUS_VIEWED});
     },
     removeListener: function(requestId, responseId) {
       Backend.removeIncomingResponse(requestId, responseId);      

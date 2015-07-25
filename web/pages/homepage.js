@@ -140,7 +140,7 @@ HomePage.prototype._getOutgoingRequestIds = function() {
   var ready = true;
   var requestIds = [];
   for (var i in allActiveRequestIds) {
-    var responseIds = Backend.getIncomingResponseIds(allActiveRequestIds[i], Backend.Response.STATUS_UNREAD);
+    var responseIds = Backend.getIncomingResponseIds(allActiveRequestIds[i], Backend.Response.STATUS_UNVIEWED);
     if (responseIds == null) {
       ready = false;
     } else if (responseIds.length > 0) {
