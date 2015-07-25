@@ -876,7 +876,7 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
   this._communicate("user/" + Backend.getUserProfile().user_id + "/responses/incoming/" + requestId + "?status=" + responseStatus, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
-Backend.removeIncomingResponse = function(requestId, responseId, callback) {
+Backend.removeIncomingResponse = function(requestId, responseId, transactionCallback) {
   Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
   
   var communicationCallback = {
