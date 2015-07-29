@@ -408,9 +408,13 @@ public class DB {
 	}
 
 	public ATWResponse deleteIncomingResponse(int user_id, int responseID) {
-		// TODO Auto-generated method stub
-		return responses.markDeleted(responseID, user_id, true);
+		ATWResponse response = responses.findById(responseID);
+		if (!requests.exist(response.getRequestId(), user_id)) {
+			return null;
+		}
+		return responses.markDeleted(response, true);
 	}
+
 	public List<ATWResponse> getResponses() {
 		return responses.findAll();
 	}

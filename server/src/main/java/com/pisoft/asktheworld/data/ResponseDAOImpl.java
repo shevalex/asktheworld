@@ -2,6 +2,8 @@ package com.pisoft.asktheworld.data;
 
 import java.util.List;
 
+import javax.persistence.EntityTransaction;
+
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -9,7 +11,9 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 	private String findByRequestID = "select r from "+ATWResponse.class.getName()+" r where r.requestId=?1 and r.deleted=false";
 	private String findByRequestAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.requestId=?2 and r.user_id=?1";
 	private String findByResponseAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.id=?1 and r.user_id=?2";
+	private String findByUserID = "select r from "+ATWResponse.class.getName()+" r where r.user_id=?1";
 
+	
 	public ResponseDAOImpl() {
 		super();
 		setTClass(ATWResponse.class);
@@ -40,19 +44,19 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 		return list;
 	}
 	
-	public ATWResponse markDeleted(int responseID, int user_id, boolean flag) {
-		entityManager.getTransaction().begin();
-		ATWResponse r = (ATWResponse) entityManager.createQuery(findByResponseAndUserID)
-		.setParameter(1, responseID)
-		.setParameter(2, user_id)
-		.getSingleResult();
-		//ATWResponse r = entityManager.find(ATWResponse.class, responseID);
-		//if(r!=null && r.getUser_id() == user_id){ //TODO: not sure that this is good idea to check user_id. this is business logic 
-		if(r!=null) {
-			r.setDeleted(flag);
+	public ATWResponse markDeleted(ATWResponse response, boolean flag) {
+		if(response != null && entityManager.contains(response)) {
+			response.setDeleted(flag);
 		}
-		entityManager.getTransaction().commit();
-		return r;
+		return response;
+	}
+
+	public List<ATWResponse> findByUserId(int user_id) {
+		@SuppressWarnings("unchecked")
+		List<ATWResponse> list =  entityManager.createQuery(findByUserID)
+			.setParameter(1, user_id)
+			.getResultList();
+		return list;
 	}
 
 }
