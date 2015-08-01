@@ -7,6 +7,15 @@ Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
 
 // USER MANAGEMENT
 
+Backend.Events = { timestamp: 0, _pulling: false };
+Backend.Events.OUTGOING_REQUESTS_CHANGED = "outgoing_requests_changed";
+Backend.Events.INCOMING_REQUESTS_CHANGED = "incoming_requests_changed";
+Backend.Events.OUTGOING_RESPONSES_CHANGED = "outgoing_responses_changed";
+Backend.Events.INCOMING_RESPONSES_CHANGED = "incoming_responses_changed";
+Backend.Events.REQUEST_CHANGED = "request_changed";
+Backend.Events.RESPONSE_CHANGED = "response_changed";
+
+
 Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age_category: null, name: null, user_id: null};
 Backend.UserPreferences = {
   default_response_quantity: Application.Configuration.RESPONSE_QUANTITY[0].data,
@@ -987,6 +996,75 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
 }
 
 
+Backend.startPullingEvents = function() {
+  if (Backend.Events._pulling) {
+    return;
+  }
+  
+  Backend.Events.timestamp = 0;
+  
+  var transactionCallback = {
+    success: function() {
+      setTimeout(function() { Backend._pullEvents(transactionCallback); }, 1000);
+    },
+    failure: function() {
+      console.warn("Event retrieval programming error");
+      setTimeout(function() { Backend._pullEvents(transactionCallback); }, 5000);
+    },
+    error: function() {
+      console.warn("Event retrieval failed");
+      setTimeout(function() { Backend._pullEvents(transactionCallback); }, 5000);
+    }
+  }
+
+  Backend.Events._pulling = true;
+  Backend._pullEvents(transactionCallback);
+}
+
+Backend._pullEvents = function(transactionCallback) {
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (xhr.status == 200) {
+        Backend.Events.timestamp = data.timestamp;
+        
+        for (var index in data.events) {
+          var event = data.events[index];
+          
+          if (event.type == Backend.Events.INCOMING_REQUESTS_CHANGED) {
+            Backend._pullIncomingRequestIds();
+          } else if (event.type == Backend.Events.OUTGOING_REQUESTS_CHANGED) {
+            Backend._pullOutgoingRequestIds();
+          } else if (event.type == Backend.Events.OUTGOING_RESPONSES_CHANGED) {
+            Backend._pullOutgoingResponseIds(event.request_id);
+          } else if (event.type == Backend.Events.INCOMING_RESPONSES_CHANGED) {
+            Backend._pullIncomingResponseIds(event.request_id);
+          } else if (event.type == Backend.Events.REQUEST_CHANGED) {
+            Backend._pullRequest(event.request_id);
+          } else if (event.type == Backend.Events.RESPONSE_CHANGED) {
+            Backend._pullResponse(event.request_id, event.response_id);
+          } else {
+            console.error("Unrecognized event type " + event.type);
+          }
+        }
+
+        if (transactionCallback != null) {
+          transactionCallback.success();
+        }
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) {
+        if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+    }
+  }
+
+  this._communicate("events/user/" + Backend.getUserProfile().user_id + "?timestamp=" + Backend.Events.timestamp, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+}
 
 
 
@@ -1007,6 +1085,8 @@ Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED = "update_finished";
 
 Backend.addCacheChangeListener = function(listener) {
   Backend.Cache.addCacheChangeListener(listener);
+  
+  Backend.startPullingEvents();
 }
 
 Backend.removeCacheChangeListener = function(listener) {
