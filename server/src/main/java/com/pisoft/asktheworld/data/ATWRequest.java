@@ -142,5 +142,14 @@ public class ATWRequest implements Serializable {
 	void updatedAt() {
 		modificationDate = new Date();
 	}
-
+	
+	@JsonIgnore
+	public Date getCreationTime() {
+		return time;
+	}
+	
+	@JsonIgnore
+	public Date getModificationTime() {
+		return modificationDate;
+	}
 }

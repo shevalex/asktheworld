@@ -1,8 +1,10 @@
 package com.pisoft.asktheworld.data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.pisoft.asktheworld.enums.Age;
 import com.pisoft.asktheworld.enums.AgeRequest;
@@ -420,6 +422,120 @@ public class DB {
 	}
 	public List<ATWResponse> getResponses(int user_id) {
 		return responses.findByUserId(user_id);
+	}
+	public List<ATWEvent> getUpdates(int user_id, long timeStamp, long timeRequest) {
+		List<ATWEvent> list = new ArrayList<ATWEvent>();
+		if (timeRequest <= timeStamp) return list;
+		ATWUser user = users.findById(user_id);
+/*
+		OUTGOING_REQUESTS_CHANGED
+		The event is produced when a client creates new request (or possibly deletes the existing one)
+		The app is expected to call getOutgoingRequestIds() after receiving an event to get an updated list.
+		The event may OPTIONALLY carry the updated list of outgoing request ids. This may be needed if the api implementation does not perform caching.
+/**/
+		List<Integer> outReqChanged = requests.findNewOutgoingRequestsByUserIdAndDate(user_id, timeStamp, timeRequest);
+		if (outReqChanged.size() > 0) {
+			System.out.println("We have new outgoing requests");
+			list.add(ATWEvent.getOutReqChanged());
+		} else { System.out.println("No new outgoing requests");}
+/*		
+		INCOMING_REQUESTS_CHANGED
+		The event is produced when a server routes to the client a new request or otherwise turns the previously routed request off
+		The app is expected to call getIncomingRequestIds() after receiving an event to get an updated list.
+		The event may OPTIONALLY carry the updated list of outgoing request ids. This may be needed if the api implementation does not perform caching.
+/**/
+		for (Iterator<ATWRequest> it  = user.getIncomingRequests().iterator(); it.hasNext();) {
+			ATWRequest req = it.next();
+			long t = req.getCreationTime().getTime();
+			if( t > timeStamp && t < timeRequest) {
+				list.add(ATWEvent.getIncReqChanged());
+				System.out.println("We have new incomming requests");
+				break;
+			}
+			if(!it.hasNext()) { System.out.println("No new Incomming requests");}
+		}
+		
+/*
+		REQUEST_CHANGED
+		The event object also carries requestId of the changed request. Any change in the request properties causes this event to be distributed to all the involved parties. 
+		The app is expected to call getRequest() after receiving an event to get the the updated request.
+		The event may OPTIONALLY carry the updated request. This may be needed if the api implementation does not perform caching.
+/**/
+		outReqChanged = requests.findModifiedOutgoingRequestsByUserIdAndDate(user_id, timeStamp, timeRequest);		
+		for(Iterator<Integer> it = outReqChanged.iterator();it.hasNext();) {
+			list.add(ATWEvent.getReqChanged(it.next()));
+		}
+		if (outReqChanged.size() > 0) { System.out.println("We have changed  outgoing requests"); }
+		else { System.out.println("No changed outgoing requests");}
+		
+		for (Iterator<ATWRequest> it  = user.getIncomingRequests().iterator(); it.hasNext();) {
+			ATWRequest req = it.next();
+			long t = req.getModificationTime().getTime();
+			if( t > timeStamp && t < timeRequest) {
+				list.add(ATWEvent.getReqChanged(req.getId()));
+				System.out.println("We have changed incomming request");
+			}
+		}
+
+/*
+		OUTGOING_RESPONSES_CHANGED
+		The event is produced when a client creates new response to an existing request (or possibly deletes the existing one).
+		The event carries requestId the list of responses is changed for.
+		The app is expected to call getOutgoingResponseIds() after receiving an event to get an updated list.
+		The event may OPTIONALLY carry the updated list of outgoing response ids. This may be needed if the api implementation does not perform caching.
+/**/
+		List<Integer> outRespChanged = responses.findNewOutgoingResponsesByUserIdAndDate(user_id, timeStamp, timeRequest);
+		for(Iterator<Integer> it = outRespChanged.iterator();it.hasNext();) {
+			list.add(ATWEvent.getOutRespChanged(it.next()));
+		}
+
+		if (outRespChanged.size() > 0) { System.out.println("We have new outgoing responses"); } 
+		else { System.out.println("No new outgoing responses"); }	
+/*
+		INCOMING_RESPONSES_CHANGED
+		The event is produced when a server routes to the client a new response or otherwise turns the previously routed response off.
+		The event carries requestId the list of responses is changed for.
+		The app is expected to call getIncomingResponseIds() after receiving an event to get an updated list.
+		The event may OPTIONALLY carry the updated list of incoming response ids. This may be needed if the api implementation does not perform caching.
+/**/
+		List<Integer> outReq = requests.findOutgoingRequestsIDsByUserId(user_id);
+		if(outReq.size() > 0) {
+			Set<Integer> ids = new HashSet<>(outReq);
+			List<Integer> incReqForResponsesChanged = responses.findNewResponsesByRequestsIdAndDate(ids, timeStamp, timeRequest);
+			for (Iterator<Integer> it = incReqForResponsesChanged.iterator(); it.hasNext();) {
+				list.add(ATWEvent.getIncRespChanged(it.next()));
+			}
+			if (incReqForResponsesChanged.size() > 0) { System.out.println("We have new incomming responses");}
+			else {System.out.println("No new incomming responses");}
+		} else {System.out.println("No new incomming responses (no requests)");}
+/*
+		RESPONSE_CHANGED
+		The event object carries responseId of the changed response and requestId of the request the response is associated with. Any change in the response properties causes this event to be distributed to all the involved parties. 
+		The app is expected to call getResponse() after receiving an event to get the the updated request.
+		The event may OPTIONALLY carry the updated request. This may be needed if the api implementation does not perform caching.
+	*/	
+		List<ATWResponse> outRespModified = responses.findModifiedOutgoingRequestsByUserIdAndDate(user_id, timeStamp, timeRequest);
+		for(Iterator<ATWResponse> it = outRespModified.iterator();it.hasNext();) {
+			ATWResponse resp = it.next();
+			list.add(ATWEvent.getRespChanged(resp.getRequestId(), resp.getId()));
+		}
+
+		if (outRespModified.size() > 0) { System.out.println("We have modified outgoing responses"); } 
+		else { System.out.println("No modified outgoing responses"); }	
+		
+		if(outReq.size() > 0) {
+			Set<Integer> ids = new HashSet<>(outReq);
+			List<ATWResponse> incModifiedResponsesForOutReq = responses.findModifiedResponsesByRequestsIdAndDate(ids, timeStamp, timeRequest);
+			for(Iterator<ATWResponse> it = incModifiedResponsesForOutReq.iterator();it.hasNext();) {
+				ATWResponse resp = it.next();
+				list.add(ATWEvent.getRespChanged(resp.getRequestId(), resp.getId()));
+			}
+			if (incModifiedResponsesForOutReq.size() > 0) { System.out.println("We have modified incomming responses");}
+			else {System.out.println("No modified incomming responses");}
+		} else {System.out.println("No modified incomming responses (no requests)");}
+		
+		
+		return list;
 	}
 	
 }

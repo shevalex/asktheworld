@@ -1,6 +1,7 @@
 package com.pisoft.asktheworld.data;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityTransaction;
 
@@ -12,7 +13,12 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 	private String findByRequestAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.requestId=?2 and r.user_id=?1";
 	private String findByResponseAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.id=?1 and r.user_id=?2";
 	private String findByUserID = "select r from "+ATWResponse.class.getName()+" r where r.user_id=?1";
-
+	private String findNewByUserIDAndTime = "select r.requestId from "+ATWResponse.class.getName()+" r where r.user_id=?1 and r.time > ?2 and r.time < ?3";
+	//TODO: change to Event creation for pair (id, requestId). Now will return response objects 
+	private String findModifiedByUserIDAndTime = "select r from "+ATWResponse.class.getName()+" r where r.user_id=?1 and r.modificationDate > ?2 and r.modificationDate < ?3";
+	private String findNewByRequestsIdAndTime = "select r.requestId from "+ATWResponse.class.getName()+" r where r.requestId in :?1 and r.time > ?2 and r.time < ?3";
+	//TODO: change to Event creation for pair (id, requestId). Now will return response objects
+	private String findModifiedByRequestsIdAndTime = "select r from " + ATWResponse.class.getName()+" r where r.requestId in :?1 and r.modificationDate > ?2 and r.modificationDate < ?3";
 	
 	public ResponseDAOImpl() {
 		super();
@@ -57,6 +63,50 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 			.setParameter(1, user_id)
 			.getResultList();
 		return list;
+	}
+	
+	public List<Integer> findNewOutgoingResponsesByUserIdAndDate(int user_id,
+			long timeStamp, long timeRequest) {
+		@SuppressWarnings("unchecked")
+		List<Integer> list = entityManager.createQuery(findNewByUserIDAndTime,Integer.class)
+				.setParameter(1, user_id)
+				.setParameter(2, timeStamp)
+				.setParameter(3, timeRequest)
+				.getResultList();
+		return list;
+	}
+
+	public List<ATWResponse> findModifiedOutgoingRequestsByUserIdAndDate(int user_id,
+			long timeStamp, long timeRequest) {
+		@SuppressWarnings("unchecked")
+		List<ATWResponse> list = entityManager.createQuery(findModifiedByUserIDAndTime)
+				.setParameter(1, user_id)
+				.setParameter(2, timeStamp)
+				.setParameter(3, timeRequest)
+				.getResultList();
+		return list;
+	}
+
+	public List<Integer> findNewResponsesByRequestsIdAndDate(Set<Integer> ids,
+			long timeStamp, long timeRequest) {
+		@SuppressWarnings("unchecked")
+		List<Integer> list = entityManager.createQuery(findNewByRequestsIdAndTime ,Integer.class)
+				.setParameter(1, ids)
+				.setParameter(2, timeStamp)
+				.setParameter(3, timeRequest)
+				.getResultList();
+		return list;
+	}
+
+	public List<ATWResponse> findModifiedResponsesByRequestsIdAndDate(
+			Set<Integer> ids, long timeStamp, long timeRequest) {
+		@SuppressWarnings("unchecked")
+		List<ATWResponse> list = entityManager.createQuery(findModifiedByRequestsIdAndTime)
+				.setParameter(1, ids)
+				.setParameter(2, timeStamp)
+				.setParameter(3, timeRequest)
+				.getResultList();
+		return list;	
 	}
 
 }

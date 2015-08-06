@@ -15,6 +15,9 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 			" r.response_age_group in ?3 and " +
 			" r.response_gender in ?4";
 	private String countByIdAndUserId = "select count(r) from "+ATWRequest.class.getName()+" r where r.id=?1 and r.user_id=?2";
+	private String findNewByUserIDAndTime = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.time > ?2 and r.time < ?3";
+	private String findModifiedByUserIDAndTime = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.modificationDate > ?2 and r.modificationDate < ?3";
+	private String findIdsByUserId = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1";
 	
 	public RequestDAOImpl() {
 		super();
@@ -66,6 +69,37 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 				.getSingleResult();
 		System.out.println("Count of request with user id "+ count);
 		return count >0;
+	}
+
+	public List<Integer> findNewOutgoingRequestsByUserIdAndDate(int user_id,
+			long timeStamp, long timeRequest) {
+		@SuppressWarnings("unchecked")
+		List<Integer> list = entityManager.createQuery(findNewByUserIDAndTime,Integer.class)
+				.setParameter(1, user_id)
+				.setParameter(2, timeStamp)
+				.setParameter(3, timeRequest)
+				.getResultList();
+		return list;
+	}
+
+	public List<Integer> findModifiedOutgoingRequestsByUserIdAndDate(int user_id,
+			long timeStamp, long timeRequest) {
+		@SuppressWarnings("unchecked")
+		List<Integer> list = entityManager.createQuery(findModifiedByUserIDAndTime,Integer.class)
+				.setParameter(1, user_id)
+				.setParameter(2, timeStamp)
+				.setParameter(3, timeRequest)
+				.getResultList();
+		return list;
+	}
+
+	public List<Integer> findOutgoingRequestsIDsByUserId(int user_id) {
+		@SuppressWarnings("unchecked")
+		List<Integer> list = entityManager.createQuery(findIdsByUserId,Integer.class)
+				.setParameter(1, user_id)
+				.getResultList();
+		return list;
+		
 	}
 
 }
