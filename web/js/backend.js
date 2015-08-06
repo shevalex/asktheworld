@@ -195,8 +195,8 @@ Backend.pullUserPreferences = function(transactionCallback) {
 Backend.updateUserPreferences = function(userPreferences, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
-      Backend.UserPreferences = userPreferences; // Temporary. To be replaced
-      //Backend.UserPreferences = data;
+//      Backend.UserPreferences = userPreferences; // Temporary. To be replaced
+      Backend.UserPreferences = data;
 
       if (transactionCallback != null) {
         transactionCallback.success();
