@@ -39,7 +39,7 @@ public struct Configuration {
     
     static let AGE_CATEGORY_PREFERENCE: [Item] = [Item(display: NSLocalizedString("All", comment: "Age Preference - all"), data: "all"), Item(display: NSLocalizedString("Chidlren", comment: "Age Preference - chidlren"), data: "children"), Item(display: NSLocalizedString("Teenagers", comment: "Age Preference - teenagers"), data: "teenagers"), Item(display: NSLocalizedString("Young Adults", comment: "Age Preference - youngs"), data: "youngs"), Item(display: NSLocalizedString("Adults", comment: "Age Preference - adults"), data: "adults"), Item(display: NSLocalizedString("Seniors", comment: "Age Preference - seniors"), data: "seniors")];
     
-    static let GENDER_PREFERENCE: [Item] = [Item(display: NSLocalizedString("Any", comment: "Gender Preference - any"), data: "any"), Item(display: NSLocalizedString("Men", comment: "Male - male"), data: "male"), Item(display: NSLocalizedString("Women", comment: "Gender Preference - female"), data: "female")];
+    static let GENDER_PREFERENCE: [Item] = [Item(display: NSLocalizedString("Any", comment: "Gender Preference - any"), data: "all"), Item(display: NSLocalizedString("Men", comment: "Male - male"), data: "male"), Item(display: NSLocalizedString("Women", comment: "Gender Preference - female"), data: "female")];
     
     static let INQUIRY_LIMIT_PREFERENCE: [Item] = [Item(display: NSLocalizedString("As many as possible", comment: "Incoming limit Preference - any"), data: -1), Item(display: NSLocalizedString("No more than ten", comment: "Incoming limit Preference - ten"), data: 10), Item(display: NSLocalizedString("No more than five", comment: "Incoming limit Preference - five"), data: 5), Item(display: NSLocalizedString("I don't want to get any inquiries", comment: "Incoming limit Preference - none"), data: 0)];
     
@@ -354,7 +354,7 @@ public struct Backend {
                 Backend.instance = Backend();
                 
                 Backend.instance.userContext = UserContext();
-                Backend.instance.userContext.userId = data?.valueForKey("userId") as? Int;
+                Backend.instance.userContext.userId = data?.valueForKey("user_id") as? Int;
                 Backend.instance.userContext.login = login;
                 Backend.instance.userContext.password = password;
                 
@@ -440,10 +440,16 @@ public struct Backend {
     public func updateUserProfile(password: String?, gender: Configuration.Item!, age: Configuration.Item!, nickname: String!, languages: [Configuration.Item]!, currentPassword: String!, callback: BackendCallback?) {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
-            
             if (statusCode == 200) {
                 self.userContext.password = password != nil ? password : currentPassword;
-                self.pullUserProfile(callback);
+
+                self.userContext.name = data?.valueForKey(Backend.USER_PROPERTY_NICKNAME) as? String;
+                
+                self.userContext.languages = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_LANGUAGES) as? [String], predefinedList: Configuration.LANGUAGES);
+                
+                self.userContext.gender = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_GENDER), predefinedList: Configuration.GENDERS);
+                
+                self.userContext.age = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_AGE), predefinedList: Configuration.AGE_CATEGORIES);
             } else if (statusCode == 401) {
                 callback?.onFailure();
             } else {
@@ -471,23 +477,29 @@ public struct Backend {
     public func updateUserPreferences(requestTargetAge: Configuration.Item?, requestTargetGender: Configuration.Item?, responseQuantity: Configuration.Item?, responseWaitTime: Configuration.Item?, dailyInquiryLimit: Configuration.Item?, inquiryAge: Configuration.Item?, inquiryGender: Configuration.Item?, expertises: [Configuration.Item]?, contactRequestable: Configuration.Item?, contactName: String?, contactDetails: String?, callback: BackendCallback?) {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
-
             if (statusCode == 200) {
-//                Backend.userContext.responseQuantity = responseQuantity;
-//                Backend.userContext.responseWaitTime = responseWaitTime;
-//                Backend.userContext.requestTargetAge = requestTargetAge;
-//                Backend.userContext.requestTargetGender = requestTargetGender;
-//                Backend.userContext.dailyInquiryLimit = dailyInquiryLimit;
-//                Backend.userContext.inquiryAge = inquiryAge;
-//                Backend.userContext.inquiryGender = inquiryGender;
-//                Backend.userContext.expertises = expertises;
-//                Backend.userContext.contactVisible = contactRequestable;
-//                Backend.userContext.contactName = contactName;
-//                Backend.userContext.contactInfo = contactDetails;
-//                
-//                callback?.onSuccess();
+                self.userContext.responseQuantity = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_RESPONSE_QUANTITY), predefinedList: Configuration.RESPONSE_QUANTITY);
                 
-                self.pullUserPreferences(callback);
+                self.userContext.responseWaitTime = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_RESPONSE_WAITTIME), predefinedList: Configuration.RESPONSE_WAIT_TIME);
+                
+                self.userContext.requestTargetAge = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_REQUEST_TARGET_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
+                
+                self.userContext.requestTargetGender = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_REQUEST_TARGET_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
+                
+                self.userContext.dailyInquiryLimit = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_LIMIT), predefinedList: Configuration.INQUIRY_LIMIT_PREFERENCE);
+                
+                self.userContext.inquiryAge = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
+                
+                self.userContext.inquiryGender = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
+                
+                self.userContext.expertises = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_EXPERTISES) as? [String], predefinedList: Configuration.EXPERTISES);
+                
+                self.userContext.contactVisible = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_REQUESTABLE), predefinedList: Configuration.CONTACT_REQUESTABLE);
+                
+                self.userContext.contactName = data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_NAME) as? String;
+                self.userContext.contactInfo = data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_DETAILS) as? String;
+
+                callback?.onSuccess();
             } else if (statusCode == 401) {
                 callback?.onFailure();
             } else {
@@ -904,20 +916,11 @@ public struct Backend {
             if (statusCode == 200) {
                 self.userContext.name = data?.valueForKey(Backend.USER_PROPERTY_NICKNAME) as? String;
                 
-                var languages: [Configuration.Item]? = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_LANGUAGES) as? [String], predefinedList: Configuration.LANGUAGES);
-                if (languages != nil) {
-                    self.userContext.languages = languages;
-                }
+                self.userContext.languages = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_LANGUAGES) as? [String], predefinedList: Configuration.LANGUAGES);
 
-                var gender: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_GENDER), predefinedList: Configuration.GENDERS);
-                if (gender != nil) {
-                    self.userContext.gender = gender;
-                }
+                self.userContext.gender = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_GENDER), predefinedList: Configuration.GENDERS);
                 
-                var age: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_AGE), predefinedList: Configuration.AGE_CATEGORIES);
-                if (age != nil) {
-                    self.userContext.age = age;
-                }
+                self.userContext.age = Configuration.resolve(data?.valueForKey(Backend.USER_PROPERTY_AGE), predefinedList: Configuration.AGE_CATEGORIES);
 
                 callback?.onSuccess();
             } else if (statusCode == 401 || statusCode == 404) {
@@ -934,50 +937,23 @@ public struct Backend {
     func pullUserPreferences(callback: BackendCallback?) {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                var responseQuantity: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_RESPONSE_QUANTITY), predefinedList: Configuration.RESPONSE_QUANTITY);
-                if (responseQuantity != nil) {
-                    self.userContext.responseQuantity = responseQuantity;
-                }
+                self.userContext.responseQuantity = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_RESPONSE_QUANTITY), predefinedList: Configuration.RESPONSE_QUANTITY);
 
-                var responseWaitTime: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_RESPONSE_WAITTIME), predefinedList: Configuration.RESPONSE_WAIT_TIME);
-                if (responseWaitTime != nil) {
-                    self.userContext.responseWaitTime = responseWaitTime;
-                }
+                self.userContext.responseWaitTime = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_RESPONSE_WAITTIME), predefinedList: Configuration.RESPONSE_WAIT_TIME);
                 
-                var requestTargetAge: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_REQUEST_TARGET_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
-                if (requestTargetAge != nil) {
-                    self.userContext.requestTargetAge = requestTargetAge;
-                }
+                self.userContext.requestTargetAge = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_REQUEST_TARGET_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
                 
-                var requestTargetGender: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_REQUEST_TARGET_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
-                if (requestTargetGender != nil) {
-                    self.userContext.requestTargetGender = requestTargetGender;
-                }
+                self.userContext.requestTargetGender = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_REQUEST_TARGET_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
 
-                var dailyInquiryLimit: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_LIMIT), predefinedList: Configuration.INQUIRY_LIMIT_PREFERENCE);
-                if (dailyInquiryLimit != nil) {
-                    self.userContext.dailyInquiryLimit = dailyInquiryLimit;
-                }
+                self.userContext.dailyInquiryLimit = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_LIMIT), predefinedList: Configuration.INQUIRY_LIMIT_PREFERENCE);
                 
-                var inquiryAge: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
-                if (inquiryAge != nil) {
-                    self.userContext.inquiryAge = inquiryAge;
-                }
+                self.userContext.inquiryAge = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_AGE), predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
                 
-                var inquiryGender: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
-                if (inquiryGender != nil) {
-                    self.userContext.inquiryGender = inquiryGender;
-                }
+                self.userContext.inquiryGender = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_INQUIRY_GENDER), predefinedList: Configuration.GENDER_PREFERENCE);
                 
-                var expertises: [Configuration.Item]? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_EXPERTISES) as? [String], predefinedList: Configuration.EXPERTISES);
-                if (expertises != nil) {
-                    self.userContext.expertises = expertises;
-                }
+                self.userContext.expertises = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_EXPERTISES) as? [String], predefinedList: Configuration.EXPERTISES);
                 
-                var contactVisible: Configuration.Item? = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_REQUESTABLE), predefinedList: Configuration.CONTACT_REQUESTABLE);
-                if (contactVisible != nil) {
-                    self.userContext.contactVisible = contactVisible;
-                }
+                self.userContext.contactVisible = Configuration.resolve(data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_REQUESTABLE), predefinedList: Configuration.CONTACT_REQUESTABLE);
                 
                 self.userContext.contactName = data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_NAME) as? String;
                 self.userContext.contactInfo = data?.valueForKey(Backend.USER_PREFERENCE_CONTACT_DETAILS) as? String;
