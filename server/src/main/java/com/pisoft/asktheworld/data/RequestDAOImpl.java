@@ -1,5 +1,6 @@
 package com.pisoft.asktheworld.data;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -15,8 +16,8 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 			" r.response_age_group in ?3 and " +
 			" r.response_gender in ?4";
 	private String countByIdAndUserId = "select count(r) from "+ATWRequest.class.getName()+" r where r.id=?1 and r.user_id=?2";
-	private String findNewByUserIDAndTime = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.time > ?2 and r.time < ?3";
-	private String findModifiedByUserIDAndTime = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.modificationDate > ?2 and r.modificationDate < ?3";
+	private String findNewByUserIDAndTime = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.time between ?2 and ?3";
+	private String findModifiedByUserIDAndTime = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.modificationDate between ?2 and ?3";
 	private String findIdsByUserId = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1";
 	
 	public RequestDAOImpl() {
@@ -72,7 +73,7 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 	}
 
 	public List<Integer> findNewOutgoingRequestsByUserIdAndDate(int user_id,
-			long timeStamp, long timeRequest) {
+			Date timeStamp, Date timeRequest) {
 		@SuppressWarnings("unchecked")
 		List<Integer> list = entityManager.createQuery(findNewByUserIDAndTime,Integer.class)
 				.setParameter(1, user_id)
@@ -83,7 +84,7 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 	}
 
 	public List<Integer> findModifiedOutgoingRequestsByUserIdAndDate(int user_id,
-			long timeStamp, long timeRequest) {
+			Date timeStamp, Date timeRequest) {
 		@SuppressWarnings("unchecked")
 		List<Integer> list = entityManager.createQuery(findModifiedByUserIDAndTime,Integer.class)
 				.setParameter(1, user_id)

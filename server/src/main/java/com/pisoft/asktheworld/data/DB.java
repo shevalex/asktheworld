@@ -1,6 +1,7 @@
 package com.pisoft.asktheworld.data;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -423,9 +424,9 @@ public class DB {
 	public List<ATWResponse> getResponses(int user_id) {
 		return responses.findByUserId(user_id);
 	}
-	public List<ATWEvent> getUpdates(int user_id, long timeStamp, long timeRequest) {
+	public List<ATWEvent> getUpdates(int user_id, Date timeStamp, Date timeRequest) {
 		List<ATWEvent> list = new ArrayList<ATWEvent>();
-		if (timeRequest <= timeStamp) return list;
+		if (timeRequest.before(timeStamp)) return list;
 		ATWUser user = users.findById(user_id);
 /*
 		OUTGOING_REQUESTS_CHANGED
@@ -446,8 +447,8 @@ public class DB {
 /**/
 		for (Iterator<ATWRequest> it  = user.getIncomingRequests().iterator(); it.hasNext();) {
 			ATWRequest req = it.next();
-			long t = req.getCreationTime().getTime();
-			if( t > timeStamp && t < timeRequest) {
+			Date t = req.getCreationTime();
+			if( t.after(timeStamp) && t.before(timeRequest)) {
 				list.add(ATWEvent.getIncReqChanged());
 				System.out.println("We have new incomming requests");
 				break;
@@ -470,8 +471,8 @@ public class DB {
 		
 		for (Iterator<ATWRequest> it  = user.getIncomingRequests().iterator(); it.hasNext();) {
 			ATWRequest req = it.next();
-			long t = req.getModificationTime().getTime();
-			if( t > timeStamp && t < timeRequest) {
+			Date t = req.getCreationTime();
+			if( t.after(timeStamp) && t.before(timeRequest)) {
 				list.add(ATWEvent.getReqChanged(req.getId()));
 				System.out.println("We have changed incomming request");
 			}
