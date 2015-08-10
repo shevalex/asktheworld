@@ -1,5 +1,8 @@
 package com.pisoft.asktheworld.data;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.pisoft.asktheworld.data.ATWEvent.Type;
 
@@ -69,25 +72,36 @@ public class ATWEvent {
 	
 	
 	@JsonValue
-	public String toValue() {
-		StringBuffer sb = new StringBuffer("{\"type\":\"").append(type.value).append("\"");
+	public Map<String, Object> toValue() {
+		Map<String, Object> map = new TreeMap<>();
+		map.put("type", type.value);
+		//StringBuffer sb = new StringBuffer("{\"type\":\"").append(type.value).append("\"");
 		if(type == Type.OUTGOING_REQUESTS_CHANGED) {
-			sb.append(",\"request_ids\":null");
+			map.put("request_ids", null);
+			//sb.append(",\"request_ids\":null");
 		} else if (type == Type.INCOMING_REQUESTS_CHANGED) {
-			sb.append(",\"request_ids\":null");
+			map.put("request_ids", null);
+			//sb.append(",\"request_ids\":null");
 		} else if (type == Type.REQUEST_CHANGED) {
-			sb.append(",\"request_id\":").append(request_id);
+			map.put("request_id", Integer.valueOf(request_id));
+			//sb.append(",\"request_id\":").append(request_id);
 		} else if (type == Type.OUTGOING_RESPONSES_CHANGED) {
-		    sb.append(",\"request_id\":").append(request_id);
-		    sb.append(",\"response_ids\":null");
+			map.put("request_id", Integer.valueOf(request_id));
+			//sb.append(",\"request_id\":").append(request_id);
+		    map.put("response_ids", null);
+		    //sb.append(",\"response_ids\":null");
 		} else if (type == Type.INCOMING_RESPONSES_CHANGED) {
-			sb.append(",\"request_id\":").append(request_id);
-			sb.append(",\"response_ids\":null");
+			map.put("request_id", Integer.valueOf(request_id));
+			//sb.append(",\"request_id\":").append(request_id);
+			map.put("response_ids", null);
+			//sb.append(",\"response_ids\":null");
 		} else if (type == Type.RESPONSE_CHANGED) {
-			sb.append(",\"request_id\":").append(request_id);
-			sb.append(",\"response_id\":").append(response_id);
+			map.put("request_id", Integer.valueOf(request_id));
+			//sb.append(",\"request_id\":").append(request_id);
+			map.put("response_id", Integer.valueOf(response_id));
+			//sb.append(",\"response_id\":").append(response_id);
 		}
-		sb.append("}");
-		return sb.toString();
+		//sb.append("}");
+		return map;
 	}
 }
