@@ -374,6 +374,11 @@ IncomingRequestDetailsPage.prototype._ignoreRequest = function() {
     return;
   }
 
-  Backend.removeIncomingRequest(this._currentRequestId);
+  var transactionCallback = {
+    success: function() {
+      Application.showMenuPage(this._returnPageId);
+    }.bind(this)
+  }
+  Backend.removeIncomingRequest(this._currentRequestId, transactionCallback);
 }
 

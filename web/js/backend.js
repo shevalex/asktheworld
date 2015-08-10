@@ -1,19 +1,19 @@
 var Backend = {
 };
 
-Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
-//Backend._SERVER_BASE_URL = "http://127.0.0.1:8080/";
+//Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
+Backend._SERVER_BASE_URL = "http://127.0.0.1:8080/";
 
 
 // USER MANAGEMENT
 
 Backend.Events = { timestamp: 0, _pulling: false };
-Backend.Events.OUTGOING_REQUESTS_CHANGED = "outgoing_requests_changed";
-Backend.Events.INCOMING_REQUESTS_CHANGED = "incoming_requests_changed";
-Backend.Events.OUTGOING_RESPONSES_CHANGED = "outgoing_responses_changed";
-Backend.Events.INCOMING_RESPONSES_CHANGED = "incoming_responses_changed";
-Backend.Events.REQUEST_CHANGED = "request_changed";
-Backend.Events.RESPONSE_CHANGED = "response_changed";
+Backend.Events.OUTGOING_REQUESTS_CHANGED = "OUTGOING_REQUESTS_CHANGED";
+Backend.Events.INCOMING_REQUESTS_CHANGED = "INCOMING_REQUESTS_CHANGED";
+Backend.Events.OUTGOING_RESPONSES_CHANGED = "OUTGOING_RESPONSES_CHANGED";
+Backend.Events.INCOMING_RESPONSES_CHANGED = "INCOMING_RESPONSES_CHANGED";
+Backend.Events.REQUEST_CHANGED = "REQUEST_CHANGED";
+Backend.Events.RESPONSE_CHANGED = "RESPONSE_CHANGED";
 
 
 Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age_category: null, name: null, user_id: null};
@@ -1026,7 +1026,7 @@ Backend._pullEvents = function(transactionCallback) {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
         Backend.Events.timestamp = data.timestamp;
-        
+
         for (var index in data.events) {
           var event = data.events[index];
           
