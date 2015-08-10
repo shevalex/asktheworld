@@ -69,6 +69,7 @@ Backend.logOut = function(transactionCallback) {
   Backend.UserProfile.user_id = null;
   
   Backend.Cache.reset();
+  Backend.stopPullingEvents();
   
   //We may need to inform the server maybe?
   if (transactionCallback != null) {
@@ -1005,20 +1006,36 @@ Backend.startPullingEvents = function() {
   
   var transactionCallback = {
     success: function() {
-      setTimeout(function() { Backend._pullEvents(transactionCallback); }, 1000);
+      if (Backend.Events._pulling) {
+        setTimeout(function() { Backend._pullEvents(transactionCallback); }, 1000);
+      }
     },
     failure: function() {
       console.warn("Event retrieval programming error");
-      setTimeout(function() { Backend._pullEvents(transactionCallback); }, 5000);
+      
+      if (Backend.Events._pulling) {
+        setTimeout(function() { Backend._pullEvents(transactionCallback); }, 5000);
+      }
     },
     error: function() {
       console.warn("Event retrieval failed");
-      setTimeout(function() { Backend._pullEvents(transactionCallback); }, 5000);
+      
+      if (Backend.Events._pulling) {
+        setTimeout(function() { Backend._pullEvents(transactionCallback); }, 5000);
+      }
     }
   }
 
   Backend.Events._pulling = true;
   Backend._pullEvents(transactionCallback);
+}
+
+Backend.stopPullingEvents = function() {
+  if (!Backend.Events._pulling) {
+    return;
+  }
+  
+  Backend.Events._pulling = false;
 }
 
 Backend._pullEvents = function(transactionCallback) {
