@@ -1,8 +1,8 @@
 var Backend = {
 };
 
-//Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
-Backend._SERVER_BASE_URL = "http://127.0.0.1:8080/";
+Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
+//Backend._SERVER_BASE_URL = "http://127.0.0.1:8080/";
 
 
 // USER MANAGEMENT
