@@ -73,15 +73,41 @@ class EditRequestPage: AtwUIViewController {
         requestTextField.text = request!.text;
     }
     
+    private class UpdateRequestCallback: BackendCallback {
+        private let page: EditRequestPage;
+        
+        init(page: EditRequestPage) {
+            self.page = page;
+        }
+        
+        func onError() {
+            AtwUiUtils.runOnMainThread({
+                self.showErrorMessage(NSLocalizedString("Server Error", comment: "Error message"));
+            });
+        }
+        func onSuccess() {
+            AtwUiUtils.runOnMainThread({
+                self.page.navigationController?.popViewControllerAnimated(true);
+            });
+        }
+        func onFailure() {
+            AtwUiUtils.runOnMainThread({
+                self.showErrorMessage(NSLocalizedString("Failed to update a request", comment: "Failed to update request"));
+            });
+        }
+        
+        
+        private func showErrorMessage(popupMessage: String) {
+            AtwUiUtils.showPopup(self.page, popupTitle: NSLocalizedString("Signing In", comment: "Login page error message title"), popupError: popupMessage);
+        }
+    }
+    
     
     @IBAction func deactivateButtonClickAction(sender: AnyObject) {
         var request = Backend.getInstance().getRequest(requestId);
         if (request != nil) {
             request!.status = Backend.RequestObject.STATUS_INACTIVE;
-            Backend.getInstance().updateRequest(requestId!, request: request!, observer: {(id) in
-                self.navigationController?.popViewControllerAnimated(true);
-                return;
-            });
+            Backend.getInstance().updateRequest(requestId!, request: request!, callback: UpdateRequestCallback(page: self));
         }
         
     }
@@ -114,10 +140,7 @@ class EditRequestPage: AtwUIViewController {
         request!.responseWaitTime = waitTimeSelector.getSelectedItem();
         request!.text = requestTextField.text;
         
-        Backend.getInstance().updateRequest(requestId, request: request!, observer: {(id) -> Void in
-            self.navigationController?.popViewControllerAnimated(true);
-            return;
-        });
+        Backend.getInstance().updateRequest(requestId!, request: request!, callback: UpdateRequestCallback(page: self));
     }
     
 }

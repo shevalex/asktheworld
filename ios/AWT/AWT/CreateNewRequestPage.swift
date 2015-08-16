@@ -48,6 +48,34 @@ class CreateNewRequestPage: AtwUIViewController {
         imageScrollView.showAttachAction();
     }
     
+    
+    
+    private class CreateRequestCallback: BackendCallback {
+        private var page: CreateNewRequestPage!;
+        
+        init(page: CreateNewRequestPage) {
+            self.page = page;
+        }
+        
+        func onError() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage(NSLocalizedString("Server Error", comment: "Create Request error message"));
+            });
+        }
+        func onSuccess() {
+            AtwUiUtils.runOnMainThread({
+                self.page.navigationController?.popViewControllerAnimated(true);
+            });
+        }
+        func onFailure() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage(NSLocalizedString("Failed to create a request", comment: "Request creation failed"));
+            });
+        }
+    }
+    
     @IBAction func sendButtonClickedAction(sender: UIBarButtonItem) {
         if (requestTextField.text == "") {
             AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Error", comment: "Error title"), popupError: NSLocalizedString("Please enter a message", comment: "Cannot send empty request"), okCallback: { () -> Void in
@@ -57,7 +85,7 @@ class CreateNewRequestPage: AtwUIViewController {
         }
         
         
-        var request = Backend.RequestObject();
+        var request = Backend.RequestObject(userContext: Backend.getInstance().getUserContext());
         
 //        request.attachments;
         request.expertiseCategory = expertiseSelector.getSelectedItem();
@@ -67,10 +95,7 @@ class CreateNewRequestPage: AtwUIViewController {
         request.responseWaitTime = waitTimeSelector.getSelectedItem();
         request.text = requestTextField.text;
         
-        Backend.getInstance().createRequest(request, observer: {(id) -> Void in
-            self.navigationController?.popViewControllerAnimated(true);
-            return;
-        });
+        Backend.getInstance().createRequest(request, callback: CreateRequestCallback(page: self));
     }
     
     
@@ -92,6 +117,11 @@ class CreateNewRequestPage: AtwUIViewController {
     }
     
 
+    
+    private func showErrorMessage(popupMessage: String) {
+        AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Request Creation", comment: "Create Request Page error message title"), popupError: popupMessage);
+    }
+    
     
     /*
     // MARK: - Navigation

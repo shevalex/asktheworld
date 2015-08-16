@@ -258,15 +258,39 @@ public struct Backend {
         public var contactInfo: String! = "";
     }
     
+    public struct Events {
+        public static let OUTGOING_REQUESTS_CHANGED: String! = "OUTGOING_REQUESTS_CHANGED";
+        public static let INCOMING_REQUESTS_CHANGED: String! = "INCOMING_REQUESTS_CHANGED";
+        public static let OUTGOING_RESPONSES_CHANGED: String! = "OUTGOING_RESPONSES_CHANGED";
+        public static let INCOMING_RESPONSES_CHANGED: String! = "INCOMING_RESPONSES_CHANGED";
+        public static let REQUEST_CHANGED: String! = "REQUEST_CHANGED";
+        public static let RESPONSE_CHANGED: String! = "RESPONSE_CHANGED";
+        
+        var timestamp: Int! = 0;
+        var _pulling: Bool! = false;
+    }
+    
     
     public struct RequestObject {
         static let STATUS_ACTIVE: String = "active";
         static let STATUS_INACTIVE: String = "inactive";
         
-        init() {
-        }
+        static let TIME: String = "time";
+        static let USER_ID: String = "user_id";
+        static let TEXT: String = "text";
+        static let STATUS: String = "status";
+        static let ATTACHMENTS: String = "attachments";
+        static let RESPONSE_QUANTITY: String = "response_quantity";
+        static let RESPONSE_WAITTIME: String = "response_wait_time";
+        static let RESPONSE_AGE_GROUP: String = "response_age_group";
+        static let RESPONSE_GENDER: String = "response_gender";
+        static let EXPERTISE_CATEGORY: String = "expertise_category";
+        
+        var userContext: UserContext;
         
         init(userContext: UserContext) {
+            self.userContext = userContext;
+            
             responseQuantity = userContext.responseQuantity;
             responseWaitTime = userContext.responseWaitTime;
             responseAgeGroup = userContext.inquiryAge;
@@ -284,11 +308,34 @@ public struct Backend {
         var responseGender: Configuration.Item!;
         var expertiseCategory: Configuration.Item!;
         var status: String! = STATUS_ACTIVE;
+        
+        public mutating func updateFromParcel(parcel: NSDictionary) {
+            self.time = parcel.valueForKey(Backend.RequestObject.TIME) as? Double;
+            self.text = parcel.valueForKey(Backend.RequestObject.TEXT) as? String;
+            //                self.attachments
+            self.responseQuantity = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_QUANTITY) as? Int, predefinedList: Configuration.RESPONSE_QUANTITY);
+            self.responseWaitTime = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_WAITTIME) as? Int, predefinedList: Configuration.RESPONSE_WAIT_TIME);
+            self.responseAgeGroup = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
+            self.responseGender = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.GENDER_PREFERENCE);
+            self.expertiseCategory = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.EXPERTISES);
+            self.status = parcel.valueForKey(Backend.RequestObject.STATUS) as? String;
+        }
+        
+        public func safeToParcel(parcel: NSDictionary) {
+            parcel.setValue(self.userContext.userId, forKey: Backend.RequestObject.USER_ID);
+            parcel.setValue(self.text, forKey: Backend.RequestObject.TEXT);
+            //parcel.setValue(self.attachments, forKey: Backend.RequestObject.ATTACHMENTS);
+            parcel.setValue(self.responseQuantity.data, forKey: Backend.RequestObject.RESPONSE_QUANTITY);
+            parcel.setValue(self.responseWaitTime.data, forKey: Backend.RequestObject.RESPONSE_WAITTIME);
+            parcel.setValue(self.responseAgeGroup.data, forKey: Backend.RequestObject.RESPONSE_AGE_GROUP);
+            parcel.setValue(self.responseGender.data, forKey: Backend.RequestObject.RESPONSE_GENDER);
+            parcel.setValue(self.expertiseCategory.data, forKey: Backend.RequestObject.EXPERTISE_CATEGORY);
+        }
     }
     
     public struct ResponseObject {
-        static let STATUS_UNREAD = "unread";
-        static let STATUS_READ = "read";
+        static let STATUS_UNREAD = "unviewed";
+        static let STATUS_READ = "viewed";
         static let CONTACT_INFO_STATUS_NOT_AVAILABLE = "no";
         static let CONTACT_INFO_STATUS_CAN_PROVIDE = "can_provide";
         static let CONTACT_INFO_STATUS_PROVIDED = "provided";
@@ -536,6 +583,101 @@ public struct Backend {
         Backend.communicate(url, method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: userContext.login, password: userContext.password);
     }
     
+    
+    
+    public func createRequest(request: RequestObject, callback: BackendCallback?) {
+        self.cache.markOutgoingRequestIdsInUpdate();
+        
+        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            if (statusCode == 201) {
+                let requestId: String = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as! String;
+                
+                var request = RequestObject(userContext: self.userContext);
+                request.updateFromParcel(data!);
+                
+                self.cache.setRequest(requestId, request: request);
+                
+                callback?.onSuccess();
+            } else if (statusCode == 401) {
+                callback?.onFailure();
+            } else {
+                callback?.onError();
+            }
+        };
+        
+        var params: NSDictionary! = NSMutableDictionary();
+        request.safeToParcel(params);
+        
+        
+        Backend.communicate("request", method: HttpMethod.POST, params: params, communicationCallback: communicationCallback, login: userContext.login, password: userContext.password);
+    }
+    
+    
+    public func updateRequest(requestId: String, request: RequestObject, callback: BackendCallback?) {
+        self.cache.markRequestInUpdate(requestId);
+        
+        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            if (statusCode == 200) {
+                var updatedRequest = request;
+                updatedRequest.updateFromParcel(data!);
+                
+                self.cache.setRequest(requestId, request: updatedRequest);
+                
+                callback?.onSuccess();
+            } else if (statusCode == 401) {
+                callback?.onFailure();
+            } else {
+                callback?.onError();
+            }
+        };
+        
+        var params: NSDictionary! = NSMutableDictionary();
+        request.safeToParcel(params);
+        
+        
+        Backend.communicate("request/\(requestId)", method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: userContext.login, password: userContext.password);
+    }
+    
+    public func getRequest(requestId: String!) -> RequestObject? {
+        var request: RequestObject? = cache.getRequest(requestId);
+        if (request != nil || cache.isRequestInUpdate(requestId)) {
+            return request;
+        }
+        
+        
+        pullRequest(requestId, callback: nil);
+        return nil;
+    }
+    
+    private func pullRequest(requestId: String, callback: BackendCallback?) {
+        self.cache.markRequestInUpdate(requestId);
+        
+        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            if (statusCode == 200) {
+                var request = RequestObject(userContext: self.userContext);
+                request.updateFromParcel(data!);
+                
+                self.cache.setRequest(requestId, request: request);
+                
+                callback?.onSuccess();
+            } else if (statusCode == 401) {
+                callback?.onFailure();
+            } else {
+                callback?.onError();
+            }
+        };
+        
+        Backend.communicate("request/\(requestId)", method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userContext.login, password: userContext.password);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     
     public func getOutgoingRequestIds(requestStatus: String? = nil) -> [String]? {
@@ -631,30 +773,6 @@ public struct Backend {
     }
     
     
-    public func getRequest(requestId: String!) -> RequestObject? {
-        if (cache.isRequestInUpdate(requestId)) {
-            return nil;
-        }
-        
-        var request: RequestObject? = cache.getRequest(requestId);
-        if (request == nil) {
-            self.cache.markRequestInUpdate(requestId);
-            
-            //TODO: pull request from the server here
-            
-            var action:()->Void = {() in
-                request = RequestObject(userContext: Backend.getInstance().getUserContext());
-                request!.text = "Request \(requestId)";
-
-                self.cache.setRequest(requestId, request: request!);
-            };
-            
-            DelayedNotifier(action: action).schedule(2);
-        }
-        
-
-        return request;
-    }
 
     public func getIncomingResponseIds(requestId: String, responseStatus: String? = nil) -> [String]? {
         if (cache.isIncomingResponseIdsInUpdate(requestId)) {
@@ -762,39 +880,7 @@ public struct Backend {
         return response;
     }
     
-    public func createRequest(request: RequestObject, observer: CompletionObserver) {
-        var ids: [String]? = self.cache.getOutgoingRequestIds();
-        if (ids == nil) {
-            println("The list of requests hasn't yet been read - cannot create new");
-            return;
-        }
-        
-        var requestId = "req\(ids?.count)";
-        self.cache.markRequestInUpdate(requestId);
-        self.cache.markOutgoingRequestIdsInUpdate();
-        
-        var action:()->Void = {() in
-            ids?.append(requestId);
-            
-            self.cache.setRequest(requestId, request: request);
-            self.cache.setOutgoingRequestIds(ids!);
-            self.cache.setIncomingResponseIds(requestId, responseIds: []);
-            observer(requestId);
-        };
-        
-        DelayedNotifier(action: action).schedule(2);
-    }
     
-    public func updateRequest(requestId: String, request: RequestObject, observer: CompletionObserver) {
-        self.cache.markRequestInUpdate(requestId);
-        
-        var action:()->Void = {() in
-            self.cache.setRequest(requestId, request: request);
-            observer(requestId);
-        };
-        
-        DelayedNotifier(action: action).schedule(2);
-    }
     
     public func createResponse(requestId: String, response: ResponseObject, observer: CompletionObserver) {
         var ids: [String]? = self.cache.getOutgoingResponseIds(requestId);

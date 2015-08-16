@@ -296,7 +296,7 @@ Backend.createRequest = function(request, transactionCallback) {
         var newRequestId = xhr.getResponseHeader("Location");
         Backend.Cache.setRequest(newRequestId, data);
         
-        Backend._pullOutgoingRequestIds(); //TODO: remove, this is temporary. It should be replaced with events
+//        Backend._pullOutgoingRequestIds(); //TODO: remove, this is temporary. It should be replaced with events
         
 //        Backend._pullRequest(newRequestId, {
 //          success: function() {

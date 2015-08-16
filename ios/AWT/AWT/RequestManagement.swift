@@ -631,6 +631,29 @@ struct RequestResponseManagement {
 //    }
     
     
+    private class UpdateRequestCallback: BackendCallback {
+        private let tableView: UITableView;
+        
+        init(tableView: UITableView) {
+            self.tableView = tableView;
+        }
+        
+        func onError() {
+            AtwUiUtils.runOnMainThread({
+                //self.showErrorMessage(NSLocalizedString("Server Error", comment: "Error message"));
+            });
+        }
+        func onSuccess() {
+            AtwUiUtils.runOnMainThread({
+                self.tableView.reloadData();
+            });
+        }
+        func onFailure() {
+            AtwUiUtils.runOnMainThread({
+                //self.showErrorMessage(NSLocalizedString("Failed to update a request", comment: "Failed to update request"));
+            });
+        }
+    }
     
     static func attachOutgoingRequestObjectProvider(tableView: UITableView, requestObjectProvider: GenericObjectProvider, selectionObserver: ObjectSelectionObserver? = nil) {
 
@@ -642,7 +665,7 @@ struct RequestResponseManagement {
                 var request = Backend.getInstance().getRequest(requestId);
                 if (request != nil) {
                     request!.status = Backend.RequestObject.STATUS_INACTIVE;
-                    Backend.getInstance().updateRequest(requestId!, request: request!, observer: {(id) in tableView.reloadData(); })
+                    Backend.getInstance().updateRequest(requestId!, request: request!, callback: UpdateRequestCallback(tableView: tableView));
                 }
             }
         });
