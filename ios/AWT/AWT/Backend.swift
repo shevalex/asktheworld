@@ -270,8 +270,32 @@ public struct Backend {
         var _pulling: Bool! = false;
     }
     
+    public struct RequestIds {
+        static let INACTIVE: String = "inactive";
+        static let ACTIVE: String = "active";
+        
+        var all: [String]?;
+        var active: [String]?;
+        var inactive: [String]?;
+
+        public mutating func updateFromParcel(parcel: NSDictionary) {
+            self.active = parcel.valueForKey(Backend.RequestIds.ACTIVE) as? [String];
+            self.inactive = parcel.valueForKey(Backend.RequestIds.INACTIVE) as? [String];
+            
+            if (self.active != nil && self.inactive != nil) {
+                self.all = self.active! + self.inactive!;
+            } else {
+                self.all = nil;
+            }
+        }
+        
+        public func safeToParcel(parcel: NSDictionary) {
+        }
+    }
+    
     
     public struct RequestObject {
+        static let STATUS_ALL: String = "all";
         static let STATUS_ACTIVE: String = "active";
         static let STATUS_INACTIVE: String = "inactive";
         
@@ -585,7 +609,7 @@ public struct Backend {
     
     
     
-    public func createRequest(request: RequestObject, callback: BackendCallback?) {
+    public func createRequest(request: RequestObject, callback: BackendCallback? = nil) {
         self.cache.markOutgoingRequestIdsInUpdate();
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
@@ -613,7 +637,7 @@ public struct Backend {
     }
     
     
-    public func updateRequest(requestId: String, request: RequestObject, callback: BackendCallback?) {
+    public func updateRequest(requestId: String, request: RequestObject, callback: BackendCallback? = nil) {
         self.cache.markRequestInUpdate(requestId);
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
@@ -673,103 +697,194 @@ public struct Backend {
     
     
     
-    
-    
-    
-    
-    
-
-    
-    public func getOutgoingRequestIds(requestStatus: String? = nil) -> [String]? {
-        if (cache.isOutgoingRequestIdsInUpdate()) {
-            return nil;
+    public func getOutgoingRequestIds(requestStatus: String? = nil, sortRule: String? = nil, callback: BackendCallback? = nil) -> [String]? {
+        
+        var requestIds: RequestIds? = self.cache.getOutgoingRequestIds();
+        
+        var result: [String]? = nil;
+        if (requestIds != nil) {
+            if (requestStatus == nil || requestStatus == Backend.RequestObject.STATUS_ALL) {
+                result = requestIds!.all;
+            } else if (requestStatus == Backend.RequestObject.STATUS_ACTIVE) {
+                result = requestIds!.active;
+            } else if (requestStatus == Backend.RequestObject.STATUS_INACTIVE) {
+                result = requestIds!.inactive;
+            } else {
+                println("Error: Invalid request status requested: \(requestStatus)");
+            }
         }
         
-        var ids: [String]? = cache.getOutgoingRequestIds();
-        if (ids == nil) {
-            //TODO: pull the list from the server here
-            self.cache.markOutgoingRequestIdsInUpdate();
-
-            var action:()->Void = {() in
-                self.cache.setOutgoingRequestIds(["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"]);
-            };
-            
-            DelayedNotifier(action: action).schedule(5);
+        if (result != nil || self.cache.isOutgoingRequestIdsInUpdate()) {
+            return result;
+        } else {
+            pullOutgoingRequestIds(requestStatus: requestStatus, sortRule: sortRule, callback: callback);
             
             return nil;
-        } else {
-            var requestIds: [String] = [];
-            for (index, id) in enumerate(ids!) {
-                var request = self.cache.getRequest(id);
-                if (requestStatus == nil
-                    || request != nil && request!.status == requestStatus
-                    || request == nil && (requestStatus == RequestObject.STATUS_ACTIVE && index < 4
-                        || requestStatus == RequestObject.STATUS_INACTIVE && index >= 4)) {
-                        
-                    requestIds.append(id);
+        }
+    }
+    
+    private func pullOutgoingRequestIds(requestStatus: String? = nil, sortRule: String? = nil, callback: BackendCallback?) -> [String]? {
+        
+        self.cache.markOutgoingRequestIdsInUpdate();
+        
+        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            if (statusCode == 200) {
+                var requestIds: RequestIds? = self.cache.getOutgoingRequestIds();
+                if (requestIds == nil) {
+                    requestIds = RequestIds();
+                }
+                
+                requestIds?.updateFromParcel(data!);
+
+                self.cache.setOutgoingRequestIds(requestIds!);
+                
+                callback?.onSuccess();
+            } else {
+                self.cache.markOutgoingRequestIdsInUpdate(isInUpdate: false);
+                if (statusCode == 401) {
+                    callback?.onFailure();
+                } else {
+                    callback?.onError();
                 }
             }
-            
-            return requestIds;
-        }
+        };
+        
+//        Backend.communicate("request/\(requestId)", method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userContext.login, password: userContext.password);
+        
+
+//        var communicationCallback = {
+//            success: function(data, status, xhr) {
+//                if (xhr.status == 200) {
+//                    var requestIds = Backend.Cache.getOutgoingRequestIds();
+//                    if (requestIds == null) {
+//                        requestIds = {};
+//                    }
+//                    
+//                    if (requestStatus == Backend.Request.STATUS_ALL || requestStatus == Backend.Request.STATUS_ACTIVE) {
+//                        requestIds.active = data.active;
+//                    }
+//                    if (requestStatus == Backend.Request.STATUS_ALL || requestStatus == Backend.Request.STATUS_INACTIVE) {
+//                        requestIds.inactive = data.inactive;
+//                    }
+//                    
+//                    if (requestStatus == Backend.Request.STATUS_ALL) {
+//                        requestIds.all = data.active.concat(data.inactive);
+//                    } else {
+//                        requestIds.all = null;
+//                    }
+//                    
+//                    Backend.Cache.setOutgoingRequestIds(requestIds);
+//                    
+//                    if (transactionCallback != null) {
+//                        transactionCallback.success();
+//                    }
+//                }
+//            },
+//            error: function(xhr, status, error) {
+//                if (transactionCallback != null) {
+//                    if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
+//                        transactionCallback.failure();
+//                    } else {
+//                        transactionCallback.error();
+//                    }
+//                }
+//                Backend.Cache.markOutgoingRequestIdsInUpdate(false);
+//            }
+//        
+//        
+//        
+//        
+//        if (cache.isOutgoingRequestIdsInUpdate()) {
+//            return nil;
+//        }
+        
+//        var ids: Backend.ObjectCache.RequestIds? = cache.getOutgoingRequestIds();
+//        if (ids == nil) {
+//            //TODO: pull the list from the server here
+//            self.cache.markOutgoingRequestIdsInUpdate();
+//
+//            var action:()->Void = {() in
+//                self.cache.setOutgoingRequestIds(["req1", "req2", "req3", "req4", "req5", "req6", "req7", "req8", "req9", "req10"]);
+//            };
+//            
+//            DelayedNotifier(action: action).schedule(5);
+//            
+//            return nil;
+//        } else {
+//            var requestIds: [String] = [];
+//            for (index, id) in enumerate(ids!) {
+//                var request = self.cache.getRequest(id);
+//                if (requestStatus == nil
+//                    || request != nil && request!.status == requestStatus
+//                    || request == nil && (requestStatus == RequestObject.STATUS_ACTIVE && index < 4
+//                        || requestStatus == RequestObject.STATUS_INACTIVE && index >= 4)) {
+//                        
+//                    requestIds.append(id);
+//                }
+//            }
+//            
+//            return requestIds;
+//        }
+        return nil;
     }
 
     public func getIncomingRequestIds(requestStatus: String? = nil) -> [String]? {
-        if (cache.isIncomingRequestIdsInUpdate()) {
-            return nil;
-        }
-
-        let ids: [String]? = cache.getIncomingRequestIds();
-        if (ids == nil) {
-            //TODO: pull the list from the server here
-            self.cache.markIncomingRequestIdsInUpdate();
-            
-            var action:()->Void = {() in
-                self.cache.setIncomingRequestIds(["req101", "req102", "req103", "req104", "req105", "req106", "req107", "req108", "req109", "req110"]);
-            };
-            
-            DelayedNotifier(action: action).schedule(5);
-            
-            return nil;
-        } else {
-            var requestIds: [String] = [];
-            for (index, id) in enumerate(ids!) {
-                var request = self.cache.getRequest(id);
-                if (requestStatus == nil
-                    || request != nil && request!.status == requestStatus
-                    || request == nil && (requestStatus == RequestObject.STATUS_ACTIVE && index < 4
-                        || requestStatus == RequestObject.STATUS_INACTIVE && index >= 4)) {
-                        
-                    requestIds.append(id);
-                }
-            }
-
-            return requestIds;
-        }
+//        if (cache.isIncomingRequestIdsInUpdate()) {
+//            return nil;
+//        }
+//
+//        let ids: [String]? = cache.getIncomingRequestIds();
+//        if (ids == nil) {
+//            //TODO: pull the list from the server here
+//            self.cache.markIncomingRequestIdsInUpdate();
+//            
+//            var action:()->Void = {() in
+//                self.cache.setIncomingRequestIds(["req101", "req102", "req103", "req104", "req105", "req106", "req107", "req108", "req109", "req110"]);
+//            };
+//            
+//            DelayedNotifier(action: action).schedule(5);
+//            
+//            return nil;
+//        } else {
+//            var requestIds: [String] = [];
+//            for (index, id) in enumerate(ids!) {
+//                var request = self.cache.getRequest(id);
+//                if (requestStatus == nil
+//                    || request != nil && request!.status == requestStatus
+//                    || request == nil && (requestStatus == RequestObject.STATUS_ACTIVE && index < 4
+//                        || requestStatus == RequestObject.STATUS_INACTIVE && index >= 4)) {
+//                        
+//                    requestIds.append(id);
+//                }
+//            }
+//
+//            return requestIds;
+//        }
+        return nil;
     }
     
     public func removeIncomingRequest(requestId: String, observer: CompletionObserver) {
-        var ids: [String]! = cache.getIncomingRequestIds();
-        if (ids == nil) {
-            return;
-        }
-
-        
-        self.cache.markIncomingRequestIdsInUpdate();
-        for (index, id) in enumerate(ids!) {
-            if (id == requestId) {
-                var action:()->Void = {() in
-                    ids.removeAtIndex(index);
-                    self.cache.setIncomingRequestIds(ids);
-                    
-                    observer(requestId);
-                };
-                
-                DelayedNotifier(action: action).schedule(2);
-                
-                return;
-            }
-        }
+//        var ids: [String]! = cache.getIncomingRequestIds();
+//        if (ids == nil) {
+//            return;
+//        }
+//
+//        
+//        self.cache.markIncomingRequestIdsInUpdate();
+//        for (index, id) in enumerate(ids!) {
+//            if (id == requestId) {
+//                var action:()->Void = {() in
+//                    ids.removeAtIndex(index);
+//                    self.cache.setIncomingRequestIds(ids);
+//                    
+//                    observer(requestId);
+//                };
+//                
+//                DelayedNotifier(action: action).schedule(2);
+//                
+//                return;
+//            }
+//        }
     }
     
     
@@ -1115,10 +1230,10 @@ public struct Backend {
         private var responses: Dictionary<String, ResponseObject> = Dictionary();
         
         private var outgoingRequestIdsInProgress: Bool! = false;
-        private var outgoingRequestIds: [String]?;
+        private var outgoingRequestIds: RequestIds?;
 
         private var incomingRequestIdsInProgress: Bool! = false;
-        private var incomingRequestIds: [String]?;
+        private var incomingRequestIds: RequestIds?;
         
         private var incomingResponseIdsInProgress: Dictionary<String, Bool> = Dictionary();
         private var incomingResponseIds: Dictionary<String, [String]> = Dictionary();
@@ -1140,48 +1255,49 @@ public struct Backend {
         }
         
         
-        func markOutgoingRequestIdsInUpdate() {
-            outgoingRequestIdsInProgress = true;
+        func markOutgoingRequestIdsInUpdate(isInUpdate: Bool = true) {
+            outgoingRequestIdsInProgress = isInUpdate;
             fireUpdateEvent();
 //            println("marked outgoing request ids in progress");
         }
         func isOutgoingRequestIdsInUpdate() -> Bool {
             return outgoingRequestIdsInProgress;
         }
-        func setOutgoingRequestIds(requestIds: [String]) {
+        func setOutgoingRequestIds(requestIds: RequestIds) {
             outgoingRequestIds = requestIds;
-            outgoingRequestIdsInProgress = false;
-
             notifyCacheListeners(CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: nil, responseId: nil);
-            fireUpdateEvent();
-//            println("!!! outgoing request ids updated");
+
+            markOutgoingRequestIdsInUpdate(isInUpdate: false);
+            //            println("!!! outgoing request ids updated");
         }
-        func getOutgoingRequestIds() -> [String]? {
+        func getOutgoingRequestIds() -> RequestIds? {
             return outgoingRequestIdsInProgress == false ? outgoingRequestIds : nil;
         }
         
-        func markIncomingRequestIdsInUpdate() {
-            incomingRequestIdsInProgress = true;
+        func markIncomingRequestIdsInUpdate(isInUpdate: Bool = true) {
+            incomingRequestIdsInProgress = isInUpdate;
             fireUpdateEvent();
             //            println("marked incoming request ids in progress");
         }
         func isIncomingRequestIdsInUpdate() -> Bool {
             return incomingRequestIdsInProgress;
         }
-        func setIncomingRequestIds(requestIds: [String]) {
+        func setIncomingRequestIds(requestIds: RequestIds) {
             incomingRequestIds = requestIds;
-            incomingRequestIdsInProgress = false;
-            
             notifyCacheListeners(CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestId: nil, responseId: nil);
-            fireUpdateEvent();
+
+            markIncomingRequestIdsInUpdate(isInUpdate: false);
             //            println("!!! incoming request ids updated");
         }
-        func getIncomingRequestIds() -> [String]? {
+        func getIncomingRequestIds() -> RequestIds? {
             return incomingRequestIdsInProgress == false ? incomingRequestIds : nil;
         }
         
-        func markRequestInUpdate(requestId: String) {
-            requestsInProgress.updateValue(true, forKey: requestId);
+        func markRequestInUpdate(requestId: String, isInUpdate: Bool = true) {
+            requestsInProgress.updateValue(isInUpdate, forKey: requestId);
+            if (!isInUpdate) {
+                requestsInProgress.removeValueForKey(requestId);
+            }
             
             fireUpdateEvent();
 //            println("marked request \(requestId) in progress");
@@ -1191,18 +1307,20 @@ public struct Backend {
         }
         func setRequest(requestId: String, request: RequestObject) {
             requests.updateValue(request, forKey: requestId);
-            requestsInProgress.removeValueForKey(requestId);
-
             notifyCacheListeners(CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId, responseId: nil);
-            fireUpdateEvent();
+
+            markRequestInUpdate(requestId, isInUpdate: false);
 //            println("!!! request \(requestId) updated");
         }
         func getRequest(requestId: String) -> RequestObject? {
             return isRequestInUpdate(requestId) ? nil : requests[requestId];
         }
 
-        func markIncomingResponseIdsInUpdate(requestId: String) {
-            incomingResponseIdsInProgress.updateValue(true, forKey: requestId);
+        func markIncomingResponseIdsInUpdate(requestId: String, isInUpdate: Bool = true) {
+            incomingResponseIdsInProgress.updateValue(isInUpdate, forKey: requestId);
+            if (!isInUpdate) {
+                incomingResponseIdsInProgress.removeValueForKey(requestId);
+            }
 
             fireUpdateEvent();
 //            println("marked incoming response ids for \(requestId) in progress");
@@ -1212,18 +1330,20 @@ public struct Backend {
         }
         func setIncomingResponseIds(requestId: String, responseIds: [String]) {
             incomingResponseIds.updateValue(responseIds, forKey: requestId);
-            incomingResponseIdsInProgress.removeValueForKey(requestId);
-
             self.notifyCacheListeners(CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId, responseId: nil);
-            fireUpdateEvent();
-//            println("!!! incoming response ids for \(requestId) updated");
+            
+            markIncomingResponseIdsInUpdate(requestId, isInUpdate: false);
+            //            println("!!! incoming response ids for \(requestId) updated");
         }
         func getIncomingResponseIds(requestId: String) -> [String]? {
             return isIncomingResponseIdsInUpdate(requestId) ? nil : incomingResponseIds[requestId];
         }
 
-        func markOutgoingResponseIdsInUpdate(requestId: String) {
-            outgoingResponseIdsInProgress.updateValue(true, forKey: requestId);
+        func markOutgoingResponseIdsInUpdate(requestId: String, isInUpdate: Bool = true) {
+            outgoingResponseIdsInProgress.updateValue(isInUpdate, forKey: requestId);
+            if (!isInUpdate) {
+                outgoingResponseIdsInProgress.removeValueForKey(requestId);
+            }
             
             fireUpdateEvent();
             //            println("marked outgoing response ids for \(requestId) in progress");
@@ -1233,18 +1353,20 @@ public struct Backend {
         }
         func setOutgoingResponseIds(requestId: String, responseIds: [String]) {
             outgoingResponseIds.updateValue(responseIds, forKey: requestId);
-            outgoingResponseIdsInProgress.removeValueForKey(requestId);
-            
             self.notifyCacheListeners(CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId, responseId: nil);
-            fireUpdateEvent();
+
+            markOutgoingResponseIdsInUpdate(requestId, isInUpdate: false);
             //            println("!!! outgoing response ids for \(requestId) updated");
         }
         func getOutgoingResponseIds(requestId: String) -> [String]? {
             return isOutgoingResponseIdsInUpdate(requestId) ? nil : outgoingResponseIds[requestId];
         }
         
-        func markResponseInUpdate(requestId: String, responseId: String) {
-            responsesInProgress.updateValue(true, forKey: responseId);
+        func markResponseInUpdate(requestId: String, responseId: String, isInUpdate: Bool = true) {
+            responsesInProgress.updateValue(isInUpdate, forKey: responseId);
+            if (!isInUpdate) {
+                responsesInProgress.removeValueForKey(responseId);
+            }
 
             fireUpdateEvent();
 //            println("marked response \(responseId) in progress");
@@ -1254,10 +1376,9 @@ public struct Backend {
         }
         func setResponse(requestId: String, responseId: String, response: ResponseObject) {
             responses.updateValue(response, forKey: responseId);
-            responsesInProgress.removeValueForKey(responseId);
-
             self.notifyCacheListeners(CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId);
-            fireUpdateEvent();
+
+            markResponseInUpdate(requestId, responseId: responseId, isInUpdate: false);
 //            println("!!! response \(responseId) updated");
         }
         func getResponse(requestId: String, responseId: String) -> ResponseObject? {
