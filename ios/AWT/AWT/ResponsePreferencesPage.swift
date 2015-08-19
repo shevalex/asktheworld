@@ -42,9 +42,9 @@ class ResponsePreferencesPage: AtwUIViewController, BackendCallback {
         
         super.viewDidLoad()
 
-        AtwUiUtils.setDataChooser(amountOfInquiriesTextField, items: Configuration.INQUIRY_LIMIT_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().dailyInquiryLimit);
-        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().inquiryAge);
-        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().inquiryGender);
+        AtwUiUtils.setDataChooser(amountOfInquiriesTextField, items: Configuration.INQUIRY_LIMIT_PREFERENCE).setSelectedItem(Backend.getInstance().getUserPreferences().dailyInquiryLimit);
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE).setSelectedItem(Backend.getInstance().getUserPreferences().inquiryAge);
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getInstance().getUserPreferences().inquiryGender);
     }
 
     override func didReceiveMemoryWarning() {

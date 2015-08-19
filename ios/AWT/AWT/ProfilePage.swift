@@ -44,10 +44,10 @@ class ProfilePage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
         
         super.viewDidLoad()
 
-        nicknameTextField.text = Backend.getInstance().getUserContext().name;
-        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS).setSelectedItem(Backend.getInstance().getUserContext().gender);
-        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES).setSelectedItem(Backend.getInstance().getUserContext().age);
-        AtwUiUtils.setDataChooser(languagesTextField, items: Configuration.LANGUAGES, multichoice: true).setSelectedItems(Backend.getInstance().getUserContext().languages);
+        nicknameTextField.text = Backend.getInstance().getUserProfile().name;
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDERS).setSelectedItem(Backend.getInstance().getUserProfile().gender);
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORIES).setSelectedItem(Backend.getInstance().getUserProfile().age);
+        AtwUiUtils.setDataChooser(languagesTextField, items: Configuration.LANGUAGES, multichoice: true).setSelectedItems(Backend.getInstance().getUserProfile().languages);
         
         nicknameTextField.delegate = self;
         newPasswordTextField.delegate = self;

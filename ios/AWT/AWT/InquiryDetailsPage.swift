@@ -76,7 +76,7 @@ class InquiryDetailsPage: AtwUIViewController {
         }
         
         
-        var response = Backend.ResponseObject(userContext: Backend.getInstance().getUserContext());
+        var response = Backend.ResponseObject(userProfile: Backend.getInstance().getUserProfile());
         
         //        response.attachments;
         response.text = responseTextField.text;

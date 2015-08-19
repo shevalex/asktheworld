@@ -85,7 +85,7 @@ class CreateNewRequestPage: AtwUIViewController {
         }
         
         
-        var request = Backend.RequestObject(userContext: Backend.getInstance().getUserContext());
+        var request = Backend.RequestObject(userPreferences: Backend.getInstance().getUserPreferences());
         
 //        request.attachments;
         request.expertiseCategory = expertiseSelector.getSelectedItem();
@@ -108,10 +108,10 @@ class CreateNewRequestPage: AtwUIViewController {
         super.viewWillAppear(animated);
 
         expertiseSelector.setSelectedItem(Configuration.EXPERTISES[0]);
-        genderSelector.setSelectedItem(Backend.getInstance().getUserContext().requestTargetGender);
-        ageSelector.setSelectedItem(Backend.getInstance().getUserContext().requestTargetAge);
-        waitTimeSelector.setSelectedItem(Backend.getInstance().getUserContext().responseWaitTime);
-        numOfResponsesSelector.setSelectedItem(Backend.getInstance().getUserContext().responseQuantity);
+        genderSelector.setSelectedItem(Backend.getInstance().getUserPreferences().requestTargetGender);
+        ageSelector.setSelectedItem(Backend.getInstance().getUserPreferences().requestTargetAge);
+        waitTimeSelector.setSelectedItem(Backend.getInstance().getUserPreferences().responseWaitTime);
+        numOfResponsesSelector.setSelectedItem(Backend.getInstance().getUserPreferences().responseQuantity);
         
         requestTextField.text = "";
     }

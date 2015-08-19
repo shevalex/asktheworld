@@ -56,10 +56,10 @@ class RequestPreferencesPage: AtwUIViewController, BackendCallback {
         
         super.viewDidLoad()
 
-        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().requestTargetGender);
-        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE).setSelectedItem(Backend.getInstance().getUserContext().requestTargetAge);
-        AtwUiUtils.setDataChooser(numberOfResponsesTextField, items: Configuration.RESPONSE_QUANTITY).setSelectedItem(Backend.getInstance().getUserContext().responseQuantity);
-        AtwUiUtils.setDataChooser(waitTimeTextField, items: Configuration.RESPONSE_WAIT_TIME).setSelectedItem(Backend.getInstance().getUserContext().responseWaitTime);
+        AtwUiUtils.setDataChooser(genderTextField, items: Configuration.GENDER_PREFERENCE).setSelectedItem(Backend.getInstance().getUserPreferences().requestTargetGender);
+        AtwUiUtils.setDataChooser(ageTextField, items: Configuration.AGE_CATEGORY_PREFERENCE).setSelectedItem(Backend.getInstance().getUserPreferences().requestTargetAge);
+        AtwUiUtils.setDataChooser(numberOfResponsesTextField, items: Configuration.RESPONSE_QUANTITY).setSelectedItem(Backend.getInstance().getUserPreferences().responseQuantity);
+        AtwUiUtils.setDataChooser(waitTimeTextField, items: Configuration.RESPONSE_WAIT_TIME).setSelectedItem(Backend.getInstance().getUserPreferences().responseWaitTime);
     }
 
     override func didReceiveMemoryWarning() {

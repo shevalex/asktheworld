@@ -43,11 +43,11 @@ class ContactInfoPage: AtwUIViewController, UITextFieldDelegate, BackendCallback
         
         super.viewDidLoad()
 
-        AtwUiUtils.setDataChooser(expertisesTextField, items: Configuration.EXPERTISES, multichoice: true).setSelectedItems(Backend.getInstance().getUserContext().expertises);
-        AtwUiUtils.setDataChooser(contactVisibleTextField, items: Configuration.CONTACT_REQUESTABLE).setSelectedItem(Backend.getInstance().getUserContext().contactVisible);
+        AtwUiUtils.setDataChooser(expertisesTextField, items: Configuration.EXPERTISES, multichoice: true).setSelectedItems(Backend.getInstance().getUserPreferences().expertises);
+        AtwUiUtils.setDataChooser(contactVisibleTextField, items: Configuration.CONTACT_REQUESTABLE).setSelectedItem(Backend.getInstance().getUserPreferences().contactVisible);
         
-        nameTextField.text = Backend.getInstance().getUserContext().contactName;
-        contactInfoTextField.text = Backend.getInstance().getUserContext().contactInfo;
+        nameTextField.text = Backend.getInstance().getUserPreferences().contactName;
+        contactInfoTextField.text = Backend.getInstance().getUserPreferences().contactInfo;
         
         nameTextField.delegate = self;
         contactInfoTextField.delegate = self;

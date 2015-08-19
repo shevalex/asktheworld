@@ -32,7 +32,7 @@ class LoginPage: AtwUIViewController, UITextFieldDelegate {
     }
     
     override func viewWillAppear(animated: Bool) {
-        if (Backend.getInstance() != nil && Backend.getInstance().getUserContext() != nil) {
+        if (Backend.isLogged()) {
             performSegueWithIdentifier(SHOW_HOME_SCREEN_SEGUE, sender: self);
         } else {
             if (autoLogin) {
