@@ -365,7 +365,7 @@ public struct Backend {
     }
     
     
-    public struct RequestObject {
+    public class RequestObject {
         static let STATUS_ALL: String = "all";
         static let STATUS_ACTIVE: String = "active";
         static let STATUS_INACTIVE: String = "inactive";
@@ -400,36 +400,49 @@ public struct Backend {
         var expertiseCategory: Configuration.Item!;
         var status: String! = STATUS_ACTIVE;
         
-        public mutating func updateFromParcel(parcel: NSDictionary) {
-            self.time = parcel.valueForKey(Backend.RequestObject.TIME) as? Double;
-            self.text = parcel.valueForKey(Backend.RequestObject.TEXT) as? String;
+        public func updateFromParcel(parcel: NSDictionary) {
+            self.time = parcel.valueForKey(RequestObject.TIME) as? Double;
+            self.text = parcel.valueForKey(RequestObject.TEXT) as? String;
             //                self.attachments
-            self.responseQuantity = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_QUANTITY) as? Int, predefinedList: Configuration.RESPONSE_QUANTITY);
-            self.responseWaitTime = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_WAITTIME) as? Int, predefinedList: Configuration.RESPONSE_WAIT_TIME);
-            self.responseAgeGroup = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
-            self.responseGender = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.GENDER_PREFERENCE);
-            self.expertiseCategory = Configuration.resolve(parcel.valueForKey(Backend.RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.EXPERTISES);
+            self.responseQuantity = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_QUANTITY) as? Int, predefinedList: Configuration.RESPONSE_QUANTITY);
+            self.responseWaitTime = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_WAITTIME) as? Int, predefinedList: Configuration.RESPONSE_WAIT_TIME);
+            self.responseAgeGroup = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
+            self.responseGender = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.GENDER_PREFERENCE);
+            self.expertiseCategory = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.EXPERTISES);
             self.status = parcel.valueForKey(Backend.RequestObject.STATUS) as? String;
         }
         
         public func safeToParcel(parcel: NSDictionary) {
-            //parcel.setValue(self.userContext.userId, forKey: Backend.RequestObject.USER_ID);
-            parcel.setValue(self.text, forKey: Backend.RequestObject.TEXT);
-            //parcel.setValue(self.attachments, forKey: Backend.RequestObject.ATTACHMENTS);
-            parcel.setValue(self.responseQuantity.data, forKey: Backend.RequestObject.RESPONSE_QUANTITY);
-            parcel.setValue(self.responseWaitTime.data, forKey: Backend.RequestObject.RESPONSE_WAITTIME);
-            parcel.setValue(self.responseAgeGroup.data, forKey: Backend.RequestObject.RESPONSE_AGE_GROUP);
-            parcel.setValue(self.responseGender.data, forKey: Backend.RequestObject.RESPONSE_GENDER);
-            parcel.setValue(self.expertiseCategory.data, forKey: Backend.RequestObject.EXPERTISE_CATEGORY);
+            //parcel.setValue(self.userContext.userId, forKey: RequestObject.USER_ID);
+            parcel.setValue(self.text, forKey: RequestObject.TEXT);
+            //parcel.setValue(self.attachments, forKey: RequestObject.ATTACHMENTS);
+            parcel.setValue(self.responseQuantity.data, forKey: RequestObject.RESPONSE_QUANTITY);
+            parcel.setValue(self.responseWaitTime.data, forKey: RequestObject.RESPONSE_WAITTIME);
+            parcel.setValue(self.responseAgeGroup.data, forKey: RequestObject.RESPONSE_AGE_GROUP);
+            parcel.setValue(self.responseGender.data, forKey: RequestObject.RESPONSE_GENDER);
+            parcel.setValue(self.expertiseCategory.data, forKey: RequestObject.EXPERTISE_CATEGORY);
         }
     }
     
-    public struct ResponseObject {
+    public class ResponseObject {
         static let STATUS_UNREAD = "unviewed";
         static let STATUS_READ = "viewed";
         static let CONTACT_INFO_STATUS_NOT_AVAILABLE = "no";
         static let CONTACT_INFO_STATUS_CAN_PROVIDE = "can_provide";
         static let CONTACT_INFO_STATUS_PROVIDED = "provided";
+        
+        
+        private static let USER_ID: String = "userId";
+        private static let REQUEST_ID: String = "requestId";
+        private static let TIME: String = "time";
+        private static let TEXT: String = "text";
+        private static let AGE_CATEGORY: String = "age_category";
+        private static let GENDER: String = "gender";
+        private static let STATUS: String = "status";
+        private static let ATTACHMENTS: String = "attachments";
+        private static let CONTACT_INFO_STATUS: String = "contact_info_status";
+        private static let CONTACT_NAME: String = "contact_name";
+        private static let CONTACT_INFO: String = "contact_info";
         
         public struct ContactInfo {
             var contactName: String;
@@ -437,15 +450,14 @@ public struct Backend {
         }
         
         
-        init() {
-        }
-        
-        
-        init(userProfile: UserProfile) {
+        init(requestId: String, userProfile: UserProfile) {
+            userId = userProfile.userId;
             ageCategory = userProfile.age;
             gender = userProfile.gender;
         }
 
+        var userId: Int!;
+        var requestId: String!;
         var time: Double! = 0;
         var text: String! = "";
         var attachments: [String]!;
@@ -454,6 +466,33 @@ public struct Backend {
         var status: String! = STATUS_UNREAD;
         var contactInfoStatus: String! = CONTACT_INFO_STATUS_NOT_AVAILABLE;
         var contactInfo: ContactInfo? = nil;
+        
+        
+        public func updateFromParcel(parcel: NSDictionary) {
+            self.time = parcel.valueForKey(ResponseObject.TIME) as? Double;
+            self.text = parcel.valueForKey(ResponseObject.TEXT) as? String;
+            //                self.attachments
+            self.ageCategory = Configuration.resolve(parcel.valueForKey(ResponseObject.AGE_CATEGORY) as? Int, predefinedList: Configuration.AGE_CATEGORIES);
+            self.gender = Configuration.resolve(parcel.valueForKey(ResponseObject.GENDER) as? Int, predefinedList: Configuration.GENDERS);
+            self.status = parcel.valueForKey(ResponseObject.STATUS) as? String;
+            self.contactInfoStatus = parcel.valueForKey(ResponseObject.CONTACT_INFO_STATUS) as? String;
+            
+            var contactName: String? = parcel.valueForKey(ResponseObject.CONTACT_NAME) as? String;
+            if (contactName != nil) {
+                contactInfo = ContactInfo(contactName: contactName!, contactInfo: parcel.valueForKey(ResponseObject.CONTACT_INFO) as! String);
+            }
+        }
+        
+        public func safeToParcel(parcel: NSDictionary) {
+            parcel.setValue(self.userId, forKey: ResponseObject.USER_ID);
+            parcel.setValue(self.requestId, forKey: ResponseObject.REQUEST_ID);
+            parcel.setValue(self.text, forKey: ResponseObject.TEXT);
+            //parcel.setValue(self.attachments, forKey: ResponseObject.ATTACHMENTS);
+            parcel.setValue(self.ageCategory.data, forKey: ResponseObject.AGE_CATEGORY);
+            parcel.setValue(self.gender.data, forKey: ResponseObject.GENDER);
+            parcel.setValue(self.status, forKey: ResponseObject.STATUS);
+            parcel.setValue(self.contactInfoStatus, forKey: ResponseObject.CONTACT_INFO_STATUS);
+        }
     }
 
     
@@ -664,10 +703,9 @@ public struct Backend {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                var updatedRequest = request;
-                updatedRequest.updateFromParcel(data!);
+                request.updateFromParcel(data!);
                 
-                self.cache.setRequest(requestId, request: updatedRequest);
+                self.cache.setRequest(requestId, request: request);
                 
                 callback?.onSuccess();
             } else if (statusCode == 401) {
@@ -684,14 +722,15 @@ public struct Backend {
         Backend.communicate("request/\(requestId)", method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
     }
     
-    public func getRequest(requestId: String!) -> RequestObject? {
+    public func getRequest(requestId: String!, callback: BackendCallback? = nil) -> RequestObject? {
         var request: RequestObject? = cache.getRequest(requestId);
         if (request != nil || cache.isRequestInUpdate(requestId)) {
+            callback?.onSuccess();
             return request;
         }
         
         
-        pullRequest(requestId, callback: nil);
+        pullRequest(requestId, callback: callback);
         return nil;
     }
     
@@ -853,6 +892,132 @@ public struct Backend {
     }
     
     
+    
+    public func createResponse(requestId: String, response: ResponseObject, callback: BackendCallback? = nil) {
+        self.cache.markOutgoingResponseIdsInUpdate(requestId);
+        
+        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            if (statusCode == 201) {
+                let responseId: String = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as! String;
+                
+                var response = ResponseObject(requestId: requestId, userProfile: self.userProfile);
+                response.updateFromParcel(data!);
+                
+                self.cache.setResponse(requestId, responseId: responseId, response: response);
+                
+                callback?.onSuccess();
+            } else if (statusCode == 401) {
+                callback?.onFailure();
+            } else {
+                callback?.onError();
+            }
+        };
+        
+        var params: NSDictionary! = NSMutableDictionary();
+        response.safeToParcel(params);
+        
+        
+        Backend.communicate("response", method: HttpMethod.POST, params: params, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
+    }
+    
+    public func getResponse(requestId: String!, responseId: String!, callback: BackendCallback? = nil) -> ResponseObject? {
+        var response: ResponseObject? = cache.getResponse(requestId, responseId: responseId);
+        if (response != nil || cache.isResponseInUpdate(requestId, responseId: responseId)) {
+            callback?.onSuccess();
+            return response;
+        }
+        
+        
+        pullResponse(requestId, responseId: responseId, callback: callback);
+        return nil;
+    }
+    
+    private func pullResponse(requestId: String, responseId: String, callback: BackendCallback?) {
+        self.cache.markResponseInUpdate(requestId, responseId: responseId);
+        
+        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            if (statusCode == 200) {
+                var response = ResponseObject(requestId: requestId, userProfile: self.userProfile);
+                response.updateFromParcel(data!);
+                
+                self.cache.setResponse(requestId, responseId: responseId, response: response);
+                
+                callback?.onSuccess();
+            } else if (statusCode == 401) {
+                callback?.onFailure();
+            } else {
+                callback?.onError();
+            }
+        };
+        
+        Backend.communicate("response/\(responseId)", method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
+    }
+
+    public func getResponseWithContactInfo(requestId: String!, responseId: String!, callback: BackendCallback? = nil) -> ResponseObject? {
+        var response = self.cache.getResponse(requestId, responseId: responseId);
+        if (response == nil || response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE) {
+            pullResponseWithContactInfo(requestId, responseId: responseId, callback: callback);
+            return nil;
+        }
+        
+        if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_PROVIDED) {
+            callback?.onSuccess();
+            return response;
+        } else if (response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
+            callback?.onFailure();
+            return nil;
+        } else {
+            println("Error: Unsupported contact_info_status \(response!.contactInfoStatus)");
+        }
+    }
+
+    private func pullResponseWithContactInfo(requestId: String, responseId: String, callback: BackendCallback?) {
+        self.cache.markRequestInUpdate(requestId);
+        
+        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            if (statusCode == 200) {
+                var response = ResponseObject(requestId: requestId, userProfile: self.userProfile);
+                response.updateFromParcel(data!);
+                
+                self.cache.setResponse(requestId, responseId: responseId, response: response);
+                
+                callback?.onSuccess();
+            } else if (statusCode == 401) {
+                callback?.onFailure();
+            } else {
+                callback?.onError();
+            }
+        };
+        
+        Backend.communicate("response/\(responseId)?contactinfo", method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
+    }
+    
+    public func updateResponse(requestId: String, responseId: String, response: ResponseObject, callback: BackendCallback? = nil) {
+        self.cache.markResponseInUpdate(requestId, responseId: responseId);
+        
+        let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            if (statusCode == 200) {
+                response.updateFromParcel(data!);
+                
+                self.cache.setResponse(requestId, responseId: responseId, response: response);
+                
+                callback?.onSuccess();
+            } else if (statusCode == 401) {
+                callback?.onFailure();
+            } else {
+                callback?.onError();
+            }
+        };
+        
+        var params: NSDictionary! = NSMutableDictionary();
+        response.safeToParcel(params);
+        
+        
+        Backend.communicate("response/\(responseId)", method: HttpMethod.PUT, params: params, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
+    }
+    
+    
+    
 
     public func getIncomingResponseIds(requestId: String, responseStatus: String? = nil) -> [String]? {
         if (cache.isIncomingResponseIdsInUpdate(requestId)) {
@@ -931,69 +1096,8 @@ public struct Backend {
         }
     }
     
-    public func getResponse(requestId: String!, responseId: String!) -> ResponseObject? {
-        if (cache.isResponseInUpdate(requestId, responseId: responseId)) {
-            return nil;
-        }
-        
-        var response: ResponseObject? = cache.getResponse(requestId, responseId: responseId);
-        if (response == nil) {
-            self.cache.markResponseInUpdate(requestId, responseId: responseId);
-            
-            //TODO: pull request from the server here
-            
-            var action:()->Void = {() in
-                response = ResponseObject();
-                response!.text = "Response \(requestId)-\(responseId)";
-                response!.time = NSDate().timeIntervalSince1970;
-                response!.gender = Configuration.GENDERS[0];
-                response!.ageCategory = Configuration.AGE_CATEGORIES[1];
-                response!.contactInfoStatus = ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE;
-                
-                self.cache.setResponse(requestId, responseId: responseId, response: response!);
-            };
-            
-            DelayedNotifier(action: action).schedule(2);
-        }
-        
-        
-        return response;
-    }
     
     
-    
-    public func createResponse(requestId: String, response: ResponseObject, callback: BackendCallback? = nil) {
-        var ids: [String]? = self.cache.getOutgoingResponseIds(requestId);
-        if (ids == nil) {
-            println("The list of responses hasn't yet been read - cannot create new");
-            return;
-        }
-        
-        var responseId = "\(requestId)-response\(ids?.count)";
-        self.cache.markResponseInUpdate(requestId, responseId: responseId);
-        self.cache.markOutgoingResponseIdsInUpdate(requestId);
-        
-        var action:()->Void = {() in
-            ids?.append(responseId);
-            
-            self.cache.setResponse(requestId, responseId: responseId, response: response);
-            self.cache.setOutgoingResponseIds(requestId, responseIds: ids!);
-            observer(responseId);
-        };
-        
-        DelayedNotifier(action: action).schedule(3);
-    }
-    
-    public func updateResponse(requestId: String, responseId: String, response: ResponseObject, callback: BackendCallback? = nil) {
-        self.cache.markResponseInUpdate(requestId, responseId: responseId);
-        
-        var action:()->Void = {() in
-            self.cache.setResponse(requestId, responseId: responseId, response: response);
-            observer(responseId);
-        };
-        
-        DelayedNotifier(action: action).schedule(2);
-    }
     
     
     

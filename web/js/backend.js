@@ -381,7 +381,7 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
   this._communicate("request/" + requestId, "PUT", GeneralUtils.merge(Backend.Cache.getRequest(requestId), request), true, this._getAuthenticationHeader(), communicationCallback);
 }
 
-Backend.getRequest = function(requestId) {
+Backend.getRequest = function(requestId, transactionCallback) {
   var request = Backend.Cache.getRequest(requestId);
   if (request != null || Backend.Cache.isRequestInUpdate(requestId)) {
     //TO BE REMOVED
@@ -392,10 +392,13 @@ Backend.getRequest = function(requestId) {
       }
     }
     
+    if (transactionCallback != null) {
+      transactionCallback.success();
+    }
     return request;
   }
   
-  Backend._pullRequest(requestId);
+  Backend._pullRequest(requestId, transactionCallback);
   return null;
 }
 
@@ -669,13 +672,16 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
   true, this._getAuthenticationHeader(), communicationCallback);
 }
 
-Backend.getResponse = function(requestId, responseId) {
+Backend.getResponse = function(requestId, responseId, transactionCallback) {
   var response = Backend.Cache.getResponse(requestId, responseId);
   if (response != null || Backend.Cache.isResponseInUpdate(requestId, responseId)) {
+    if (transactionCallback != null) {
+      transactionCallback.success();
+    }
     return response;
   }
   
-  Backend._pullResponse(requestId, responseId);
+  Backend._pullResponse(requestId, responseId, transactionCallback);
   return null;
 }
 
