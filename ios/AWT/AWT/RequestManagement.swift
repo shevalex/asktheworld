@@ -130,7 +130,7 @@ struct RequestResponseManagement {
                 dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle;
                 tableCell.timeLabel.text = dateFormatter.stringFromDate(dateTime);
 
-                var numOfUnreadResponses: Int? = Backend.getInstance().getIncomingResponseIds(id, responseStatus: Backend.ResponseObject.STATUS_UNREAD)?.count;
+                var numOfUnreadResponses: Int? = Backend.getInstance().getIncomingResponseIds(id, responseStatus: Backend.ResponseObject.STATUS_UNVIEWED)?.count;
                 
                 if (numOfUnreadResponses == nil) {
                     tableCell.counterLabel.text = "...";
@@ -680,7 +680,7 @@ struct RequestResponseManagement {
             
             let requestId = requestObjectProvider.getObjectId(path.row);
             if (requestId != nil) {
-                Backend.getInstance().removeIncomingRequest(requestId!, observer: {(id) in });
+                Backend.getInstance().removeIncomingRequest(requestId!, callback: nil);
             }
         });
         ignoreAction.backgroundColor = UIColor.orangeColor();

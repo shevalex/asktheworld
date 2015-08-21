@@ -94,6 +94,36 @@ class RequestDetailsPage: AtwUIViewController {
         updateResponseFields();
     }
     
+    
+    
+    private class ContactInfoCallback: BackendCallback {
+        private var page: RequestDetailsPage!;
+        
+        init(page: RequestDetailsPage) {
+            self.page = page;
+        }
+        
+        func onError() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage(NSLocalizedString("Server Error", comment: "Request Details page error message"));
+            });
+        }
+        func onSuccess() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                
+                self.page.updateResponseFields();
+            });
+        }
+        func onFailure() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage(NSLocalizedString("Cannot log in", comment: "Request Details page error message"));
+            });
+        }
+    }
+    
     @IBAction func requestContactInfoButtonClickAction(sender: UIBarButtonItem) {
         if (currentResponseId == nil) {
             return;
@@ -109,9 +139,7 @@ class RequestDetailsPage: AtwUIViewController {
         } else if (response!.contactInfoStatus == Backend.ResponseObject.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
             return;
         } else {
-            Backend.getInstance().getContactInfo(requestId, responseId: currentResponseId!, observer: { (id) -> Void in
-                self.updateResponseFields();
-            })
+            Backend.getInstance().getResponseWithContactInfo(requestId, responseId: currentResponseId!, callback: ContactInfoCallback(page: self));
         }
     }
     
@@ -140,6 +168,11 @@ class RequestDetailsPage: AtwUIViewController {
     }
     
 
+    
+    private func showErrorMessage(popupMessage: String) {
+        AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Request Management", comment: "Request Details page error message title"), popupError: popupMessage);
+    }
+    
     private func updateRequestFields() {
         let request = Backend.getInstance().getRequest(requestId);
         if (request == nil) {
@@ -180,11 +213,10 @@ class RequestDetailsPage: AtwUIViewController {
                 nextResponseButton.enabled = currentIndex != -1 && currentIndex + 1 < responseIds?.count;
                 requestContactInfoButton.enabled = response?.contactInfoStatus == Backend.ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE;
 
-                if (response!.status == Backend.ResponseObject.STATUS_UNREAD) {
-                    response!.status = Backend.ResponseObject.STATUS_READ;
+                if (response!.status == Backend.ResponseObject.STATUS_UNVIEWED) {
+                    response!.status = Backend.ResponseObject.STATUS_VIEWED;
                     
-                    Backend.getInstance().updateResponse(requestId, responseId: currentResponseId!, response: response!, observer: { (id) -> Void in
-                    });
+                    Backend.getInstance().updateResponse(requestId, responseId: currentResponseId!, response: response!);
                 }
                 
                 return;

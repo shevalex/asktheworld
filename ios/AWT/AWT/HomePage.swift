@@ -35,11 +35,11 @@ class HomePage: AtwUIViewController {
         
         
         
-        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestWithResponsesObjectProvider(responseStatus: Backend.ResponseObject.STATUS_UNREAD), selectionObserver: outgoingRequestSelectionObserver);
+        RequestResponseManagement.attachOutgoingRequestObjectProvider(outgoingRequestsTableView, requestObjectProvider: RequestResponseManagement.OutgoingRequestWithResponsesObjectProvider(responseStatus: Backend.ResponseObject.STATUS_UNVIEWED), selectionObserver: outgoingRequestSelectionObserver);
 
         RequestResponseManagement.attachIncomingRequestObjectProvider(incomingRequestsTableView, requestObjectProvider: RequestResponseManagement.IncomingRequestWithoutResponsesObjectProvider(), selectionObserver: incomingRequestSelectionObserver);
         
-        outgoingRequestCounter = RequestResponseManagement.RequestsResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestWithResponsesObjectProvider(responseStatus: Backend.ResponseObject.STATUS_UNREAD), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNREAD));
+        outgoingRequestCounter = RequestResponseManagement.RequestsResponsesCounter(requestProvider: RequestResponseManagement.OutgoingRequestWithResponsesObjectProvider(responseStatus: Backend.ResponseObject.STATUS_UNVIEWED), responseProviderFactory: RequestResponseManagement.IncomingResponseProviderFactory(responseStatus: Backend.ResponseObject.STATUS_UNVIEWED));
         outgoingRequestCounter.setChangeObserver({(requests: Int?, responses: Int?) in
             self.numOfOutgoingRequestsLabel.text = String.localizedStringWithFormat(NSLocalizedString("You have %d unviewed responses for your %d requests", comment: "Home page - num of active requests"), (responses != nil ? responses : 0)!, (requests != nil ? requests : 0)!);
         });
@@ -54,7 +54,7 @@ class HomePage: AtwUIViewController {
         if (segue.identifier == "showRequestDetails") {
             let destView = segue.destinationViewController as! RequestDetailsPage;
             destView.requestId = selectedRequestId;
-            destView.responseStatus = Backend.ResponseObject.STATUS_UNREAD;
+            destView.responseStatus = Backend.ResponseObject.STATUS_UNVIEWED;
         } else if (segue.identifier == "showInquiryDetails") {
             let destView = segue.destinationViewController as! InquiryDetailsPage;
             destView.requestId = selectedRequestId;

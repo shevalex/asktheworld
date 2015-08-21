@@ -66,6 +66,32 @@ class InquiryDetailsPage: AtwUIViewController {
     }
     
     
+    
+    private class CreateResponseCallback: BackendCallback {
+        private var page: InquiryDetailsPage!;
+        
+        init(page: InquiryDetailsPage) {
+            self.page = page;
+        }
+        
+        func onError() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage(NSLocalizedString("Server Error", comment: "Inquiry Details page error message"));
+            });
+        }
+        func onSuccess() {
+            AtwUiUtils.runOnMainThread({
+                self.page.navigationController?.popViewControllerAnimated(true);
+            });
+        }
+        func onFailure() {
+            AtwUiUtils.runOnMainThread({
+                AtwUiUtils.hideSpinner();
+                self.page.showErrorMessage(NSLocalizedString("Cannot log in", comment: "Inquiry Details page error message"));
+            });
+        }
+    }
 
     @IBAction func sendButtonClickAction(sender: AnyObject) {
         if (responseTextField.text == "") {
@@ -76,15 +102,12 @@ class InquiryDetailsPage: AtwUIViewController {
         }
         
         
-        var response = Backend.ResponseObject(userProfile: Backend.getInstance().getUserProfile());
+        var response = Backend.ResponseObject(requestId: requestId, userProfile: Backend.getInstance().getUserProfile());
         
         //        response.attachments;
         response.text = responseTextField.text;
         
-        Backend.getInstance().createResponse(requestId, response: response, observer: {(id) -> Void in
-            self.navigationController?.popViewControllerAnimated(true);
-            return;
-        });
+        Backend.getInstance().createResponse(requestId, response: response, callback: CreateResponseCallback(page: self));
     }
     
     @IBAction func attachButtonClickAction(sender: AnyObject) {
@@ -92,7 +115,7 @@ class InquiryDetailsPage: AtwUIViewController {
     }
     
     @IBAction func ignoreButtonClickAction(sender: AnyObject) {
-        Backend.getInstance().removeIncomingRequest(requestId!, observer: {(id) in });
+        Backend.getInstance().removeIncomingRequest(requestId!, callback: nil);
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -118,6 +141,10 @@ class InquiryDetailsPage: AtwUIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    private func showErrorMessage(popupMessage: String) {
+        AtwUiUtils.showPopup(self, popupTitle: NSLocalizedString("Reponse Creation", comment: "Inquiry Details page error message title"), popupError: popupMessage);
+    }
     
     
     private func updateInquiryFields() {
