@@ -80,6 +80,7 @@ class LoginPage: AtwUIViewController, UITextFieldDelegate {
             });
         }
     }
+    
     @IBAction func forgotPasswordClicked() {
         if (emailTextField.text == "") {
             showErrorMessage(NSLocalizedString("Email must be provided", comment: "Login page error message"));
