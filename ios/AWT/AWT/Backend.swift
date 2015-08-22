@@ -1161,7 +1161,7 @@ public struct Backend {
             }
         };
         
-        Backend.communicate("user/\(userProfile.userId)/responses/incoming?status=\(responseStatus)", method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
+        Backend.communicate("user/\(userProfile.userId)/responses/incoming/\(requestId)?status=\(responseStatus)", method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
     }
     
     public func removeIncomingResponse(requestId: String, responseId: String, callback: BackendCallback? = nil) {
@@ -1236,7 +1236,7 @@ public struct Backend {
             }
         };
         
-        Backend.communicate("user/\(userProfile.userId)/responses/outgoing?status=\(responseStatus)", method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
+        Backend.communicate("user/\(userProfile.userId)/responses/outgoing/\(requestId)?status=\(responseStatus)", method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
     }
     
     
