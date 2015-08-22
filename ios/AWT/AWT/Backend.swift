@@ -331,6 +331,17 @@ public struct Backend {
     }
 
     public class Events {
+        private struct Event {
+            private static let TYPE: String = "type";
+            private static let REQUEST_ID: String = "request_id";
+            private static let RESPONSE_ID: String = "response_id";
+            
+            var type: String;
+            var requestId: String?;
+            var responseId: String?;
+        }
+        
+        
         public static let OUTGOING_REQUESTS_CHANGED: String! = "OUTGOING_REQUESTS_CHANGED";
         public static let INCOMING_REQUESTS_CHANGED: String! = "INCOMING_REQUESTS_CHANGED";
         public static let OUTGOING_RESPONSES_CHANGED: String! = "OUTGOING_RESPONSES_CHANGED";
@@ -343,12 +354,25 @@ public struct Backend {
         
         var timestamp: Int! = 0;
         var pulling: Bool! = false;
-        var events: NSDictionary!;
+        
+        private var events: [Event]! = nil;
         
         
         public func updateFromParcel(parcel: NSDictionary) {
             timestamp = parcel.valueForKey(Events.TIMESTAMP) as? Int;
-            events = (parcel.valueForKey(Events.EVENTS) as? NSDictionary);
+            events = nil;
+            
+            var eventDataArray: [NSDictionary]? = parcel.valueForKey(Events.EVENTS) as? [NSDictionary];
+            if (eventDataArray != nil) {
+                events = [];
+                
+                for (index, eventData) in enumerate(eventDataArray!) {
+                    var type = eventData.valueForKey(Event.TYPE) as! String;
+                    var requestId = eventData.valueForKey(Event.REQUEST_ID) as? String;
+                    var responseId = eventData.valueForKey(Event.RESPONSE_ID) as? String;
+                    events.append(Event(type: type, requestId: requestId, responseId: responseId));
+                }
+            }
         }
     }
     
@@ -1190,49 +1214,6 @@ public struct Backend {
     
     
     
-    
-    
-//    public func getOutgoingResponseIds(requestId: String, responseStatus: String? = nil) -> [String]? {
-//        if (cache.isOutgoingResponseIdsInUpdate(requestId)) {
-//            return nil;
-//        }
-//        
-//        var ids: [String]? = cache.getOutgoingResponseIds(requestId);
-//        if (ids == nil) {
-//            //TODO: pull the list from the server here
-//            self.cache.markOutgoingResponseIdsInUpdate(requestId);
-//            
-//            var action:()->Void = {() in
-//                if (requestId == "req101" || requestId == "req103") {
-//                    self.cache.setOutgoingResponseIds(requestId, responseIds: ["\(requestId)-response100"]);
-//                } else {
-//                    self.cache.setOutgoingResponseIds(requestId, responseIds: []);
-//                }
-//            };
-//            
-//            DelayedNotifier(action: action).schedule(3);
-//            
-//            return nil;
-//        } else {
-//            var responseIds: [String] = [];
-//            for (index, id) in enumerate(ids!) {
-//                var response = self.cache.getResponse(requestId, responseId: id);
-//                if (responseStatus == nil
-//                    || response != nil && response!.status == responseStatus
-//                    || response == nil && (responseStatus == ResponseObject.STATUS_READ && index < 3
-//                                           || responseStatus == ResponseObject.STATUS_UNREAD && index >= 3)) {
-//                        
-//                    responseIds.append(id);
-//                }
-//            }
-//            
-//            return responseIds;
-//        }
-//    }
-    
-    
-
-    
     // Event Management
     
     public func startPullingEvents() {
@@ -1255,39 +1236,34 @@ public struct Backend {
     
     private func pullEvents() {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
+            var action:()->Void = {() in
+                self.pullEvents();
+            };
+            
             if (statusCode == 200) {
                 self.events.updateFromParcel(data!);
-
-                //
-                //    for (var index in data.events) {
-                //    var event = data.events[index];
-                //
-                //    if (event.type == Backend.Events.INCOMING_REQUESTS_CHANGED) {
-                //    Backend._pullIncomingRequestIds();
-                //    } else if (event.type == Backend.Events.OUTGOING_REQUESTS_CHANGED) {
-                //    Backend._pullOutgoingRequestIds();
-                //    } else if (event.type == Backend.Events.OUTGOING_RESPONSES_CHANGED) {
-                //    Backend._pullOutgoingResponseIds(event.request_id);
-                //    } else if (event.type == Backend.Events.INCOMING_RESPONSES_CHANGED) {
-                //    Backend._pullIncomingResponseIds(event.request_id);
-                //    } else if (event.type == Backend.Events.REQUEST_CHANGED) {
-                //    Backend._pullRequest(event.request_id);
-                //    } else if (event.type == Backend.Events.RESPONSE_CHANGED) {
-                //    Backend._pullResponse(event.request_id, event.response_id);
-                //    } else {
-                //    console.error("Unrecognized event type " + event.type);
-                //    }
                 
-                var action:()->Void = {() in
-                    self.pullEvents();
-                };
+                for (index, event) in enumerate(self.events.events) {
+                    if (event.type == Events.INCOMING_REQUESTS_CHANGED) {
+                        self.pullIncomingRequestIds(requestStatus: RequestObject.STATUS_ALL, sortRule: nil, callback: nil);
+                    } else if (event.type == Events.OUTGOING_REQUESTS_CHANGED) {
+                        self.pullOutgoingRequestIds(requestStatus: RequestObject.STATUS_ALL, sortRule: nil, callback: nil);
+                    } else if (event.type == Events.OUTGOING_RESPONSES_CHANGED) {
+                        self.pullOutgoingResponseIds(event.requestId!, responseStatus: ResponseObject.STATUS_ALL, callback: nil);
+                    } else if (event.type == Events.INCOMING_RESPONSES_CHANGED) {
+                        self.pullIncomingResponseIds(event.requestId!, responseStatus: ResponseObject.STATUS_ALL, callback: nil);
+                    } else if (event.type == Events.REQUEST_CHANGED) {
+                        self.pullRequest(event.requestId!, callback: nil);
+                    } else if (event.type == Events.RESPONSE_CHANGED) {
+                        self.pullResponse(event.requestId!, responseId: event.responseId!, callback: nil);
+                    } else {
+                        println("Error: unrecognized event type \(event.type)");
+                    }
+                }
                 
                 DelayedNotifier(action: action).schedule(1);
             } else {
                 println("Event retrieval failed. Retrying in 5 seconds");
-                var action:()->Void = {() in
-                    self.pullEvents();
-                };
                 
                 DelayedNotifier(action: action).schedule(5);
             }
@@ -1296,87 +1272,6 @@ public struct Backend {
         Backend.communicate("events/user/\(userProfile.userId)?timestamp=\(events.timestamp)", method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
         
     }
-    
-//
-//    var transactionCallback = {
-//    success: function() {
-//    if (Backend.Events._pulling) {
-//    setTimeout(function() { Backend._pullEvents(transactionCallback); }, 1000);
-//    }
-//    },
-//    failure: function() {
-//    console.warn("Event retrieval programming error");
-//    
-//    if (Backend.Events._pulling) {
-//    setTimeout(function() { Backend._pullEvents(transactionCallback); }, 5000);
-//    }
-//    },
-//    error: function() {
-//    console.warn();
-//    
-//    if (Backend.Events._pulling) {
-//    setTimeout(function() { Backend._pullEvents(transactionCallback); }, 5000);
-//    }
-//    }
-//    }
-//    
-//    Backend.Events._pulling = true;
-//    Backend._pullEvents(transactionCallback);
-//    }
-//    
-//    Backend.stopPullingEvents = function() {
-//    if (!Backend.Events._pulling) {
-//    return;
-//    }
-//    
-//    Backend.Events._pulling = false;
-//    }
-//    
-//    Backend._pullEvents = function(transactionCallback) {
-//    var communicationCallback = {
-//    success: function(data, status, xhr) {
-//    if (xhr.status == 200) {
-//    Backend.Events.timestamp = data.timestamp;
-//    
-//    for (var index in data.events) {
-//    var event = data.events[index];
-//    
-//    if (event.type == Backend.Events.INCOMING_REQUESTS_CHANGED) {
-//    Backend._pullIncomingRequestIds();
-//    } else if (event.type == Backend.Events.OUTGOING_REQUESTS_CHANGED) {
-//    Backend._pullOutgoingRequestIds();
-//    } else if (event.type == Backend.Events.OUTGOING_RESPONSES_CHANGED) {
-//    Backend._pullOutgoingResponseIds(event.request_id);
-//    } else if (event.type == Backend.Events.INCOMING_RESPONSES_CHANGED) {
-//    Backend._pullIncomingResponseIds(event.request_id);
-//    } else if (event.type == Backend.Events.REQUEST_CHANGED) {
-//    Backend._pullRequest(event.request_id);
-//    } else if (event.type == Backend.Events.RESPONSE_CHANGED) {
-//    Backend._pullResponse(event.request_id, event.response_id);
-//    } else {
-//    console.error("Unrecognized event type " + event.type);
-//    }
-//    }
-//    
-//    if (transactionCallback != null) {
-//    transactionCallback.success();
-//    }
-//    }
-//    },
-//    error: function(xhr, status, error) {
-//    if (transactionCallback != null) {
-//    if (xhr.status == 400 || xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
-//    transactionCallback.failure();
-//    } else {
-//    transactionCallback.error();
-//    }
-//    }
-//    }
-//    }
-//    
-//    this._communicate("events/user/" + Backend.getUserProfile().user_id + "?timestamp=" + Backend.Events.timestamp, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
-//    }
-//    
     
     
     
