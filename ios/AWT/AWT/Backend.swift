@@ -237,7 +237,7 @@ public struct Backend {
             gender = Configuration.resolve(parcel.valueForKey(UserProfile.USER_PROPERTY_GENDER), predefinedList: Configuration.GENDERS);
             age = Configuration.resolve(parcel.valueForKey(UserProfile.USER_PROPERTY_AGE), predefinedList: Configuration.AGE_CATEGORIES);
             login = parcel.valueForKey(UserProfile.USER_PROPERTY_LOGIN) as? String;
-            password = parcel.valueForKey(UserProfile.USER_PROPERTY_PASSWORD) as? String;
+            //password = parcel.valueForKey(UserProfile.USER_PROPERTY_PASSWORD) as? String;
         }
         
         public func safeToParcel(parcel: NSDictionary) {
