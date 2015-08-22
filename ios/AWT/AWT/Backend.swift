@@ -385,8 +385,26 @@ public struct Backend {
         var inactive: [String]?;
 
         public func updateFromParcel(parcel: NSDictionary) {
-            self.active = parcel.valueForKey(RequestIds.ACTIVE) as? [String];
-            self.inactive = parcel.valueForKey(RequestIds.INACTIVE) as? [String];
+            var activeIds = parcel.valueForKey(RequestIds.ACTIVE) as? [Int];
+            if (activeIds != nil) {
+                self.active = [];
+                for (index, id) in enumerate(activeIds!) {
+                    self.active?.append("\(id)");
+                }
+            } else {
+                self.active = nil;
+            }
+            
+            var inactiveIds = parcel.valueForKey(RequestIds.INACTIVE) as? [Int];
+            if (inactiveIds != nil) {
+                self.inactive = [];
+                for (index, id) in enumerate(inactiveIds!) {
+                    self.inactive?.append("\(id)");
+                }
+            } else {
+                self.inactive = nil;
+            }
+            
             
             if (self.active != nil && self.inactive != nil) {
                 self.all = self.active! + self.inactive!;
@@ -469,13 +487,24 @@ public struct Backend {
         var viewed: [String]?;
         
         public func updateFromParcel(parcel: NSDictionary) {
-            self.unviewed = parcel.valueForKey(ResponseIds.UNVIEWED) as? [String];
-            self.viewed = parcel.valueForKey(ResponseIds.VIEWED) as? [String];
-            
-            if (self.unviewed != nil && self.viewed != nil) {
-                self.all = self.unviewed! + self.viewed!;
+            var unviewedIds = parcel.valueForKey(ResponseIds.UNVIEWED) as? [Int];
+            if (unviewedIds != nil) {
+                self.unviewed = [];
+                for (index, id) in enumerate(unviewedIds!) {
+                    self.unviewed?.append("\(id)");
+                }
             } else {
-                self.all = nil;
+                self.unviewed = nil;
+            }
+
+            var viewedIds = parcel.valueForKey(ResponseIds.VIEWED) as? [Int];
+            if (viewedIds != nil) {
+                self.viewed = [];
+                for (index, id) in enumerate(viewedIds!) {
+                    self.viewed?.append("\(id)");
+                }
+            } else {
+                self.viewed = nil;
             }
         }
         
@@ -915,7 +944,6 @@ public struct Backend {
                 }
                 
                 requestIds?.updateFromParcel(data!);
-                
                 self.cache.setIncomingRequestIds(requestIds!);
                 
                 callback?.onSuccess();
