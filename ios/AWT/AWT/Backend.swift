@@ -847,7 +847,7 @@ public struct Backend {
         }
     }
     
-    private func pullOutgoingRequestIds(requestStatus: String? = nil, sortRule: String? = nil, callback: BackendCallback?) {
+    private func pullOutgoingRequestIds(requestStatus: String! = nil, sortRule: String? = nil, callback: BackendCallback?) {
         self.cache.markOutgoingRequestIdsInUpdate();
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
@@ -904,7 +904,7 @@ public struct Backend {
         }
     }
     
-    private func pullIncomingRequestIds(requestStatus: String? = nil, sortRule: String? = nil, callback: BackendCallback?) {
+    private func pullIncomingRequestIds(requestStatus: String! = nil, sortRule: String? = nil, callback: BackendCallback?) {
         self.cache.markIncomingRequestIdsInUpdate();
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
@@ -1108,7 +1108,7 @@ public struct Backend {
         }
     }
     
-    private func pullIncomingResponseIds(requestId: String, responseStatus: String? = nil, callback: BackendCallback?) {
+    private func pullIncomingResponseIds(requestId: String, responseStatus: String! = nil, callback: BackendCallback?) {
         self.cache.markIncomingRequestIdsInUpdate();
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
@@ -1183,7 +1183,7 @@ public struct Backend {
         }
     }
     
-    private func pullOutgoingResponseIds(requestId: String, responseStatus: String? = nil, callback: BackendCallback?) {
+    private func pullOutgoingResponseIds(requestId: String, responseStatus: String! = nil, callback: BackendCallback?) {
         self.cache.markIncomingRequestIdsInUpdate();
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
