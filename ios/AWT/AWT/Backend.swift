@@ -1482,7 +1482,7 @@ public struct Backend {
             //            println("!!! outgoing request ids updated");
         }
         func getOutgoingRequestIds() -> RequestIds? {
-            return outgoingRequestIdsInProgress == false ? outgoingRequestIds : nil;
+            return outgoingRequestIds;
         }
         
         func markIncomingRequestIdsInUpdate(isInUpdate: Bool = true) {
@@ -1501,7 +1501,7 @@ public struct Backend {
             //            println("!!! incoming request ids updated");
         }
         func getIncomingRequestIds() -> RequestIds? {
-            return incomingRequestIdsInProgress == false ? incomingRequestIds : nil;
+            return incomingRequestIds;
         }
         
         func markRequestInUpdate(requestId: String, isInUpdate: Bool = true) {
@@ -1524,7 +1524,7 @@ public struct Backend {
 //            println("!!! request \(requestId) updated");
         }
         func getRequest(requestId: String) -> RequestObject? {
-            return isRequestInUpdate(requestId) ? nil : requests[requestId];
+            return requests[requestId];
         }
 
         func markIncomingResponseIdsInUpdate(requestId: String, isInUpdate: Bool = true) {
@@ -1547,7 +1547,7 @@ public struct Backend {
             //            println("!!! incoming response ids for \(requestId) updated");
         }
         func getIncomingResponseIds(requestId: String) -> ResponseIds? {
-            return isIncomingResponseIdsInUpdate(requestId) ? nil : incomingResponseIds[requestId];
+            return incomingResponseIds[requestId];
         }
 
         func markOutgoingResponseIdsInUpdate(requestId: String, isInUpdate: Bool = true) {
@@ -1570,7 +1570,7 @@ public struct Backend {
             //            println("!!! outgoing response ids for \(requestId) updated");
         }
         func getOutgoingResponseIds(requestId: String) -> ResponseIds? {
-            return isOutgoingResponseIdsInUpdate(requestId) ? nil : outgoingResponseIds[requestId];
+            return outgoingResponseIds[requestId];
         }
         
         func markResponseInUpdate(requestId: String, responseId: String, isInUpdate: Bool = true) {
@@ -1593,7 +1593,7 @@ public struct Backend {
 //            println("!!! response \(responseId) updated");
         }
         func getResponse(requestId: String, responseId: String) -> ResponseObject? {
-            return isResponseInUpdate(requestId, responseId: responseId) ? nil : responses[responseId];
+            return responses[responseId];
         }
         
         private func isInUpdate() -> Bool {
