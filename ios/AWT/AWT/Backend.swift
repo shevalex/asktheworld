@@ -459,8 +459,8 @@ public struct Backend {
             self.responseQuantity = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_QUANTITY) as? Int, predefinedList: Configuration.RESPONSE_QUANTITY);
             self.responseWaitTime = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_WAITTIME) as? Int, predefinedList: Configuration.RESPONSE_WAIT_TIME);
             self.responseAgeGroup = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.AGE_CATEGORY_PREFERENCE);
-            self.responseGender = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.GENDER_PREFERENCE);
-            self.expertiseCategory = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_AGE_GROUP) as? String, predefinedList: Configuration.EXPERTISES);
+            self.responseGender = Configuration.resolve(parcel.valueForKey(RequestObject.RESPONSE_GENDER) as? String, predefinedList: Configuration.GENDER_PREFERENCE);
+            self.expertiseCategory = Configuration.resolve(parcel.valueForKey(RequestObject.EXPERTISE_CATEGORY) as? String, predefinedList: Configuration.EXPERTISES);
             self.status = parcel.valueForKey(RequestObject.STATUS) as? String;
         }
         
