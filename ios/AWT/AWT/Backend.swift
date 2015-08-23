@@ -1145,7 +1145,7 @@ public struct Backend {
     }
     
     private func pullIncomingResponseIds(requestId: String, responseStatus: String! = nil, callback: BackendCallback?) {
-        self.cache.markIncomingRequestIdsInUpdate();
+        self.cache.markIncomingResponseIdsInUpdate(requestId);
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
@@ -1220,7 +1220,7 @@ public struct Backend {
     }
     
     private func pullOutgoingResponseIds(requestId: String, responseStatus: String! = nil, callback: BackendCallback?) {
-        self.cache.markIncomingRequestIdsInUpdate();
+        self.cache.markOutgoingResponseIdsInUpdate(requestId);
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
