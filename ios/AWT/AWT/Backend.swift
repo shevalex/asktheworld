@@ -506,6 +506,12 @@ public struct Backend {
             } else {
                 self.viewed = nil;
             }
+
+            if (self.unviewed != nil && self.viewed != nil) {
+                self.all = self.unviewed! + self.viewed!;
+            } else {
+                self.all = nil;
+            }
         }
         
         public func safeToParcel(parcel: NSDictionary) {
@@ -628,6 +634,8 @@ public struct Backend {
                 Backend.instance.userProfile.userId = data?.valueForKey("user_id") as? Int;
                 Backend.instance.userProfile.login = login;
                 Backend.instance.userProfile.password = password;
+                
+                Backend.instance.userPreferences = UserPreferences();
                 
                 Backend.instance.pullUserSettings(callback);
             } else if (statusCode == 401 || statusCode == 404) {
@@ -1338,7 +1346,7 @@ public struct Backend {
         }
         
         func onSuccess() {
-            Backend.instance.pullUserPreferences(cb);
+            Backend.getInstance().pullUserPreferences(cb);
         }
         
         func onFailure() {
