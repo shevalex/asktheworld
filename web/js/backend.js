@@ -288,7 +288,7 @@ Backend.Response.CONTACT_INFO_STATUS_PROVIDED = "provided";
 
 
 Backend.createRequest = function(request, transactionCallback) {
-  Backend.Cache.markOutgoingRequestIdsInUpdate();
+//  Backend.Cache.markOutgoingRequestIdsInUpdate();
 
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -314,6 +314,8 @@ Backend.createRequest = function(request, transactionCallback) {
         if (transactionCallback != null) {
           transactionCallback.success(newRequestId);
         }
+//        
+//        Backend.Cache.markOutgoingRequestIdsInUpdate(false);
       }
     },
     error: function(xhr, status, error) {

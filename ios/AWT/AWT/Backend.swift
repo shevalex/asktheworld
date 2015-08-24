@@ -769,8 +769,6 @@ public struct Backend {
     
     
     public func createRequest(request: RequestObject, callback: BackendCallback? = nil) {
-        self.cache.markOutgoingRequestIdsInUpdate();
-        
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 201) {
                 let requestId: String = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as! String;
@@ -1146,7 +1144,7 @@ public struct Backend {
     
     private func pullIncomingResponseIds(requestId: String, responseStatus: String! = nil, callback: BackendCallback?) {
         self.cache.markIncomingResponseIdsInUpdate(requestId);
-        
+
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
                 var responseIds: ResponseIds? = self.cache.getIncomingResponseIds(requestId);
@@ -1477,7 +1475,7 @@ public struct Backend {
         func markOutgoingRequestIdsInUpdate(isInUpdate: Bool = true) {
             outgoingRequestIdsInProgress = isInUpdate;
             fireUpdateEvent();
-//            println("marked outgoing request ids in progress");
+//            println("marked outgoing request ids in progress: \(isInUpdate)");
         }
         func isOutgoingRequestIdsInUpdate() -> Bool {
             return outgoingRequestIdsInProgress;
@@ -1487,7 +1485,6 @@ public struct Backend {
             notifyCacheListeners(CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: nil, responseId: nil);
 
             markOutgoingRequestIdsInUpdate(isInUpdate: false);
-            //            println("!!! outgoing request ids updated");
         }
         func getOutgoingRequestIds() -> RequestIds? {
             return outgoingRequestIds;
@@ -1496,7 +1493,7 @@ public struct Backend {
         func markIncomingRequestIdsInUpdate(isInUpdate: Bool = true) {
             incomingRequestIdsInProgress = isInUpdate;
             fireUpdateEvent();
-            //            println("marked incoming request ids in progress");
+//            println("marked incoming request ids in progress: \(isInUpdate)");
         }
         func isIncomingRequestIdsInUpdate() -> Bool {
             return incomingRequestIdsInProgress;
@@ -1506,7 +1503,6 @@ public struct Backend {
             notifyCacheListeners(CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestId: nil, responseId: nil);
 
             markIncomingRequestIdsInUpdate(isInUpdate: false);
-            //            println("!!! incoming request ids updated");
         }
         func getIncomingRequestIds() -> RequestIds? {
             return incomingRequestIds;
@@ -1519,7 +1515,7 @@ public struct Backend {
             }
             
             fireUpdateEvent();
-//            println("marked request \(requestId) in progress");
+//            println("marked request \(requestId) in progress: \(isInUpdate)");
         }
         func isRequestInUpdate(requestId: String) -> Bool {
             return requestsInProgress[requestId] != nil;
@@ -1529,7 +1525,6 @@ public struct Backend {
             notifyCacheListeners(CacheChangeEvent.TYPE_REQUEST_CHANGED, requestId: requestId, responseId: nil);
 
             markRequestInUpdate(requestId, isInUpdate: false);
-//            println("!!! request \(requestId) updated");
         }
         func getRequest(requestId: String) -> RequestObject? {
             return requests[requestId];
@@ -1542,7 +1537,7 @@ public struct Backend {
             }
 
             fireUpdateEvent();
-//            println("marked incoming response ids for \(requestId) in progress");
+//            println("marked incoming response ids for \(requestId) in progress: \(isInUpdate)");
         }
         func isIncomingResponseIdsInUpdate(requestId: String) -> Bool {
             return incomingResponseIdsInProgress[requestId] != nil;
@@ -1552,7 +1547,6 @@ public struct Backend {
             self.notifyCacheListeners(CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId: requestId, responseId: nil);
             
             markIncomingResponseIdsInUpdate(requestId, isInUpdate: false);
-            //            println("!!! incoming response ids for \(requestId) updated");
         }
         func getIncomingResponseIds(requestId: String) -> ResponseIds? {
             return incomingResponseIds[requestId];
@@ -1565,7 +1559,7 @@ public struct Backend {
             }
             
             fireUpdateEvent();
-            //            println("marked outgoing response ids for \(requestId) in progress");
+//            println("marked outgoing response ids for \(requestId) in progress: \(isInUpdate)");
         }
         func isOutgoingResponseIdsInUpdate(requestId: String) -> Bool {
             return outgoingResponseIdsInProgress[requestId] != nil;
@@ -1575,7 +1569,6 @@ public struct Backend {
             self.notifyCacheListeners(CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId: requestId, responseId: nil);
 
             markOutgoingResponseIdsInUpdate(requestId, isInUpdate: false);
-            //            println("!!! outgoing response ids for \(requestId) updated");
         }
         func getOutgoingResponseIds(requestId: String) -> ResponseIds? {
             return outgoingResponseIds[requestId];
@@ -1588,7 +1581,7 @@ public struct Backend {
             }
 
             fireUpdateEvent();
-//            println("marked response \(responseId) in progress");
+//            println("marked response \(responseId) in progress: \(isInUpdate)");
         }
         func isResponseInUpdate(requestId: String, responseId: String) -> Bool {
             return responsesInProgress[responseId] != nil;
@@ -1598,7 +1591,6 @@ public struct Backend {
             self.notifyCacheListeners(CacheChangeEvent.TYPE_RESPONSE_CHANGED, requestId: requestId, responseId: responseId);
 
             markResponseInUpdate(requestId, responseId: responseId, isInUpdate: false);
-//            println("!!! response \(responseId) updated");
         }
         func getResponse(requestId: String, responseId: String) -> ResponseObject? {
             return responses[responseId];
@@ -1627,7 +1619,7 @@ public struct Backend {
         
         private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
             var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
-
+//            println("Event: type=\(type), request=\(requestId), response=\(responseId)");
             for (key, listener) in cacheChangeListeners.get() {
                 listener(event);
             }
