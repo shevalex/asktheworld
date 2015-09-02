@@ -547,6 +547,8 @@ public struct Backend {
         
         
         init(requestId: String, userProfile: UserProfile) {
+            self.requestId = requestId;
+            
             userId = userProfile.userId;
             ageCategory = userProfile.age;
             gender = userProfile.gender;
@@ -568,8 +570,8 @@ public struct Backend {
             self.time = parcel.valueForKey(ResponseObject.TIME) as? Double;
             self.text = parcel.valueForKey(ResponseObject.TEXT) as? String;
             //                self.attachments
-            self.ageCategory = Configuration.resolve(parcel.valueForKey(ResponseObject.AGE_CATEGORY) as? Int, predefinedList: Configuration.AGE_CATEGORIES);
-            self.gender = Configuration.resolve(parcel.valueForKey(ResponseObject.GENDER) as? Int, predefinedList: Configuration.GENDERS);
+            self.ageCategory = Configuration.resolve(parcel.valueForKey(ResponseObject.AGE_CATEGORY) as? String, predefinedList: Configuration.AGE_CATEGORIES);
+            self.gender = Configuration.resolve(parcel.valueForKey(ResponseObject.GENDER) as? String, predefinedList: Configuration.GENDERS);
             self.status = parcel.valueForKey(ResponseObject.STATUS) as? String;
             self.contactInfoStatus = parcel.valueForKey(ResponseObject.CONTACT_INFO_STATUS) as? String;
             
@@ -1618,11 +1620,13 @@ public struct Backend {
         }
         
         private func notifyCacheListeners(type: String!, requestId: String!, responseId: String!) {
-            var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
-//            println("Event: type=\(type), request=\(requestId), response=\(responseId)");
-            for (key, listener) in cacheChangeListeners.get() {
-                listener(event);
-            }
+            dispatch_async(dispatch_get_main_queue(), {
+                var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
+                //            println("Event: type=\(type), request=\(requestId), response=\(responseId)");
+                for (key, listener) in self.cacheChangeListeners.get() {
+                    listener(event);
+                }
+            });
         }
     }
     
