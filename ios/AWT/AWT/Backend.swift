@@ -467,6 +467,7 @@ public struct Backend {
         public func safeToParcel(parcel: NSDictionary) {
             //parcel.setValue(self.userContext.userId, forKey: RequestObject.USER_ID);
             parcel.setValue(self.text, forKey: RequestObject.TEXT);
+            parcel.setValue(self.time, forKey: RequestObject.TIME);
             //parcel.setValue(self.attachments, forKey: RequestObject.ATTACHMENTS);
             parcel.setValue(self.responseQuantity.data, forKey: RequestObject.RESPONSE_QUANTITY);
             parcel.setValue(self.responseWaitTime.data, forKey: RequestObject.RESPONSE_WAITTIME);
@@ -585,6 +586,7 @@ public struct Backend {
             parcel.setValue(self.userId, forKey: ResponseObject.USER_ID);
             parcel.setValue(self.requestId, forKey: ResponseObject.REQUEST_ID);
             parcel.setValue(self.text, forKey: ResponseObject.TEXT);
+            parcel.setValue(self.time, forKey: ResponseObject.TIME);
             //parcel.setValue(self.attachments, forKey: ResponseObject.ATTACHMENTS);
             parcel.setValue(self.ageCategory.data, forKey: ResponseObject.AGE_CATEGORY);
             parcel.setValue(self.gender.data, forKey: ResponseObject.GENDER);
