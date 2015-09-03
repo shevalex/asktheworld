@@ -31,7 +31,7 @@ public struct Configuration {
 
     static let AGE_CATEGORIES: [Item] = [Item(display: NSLocalizedString("Child", comment: "Age - child"), data: "child"), Item(display: NSLocalizedString("Teenager", comment: "Age - teenager"), data: "teenager"), Item(display: NSLocalizedString("Young Adult", comment: "Age - young"), data: "young"), Item(display: NSLocalizedString("Adult", comment: "Age - adult"), data: "adult"), Item(display: NSLocalizedString("Senior", comment: "Age - senior"), data: "senior")];
     
-    static let RESPONSE_WAIT_TIME: [Item] = [Item(display: NSLocalizedString("1 week", comment: "Wait time - week"), data: 148), Item(display: NSLocalizedString("1 day", comment: "Wait time - day"), data: 24), Item(display: NSLocalizedString("Half-day", comment: "Wait time - halfday"), data: 12), Item(display: NSLocalizedString("1 hour", comment: "Wait time - hour"), data: 1)];
+    static let RESPONSE_WAIT_TIME: [Item] = [Item(display: NSLocalizedString("1 week", comment: "Wait time - week"), data: 168), Item(display: NSLocalizedString("1 day", comment: "Wait time - day"), data: 24), Item(display: NSLocalizedString("Half-day", comment: "Wait time - halfday"), data: 12), Item(display: NSLocalizedString("1 hour", comment: "Wait time - hour"), data: 1)];
     
     static let RESPONSE_QUANTITY: [Item] = [Item(display: NSLocalizedString("As many as arrive", comment: "Quantity - all"), data: -1), Item(display: NSLocalizedString("Ten", comment: "Quantity - ten"), data: 10), Item(display: NSLocalizedString("Five", comment: "Quantity - five"), data: 5), Item(display: NSLocalizedString("Three", comment: "Quantity - three"), data: 3), Item(display: NSLocalizedString("Just the first one", comment: "Quantity - one"), data: 1)];
     

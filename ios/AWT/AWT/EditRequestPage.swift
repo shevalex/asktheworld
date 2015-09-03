@@ -67,8 +67,8 @@ class EditRequestPage: AtwUIViewController {
         expertiseSelector.setSelectedItem(request!.expertiseCategory);
         genderSelector.setSelectedItem(request!.responseGender);
         ageSelector.setSelectedItem(request!.responseAgeGroup);
-        waitTimeSelector.setSelectedItem(request?.responseWaitTime);
-        numOfResponsesSelector.setSelectedItem(request?.responseQuantity);
+        waitTimeSelector.setSelectedItem(request!.responseWaitTime);
+        numOfResponsesSelector.setSelectedItem(request!.responseQuantity);
         
         requestTextField.text = request!.text;
     }

@@ -224,7 +224,7 @@ class SelectorView: UITableView {
             return selection[0];
         }
     }
-    func setSelectedItem(selectedItem: Configuration.Item!)  {
+    func setSelectedItem(selectedItem: Configuration.Item)  {
         setSelectedItems([selectedItem]);
     }
     
