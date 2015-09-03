@@ -236,6 +236,7 @@ public struct Backend {
             languages = Configuration.resolve(parcel.valueForKey(UserProfile.USER_PROPERTY_LANGUAGES) as? [String], predefinedList: Configuration.LANGUAGES);
             gender = Configuration.resolve(parcel.valueForKey(UserProfile.USER_PROPERTY_GENDER), predefinedList: Configuration.GENDERS);
             age = Configuration.resolve(parcel.valueForKey(UserProfile.USER_PROPERTY_AGE), predefinedList: Configuration.AGE_CATEGORIES);
+            
             login = parcel.valueForKey(UserProfile.USER_PROPERTY_LOGIN) as? String;
             //password = parcel.valueForKey(UserProfile.USER_PROPERTY_PASSWORD) as? String;
         }
@@ -1380,7 +1381,7 @@ public struct Backend {
     func pullUserPreferences(callback: BackendCallback?) {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                self.userProfile.updateFromParcel(data!);
+                self.userPreferences.updateFromParcel(data!);
                 
                 callback?.onSuccess();
             } else if (statusCode == 401 || statusCode == 404) {
