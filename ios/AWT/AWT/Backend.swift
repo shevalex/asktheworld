@@ -195,7 +195,7 @@ public protocol BackendCallback {
     func onFailure();
 }
 
-public struct Backend {
+public class Backend {
     typealias CacheChangeEventObserver = (CacheChangeEvent) -> Void;
     
     
@@ -353,24 +353,26 @@ public struct Backend {
         private static let TIMESTAMP: String = "timestamp";
         private static let EVENTS: String = "events";
         
-        var timestamp: Int! = 0;
-        var pulling: Bool! = false;
+        private var timestamp: Int! = 0;
+        private var pulling: Bool! = false;
         
         private var events: [Event]! = nil;
         
         
         public func updateFromParcel(parcel: NSDictionary) {
             timestamp = parcel.valueForKey(Events.TIMESTAMP) as? Int;
-            events = nil;
+            events = [];
             
             var eventDataArray: [NSDictionary]? = parcel.valueForKey(Events.EVENTS) as? [NSDictionary];
             if (eventDataArray != nil) {
-                events = [];
-                
                 for (index, eventData) in enumerate(eventDataArray!) {
                     var type = eventData.valueForKey(Event.TYPE) as! String;
-                    var requestId = eventData.valueForKey(Event.REQUEST_ID) as? String;
-                    var responseId = eventData.valueForKey(Event.RESPONSE_ID) as? String;
+                    var requestIdAsInt = eventData.valueForKey(Event.REQUEST_ID) as? Int;
+                    var requestId: String! = requestIdAsInt != nil ? "\(requestIdAsInt!)" : nil;
+                    
+                    var responseIdAsInt = eventData.valueForKey(Event.RESPONSE_ID) as? Int;
+                    var responseId: String! = responseIdAsInt != nil ? "\(responseIdAsInt!)" : nil;
+                    
                     events.append(Event(type: type, requestId: requestId, responseId: responseId));
                 }
             }
@@ -784,10 +786,12 @@ public struct Backend {
                 self.cache.setRequest(requestId, request: request);
                 
                 callback?.onSuccess();
-            } else if (statusCode == 401) {
-                callback?.onFailure();
             } else {
-                callback?.onError();
+                if (statusCode == 401) {
+                    callback?.onFailure();
+                } else {
+                    callback?.onError();
+                }
             }
         };
         
@@ -809,10 +813,13 @@ public struct Backend {
                 self.cache.setRequest(requestId, request: request);
                 
                 callback?.onSuccess();
-            } else if (statusCode == 401) {
-                callback?.onFailure();
             } else {
-                callback?.onError();
+                if (statusCode == 401) {
+                    callback?.onFailure();
+                } else {
+                    callback?.onError();
+                }
+                self.cache.markRequestInUpdate(requestId, isInUpdate: false);
             }
         };
         
@@ -846,10 +853,13 @@ public struct Backend {
                 self.cache.setRequest(requestId, request: request);
                 
                 callback?.onSuccess();
-            } else if (statusCode == 401) {
-                callback?.onFailure();
             } else {
-                callback?.onError();
+                if (statusCode == 401) {
+                    callback?.onFailure();
+                } else {
+                    callback?.onError();
+                }
+                self.cache.markRequestInUpdate(requestId, isInUpdate: false);
             }
         };
         
@@ -903,12 +913,12 @@ public struct Backend {
                 
                 callback?.onSuccess();
             } else {
-                self.cache.markOutgoingRequestIdsInUpdate(isInUpdate: false);
                 if (statusCode == 401) {
                     callback?.onFailure();
                 } else {
                     callback?.onError();
                 }
+                self.cache.markOutgoingRequestIdsInUpdate(isInUpdate: false);
             }
         };
         
@@ -959,12 +969,12 @@ public struct Backend {
                 
                 callback?.onSuccess();
             } else {
-                self.cache.markIncomingRequestIdsInUpdate(isInUpdate: false);
                 if (statusCode == 401) {
                     callback?.onFailure();
                 } else {
                     callback?.onError();
                 }
+                self.cache.markIncomingRequestIdsInUpdate(isInUpdate: false);
             }
         };
         
@@ -1006,10 +1016,13 @@ public struct Backend {
                 self.cache.setResponse(requestId, responseId: responseId, response: response);
                 
                 callback?.onSuccess();
-            } else if (statusCode == 401) {
-                callback?.onFailure();
             } else {
-                callback?.onError();
+                if (statusCode == 401) {
+                    callback?.onFailure();
+                } else {
+                    callback?.onError();
+                }
+                self.cache.markOutgoingResponseIdsInUpdate(requestId, isInUpdate: false);
             }
         };
         
@@ -1043,10 +1056,13 @@ public struct Backend {
                 self.cache.setResponse(requestId, responseId: responseId, response: response);
                 
                 callback?.onSuccess();
-            } else if (statusCode == 401) {
-                callback?.onFailure();
             } else {
-                callback?.onError();
+                if (statusCode == 401) {
+                    callback?.onFailure();
+                } else {
+                    callback?.onError();
+                }
+                self.cache.markResponseInUpdate(requestId, responseId: responseId, isInUpdate: false);
             }
         };
         
@@ -1083,10 +1099,13 @@ public struct Backend {
                 self.cache.setResponse(requestId, responseId: responseId, response: response);
                 
                 callback?.onSuccess();
-            } else if (statusCode == 401) {
-                callback?.onFailure();
             } else {
-                callback?.onError();
+                if (statusCode == 401) {
+                    callback?.onFailure();
+                } else {
+                    callback?.onError();
+                }
+                self.cache.markRequestInUpdate(requestId, isInUpdate: false);
             }
         };
         
@@ -1103,10 +1122,13 @@ public struct Backend {
                 self.cache.setResponse(requestId, responseId: responseId, response: response);
                 
                 callback?.onSuccess();
-            } else if (statusCode == 401) {
-                callback?.onFailure();
             } else {
-                callback?.onError();
+                if (statusCode == 401) {
+                    callback?.onFailure();
+                } else {
+                    callback?.onError();
+                }
+                self.cache.markResponseInUpdate(requestId, responseId: responseId, isInUpdate: false);
             }
         };
         
@@ -1163,12 +1185,12 @@ public struct Backend {
                 
                 callback?.onSuccess();
             } else {
-                self.cache.markIncomingResponseIdsInUpdate(requestId, isInUpdate: false);
                 if (statusCode == 401) {
                     callback?.onFailure();
                 } else {
                     callback?.onError();
                 }
+                self.cache.markIncomingResponseIdsInUpdate(requestId, isInUpdate: false);
             }
         };
         
@@ -1188,6 +1210,8 @@ public struct Backend {
                 } else {
                     callback?.onError();
                 }
+                
+                self.cache.markIncomingResponseIdsInUpdate(requestId, isInUpdate: false);
             }
         };
         
@@ -1238,12 +1262,12 @@ public struct Backend {
                 
                 callback?.onSuccess();
             } else {
-                self.cache.markOutgoingResponseIdsInUpdate(requestId, isInUpdate: false);
                 if (statusCode == 401) {
                     callback?.onFailure();
                 } else {
                     callback?.onError();
                 }
+                self.cache.markOutgoingResponseIdsInUpdate(requestId, isInUpdate: false);
             }
         };
         
@@ -1278,7 +1302,7 @@ public struct Backend {
             var action:()->Void = {() in
                 self.pullEvents();
             };
-            
+
             if (statusCode == 200) {
                 self.events.updateFromParcel(data!);
                 
@@ -1300,11 +1324,11 @@ public struct Backend {
                     }
                 }
                 
-                DelayedNotifier(action: action).schedule(1);
-            } else {
-                println("Event retrieval failed. Retrying in 5 seconds");
-                
                 DelayedNotifier(action: action).schedule(5);
+            } else {
+                println("Event retrieval failed. Retrying in 10 seconds");
+                
+                DelayedNotifier(action: action).schedule(10);
             }
         };
         
@@ -1317,7 +1341,11 @@ public struct Backend {
     // Cache management
     
     func addCacheChangeListener(listener: CacheChangeEventObserver, listenerId: String!) -> String {
-        return cache.addCacheChangeListener(listener, listenerId: listenerId);
+        var listId = cache.addCacheChangeListener(listener, listenerId: listenerId);
+        
+        startPullingEvents();
+        
+        return listId;
     }
     
     func removeCacheChangeListener(listenerId: String) {
@@ -1394,9 +1422,6 @@ public struct Backend {
         let url = "user/\(userProfile.userId)/settings";
         Backend.communicate(url, method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
     }
-
-    
-    
     
     // Cache Management
     
@@ -1411,12 +1436,16 @@ public struct Backend {
         }
         
         func schedule(delay: Double) {
-            NSTimer.scheduledTimerWithTimeInterval(delay, target: self, selector: Selector("timerTick"), userInfo: nil, repeats: false);
+            dispatch_async(dispatch_get_main_queue(), {
+                NSTimer.scheduledTimerWithTimeInterval(delay, target: self, selector: Selector("timerTick"), userInfo: nil, repeats: false);
+            });
         }
         
         @objc func timerTick() {
             if (Backend.getInstance() != nil) {
-                action?();
+//                dispatch_async(dispatch_get_main_queue(), {
+                    self.action?();
+//                });
             }
         }
     }
