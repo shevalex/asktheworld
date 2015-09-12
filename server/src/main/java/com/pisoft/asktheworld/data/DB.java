@@ -471,7 +471,7 @@ public class DB {
 		
 		for (Iterator<ATWRequest> it  = user.getIncomingRequests().iterator(); it.hasNext();) {
 			ATWRequest req = it.next();
-			Date t = req.getCreationTime();
+			Date t = req.getModificationTime();
 			if( t.after(timeStamp) && t.before(timeRequest)) {
 				list.add(ATWEvent.getReqChanged(req.getId()));
 				System.out.println("We have changed incomming request");
