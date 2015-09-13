@@ -73,9 +73,9 @@ public class RequestController {
 	
 	
 	@RequestMapping(method=RequestMethod.PUT, value="/request/{requestID}")
-	public ResponseEntity<ATWRequest> updateUser(@PathVariable("requestID") int id, @RequestBody ATWRequest request) {
+	public ResponseEntity<ATWRequest> updateRequest(@PathVariable("requestID") int id, @RequestBody ATWRequest request) {
 		request.setId(id);
-		request= db.updateRequest(request);
+		request = db.updateRequest(request);
 		//TODO: need check for values (400 error)
 		//TODO: Need to check for owner (403 error). Chould we check here or in filter? 
 		return new ResponseEntity<ATWRequest>( request, request != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
