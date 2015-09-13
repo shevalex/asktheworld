@@ -12,7 +12,7 @@ class ActiveInquiriesPage: AtwUIViewController {
     @IBOutlet weak var incomingRequestsTableView: UITableView!
     @IBOutlet weak var numOfIncomingRequestsLabel: UILabel!
 
-    private var selectedRequestId: String!;
+    private var selectedRequestId: Int!;
     private var incomingRequestCounter: GenericObjectCounter!;
 
     override func viewDidLoad() {

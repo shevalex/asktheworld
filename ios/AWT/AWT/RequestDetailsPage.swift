@@ -9,7 +9,7 @@
 import UIKit
 
 class RequestDetailsPage: AtwUIViewController {
-    var requestId: String! //this is set from the outside before the page is brought up
+    var requestId: Int! //this is set from the outside before the page is brought up
     var responseStatus: String! //this is set from the outside before the page is brought up
     
     @IBOutlet weak var requestTextField: UITextView!
@@ -25,8 +25,8 @@ class RequestDetailsPage: AtwUIViewController {
     @IBOutlet weak var editRequestButton: UIBarButtonItem!
     
     
-    private var responseIds: [String]?
-    private var currentResponseId: String?
+    private var responseIds: [Int]?
+    private var currentResponseId: Int?
     
     private var updateListener: Backend.CacheChangeEventObserver!;
     private var updateListenerId: String!;
@@ -52,7 +52,7 @@ class RequestDetailsPage: AtwUIViewController {
                     }
                     self.currentResponseId = self.responseIds![0];
                 } else if (self.responseIds?.count == 0) {
-                    self.currentResponseId = "";
+                    self.currentResponseId = -1;
                 } else {
                     self.currentResponseId = nil;
                 }
@@ -129,7 +129,7 @@ class RequestDetailsPage: AtwUIViewController {
             return;
         }
         
-        var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId);
+        var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId!);
         if (response == nil) {
             return;
         }
@@ -190,7 +190,7 @@ class RequestDetailsPage: AtwUIViewController {
         if (responseIds != nil && responseIds?.count > 0) {
             currentResponseId = responseIds![0];
         } else if (responseIds?.count == 0) {
-            currentResponseId = "";
+            currentResponseId = -1;
         } else {
             currentResponseId = nil;
         }
@@ -199,8 +199,8 @@ class RequestDetailsPage: AtwUIViewController {
     }
     
     private func updateResponseFields() {
-        if (currentResponseId != nil && currentResponseId != "") {
-            var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId);
+        if (currentResponseId != nil && currentResponseId != -1) {
+            var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId!);
             if (response != nil) {
                 if (response?.contactInfo != nil) {
                     responseTextField.text = "\(response!.contactInfo!.contactName)\n\(response!.contactInfo!.contactInfo)\n---\n\(response!.text)";
@@ -221,7 +221,7 @@ class RequestDetailsPage: AtwUIViewController {
                 
                 return;
             }
-        } else if (currentResponseId == "") {
+        } else if (currentResponseId == -1) {
             responseTextField.text = "";
         } else {
             responseTextField.text = NSLocalizedString("Retreiving...", comment: "Response text is not available - pulling");

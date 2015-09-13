@@ -9,7 +9,7 @@
 import UIKit
 
 class InquiryDetailsPage: AtwUIViewController {
-    var requestId: String! //this is set from the outside before the page is brought up
+    var requestId: Int! //this is set from the outside before the page is brought up
     
     @IBOutlet weak var inquiryTextField: UITextView!
     @IBOutlet weak var responseTextField: UITextView!
@@ -26,7 +26,7 @@ class InquiryDetailsPage: AtwUIViewController {
     private var updateListenerId: String!;
     
     
-    private var responseId: String?;
+    private var responseId: Int?;
 
     override func viewDidLoad() {
         setSensitiveConstraint(bottomSpacing, offset: toolbar.frame.height);
@@ -177,7 +177,7 @@ class InquiryDetailsPage: AtwUIViewController {
                 if (responseIds?.count != 0) {
                     responseId = responseIds![0];
 
-                    var response = Backend.getInstance().getResponse(requestId, responseId: responseId);
+                    var response = Backend.getInstance().getResponse(requestId, responseId: responseId!);
                     if (response != nil) {
                         responseTextField.text = response!.text;
 

@@ -377,7 +377,12 @@ IncomingRequestDetailsPage.prototype._ignoreRequest = function() {
   var transactionCallback = {
     success: function() {
       Application.showMenuPage(this._returnPageId);
-    }.bind(this)
+    }.bind(this),
+    failure: function() {
+    },
+    error: function() {
+      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+    }
   }
   Backend.removeIncomingRequest(this._currentRequestId, transactionCallback);
 }

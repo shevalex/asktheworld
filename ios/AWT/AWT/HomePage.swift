@@ -15,7 +15,7 @@ class HomePage: AtwUIViewController {
     @IBOutlet weak var numOfOutgoingRequestsLabel: UILabel!
     @IBOutlet weak var numOfIncomingRequestsLabel: UILabel!
     
-    private var selectedRequestId: String!;
+    private var selectedRequestId: Int!;
     private var outgoingRequestCounter: GenericObjectCounter!;
     private var incomingRequestCounter: GenericObjectCounter!;
     

@@ -14,7 +14,7 @@ typealias ObjectUpdateObserver = (finished: Bool) -> Void;
 typealias ObjectCounterObserver = (requests: Int?, responses: Int?) -> Void;
 
 protocol GenericObjectProvider {
-    func getObjectId(index: Int!) -> String?;
+    func getObjectId(index: Int!) -> Int?;
     func count() -> Int?;
     func setChangeObserver(observer: ((index: Int?) -> Void)!);
     func setUpdateObserver(observer: ObjectUpdateObserver!);
@@ -29,12 +29,12 @@ protocol GenericObjectCounter {
 }
 
 protocol ObjectProviderFactory {
-    func getObjectProvider(objectId: String!) -> GenericObjectProvider;
+    func getObjectProvider(objectId: Int) -> GenericObjectProvider;
 }
 
 
 struct RequestResponseManagement {
-    typealias ObjectSelectionObserver = (id: String) -> Void
+    typealias ObjectSelectionObserver = (id: Int) -> Void
 
     private static var mapping: NSCache! = NSCache()
     
@@ -98,10 +98,10 @@ struct RequestResponseManagement {
         }
 
         //To be overriden
-        func renderTableCell(cell: UITableViewCell, id: String) {
+        func renderTableCell(cell: UITableViewCell, id: Int) {
         }
         
-        private func getObjectId(indexPath: NSIndexPath) -> String? {
+        private func getObjectId(indexPath: NSIndexPath) -> Int? {
             return dataProvider.getObjectId(indexPath.row);
         }
     }
@@ -112,7 +112,7 @@ struct RequestResponseManagement {
     // Requests support
     
     class OutgoingRequestsDataModel: AbstractUIObjectDataModel {
-        override func renderTableCell(cell: UITableViewCell, id: String) {
+        override func renderTableCell(cell: UITableViewCell, id: Int) {
             let tableCell: OutgoingRequestTableCell = cell as! OutgoingRequestTableCell;
 
             var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
@@ -156,7 +156,7 @@ struct RequestResponseManagement {
     }
 
     class IncomingRequestsDataModel: AbstractUIObjectDataModel {
-        override func renderTableCell(cell: UITableViewCell, id: String) {
+        override func renderTableCell(cell: UITableViewCell, id: Int) {
             
             let tableCell: IncomingRequestTableCell = cell as! IncomingRequestTableCell;
             
@@ -195,7 +195,7 @@ struct RequestResponseManagement {
         private var cacheChangeListenerId: String? = nil;
         private var updateObserver: ObjectUpdateObserver? = nil;
         
-        func getObjectId(index: Int!) -> String? {
+        func getObjectId(index: Int!) -> Int? {
             var requestIds = getObjectIds();
             if (requestIds != nil) {
                 return requestIds![index];
@@ -226,15 +226,15 @@ struct RequestResponseManagement {
             
             let cacheChangeListener: Backend.CacheChangeEventObserver = {(event) in
                 if (self.isObjectIdsChangeEvent(event)) {
-                    var objectIds: [String]? = self.getObjectIds();
+                    var objectIds: [Int]? = self.getObjectIds();
                     if (objectIds != nil) {
                         self.updateObserver?(finished: true);
                         observer(index: -1);
                     }
                 } else {
-                    var eventObjectId: String? = self.getObjectIdForChangeEvent(event);
+                    var eventObjectId: Int? = self.getObjectIdForChangeEvent(event);
                     if (eventObjectId != nil) {
-                        var objectIds: [String]? = self.getObjectIds();
+                        var objectIds: [Int]? = self.getObjectIds();
                         if (objectIds != nil) {
                             for (index, objectId) in enumerate(objectIds!) {
                                 if (objectId == eventObjectId) {
@@ -264,7 +264,7 @@ struct RequestResponseManagement {
             }
         }
         
-        func getObjectIds() -> [String]? {
+        func getObjectIds() -> [Int]? {
             return nil;
         }
 
@@ -272,20 +272,20 @@ struct RequestResponseManagement {
             return false;
         }
 
-        func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+        func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> Int? {
             return nil;
         }
     }
     
     class AbstractResponseProviderFactory: ObjectProviderFactory {
-        private var providers: Dictionary<String, GenericObjectProvider> = Dictionary();
+        private var providers: Dictionary<Int, GenericObjectProvider> = Dictionary();
         private var responseStatus: String?;
         
         init(responseStatus: String?) {
             self.responseStatus = responseStatus;
         }
         
-        func getObjectProvider(objectId: String!) -> GenericObjectProvider {
+        func getObjectProvider(objectId: Int) -> GenericObjectProvider {
             var provider: GenericObjectProvider? = providers[objectId];
             if (provider == nil) {
                 provider = createObjectProvider(objectId, responseStatus: responseStatus);
@@ -295,7 +295,7 @@ struct RequestResponseManagement {
             return provider!;
         }
         
-        func createObjectProvider(requestId: String, responseStatus: String?) -> GenericObjectProvider? {
+        func createObjectProvider(requestId: Int, responseStatus: String?) -> GenericObjectProvider? {
             return nil;
         }
     }
@@ -303,7 +303,7 @@ struct RequestResponseManagement {
 
     
     class OutgoingRequestObjectProvider: AbstractObjectProvider {
-        override func getObjectIds() -> [String]? {
+        override func getObjectIds() -> [Int]? {
             return Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
         }
         
@@ -311,7 +311,7 @@ struct RequestResponseManagement {
             return event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED;
         }
         
-        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> Int? {
             return event.requestId;
         }
     }
@@ -324,13 +324,13 @@ struct RequestResponseManagement {
         }
         
         
-        override func getObjectIds() -> [String]? {
-            let requestIds: [String]? = Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
+        override func getObjectIds() -> [Int]? {
+            let requestIds: [Int]? = Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
                 return nil;
             }
             
-            var matchingRequestIds: [String] = [];
+            var matchingRequestIds: [Int] = [];
             for (index, requestId) in enumerate(requestIds!) {
                 var responseProvider = responseProviderFactory.getObjectProvider(requestId);
                 var responseCount = responseProvider.count();
@@ -348,15 +348,15 @@ struct RequestResponseManagement {
     
     
     class IncomingResponseObjectProvider: AbstractObjectProvider {
-        private var requestId: String;
+        private var requestId: Int;
         private var responseStatus: String?;
         
-        init(requestId: String, responseStatus: String?) {
+        init(requestId: Int, responseStatus: String?) {
             self.requestId = requestId;
             self.responseStatus = responseStatus;
         }
         
-        override func getObjectIds() -> [String]? {
+        override func getObjectIds() -> [Int]? {
             return Backend.getInstance().getIncomingResponseIds(requestId, responseStatus: responseStatus);
         }
         
@@ -364,7 +364,7 @@ struct RequestResponseManagement {
             return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED;
         }
         
-        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> Int? {
             if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
                 return nil;
             }
@@ -377,14 +377,14 @@ struct RequestResponseManagement {
     }
     
     class IncomingResponseProviderFactory: AbstractResponseProviderFactory {
-        override func createObjectProvider(requestId: String, responseStatus: String?) -> GenericObjectProvider? {
+        override func createObjectProvider(requestId: Int, responseStatus: String?) -> GenericObjectProvider? {
             return IncomingResponseObjectProvider(requestId: requestId, responseStatus: responseStatus);
         }
     }
     
     
     class IncomingRequestObjectProvider: AbstractObjectProvider {
-        override func getObjectIds() -> [String]? {
+        override func getObjectIds() -> [Int]? {
             return Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
         }
         
@@ -392,7 +392,7 @@ struct RequestResponseManagement {
             return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED;
         }
 
-        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> Int? {
             return event.requestId;
         }
     }
@@ -406,14 +406,14 @@ struct RequestResponseManagement {
         }
         
 
-        override func getObjectIds() -> [String]? {
-            let requestIds: [String]? = Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
+        override func getObjectIds() -> [Int]? {
+            let requestIds: [Int]? = Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
                 return nil;
             }
             
             
-            var matchingRequestIds: [String] = [];
+            var matchingRequestIds: [Int] = [];
             for (index, requestId) in enumerate(requestIds!) {
                 var responseProvider = responseProviderFactory.getObjectProvider(requestId);
                 var responseCount = responseProvider.count();
@@ -429,15 +429,15 @@ struct RequestResponseManagement {
     }
     
     class OutgoingResponseObjectProvider: AbstractObjectProvider {
-        private var requestId: String;
+        private var requestId: Int;
         private var responseStatus: String?;
         
-        init(requestId: String, responseStatus: String?) {
+        init(requestId: Int, responseStatus: String?) {
             self.requestId = requestId;
             self.responseStatus = responseStatus;
         }
         
-        override func getObjectIds() -> [String]? {
+        override func getObjectIds() -> [Int]? {
             return Backend.getInstance().getOutgoingResponseIds(requestId, responseStatus: responseStatus);
         }
         
@@ -445,7 +445,7 @@ struct RequestResponseManagement {
             return event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
         }
         
-        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> String? {
+        override func getObjectIdForChangeEvent(event: Backend.CacheChangeEvent) -> Int? {
             if (event.type != Backend.CacheChangeEvent.TYPE_REQUEST_CHANGED) {
                 return nil;
             }
@@ -458,7 +458,7 @@ struct RequestResponseManagement {
     }
     
     class OutgoingResponseProviderFactory: AbstractResponseProviderFactory {
-        override func createObjectProvider(requestId: String, responseStatus: String?) -> GenericObjectProvider? {
+        override func createObjectProvider(requestId: Int, responseStatus: String?) -> GenericObjectProvider? {
             return OutgoingResponseObjectProvider(requestId: requestId, responseStatus: responseStatus);
         }
     }
@@ -495,7 +495,7 @@ struct RequestResponseManagement {
                     self.requestCount = requestProvider.count();
                     
                     for (var requestIndex = 0; requestIndex < self.requestCount; requestIndex++) {
-                        var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex));
+                        var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex)!);
                         
                         var responseCount = responseProvider.count();
                         for (var responseIndex = 0; responseIndex < self.requestCount; responseIndex++) {
@@ -527,7 +527,7 @@ struct RequestResponseManagement {
             
             var requestCount = requestProvider.count();
             for (var requestIndex = 0; requestIndex < requestCount; requestIndex++) {
-                var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex));
+                var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex)!);
                 
                 var responseCount = responseProvider.count();
                 for (var responseIndex = 0; responseIndex < self.requestCount; responseIndex++) {
@@ -557,7 +557,7 @@ struct RequestResponseManagement {
                 for (var reqIndex: Int = 0; reqIndex < requests; reqIndex++) {
                     var requestId = requestProvider.getObjectId(reqIndex);
                     
-                    var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId);
+                    var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId!);
                     var responses = responseProvider.count();
                     if (responses != nil) {
                         responseCount = responseCount != nil ? responseCount! + responses! : responses!;
@@ -662,7 +662,7 @@ struct RequestResponseManagement {
 
             let requestId = requestObjectProvider.getObjectId(path.row);
             if (requestId != nil) {
-                var request = Backend.getInstance().getRequest(requestId);
+                var request = Backend.getInstance().getRequest(requestId!);
                 if (request != nil) {
                     request!.status = Backend.RequestObject.STATUS_INACTIVE;
                     Backend.getInstance().updateRequest(requestId!, request: request!, callback: UpdateRequestCallback(tableView: tableView));

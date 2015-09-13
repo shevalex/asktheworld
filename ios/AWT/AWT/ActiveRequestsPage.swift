@@ -13,7 +13,7 @@ class ActiveRequestsPage: AtwUIViewController {
     @IBOutlet weak var numOfOutgoingRequestsLabel: UILabel!
     
     private var outgoingRequestCounter: GenericObjectCounter!;
-    private var requestIdtoSend: String!;
+    private var requestIdtoSend: Int!;
     
     override func viewDidLoad() {
         super.viewDidLoad()

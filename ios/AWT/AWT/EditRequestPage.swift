@@ -9,7 +9,7 @@
 import UIKit
 
 class EditRequestPage: AtwUIViewController {
-    var requestId: String!
+    var requestId: Int!
     
     @IBOutlet weak var expertiseTextField: UITextField!
     var expertiseSelector: SelectorView!
