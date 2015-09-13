@@ -1265,7 +1265,7 @@ public class Backend {
 
             if (statusCode == 200) {
                 self.events.updateFromParcel(data!);
-                
+
                 for (index, event) in enumerate(self.events.events) {
                     if (event.type == Events.INCOMING_REQUESTS_CHANGED) {
                         self.pullIncomingRequestIds(requestStatus: RequestObject.STATUS_ALL, sortRule: nil, callback: nil);

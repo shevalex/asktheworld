@@ -589,15 +589,17 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
   
   var communicationCallback = {
     success: function(data, status, xhr) {
+      Backend.Cache.markIncomingRequestIdsInUpdate(false);
+      
       if (xhr.status == 200) {
-        var requestIds = Backend.Cache.getIncomingRequestIds();
-
-        //TODO: This needs to be cleaned to repull from the server
-        requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
-        requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
-        requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
-
-        Backend.Cache.setIncomingRequestIds(requestIds);
+//        var requestIds = Backend.Cache.getIncomingRequestIds();
+//
+//        //TODO: This needs to be cleaned to repull from the server
+//        requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
+//        requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
+//        requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
+//
+//        Backend.Cache.setIncomingRequestIds(requestIds);
 
         if (transactionCallback != null) {
           transactionCallback.success();
