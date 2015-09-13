@@ -200,6 +200,7 @@ public class Backend {
     
     
     private static let SERVER_URL: String! = "https://hidden-taiga-8809.herokuapp.com";
+//    private static let SERVER_URL: String! = "https://localhost:8080";
     
     private static let LOCATION_HEADER_KEY: String! = "_location";
     
@@ -638,6 +639,7 @@ public class Backend {
         userProfile.gender = gender;
         userProfile.age = age;
         userProfile.name = nickname;
+        userProfile.languages = languages;
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             

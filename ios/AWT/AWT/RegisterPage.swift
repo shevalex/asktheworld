@@ -86,7 +86,7 @@ class RegisterPage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
         var languageItems = (languagesTextField.inputView as! SelectorView).getSelectedItems();
         var genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
         var ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
-        
+
         Backend.register(emailTextField.text, password: passwordTextField.text, gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, callback: self)
     }
     
