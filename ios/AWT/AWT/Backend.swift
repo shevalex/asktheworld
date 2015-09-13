@@ -656,6 +656,8 @@ public class Backend {
                 
                 Backend.instance.userProfile.userId = location!.toInt();
                 
+                Backend.instance.userPreferences = UserPreferences();
+                
                 Backend.instance.pullUserSettings(callback);
             } else if (statusCode == 409) {
                 callback?.onFailure();
@@ -1380,7 +1382,7 @@ public class Backend {
                 callback?.onError()
             }
         };
-        
+
         let url = "user/\(userProfile.userId)/settings";
         Backend.communicate(url, method: HttpMethod.GET, params: nil, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
     }
