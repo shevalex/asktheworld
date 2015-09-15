@@ -69,7 +69,6 @@ public class ATWRequest implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATION_TS", nullable = false, updatable=false)
 	@JsonSerialize(using = DateSerializer.class)
-	@JsonDeserialize
 	private Date time;
 	
 	public int getId() {
