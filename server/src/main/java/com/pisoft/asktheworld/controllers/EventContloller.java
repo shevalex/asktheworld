@@ -32,8 +32,9 @@ public class EventContloller {
 		Date requestTime = new Date();
 		Map<String, Object> map = new HashMap<String, Object>(2); 
 		map.put("timestamp", Long.valueOf(requestTime.getTime()));
-		if(timeStamp > 0) {
-			Date dTimeStamp = new Date(timeStamp);
+		//Use this condition to avoid negative time value
+		if(timeStamp > 1000) {
+			Date dTimeStamp = new Date(timeStamp-1000);
 			List<ATWEvent> list = db.getUpdates(user_id, dTimeStamp, requestTime);
 			if( list == null) {
 				return new ResponseEntity<Map<String, Object>>(HttpStatus.NOT_FOUND);
