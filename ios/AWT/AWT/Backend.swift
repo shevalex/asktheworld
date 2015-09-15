@@ -284,7 +284,14 @@ public class Backend {
         public var contactVisible: Configuration.Item! = Configuration.CONTACT_REQUESTABLE[0];
         public var contactName: String! = "";
         public var contactInfo: String! = "";
+
+        private let userProfile: UserProfile;
         
+        init(userProfile: UserProfile) {
+            self.userProfile = userProfile;
+        }
+
+
         public func updateFromParcel(parcel: NSDictionary) {
             responseQuantity = Configuration.resolve(parcel.valueForKey(UserPreferences.USER_PREFERENCE_RESPONSE_QUANTITY), predefinedList: Configuration.RESPONSE_QUANTITY);
             
@@ -415,7 +422,9 @@ public class Backend {
         private static let RESPONSE_GENDER: String = "response_gender";
         private static let EXPERTISE_CATEGORY: String = "expertise_category";
         
+
         init(userPreferences: UserPreferences) {
+            userId = userPreferences.userProfile.userId;
             responseQuantity = userPreferences.responseQuantity;
             responseWaitTime = userPreferences.responseWaitTime;
             responseAgeGroup = userPreferences.inquiryAge;
@@ -424,6 +433,7 @@ public class Backend {
         }
 
         
+        var userId: Int;
         var time: Double! = NSDate().timeIntervalSince1970;
         var text: String! = "";
         var attachments: [String]! = [];
@@ -447,7 +457,7 @@ public class Backend {
         }
         
         public func safeToParcel(parcel: NSDictionary) {
-            //parcel.setValue(self.userContext.userId, forKey: RequestObject.USER_ID);
+            parcel.setValue(self.userId, forKey: RequestObject.USER_ID);
             parcel.setValue(self.text, forKey: RequestObject.TEXT);
             parcel.setValue(self.time, forKey: RequestObject.TIME);
             //parcel.setValue(self.attachments, forKey: RequestObject.ATTACHMENTS);
@@ -604,7 +614,7 @@ public class Backend {
                 Backend.instance.userProfile.login = login;
                 Backend.instance.userProfile.password = password;
                 
-                Backend.instance.userPreferences = UserPreferences();
+                Backend.instance.userPreferences = UserPreferences(userProfile: Backend.instance.userProfile);
                 
                 Backend.instance.pullUserSettings(callback);
             } else if (statusCode == 401 || statusCode == 404) {
@@ -656,7 +666,7 @@ public class Backend {
                 
                 Backend.instance.userProfile.userId = location!.toInt();
                 
-                Backend.instance.userPreferences = UserPreferences();
+                Backend.instance.userPreferences = UserPreferences(userProfile: Backend.instance.userProfile);
                 
                 Backend.instance.pullUserSettings(callback);
             } else if (statusCode == 409) {
