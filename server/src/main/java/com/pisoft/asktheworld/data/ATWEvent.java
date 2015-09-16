@@ -30,7 +30,7 @@ public class ATWEvent {
 	private int request_id;
 	private int requests_ids[];
 	private int response_id;
-	private int response_idsp[];
+	private int response_ids[];
 	
 	private ATWEvent(Type type) {
 		this.type = type;
