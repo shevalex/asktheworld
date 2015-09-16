@@ -757,7 +757,7 @@ public class Backend {
                 
                 var request = RequestObject(userPreferences: self.userPreferences);
                 request.updateFromParcel(data!);
-                
+
                 self.cache.setRequest(requestId.toInt()!, request: request);
                 
                 callback?.onSuccess();
@@ -1298,7 +1298,7 @@ public class Backend {
                     }
                 }
                 
-                DelayedNotifier(action: action).schedule(5);
+                DelayedNotifier(action: action).schedule(1);
             } else {
                 println("Event retrieval failed. Retrying in 10 seconds");
                 
@@ -1687,12 +1687,14 @@ public class Backend {
                     var jsonData: NSMutableDictionary?;
                     if (data != nil) {
                         var err: NSError?
-                        jsonData = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: &err) as? NSMutableDictionary;
+                        jsonData = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &err) as? NSMutableDictionary;
                     }
                     
                     let location: AnyObject? = res.allHeaderFields["Location"];
                     if (location != nil) {
-                        jsonData = NSMutableDictionary();
+                        if (jsonData == nil) {
+                            jsonData = NSMutableDictionary();
+                        }
                         jsonData!.setValue(location, forKey: Backend.LOCATION_HEADER_KEY);
                     }
 
