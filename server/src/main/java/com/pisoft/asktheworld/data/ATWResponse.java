@@ -50,7 +50,7 @@ public class ATWResponse implements Serializable {
 	}
 
 	@Column
-	private int requestId;
+	private int request_id;
 	
 	@Column
 	private String text;
@@ -119,20 +119,20 @@ public class ATWResponse implements Serializable {
 		this.response_id = id;
 	}
 
-	public int getUser_id() {
+	public int getUserId() {
 		return user_id;
 	}
 
-	public void setUser_id(int user_id) {
+	public void setUserId(int user_id) {
 		this.user_id = user_id;
 	}
 
 	public int getRequestId() {
-		return requestId;
+		return request_id;
 	}
 
 	public void setRequestId(int requestId) {
-		this.requestId = requestId;
+		this.request_id = requestId;
 	}
 
 	public String getText() {

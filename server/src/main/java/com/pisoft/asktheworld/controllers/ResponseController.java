@@ -32,9 +32,8 @@ public class ResponseController {
 	@RequestMapping(method = RequestMethod.POST, value="response")
 	public ResponseEntity<ATWResponse> createResponse(@RequestBody ATWResponse response) {
 		//TODO: replace with db.existRequest Now, we dont check is this request is incoming for particular user
-		ATWUser existUser = db.getUser(response.getUser_id());
+		ATWUser existUser = db.getUser(response.getUserId());
 		ATWRequest existRequest = db.getRequest(response.getRequestId());
-		
 		if (existUser != null && existRequest != null) {
 			response = db.addResponse(response);
 			HttpHeaders headers = new HttpHeaders();
