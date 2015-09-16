@@ -504,8 +504,8 @@ public class Backend {
         static let CONTACT_INFO_STATUS_PROVIDED = "provided";
         
         
-        private static let USER_ID: String = "userId";
-        private static let REQUEST_ID: String = "requestId";
+        private static let USER_ID: String = "user_id";
+        private static let REQUEST_ID: String = "request_id";
         private static let TIME: String = "time";
         private static let TEXT: String = "text";
         private static let AGE_CATEGORY: String = "age_category";
