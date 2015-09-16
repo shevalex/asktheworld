@@ -532,7 +532,7 @@ public class Backend {
 
         var userId: Int!;
         var requestId: Int!;
-        var time: Double! = 0;
+        var time: Double! = NSDate().timeIntervalSince1970;
         var text: String! = "";
         var attachments: [String]!;
         var ageCategory: Configuration.Item!;
