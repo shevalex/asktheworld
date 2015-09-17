@@ -10,16 +10,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
-	private String findByRequestID = "select r from "+ATWResponse.class.getName()+" r where r.requestId=?1 and r.deleted=false";
-	private String findByRequestAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.requestId=?2 and r.user_id=?1";
+	private String findByRequestID = "select r from "+ATWResponse.class.getName()+" r where r.request_id=?1 and r.deleted=false";
+	private String findByRequestAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.request_id=?2 and r.user_id=?1";
 	private String findByResponseAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.id=?1 and r.user_id=?2";
 	private String findByUserID = "select r from "+ATWResponse.class.getName()+" r where r.user_id=?1";
-	private String findNewByUserIDAndTime = "select r.requestId from "+ATWResponse.class.getName()+" r where r.user_id=?1 and r.time between ?2 and ?3";
+	private String findNewByUserIDAndTime = "select r.request_id from "+ATWResponse.class.getName()+" r where r.user_id=?1 and r.time between ?2 and ?3";
 	//TODO: change to Event creation for pair (id, requestId). Now will return response objects 
 	private String findModifiedByUserIDAndTime = "select r from "+ATWResponse.class.getName()+" r where r.user_id=?1 and r.modificationDate between ?2 and ?3";
-	private String findNewByRequestsIdAndTime = "select r.requestId from "+ATWResponse.class.getName()+" r where r.requestId in ?1 and r.time between ?2 and ?3";
+	private String findNewByRequestsIdAndTime = "select r.request_id from "+ATWResponse.class.getName()+" r where r.request_id in ?1 and r.time between ?2 and ?3";
 	//TODO: change to Event creation for pair (id, requestId). Now will return response objects
-	private String findModifiedByRequestsIdAndTime = "select r from " + ATWResponse.class.getName()+" r where r.requestId in ?1 and r.modificationDate between ?2 and ?3";
+	private String findModifiedByRequestsIdAndTime = "select r from " + ATWResponse.class.getName()+" r where r.request_id in ?1 and r.modificationDate between ?2 and ?3";
 	
 	public ResponseDAOImpl() {
 		super();
@@ -27,12 +27,12 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 		System.out.println("RESPONSE DAO CREATED");
 	}
 
-	public List<ATWResponse> findResponsesByUserIdAndRequestId(int user_id,
+	public List<ATWResponse> findResponsesByUserIdAndRequestId(int userId,
 			int requestID) {
 		//TODO: update sql request with sorting option. Now just by date 
 		@SuppressWarnings("unchecked")
 		List<ATWResponse> list =  entityManager.createQuery(findByRequestAndUserID)
-			.setParameter(1, user_id )
+			.setParameter(1, userId )
 			.setParameter(2, requestID)
 			.getResultList();
 		if(list != null) {System.out.println("Response by rid and uid List size = "+list.size());}
@@ -58,30 +58,30 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 		return response;
 	}
 
-	public List<ATWResponse> findByUserId(int user_id) {
+	public List<ATWResponse> findByUserId(int userId) {
 		@SuppressWarnings("unchecked")
 		List<ATWResponse> list =  entityManager.createQuery(findByUserID)
-			.setParameter(1, user_id)
+			.setParameter(1, userId)
 			.getResultList();
 		return list;
 	}
 	
-	public List<Integer> findNewOutgoingResponsesByUserIdAndDate(int user_id,
+	public List<Integer> findNewOutgoingResponsesByUserIdAndDate(int userId,
 			Date timeStamp, Date timeRequest) {
 		@SuppressWarnings("unchecked")
 		List<Integer> list = entityManager.createQuery(findNewByUserIDAndTime,Integer.class)
-				.setParameter(1, user_id)
+				.setParameter(1, userId)
 				.setParameter(2, timeStamp)
 				.setParameter(3, timeRequest)
 				.getResultList();
 		return list;
 	}
 
-	public List<ATWResponse> findModifiedOutgoingRequestsByUserIdAndDate(int user_id,
+	public List<ATWResponse> findModifiedOutgoingRequestsByUserIdAndDate(int userId,
 			Date timeStamp, Date timeRequest) {
 		@SuppressWarnings("unchecked")
 		List<ATWResponse> list = entityManager.createQuery(findModifiedByUserIDAndTime)
-				.setParameter(1, user_id)
+				.setParameter(1, userId)
 				.setParameter(2, timeStamp)
 				.setParameter(3, timeRequest)
 				.getResultList();
