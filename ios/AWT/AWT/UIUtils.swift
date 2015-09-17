@@ -69,7 +69,7 @@ public struct AtwUiUtils {
 
         anchor.addSubview(activityIndicator);
         
-//        activityIndicator.setTranslatesAutoresizingMaskIntoConstraints(false);
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false;
         let constX = NSLayoutConstraint(item: activityIndicator, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: anchor, attribute: NSLayoutAttribute.CenterX, multiplier: 1.0, constant: 0);
         anchor.addConstraint(constX);
         
