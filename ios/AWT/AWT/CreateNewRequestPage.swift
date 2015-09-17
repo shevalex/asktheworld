@@ -85,7 +85,7 @@ class CreateNewRequestPage: AtwUIViewController {
         }
         
         
-        var request = Backend.RequestObject(userPreferences: Backend.getInstance().getUserPreferences());
+        let request = Backend.RequestObject(userPreferences: Backend.getInstance().getUserPreferences());
         
 //        request.attachments;
         request.expertiseCategory = expertiseSelector.getSelectedItem();

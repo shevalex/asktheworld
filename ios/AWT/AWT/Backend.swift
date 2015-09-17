@@ -51,7 +51,7 @@ public struct Configuration {
             return nil;
         }
 
-        for (index, item) in enumerate(predefinedList) {
+        for (_, item) in predefinedList.enumerate() {
             if (item.data as! NSObject == value as! NSObject) {
                 return item;
             }
@@ -67,8 +67,8 @@ public struct Configuration {
         
         var result: [Configuration.Item]! = [];
         
-        for (index, item) in enumerate(predefinedList) {
-            for (i, value) in enumerate(values!) {
+        for (_, item) in predefinedList.enumerate() {
+            for (_, value) in values!.enumerate() {
                 if (item.data as! NSObject == value as! NSObject) {
                     result.append(item);
                 }
@@ -130,7 +130,7 @@ public struct Configuration {
             }
         }
         
-        println("Unexpected target group params \(ageCategory.data), \(gender.data)");
+        print("Unexpected target group params \(ageCategory.data), \(gender.data)");
         return "Unexpected target group params \(ageCategory.data), \(gender.data)";
     }
     
@@ -167,7 +167,7 @@ public struct Configuration {
             }
         }
         
-        println("Unexpected identity params \(ageCategory.data), \(gender.data)");
+        print("Unexpected identity params \(ageCategory.data), \(gender.data)");
         return "Unexpected identity params \(ageCategory.data), \(gender.data)";
     }
     
@@ -182,7 +182,7 @@ public struct Configuration {
             return NSLocalizedString("construction", comment: "Expertise category - construction");
         }
         
-        println("Unexpected expertise category \(expertiseCategory.data)");
+        print("Unexpected expertise category \(expertiseCategory.data)");
         return "Unexpected expertise category \(expertiseCategory.data)";
     }
 }
@@ -250,7 +250,7 @@ public class Backend {
             parcel.setValue(name, forKey: UserProfile.USER_PROPERTY_NICKNAME);
             
             var langData: [String] = [];
-            for (index, item) in enumerate(languages) {
+            for (_, item) in languages.enumerate() {
                 langData.append(item.data as! String);
             }
             parcel.setValue(langData, forKey: UserProfile.USER_PROPERTY_LANGUAGES);
@@ -327,7 +327,7 @@ public class Backend {
             var expertisesData: [String]?;
             if (expertises != nil) {
                 expertisesData = [];
-                for (index, item) in enumerate(expertises!) {
+                for (_, item) in expertises!.enumerate() {
                     expertisesData!.append(item.data as! String);
                 }
             }
@@ -371,12 +371,12 @@ public class Backend {
             timestamp = parcel.valueForKey(Events.TIMESTAMP) as? Int;
             events = [];
             
-            var eventDataArray: [NSDictionary]? = parcel.valueForKey(Events.EVENTS) as? [NSDictionary];
+            let eventDataArray: [NSDictionary]? = parcel.valueForKey(Events.EVENTS) as? [NSDictionary];
             if (eventDataArray != nil) {
-                for (index, eventData) in enumerate(eventDataArray!) {
-                    var type = eventData.valueForKey(Event.TYPE) as! String;
-                    var requestId = eventData.valueForKey(Event.REQUEST_ID) as? Int;
-                    var responseId = eventData.valueForKey(Event.RESPONSE_ID) as? Int;
+                for (_, eventData) in eventDataArray!.enumerate() {
+                    let type = eventData.valueForKey(Event.TYPE) as! String;
+                    let requestId = eventData.valueForKey(Event.REQUEST_ID) as? Int;
+                    let responseId = eventData.valueForKey(Event.RESPONSE_ID) as? Int;
                     events.append(Event(type: type, requestId: requestId, responseId: responseId));
                 }
             }
@@ -551,7 +551,7 @@ public class Backend {
             self.status = parcel.valueForKey(ResponseObject.STATUS) as? String;
             self.contactInfoStatus = parcel.valueForKey(ResponseObject.CONTACT_INFO_STATUS) as? String;
             
-            var contactName: String? = parcel.valueForKey(ResponseObject.CONTACT_NAME) as? String;
+            let contactName: String? = parcel.valueForKey(ResponseObject.CONTACT_NAME) as? String;
             if (contactName != nil) {
                 contactInfo = ContactInfo(contactName: contactName!, contactInfo: parcel.valueForKey(ResponseObject.CONTACT_INFO) as! String);
             }
@@ -643,7 +643,7 @@ public class Backend {
     public static func register(login: String!, password: String!, gender: Configuration.Item!, age: Configuration.Item!, nickname: String!, languages: [Configuration.Item]!, callback: BackendCallback?) {
         
         
-        var userProfile = UserProfile();
+        let userProfile = UserProfile();
         userProfile.login = login;
         userProfile.password = password;
         userProfile.gender = gender;
@@ -659,12 +659,12 @@ public class Backend {
                 Backend.instance.userProfile = userProfile;
                 let location = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as? String;
                 if (location == nil) {
-                    println("Error: server malformed response - no userid provided in Location header");
+                    print("Error: server malformed response - no userid provided in Location header");
                     callback?.onError();
                     return;
                 }
                 
-                Backend.instance.userProfile.userId = location!.toInt();
+                Backend.instance.userProfile.userId = Int(location!);
                 
                 Backend.instance.userPreferences = UserPreferences(userProfile: Backend.instance.userProfile);
                 
@@ -676,7 +676,7 @@ public class Backend {
             }
         };
         
-        var params: NSDictionary! = NSMutableDictionary();
+        let params: NSDictionary! = NSMutableDictionary();
         userProfile.safeToParcel(params);
         
         Backend.communicate("user", method: HttpMethod.POST, params: params, communicationCallback: communicationCallback, login: login, password: password);
@@ -715,7 +715,7 @@ public class Backend {
             }
         };
         
-        var params: NSDictionary! = NSMutableDictionary();
+        let params: NSDictionary! = NSMutableDictionary();
         if (password != nil) {
             self.userProfile.password = password;
         }
@@ -740,7 +740,7 @@ public class Backend {
             }
         };
         
-        var params: NSDictionary! = NSMutableDictionary();
+        let params: NSDictionary! = NSMutableDictionary();
         userPreferences.safeToParcel(params);
 
         
@@ -755,10 +755,10 @@ public class Backend {
             if (statusCode == 201) {
                 let requestId: String = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as! String;
                 
-                var request = RequestObject(userPreferences: self.userPreferences);
+                let request = RequestObject(userPreferences: self.userPreferences);
                 request.updateFromParcel(data!);
 
-                self.cache.setRequest(requestId.toInt()!, request: request);
+                self.cache.setRequest(Int(requestId)!, request: request);
                 
                 callback?.onSuccess();
             } else {
@@ -770,7 +770,7 @@ public class Backend {
             }
         };
         
-        var params: NSDictionary! = NSMutableDictionary();
+        let params: NSDictionary! = NSMutableDictionary();
         request.safeToParcel(params);
         
         Backend.communicate("request", method: HttpMethod.POST, params: params, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
@@ -797,7 +797,7 @@ public class Backend {
             }
         };
         
-        var params: NSDictionary! = NSMutableDictionary();
+        let params: NSDictionary! = NSMutableDictionary();
         request.safeToParcel(params);
         
         
@@ -805,7 +805,7 @@ public class Backend {
     }
     
     public func getRequest(requestId: Int, callback: BackendCallback? = nil) -> RequestObject? {
-        var request: RequestObject? = cache.getRequest(requestId);
+        let request: RequestObject? = cache.getRequest(requestId);
         if (request != nil || cache.isRequestInUpdate(requestId)) {
             callback?.onSuccess();
             return request;
@@ -821,7 +821,7 @@ public class Backend {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                var request = RequestObject(userPreferences: self.userPreferences);
+                let request = RequestObject(userPreferences: self.userPreferences);
                 request.updateFromParcel(data!);
                 
                 self.cache.setRequest(requestId, request: request);
@@ -845,9 +845,9 @@ public class Backend {
     
     public func getOutgoingRequestIds(requestStatus: String? = nil, sortRule: String? = nil, callback: BackendCallback? = nil) -> [Int]? {
         
-        var reqStatus = requestStatus != nil ? requestStatus : Backend.RequestObject.STATUS_ALL;
+        let reqStatus = requestStatus != nil ? requestStatus : Backend.RequestObject.STATUS_ALL;
         
-        var requestIds: RequestIds? = self.cache.getOutgoingRequestIds();
+        let requestIds: RequestIds? = self.cache.getOutgoingRequestIds();
         
         var result: [Int]? = nil;
         if (requestIds != nil) {
@@ -858,14 +858,14 @@ public class Backend {
             } else if (reqStatus == Backend.RequestObject.STATUS_INACTIVE) {
                 result = requestIds!.inactive;
             } else {
-                println("Error: Invalid request status requested: \(requestStatus)");
+                print("Error: Invalid request status requested: \(requestStatus)");
             }
         }
         
         if (result != nil || self.cache.isOutgoingRequestIdsInUpdate()) {
             return result;
         } else {
-            pullOutgoingRequestIds(requestStatus: reqStatus, sortRule: sortRule, callback: callback);
+            pullOutgoingRequestIds(reqStatus, sortRule: sortRule, callback: callback);
             
             return nil;
         }
@@ -893,7 +893,7 @@ public class Backend {
                 } else {
                     callback?.onError();
                 }
-                self.cache.markOutgoingRequestIdsInUpdate(isInUpdate: false);
+                self.cache.markOutgoingRequestIdsInUpdate(false);
             }
         };
         
@@ -903,9 +903,9 @@ public class Backend {
 
     public func getIncomingRequestIds(requestStatus: String? = nil, sortRule: String? = nil, callback: BackendCallback? = nil) -> [Int]? {
         
-        var reqStatus = requestStatus != nil ? requestStatus : Backend.RequestObject.STATUS_ALL;
+        let reqStatus = requestStatus != nil ? requestStatus : Backend.RequestObject.STATUS_ALL;
         
-        var requestIds: RequestIds? = self.cache.getIncomingRequestIds();
+        let requestIds: RequestIds? = self.cache.getIncomingRequestIds();
         
         var result: [Int]? = nil;
         if (requestIds != nil) {
@@ -916,14 +916,14 @@ public class Backend {
             } else if (reqStatus == Backend.RequestObject.STATUS_INACTIVE) {
                 result = requestIds!.inactive;
             } else {
-                println("Error: Invalid request status requested: \(requestStatus)");
+                print("Error: Invalid request status requested: \(requestStatus)");
             }
         }
         
         if (result != nil || self.cache.isIncomingRequestIdsInUpdate()) {
             return result;
         } else {
-            pullIncomingRequestIds(requestStatus: reqStatus, sortRule: sortRule, callback: callback);
+            pullIncomingRequestIds(reqStatus, sortRule: sortRule, callback: callback);
             
             return nil;
         }
@@ -949,7 +949,7 @@ public class Backend {
                 } else {
                     callback?.onError();
                 }
-                self.cache.markIncomingRequestIdsInUpdate(isInUpdate: false);
+                self.cache.markIncomingRequestIdsInUpdate(false);
             }
         };
         
@@ -961,7 +961,7 @@ public class Backend {
         self.cache.markIncomingRequestIdsInUpdate();
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
-            self.cache.markIncomingRequestIdsInUpdate(isInUpdate: false);
+            self.cache.markIncomingRequestIdsInUpdate(false);
             if (statusCode == 200) {
                 callback?.onSuccess();
             } else {
@@ -985,10 +985,10 @@ public class Backend {
             if (statusCode == 201) {
                 let responseId: String = data?.valueForKey(Backend.LOCATION_HEADER_KEY) as! String;
                 
-                var response = ResponseObject(requestId: requestId, userProfile: self.userProfile);
+                let response = ResponseObject(requestId: requestId, userProfile: self.userProfile);
                 response.updateFromParcel(data!);
                 
-                self.cache.setResponse(requestId, responseId: responseId.toInt()!, response: response);
+                self.cache.setResponse(requestId, responseId: Int(responseId)!, response: response);
                 
                 callback?.onSuccess();
             } else {
@@ -1001,14 +1001,14 @@ public class Backend {
             }
         };
         
-        var params: NSDictionary! = NSMutableDictionary();
+        let params: NSDictionary! = NSMutableDictionary();
         response.safeToParcel(params);
         
         Backend.communicate("response", method: HttpMethod.POST, params: params, communicationCallback: communicationCallback, login: userProfile.login, password: userProfile.password);
     }
     
     public func getResponse(requestId: Int, responseId: Int, callback: BackendCallback? = nil) -> ResponseObject? {
-        var response: ResponseObject? = cache.getResponse(requestId, responseId: responseId);
+        let response: ResponseObject? = cache.getResponse(requestId, responseId: responseId);
         if (response != nil || cache.isResponseInUpdate(requestId, responseId: responseId)) {
             callback?.onSuccess();
             return response;
@@ -1024,7 +1024,7 @@ public class Backend {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                var response = ResponseObject(requestId: requestId, userProfile: self.userProfile);
+                let response = ResponseObject(requestId: requestId, userProfile: self.userProfile);
                 response.updateFromParcel(data!);
                 
                 self.cache.setResponse(requestId, responseId: responseId, response: response);
@@ -1044,7 +1044,7 @@ public class Backend {
     }
 
     public func getResponseWithContactInfo(requestId: Int, responseId: Int, callback: BackendCallback? = nil) -> ResponseObject? {
-        var response = self.cache.getResponse(requestId, responseId: responseId);
+        let response = self.cache.getResponse(requestId, responseId: responseId);
         if (response == nil || response!.contactInfoStatus == ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE) {
             pullResponseWithContactInfo(requestId, responseId: responseId, callback: callback);
             return nil;
@@ -1057,7 +1057,7 @@ public class Backend {
             callback?.onFailure();
             return nil;
         } else {
-            println("Error: Unsupported contact_info_status \(response!.contactInfoStatus)");
+            print("Error: Unsupported contact_info_status \(response!.contactInfoStatus)");
             return nil;
         }
     }
@@ -1067,7 +1067,7 @@ public class Backend {
         
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
             if (statusCode == 200) {
-                var response = ResponseObject(requestId: requestId, userProfile: self.userProfile);
+                let response = ResponseObject(requestId: requestId, userProfile: self.userProfile);
                 response.updateFromParcel(data!);
                 
                 self.cache.setResponse(requestId, responseId: responseId, response: response);
@@ -1106,7 +1106,7 @@ public class Backend {
             }
         };
         
-        var params: NSDictionary! = NSMutableDictionary();
+        let params: NSDictionary! = NSMutableDictionary();
         response.safeToParcel(params);
         
         
@@ -1117,9 +1117,9 @@ public class Backend {
     
 
     public func getIncomingResponseIds(requestId: Int, responseStatus: String? = nil, callback: BackendCallback? = nil) -> [Int]? {
-        var respStatus = responseStatus != nil ? responseStatus : Backend.ResponseObject.STATUS_ALL;
+        let respStatus = responseStatus != nil ? responseStatus : Backend.ResponseObject.STATUS_ALL;
         
-        var responseIds: ResponseIds? = self.cache.getIncomingResponseIds(requestId);
+        let responseIds: ResponseIds? = self.cache.getIncomingResponseIds(requestId);
         
         var result: [Int]? = nil;
         if (responseIds != nil) {
@@ -1130,7 +1130,7 @@ public class Backend {
             } else if (respStatus == ResponseObject.STATUS_VIEWED) {
                 result = responseIds!.viewed;
             } else {
-                println("Error: Invalid response status requested: \(responseStatus)");
+                print("Error: Invalid response status requested: \(responseStatus)");
             }
         }
         
@@ -1194,9 +1194,9 @@ public class Backend {
     
     
     public func getOutgoingResponseIds(requestId: Int, responseStatus: String? = nil, callback: BackendCallback? = nil) -> [Int]? {
-        var respStatus = responseStatus != nil ? responseStatus : Backend.ResponseObject.STATUS_ALL;
+        let respStatus = responseStatus != nil ? responseStatus : Backend.ResponseObject.STATUS_ALL;
         
-        var responseIds: ResponseIds? = self.cache.getOutgoingResponseIds(requestId);
+        let responseIds: ResponseIds? = self.cache.getOutgoingResponseIds(requestId);
         
         var result: [Int]? = nil;
         if (responseIds != nil) {
@@ -1207,7 +1207,7 @@ public class Backend {
             } else if (respStatus == ResponseObject.STATUS_VIEWED) {
                 result = responseIds!.viewed;
             } else {
-                println("Error: Invalid response status requested: \(responseStatus)");
+                print("Error: Invalid response status requested: \(responseStatus)");
             }
         }
         
@@ -1273,18 +1273,18 @@ public class Backend {
     
     private func pullEvents() {
         let communicationCallback: ((Int!, NSDictionary?) -> Void)? = {statusCode, data -> Void in
-            var action:()->Void = {() in
+            let action:()->Void = {() in
                 self.pullEvents();
             };
 
             if (statusCode == 200) {
                 self.events.updateFromParcel(data!);
 
-                for (index, event) in enumerate(self.events.events) {
+                for (_, event) in self.events.events.enumerate() {
                     if (event.type == Events.INCOMING_REQUESTS_CHANGED) {
-                        self.pullIncomingRequestIds(requestStatus: RequestObject.STATUS_ALL, sortRule: nil, callback: nil);
+                        self.pullIncomingRequestIds(RequestObject.STATUS_ALL, sortRule: nil, callback: nil);
                     } else if (event.type == Events.OUTGOING_REQUESTS_CHANGED) {
-                        self.pullOutgoingRequestIds(requestStatus: RequestObject.STATUS_ALL, sortRule: nil, callback: nil);
+                        self.pullOutgoingRequestIds(RequestObject.STATUS_ALL, sortRule: nil, callback: nil);
                     } else if (event.type == Events.OUTGOING_RESPONSES_CHANGED) {
                         self.pullOutgoingResponseIds(event.requestId!, responseStatus: ResponseObject.STATUS_ALL, callback: nil);
                     } else if (event.type == Events.INCOMING_RESPONSES_CHANGED) {
@@ -1294,13 +1294,13 @@ public class Backend {
                     } else if (event.type == Events.RESPONSE_CHANGED) {
                         self.pullResponse(event.requestId!, responseId: event.responseId!, callback: nil);
                     } else {
-                        println("Error: unrecognized event type \(event.type)");
+                        print("Error: unrecognized event type \(event.type)");
                     }
                 }
                 
                 DelayedNotifier(action: action).schedule(1);
             } else {
-                println("Event retrieval failed. Retrying in 10 seconds");
+                print("Event retrieval failed. Retrying in 10 seconds");
                 
                 DelayedNotifier(action: action).schedule(10);
             }
@@ -1315,7 +1315,7 @@ public class Backend {
     // Cache management
     
     func addCacheChangeListener(listener: CacheChangeEventObserver, listenerId: String!) -> String {
-        var listId = cache.addCacheChangeListener(listener, listenerId: listenerId);
+        let listId = cache.addCacheChangeListener(listener, listenerId: listenerId);
         
         startPullingEvents();
         
@@ -1492,7 +1492,7 @@ public class Backend {
             outgoingRequestIds = requestIds;
             notifyCacheListeners(CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, requestId: nil, responseId: nil);
 
-            markOutgoingRequestIdsInUpdate(isInUpdate: false);
+            markOutgoingRequestIdsInUpdate(false);
         }
         func getOutgoingRequestIds() -> RequestIds? {
             return outgoingRequestIds;
@@ -1510,7 +1510,7 @@ public class Backend {
             incomingRequestIds = requestIds;
             notifyCacheListeners(CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, requestId: nil, responseId: nil);
 
-            markIncomingRequestIdsInUpdate(isInUpdate: false);
+            markIncomingRequestIdsInUpdate(false);
         }
         func getIncomingRequestIds() -> RequestIds? {
             return incomingRequestIds;
@@ -1614,7 +1614,7 @@ public class Backend {
         }
         
         private func fireUpdateEvent() {
-            var isCurrentlyInUpdate = isInUpdate();
+            let isCurrentlyInUpdate = isInUpdate();
             
             if (!updateInProgressNotified && isCurrentlyInUpdate) {
                 updateInProgressNotified = true;
@@ -1627,9 +1627,9 @@ public class Backend {
         
         private func notifyCacheListeners(type: String!, requestId: Int!, responseId: Int!) {
             dispatch_async(dispatch_get_main_queue(), {
-                var event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
+                let event: CacheChangeEvent = CacheChangeEvent(type: type, requestId: requestId, responseId: responseId);
                 //            println("Event: type=\(type), request=\(requestId), response=\(responseId)");
-                for (key, listener) in self.cacheChangeListeners.get() {
+                for (_, listener) in self.cacheChangeListeners.get() {
                     listener(event);
                 }
             });
@@ -1660,14 +1660,17 @@ public class Backend {
 
     
     private static func communicate(url: String, method: HttpMethod, params: NSDictionary?, communicationCallback: ((Int!, NSDictionary?) -> Void)!, login: String?, password: String?) {
-        var request = NSMutableURLRequest(URL: NSURL(string: SERVER_URL + "/" + url)!);
-        var session = NSURLSession.sharedSession();
+        let request = NSMutableURLRequest(URL: NSURL(string: SERVER_URL + "/" + url)!);
+        let session = NSURLSession.sharedSession();
         request.HTTPMethod = HttpMethod.toString(method);
 
 
-        var err: NSError?
         if (params != nil) {
-            request.HTTPBody = NSJSONSerialization.dataWithJSONObject(params!, options: nil, error: &err);
+            do {
+                request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(params!, options: NSJSONWritingOptions.PrettyPrinted);
+            } catch {
+                print("Failed to generate an HTTP request for \(params!.debugDescription)");
+            }
         }
         request.addValue("application/json", forHTTPHeaderField: "Content-Type");
         request.addValue("application/json", forHTTPHeaderField: "Accept");
@@ -1677,7 +1680,7 @@ public class Backend {
         }
 
         
-        let completionHandler: ((NSData!, NSURLResponse!, NSError!) -> Void)? = {data, response, error -> Void in
+        let completionHandler: ((NSData?, NSURLResponse?, NSError?) -> Void) = {data, response, error -> Void in
             if (error != nil) {
                 communicationCallback(-1, nil);
             } else {
@@ -1686,8 +1689,11 @@ public class Backend {
                 if (res.statusCode >= 200 && res.statusCode < 300) {
                     var jsonData: NSMutableDictionary?;
                     if (data != nil) {
-                        var err: NSError?
-                        jsonData = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &err) as? NSMutableDictionary;
+                        do {
+                            jsonData = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.MutableContainers) as? NSMutableDictionary;
+                        } catch {
+                            print("Unable to restore json from the message \(data!.debugDescription)");
+                        }
                     }
                     
                     let location: AnyObject? = res.allHeaderFields["Location"];
@@ -1705,7 +1711,7 @@ public class Backend {
             }
         };
         
-        var task = session.dataTaskWithRequest(request, completionHandler: completionHandler);
+        let task = session.dataTaskWithRequest(request, completionHandler: completionHandler);
         task.resume();
     }
 }

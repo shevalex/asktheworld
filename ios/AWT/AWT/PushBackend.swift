@@ -66,7 +66,7 @@ struct PushBackend {
     
     
     private func notifyPushListeners(message: ServerMessage) {
-        for (id, listener) in notificationListeners.get() {
+        for (_, listener) in notificationListeners.get() {
             listener(message);
         }
     }
@@ -78,7 +78,7 @@ struct PushBackend {
     func placeNotification(text: String) {
         let message: ServerMessage = ServerMessage(type: "notif", text: text);
         
-        var action:()->Void = {() in
+        let action:()->Void = {() in
             self.notifyPushListeners(message);
         };
         

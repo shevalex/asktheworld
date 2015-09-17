@@ -17,11 +17,11 @@ class ImagePage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad();
 
-        var swipeRightRecognizer = UISwipeGestureRecognizer(target: self, action: "imageSwipedRightAction:");
+        let swipeRightRecognizer = UISwipeGestureRecognizer(target: self, action: "imageSwipedRightAction:");
         swipeRightRecognizer.direction = UISwipeGestureRecognizerDirection.Right;
         imageView.addGestureRecognizer(swipeRightRecognizer);
         
-        var swipeLeftRecognizer = UISwipeGestureRecognizer(target: self, action: "imageSwipedLeftAction:");
+        let swipeLeftRecognizer = UISwipeGestureRecognizer(target: self, action: "imageSwipedLeftAction:");
         swipeRightRecognizer.direction = UISwipeGestureRecognizerDirection.Left;
         imageView.addGestureRecognizer(swipeLeftRecognizer);
     }
@@ -41,7 +41,7 @@ class ImagePage: UIViewController {
             image = attachmentHandler.getAttachments()[0] as? UIImage;
             pageControl.currentPage = 0;
         } else {
-            for (index, img) in enumerate(attachmentHandler.getAttachments()) {
+            for (index, img) in attachmentHandler.getAttachments().enumerate() {
                 if (img === image) {
                     pageControl.currentPage = index;
                     break;

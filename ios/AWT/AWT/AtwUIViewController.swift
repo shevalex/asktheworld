@@ -79,18 +79,18 @@ class AtwUIViewController: UIViewController {
         return false;
     }
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        view.endEditing(true);
-    }
+//    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+//        view.endEditing(true);
+//    }
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-        var toolbar = AtwUiUtils.createToolbarForInputAccessoryView(self);
+        let toolbar = AtwUiUtils.createToolbarForInputAccessoryView(self);
         textField.inputAccessoryView = toolbar;
         return true;
     }
     
     func textViewShouldBeginEditing(textView: UITextView) -> Bool {
-        var toolbar = AtwUiUtils.createToolbarForInputAccessoryView(self);
+        let toolbar = AtwUiUtils.createToolbarForInputAccessoryView(self);
         textView.inputAccessoryView = toolbar;
         return true;
     }

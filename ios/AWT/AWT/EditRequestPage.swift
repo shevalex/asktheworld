@@ -55,9 +55,9 @@ class EditRequestPage: AtwUIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated);
         
-        var request = Backend.getInstance().getRequest(requestId);
+        let request = Backend.getInstance().getRequest(requestId);
         if (request == nil) {
-            println("Erronious situation: request for provided id \(requestId) does not exist");
+            print("Erronious situation: request for provided id \(requestId) does not exist");
             
             self.navigationController?.popViewControllerAnimated(true);
             return;
@@ -104,7 +104,7 @@ class EditRequestPage: AtwUIViewController {
     
     
     @IBAction func deactivateButtonClickAction(sender: AnyObject) {
-        var request = Backend.getInstance().getRequest(requestId);
+        let request = Backend.getInstance().getRequest(requestId);
         if (request != nil) {
             request!.status = Backend.RequestObject.STATUS_INACTIVE;
             Backend.getInstance().updateRequest(requestId!, request: request!, callback: UpdateRequestCallback(page: self));
@@ -124,9 +124,9 @@ class EditRequestPage: AtwUIViewController {
             return;
         }
         
-        var request = Backend.getInstance().getRequest(requestId);
+        let request = Backend.getInstance().getRequest(requestId);
         if (request == nil) {
-            println("Erronious situation: request for provided id \(requestId) does not exist");
+            print("Erronious situation: request for provided id \(requestId) does not exist");
             
             self.navigationController?.popViewControllerAnimated(true);
             return;

@@ -18,7 +18,7 @@ class ActiveInquiriesPage: AtwUIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var incomingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+        let incomingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
             self.selectedRequestId = id;
             self.performSegueWithIdentifier("showInquiryDetails", sender: self)
         }

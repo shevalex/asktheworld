@@ -45,7 +45,7 @@ class RegisterPage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
         if (emailTextField.text == "") {
             showErrorMessage(NSLocalizedString("Email must be provided", comment: "Register page error message"));
             return;
-        } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
+        } else if (!AtwUiUtils.isEmailValid(emailTextField.text!)) {
             showErrorMessage(NSLocalizedString("Provided email does not look like a valid email address", comment: "Register page error message"));
             return;
         }
@@ -83,9 +83,9 @@ class RegisterPage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
         
         AtwUiUtils.showSpinner(self.view);
         
-        var languageItems = (languagesTextField.inputView as! SelectorView).getSelectedItems();
-        var genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
-        var ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
+        let languageItems = (languagesTextField.inputView as! SelectorView).getSelectedItems();
+        let genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
+        let ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
 
         Backend.register(emailTextField.text, password: passwordTextField.text, gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, callback: self)
     }

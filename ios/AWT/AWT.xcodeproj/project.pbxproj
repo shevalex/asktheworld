@@ -28,7 +28,6 @@
 		F745FE5D1A9E2882006E7698 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F745FE5B1A9E2882006E7698 /* Main.storyboard */; };
 		F745FE5F1A9E2882006E7698 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F745FE5E1A9E2882006E7698 /* Images.xcassets */; };
 		F745FE621A9E2882006E7698 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F745FE601A9E2882006E7698 /* LaunchScreen.xib */; };
-		F745FE6E1A9E2882006E7698 /* AWTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F745FE6D1A9E2882006E7698 /* AWTTests.swift */; };
 		F750F3341A9E6A3700D929E2 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750F3331A9E6A3700D929E2 /* LoginPage.swift */; };
 		F750F33A1A9E6E3600D929E2 /* RegisterPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F750F3391A9E6E3600D929E2 /* RegisterPage.swift */; };
 		F771DCA91AA6347F00717996 /* UserSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F771DCA81AA6347F00717996 /* UserSettingsPage.swift */; };
@@ -69,16 +68,13 @@
 		F73D30291AA771F800A5317A /* ProfilePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePage.swift; sourceTree = "<group>"; };
 		F73D302B1AA7F01E00A5317A /* RequestPreferencesPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestPreferencesPage.swift; sourceTree = "<group>"; };
 		F73D302D1AA809DE00A5317A /* ResponsePreferencesPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponsePreferencesPage.swift; sourceTree = "<group>"; };
-		F745FE521A9E2882006E7698 /* AWT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AWT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F745FE521A9E2882006E7698 /* AWT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = AWT.app; path = "/Users/aavtamonov/project/asktheworld/ios/AWT/build/Debug-iphoneos/AWT.app"; sourceTree = "<absolute>"; };
 		F745FE561A9E2882006E7698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F745FE571A9E2882006E7698 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F745FE591A9E2882006E7698 /* HomePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePage.swift; sourceTree = "<group>"; };
 		F745FE5C1A9E2882006E7698 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F745FE5E1A9E2882006E7698 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F745FE611A9E2882006E7698 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		F745FE671A9E2882006E7698 /* AWTTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWTTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F745FE6C1A9E2882006E7698 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F745FE6D1A9E2882006E7698 /* AWTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWTTests.swift; sourceTree = "<group>"; };
 		F750F3331A9E6A3700D929E2 /* LoginPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		F750F3391A9E6E3600D929E2 /* RegisterPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterPage.swift; sourceTree = "<group>"; };
 		F771DCA81AA6347F00717996 /* UserSettingsPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSettingsPage.swift; sourceTree = "<group>"; };
@@ -114,18 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				F745FE541A9E2882006E7698 /* AWT */,
-				F745FE6A1A9E2882006E7698 /* AWTTests */,
-				F745FE531A9E2882006E7698 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		F745FE531A9E2882006E7698 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				F745FE521A9E2882006E7698 /* AWT.app */,
-				F745FE671A9E2882006E7698 /* AWTTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		F745FE541A9E2882006E7698 /* AWT */ = {
@@ -167,23 +152,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		F745FE6A1A9E2882006E7698 /* AWTTests */ = {
-			isa = PBXGroup;
-			children = (
-				F745FE6D1A9E2882006E7698 /* AWTTests.swift */,
-				F745FE6B1A9E2882006E7698 /* Supporting Files */,
-			);
-			path = AWTTests;
-			sourceTree = "<group>";
-		};
-		F745FE6B1A9E2882006E7698 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				F745FE6C1A9E2882006E7698 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		F78BC7CE1A9FEA2C009281EF /* utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -221,25 +189,6 @@
 			productReference = F745FE521A9E2882006E7698 /* AWT.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F745FE661A9E2882006E7698 /* AWTTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F745FE741A9E2882006E7698 /* Build configuration list for PBXNativeTarget "AWTTests" */;
-			buildPhases = (
-				F745FE631A9E2882006E7698 /* Sources */,
-				F745FE641A9E2882006E7698 /* Frameworks */,
-				F745FE651A9E2882006E7698 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F745FE691A9E2882006E7698 /* PBXTargetDependency */,
-			);
-			name = AWTTests;
-			productName = AWTTests;
-			productReference = F745FE671A9E2882006E7698 /* AWTTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-/* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		F745FE4A1A9E2882006E7698 /* Project object */ = {
@@ -266,12 +215,11 @@
 				Base,
 			);
 			mainGroup = F745FE491A9E2882006E7698;
-			productRefGroup = F745FE531A9E2882006E7698 /* Products */;
+			productRefGroup = F745FE491A9E2882006E7698;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				F745FE511A9E2882006E7698 /* AWT */,
-				F745FE661A9E2882006E7698 /* AWTTests */,
 			);
 		};
 /* End PBXProject section */
@@ -337,7 +285,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F745FE6E1A9E2882006E7698 /* AWTTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

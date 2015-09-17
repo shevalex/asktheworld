@@ -40,8 +40,8 @@ class InquiryDetailsPage: AtwUIViewController {
 
         updateListener = { (event: Backend.CacheChangeEvent) in
             if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED) {
-                var requestIds = Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
-                for (index, id) in enumerate(requestIds!) {
+                let requestIds = Backend.getInstance().getIncomingRequestIds(Backend.RequestObject.STATUS_ACTIVE);
+                for (_, id) in requestIds!.enumerate() {
                     if (id == self.requestId) {
                         return;
                     }
@@ -102,7 +102,7 @@ class InquiryDetailsPage: AtwUIViewController {
         }
         
         
-        var response = Backend.ResponseObject(requestId: requestId, userProfile: Backend.getInstance().getUserProfile());
+        let response = Backend.ResponseObject(requestId: requestId, userProfile: Backend.getInstance().getUserProfile());
         
         //        response.attachments;
         response.text = responseTextField.text;
@@ -164,10 +164,10 @@ class InquiryDetailsPage: AtwUIViewController {
     }
     
     private func updateResponseFields() {
-        var request = Backend.getInstance().getRequest(requestId);
+        let request = Backend.getInstance().getRequest(requestId);
         
         if (request != nil) {
-            var isActiveRequest = request!.status == Backend.RequestObject.STATUS_ACTIVE;
+            let isActiveRequest = request!.status == Backend.RequestObject.STATUS_ACTIVE;
 
             responseTextField.editable = isActiveRequest;
 
@@ -177,7 +177,7 @@ class InquiryDetailsPage: AtwUIViewController {
                 if (responseIds?.count != 0) {
                     responseId = responseIds![0];
 
-                    var response = Backend.getInstance().getResponse(requestId, responseId: responseId!);
+                    let response = Backend.getInstance().getResponse(requestId, responseId: responseId!);
                     if (response != nil) {
                         responseTextField.text = response!.text;
 

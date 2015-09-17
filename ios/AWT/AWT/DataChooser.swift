@@ -110,7 +110,7 @@ class UIDataSelectorDelegate: NSObject, UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var selectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
+        let selectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
         for (var i: Int! = 0; i < selectedItems.count; i = i.successor()) {
             if (selectedItem.data === selectedItems[i].data) {
                 return;
@@ -122,7 +122,7 @@ class UIDataSelectorDelegate: NSObject, UITableViewDelegate {
         updateSelection();
     }
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        var deselectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
+        let deselectedItem: Configuration.Item! = dataModel.getDataItem(indexPath);
         for (var i: Int! = 0; i < selectedItems.count; i = i.successor()) {
             if (deselectedItem.data === selectedItems[i].data) {
                 selectedItems.removeAtIndex(i);
@@ -183,16 +183,16 @@ class UIDataSelectorDataModel: NSObject, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var tableCell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("cell") as? UITableViewCell;
+        var tableCell: UITableViewCell? = tableView.dequeueReusableCellWithIdentifier("cell") as UITableViewCell?;
         if (tableCell == nil) {
             tableCell = UITableViewCell(style: .Default, reuseIdentifier: "cell");
         }
         
-        tableCell.textLabel?.text = getDataItem(indexPath).getDisplay();
-        tableCell.textLabel?.textAlignment = .Center;
-        tableCell.textLabel?.textColor = AtwUiUtils.getColor("DATA_CHOOSER_TEXT_COLOR");
+        tableCell!.textLabel?.text = getDataItem(indexPath).getDisplay();
+        tableCell!.textLabel?.textAlignment = .Center;
+        tableCell!.textLabel?.textColor = AtwUiUtils.getColor("DATA_CHOOSER_TEXT_COLOR");
         
-        return tableCell;
+        return tableCell!;
     }
 }
 
@@ -200,20 +200,19 @@ class SelectorView: UITableView {
     private var delegateHolder: UIDataSelectorDelegate!;
     
     init(height: Int!, delegate: UIDataSelectorDelegate!) {
-        var rect: CGRect! = CGRect(x: 0, y: 0, width: 0, height: height);
-        super.init(frame: rect);
-        
+        let rect: CGRect = CGRect(x: 0, y: 0, width: 0, height: height);
+        super.init(frame: rect, style: UITableViewStyle.Plain);
         self.delegate = delegate;
         self.delegateHolder = delegate;
         self.dataSource = delegate.getDataModel();
     }
     
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-    }
-    
     required override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style);
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func getSelectedItem() -> Configuration.Item? {
@@ -234,11 +233,11 @@ class SelectorView: UITableView {
     func setSelectedItems(selectedItems: [Configuration.Item]!)  {
         delegateHolder.setSelectedItems(selectedItems);
 
-        var data = delegateHolder.getDataModel().getData();
-        for (i, selectedItem) in enumerate(selectedItems) {
-            for (index, item) in enumerate(data) {
+        let data = delegateHolder.getDataModel().getData();
+        for (_, selectedItem) in selectedItems.enumerate() {
+            for (index, item) in data.enumerate() {
                 if (selectedItem.data === item.data) {
-                    var indexPath = NSIndexPath(index: 0).indexPathByAddingIndex(index);
+                    let indexPath = NSIndexPath(index: 0).indexPathByAddingIndex(index);
                     self.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.Middle);
                 }
             }
@@ -250,23 +249,23 @@ class SelectorView: UITableView {
 struct DataChooserFactory {
     static func createDataChooser(boundTextField: UITextField!, items: [Configuration.Item]!, multichoice: Bool!) -> SelectorView! {
         
-        var dataModel = UIDataSelectorDataModel(data: items);
-        var dataSelectorDelegate: UIDataSelectorDelegate! = UIDataSelectorDelegate(anchor: boundTextField, dataModel: dataModel);
+        let dataModel = UIDataSelectorDataModel(data: items);
+        let dataSelectorDelegate: UIDataSelectorDelegate! = UIDataSelectorDelegate(anchor: boundTextField, dataModel: dataModel);
         
-        var toolbar = UIToolbar();
+        let toolbar = UIToolbar();
         toolbar.barStyle = .Default;
         toolbar.sizeToFit();
-        var doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: dataSelectorDelegate, action: "doneButtonClickedAction")
-        var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: dataSelectorDelegate, action: "doneButtonClickedAction")
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
         toolbar.setItems([flexibleSpace, doneButton], animated: true);
         boundTextField.inputAccessoryView = toolbar;
         
-        var rowHeight: Int! = 45;
+        let rowHeight: Int! = 45;
         
-        var numOfRowsToShow = items.count > 5 ? 5: items.count;
-        var height = rowHeight * numOfRowsToShow;
+        let numOfRowsToShow = items.count > 5 ? 5: items.count;
+        let height = rowHeight * numOfRowsToShow;
         
-        var tableView: SelectorView! = SelectorView(height: height, delegate: dataSelectorDelegate);
+        let tableView: SelectorView! = SelectorView(height: height, delegate: dataSelectorDelegate);
         
         tableView.allowsMultipleSelection = multichoice;
         tableView.editing = false;

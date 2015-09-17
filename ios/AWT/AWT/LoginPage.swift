@@ -85,7 +85,7 @@ class LoginPage: AtwUIViewController, UITextFieldDelegate {
         if (emailTextField.text == "") {
             showErrorMessage(NSLocalizedString("Email must be provided", comment: "Login page error message"));
             return;
-        } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
+        } else if (!AtwUiUtils.isEmailValid(emailTextField.text!)) {
             showErrorMessage(NSLocalizedString("Email does not look like a valid email address", comment: "Login page error message"));
             return;
         }
@@ -138,7 +138,7 @@ class LoginPage: AtwUIViewController, UITextFieldDelegate {
         if (emailTextField.text == "") {
             showErrorMessage(NSLocalizedString("Email must be provided", comment: "Login page error message"));
             return;
-        } else if (!AtwUiUtils.isEmailValid(emailTextField.text)) {
+        } else if (!AtwUiUtils.isEmailValid(emailTextField.text!)) {
             showErrorMessage(NSLocalizedString("Email does not look like a valid email address", comment: "Login page error message"));
             return;
         }
@@ -156,39 +156,39 @@ class LoginPage: AtwUIViewController, UITextFieldDelegate {
     }
     
     private func saveEmailAndPassword() {
-        var email: NSData = emailTextField.text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-        var emailQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassGenericPassword, email], forKeys: [kSecClass, kSecValueData]);
-        SecItemDelete(emailQuery);
-        SecItemAdd(emailQuery, nil);
-        
-        var password: NSData = passwordTextField.text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-        var passwordQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassInternetPassword, password], forKeys: [kSecClass, kSecValueData]);
-        SecItemDelete(passwordQuery);
-        SecItemAdd(passwordQuery, nil);
+//        var email: NSData = emailTextField.tex!t.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+//        var emailQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassGenericPassword, email], forKeys: [kSecClass, kSecValueData]);
+//        SecItemDelete(emailQuery);
+//        SecItemAdd(emailQuery, nil);
+//        
+//        var password: NSData = passwordTextField.text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+//        var passwordQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassInternetPassword, password], forKeys: [kSecClass, kSecValueData]);
+//        SecItemDelete(passwordQuery);
+//        SecItemAdd(passwordQuery, nil);
     }
     
     private func restoreEmailAndPassword() {
-        var emailQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassGenericPassword, kCFBooleanTrue, kSecMatchLimitOne], forKeys: [kSecClass, kSecReturnData, kSecMatchLimit]);
-        
-        var dataTypeRef: Unmanaged<AnyObject>?;
-        SecItemCopyMatching(emailQuery, &dataTypeRef);
-        
-        var opaque = dataTypeRef?.toOpaque();
-        if (opaque != nil) {
-            let retrievedData = Unmanaged<NSData>.fromOpaque(opaque!).takeUnretainedValue();
-            emailTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding) as! String;
-        }
-        
-        
-        var passwordQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassInternetPassword, kCFBooleanTrue, kSecMatchLimitOne], forKeys: [kSecClass, kSecReturnData, kSecMatchLimit]);
-
-        SecItemCopyMatching(passwordQuery, &dataTypeRef);
-        
-        opaque = dataTypeRef?.toOpaque();
-        if (opaque != nil) {
-            let retrievedData = Unmanaged<NSData>.fromOpaque(opaque!).takeUnretainedValue();
-            passwordTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding) as! String;
-        }
+//        var emailQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassGenericPassword, kCFBooleanTrue, kSecMatchLimitOne], forKeys: [kSecClass, kSecReturnData, kSecMatchLimit]);
+//        
+//        var dataTypeRef: Unmanaged<AnyObject>?;
+//        SecItemCopyMatching(emailQuery, &dataTypeRef);
+//        
+//        var opaque = dataTypeRef?.toOpaque();
+//        if (opaque != nil) {
+//            let retrievedData = Unmanaged<NSData>.fromOpaque(opaque!).takeUnretainedValue();
+//            emailTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding) as! String;
+//        }
+//        
+//        
+//        var passwordQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassInternetPassword, kCFBooleanTrue, kSecMatchLimitOne], forKeys: [kSecClass, kSecReturnData, kSecMatchLimit]);
+//
+//        SecItemCopyMatching(passwordQuery, &dataTypeRef);
+//        
+//        opaque = dataTypeRef?.toOpaque();
+//        if (opaque != nil) {
+//            let retrievedData = Unmanaged<NSData>.fromOpaque(opaque!).takeUnretainedValue();
+//            passwordTextField.text = NSString(data: retrievedData, encoding: NSUTF8StringEncoding) as! String;
+//        }
     }
     
     

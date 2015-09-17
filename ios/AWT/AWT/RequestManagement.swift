@@ -58,11 +58,11 @@ struct RequestResponseManagement {
         }
         
         func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-            var objectId = dataModel.getObjectId(indexPath);
+            let objectId = dataModel.getObjectId(indexPath);
             selectionObserver?(id: objectId!);
         }
         
-        func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+        func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
             return dataModel.getRowActions();
         }
     }
@@ -77,12 +77,12 @@ struct RequestResponseManagement {
         }
         
         func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            var count: Int? = dataProvider.count();
+            let count: Int? = dataProvider.count();
             return count != nil ? count! : 0;
         }
         
         func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-            var tableCell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("cell") as? UITableViewCell;
+            let tableCell: UITableViewCell! = tableView.dequeueReusableCellWithIdentifier("cell") as UITableViewCell?;
             
             renderTableCell(tableCell, id: getObjectId(indexPath)!);
             
@@ -93,7 +93,7 @@ struct RequestResponseManagement {
         }
         
         
-        func getRowActions() -> [AnyObject]? {
+        func getRowActions() -> [UITableViewRowAction]? {
             return rowActions;
         }
 
@@ -115,7 +115,7 @@ struct RequestResponseManagement {
         override func renderTableCell(cell: UITableViewCell, id: Int) {
             let tableCell: OutgoingRequestTableCell = cell as! OutgoingRequestTableCell;
 
-            var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
+            let request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
             if (request != nil) {
                 tableCell.targetLabel.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
                 tableCell.requestTextLabel.text = request.text;
@@ -130,7 +130,7 @@ struct RequestResponseManagement {
                 dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle;
                 tableCell.timeLabel.text = dateFormatter.stringFromDate(dateTime);
 
-                var numOfUnreadResponses: Int? = Backend.getInstance().getIncomingResponseIds(id, responseStatus: Backend.ResponseObject.STATUS_UNVIEWED)?.count;
+                let numOfUnreadResponses: Int? = Backend.getInstance().getIncomingResponseIds(id, responseStatus: Backend.ResponseObject.STATUS_UNVIEWED)?.count;
                 
                 if (numOfUnreadResponses == nil) {
                     tableCell.counterLabel.text = "...";
@@ -160,7 +160,7 @@ struct RequestResponseManagement {
             
             let tableCell: IncomingRequestTableCell = cell as! IncomingRequestTableCell;
             
-            var request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
+            let request: Backend.RequestObject! = Backend.getInstance().getRequest(id);
             if (request != nil) {
                 tableCell.sourceLabel.text = String.localizedStringWithFormat(NSLocalizedString("The World asked you a %@ question", comment: "Incoming inquiry source"), Configuration.toExpertiseString(request.expertiseCategory));
                 tableCell.requestTextLabel.text = request.text;
@@ -205,7 +205,7 @@ struct RequestResponseManagement {
         }
         
         func count() -> Int? {
-            var requestIds = getObjectIds();
+            let requestIds = getObjectIds();
             if (requestIds == nil) {
                 self.updateObserver?(finished: false);
                 return nil;
@@ -226,17 +226,17 @@ struct RequestResponseManagement {
             
             let cacheChangeListener: Backend.CacheChangeEventObserver = {(event) in
                 if (self.isObjectIdsChangeEvent(event)) {
-                    var objectIds: [Int]? = self.getObjectIds();
+                    let objectIds: [Int]? = self.getObjectIds();
                     if (objectIds != nil) {
                         self.updateObserver?(finished: true);
                         observer(index: -1);
                     }
                 } else {
-                    var eventObjectId: Int? = self.getObjectIdForChangeEvent(event);
+                    let eventObjectId: Int? = self.getObjectIdForChangeEvent(event);
                     if (eventObjectId != nil) {
-                        var objectIds: [Int]? = self.getObjectIds();
+                        let objectIds: [Int]? = self.getObjectIds();
                         if (objectIds != nil) {
-                            for (index, objectId) in enumerate(objectIds!) {
+                            for (index, objectId) in objectIds!.enumerate() {
                                 if (objectId == eventObjectId) {
                                     self.updateObserver?(finished: true);
                                     observer(index: index);
@@ -304,7 +304,7 @@ struct RequestResponseManagement {
     
     class OutgoingRequestObjectProvider: AbstractObjectProvider {
         override func getObjectIds() -> [Int]? {
-            return Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
+            return Backend.getInstance().getOutgoingRequestIds(Backend.RequestObject.STATUS_ACTIVE);
         }
         
         override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
@@ -325,15 +325,15 @@ struct RequestResponseManagement {
         
         
         override func getObjectIds() -> [Int]? {
-            let requestIds: [Int]? = Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
+            let requestIds: [Int]? = Backend.getInstance().getOutgoingRequestIds(Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
                 return nil;
             }
             
             var matchingRequestIds: [Int] = [];
-            for (index, requestId) in enumerate(requestIds!) {
-                var responseProvider = responseProviderFactory.getObjectProvider(requestId);
-                var responseCount = responseProvider.count();
+            for (_, requestId) in requestIds!.enumerate() {
+                let responseProvider = responseProviderFactory.getObjectProvider(requestId);
+                let responseCount = responseProvider.count();
 
                 if (responseCount == nil) {
                     //return nil;
@@ -385,7 +385,7 @@ struct RequestResponseManagement {
     
     class IncomingRequestObjectProvider: AbstractObjectProvider {
         override func getObjectIds() -> [Int]? {
-            return Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
+            return Backend.getInstance().getIncomingRequestIds(Backend.RequestObject.STATUS_ACTIVE);
         }
         
         override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
@@ -407,16 +407,16 @@ struct RequestResponseManagement {
         
 
         override func getObjectIds() -> [Int]? {
-            let requestIds: [Int]? = Backend.getInstance().getIncomingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
+            let requestIds: [Int]? = Backend.getInstance().getIncomingRequestIds(Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
                 return nil;
             }
             
             
             var matchingRequestIds: [Int] = [];
-            for (index, requestId) in enumerate(requestIds!) {
-                var responseProvider = responseProviderFactory.getObjectProvider(requestId);
-                var responseCount = responseProvider.count();
+            for (_, requestId) in requestIds!.enumerate() {
+                let responseProvider = responseProviderFactory.getObjectProvider(requestId);
+                let responseCount = responseProvider.count();
                 if (responseCount == nil) {
                     //return nil;
                 } else if (responseCount == 0) {
@@ -495,9 +495,9 @@ struct RequestResponseManagement {
                     self.requestCount = requestProvider.count();
                     
                     for (var requestIndex = 0; requestIndex < self.requestCount; requestIndex++) {
-                        var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex)!);
+                        let responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex)!);
                         
-                        var responseCount = responseProvider.count();
+                        responseProvider.count();
                         for (var responseIndex = 0; responseIndex < self.requestCount; responseIndex++) {
                             responseProvider.setUpdateObserver(self.responseUpdateObserver);
                         }
@@ -525,11 +525,11 @@ struct RequestResponseManagement {
         func stop() {
             self.requestProvider.setUpdateObserver(nil);
             
-            var requestCount = requestProvider.count();
+            let requestCount = requestProvider.count();
             for (var requestIndex = 0; requestIndex < requestCount; requestIndex++) {
-                var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex)!);
+                let responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestProvider.getObjectId(requestIndex)!);
                 
-                var responseCount = responseProvider.count();
+                responseProvider.count();
                 for (var responseIndex = 0; responseIndex < self.requestCount; responseIndex++) {
                     responseProvider.setUpdateObserver(nil);
                 }
@@ -549,16 +549,16 @@ struct RequestResponseManagement {
             var requestCount: Int? = nil;
             var responseCount: Int? = nil;
             
-            var requests = requestProvider.count();
+            let requests = requestProvider.count();
             
             if (requests != nil) {
                 requestCount = requests;
                 
                 for (var reqIndex: Int = 0; reqIndex < requests; reqIndex++) {
-                    var requestId = requestProvider.getObjectId(reqIndex);
+                    let requestId = requestProvider.getObjectId(reqIndex);
                     
-                    var responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId!);
-                    var responses = responseProvider.count();
+                    let responseProvider: GenericObjectProvider = responseProviderFactory.getObjectProvider(requestId!);
+                    let responses = responseProvider.count();
                     if (responses != nil) {
                         responseCount = responseCount != nil ? responseCount! + responses! : responses!;
                     }
@@ -572,7 +572,7 @@ struct RequestResponseManagement {
             self.requestCount = nil;
             self.responseCount = nil;
 
-            var result: (requestCount: Int?, responseCount: Int?) = calculate();
+            let result: (requestCount: Int?, responseCount: Int?) = calculate();
             requestCount = result.requestCount;
             responseCount = result.responseCount;
 
@@ -662,7 +662,7 @@ struct RequestResponseManagement {
 
             let requestId = requestObjectProvider.getObjectId(path.row);
             if (requestId != nil) {
-                var request = Backend.getInstance().getRequest(requestId!);
+                let request = Backend.getInstance().getRequest(requestId!);
                 if (request != nil) {
                     request!.status = Backend.RequestObject.STATUS_INACTIVE;
                     Backend.getInstance().updateRequest(requestId!, request: request!, callback: UpdateRequestCallback(tableView: tableView));

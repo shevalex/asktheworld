@@ -55,9 +55,9 @@ class ResponsePreferencesPage: AtwUIViewController, BackendCallback {
     @IBAction func updateButtonClickAction(sender: UIButton) {
         AtwUiUtils.showSpinner(self.view);
         
-        var limitItem = (amountOfInquiriesTextField.inputView as! SelectorView).getSelectedItems()[0];
-        var ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
-        var genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
+        let limitItem = (amountOfInquiriesTextField.inputView as! SelectorView).getSelectedItems()[0];
+        let ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
+        let genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
         
         Backend.getInstance().updateUserPreferences(nil, requestTargetGender: nil, responseQuantity: nil, responseWaitTime: nil, dailyInquiryLimit: limitItem, inquiryAge: ageItem, inquiryGender: genderItem, expertises: nil, contactRequestable: nil, contactName: nil, contactDetails: nil, callback: self);
     }

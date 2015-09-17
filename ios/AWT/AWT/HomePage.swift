@@ -28,7 +28,7 @@ class HomePage: AtwUIViewController {
             self.performSegueWithIdentifier("showRequestDetails", sender: self);
         }
         
-        var incomingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
+        let incomingRequestSelectionObserver: RequestResponseManagement.ObjectSelectionObserver = { (id) in
             self.selectedRequestId = id;
             self.performSegueWithIdentifier("showInquiryDetails", sender: self)
         }

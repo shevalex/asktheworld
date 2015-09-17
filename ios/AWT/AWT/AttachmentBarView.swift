@@ -33,7 +33,7 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     private var storyboard: UIStoryboard!;
     
     required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
+        super.init(coder: aDecoder)!;
 
         backgroundColor = UIColor.lightGrayColor();
         layer.cornerRadius = 5;
@@ -41,19 +41,19 @@ class AttachmentBarView: UIControl, AttachmentHandler {
         setMutable(true);
         
         addSubview(clipView);
-        clipView.setTranslatesAutoresizingMaskIntoConstraints(false);
+//        clipView.setTranslatesAutoresizingMaskIntoConstraints(false);
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 5));
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 30));
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0));
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0));
         
         clipView.userInteractionEnabled = true;
-        var clipTapRecognizer = UITapGestureRecognizer(target: self, action: "clipPressedAction:");
+        let clipTapRecognizer = UITapGestureRecognizer(target: self, action: "clipPressedAction:");
         clipView.addGestureRecognizer(clipTapRecognizer);
 
         
         addSubview(imageScollView);
-        imageScollView.setTranslatesAutoresizingMaskIntoConstraints(false);
+//        imageScollView.setTranslatesAutoresizingMaskIntoConstraints(false);
         addConstraint(NSLayoutConstraint(item: clipView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: imageScollView, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: -5));
         addConstraint(NSLayoutConstraint(item: imageScollView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0));
         addConstraint(NSLayoutConstraint(item: imageScollView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: self, attribute: NSLayoutAttribute.Top, multiplier: 1, constant: 0));
@@ -101,7 +101,7 @@ class AttachmentBarView: UIControl, AttachmentHandler {
             return false;
         }
         
-        for (index, att) in enumerate(attachmentArray) {
+        for (index, att) in attachmentArray.enumerate() {
             if (att === attachment) {
                 attachmentArray.removeAtIndex(index);
                 rebuildScrollView();
@@ -137,13 +137,13 @@ class AttachmentBarView: UIControl, AttachmentHandler {
     }
     
     private func rebuildScrollView() {
-        for (index, child) in enumerate(imageScollView.subviews) {
+        for (_, child) in imageScollView.subviews.enumerate() {
             child.removeFromSuperview();
         }
         
         imageScollView.contentSize = CGSizeMake((frame.size.height + IMAGE_INSET) * CGFloat(attachmentArray.count), frame.size.height);
         
-        for (index, att) in enumerate(attachmentArray) {
+        for (index, att) in attachmentArray.enumerate() {
             let x = (frame.size.height + IMAGE_INSET) * CGFloat(index);
             let nextImageView = UIImageView(frame: CGRectMake(x, 0, frame.size.height, frame.size.height));
             
@@ -156,7 +156,7 @@ class AttachmentBarView: UIControl, AttachmentHandler {
             nextImageView.userInteractionEnabled = true;
             imageScollView.addSubview(nextImageView);
             
-            var tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
+            let tapRecognizer = UITapGestureRecognizer(target: self, action: "imagePressedAction:");
             nextImageView.addGestureRecognizer(tapRecognizer);
         }
     }

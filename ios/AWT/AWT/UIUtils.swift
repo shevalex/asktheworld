@@ -69,11 +69,11 @@ public struct AtwUiUtils {
 
         anchor.addSubview(activityIndicator);
         
-        activityIndicator.setTranslatesAutoresizingMaskIntoConstraints(false);
-        var constX = NSLayoutConstraint(item: activityIndicator, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: anchor, attribute: NSLayoutAttribute.CenterX, multiplier: 1.0, constant: 0);
+//        activityIndicator.setTranslatesAutoresizingMaskIntoConstraints(false);
+        let constX = NSLayoutConstraint(item: activityIndicator, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: anchor, attribute: NSLayoutAttribute.CenterX, multiplier: 1.0, constant: 0);
         anchor.addConstraint(constX);
         
-        var constY = NSLayoutConstraint(item: activityIndicator, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: anchor, attribute: NSLayoutAttribute.CenterY, multiplier: 1.0, constant: 0);
+        let constY = NSLayoutConstraint(item: activityIndicator, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: anchor, attribute: NSLayoutAttribute.CenterY, multiplier: 1.0, constant: 0);
         anchor.addConstraint(constY);
         
         if (disableInput == true) {
@@ -100,7 +100,7 @@ public struct AtwUiUtils {
     
     
     static func showPopup(anchor: UIViewController, popupTitle: String, popupError: String, okCallback: (() -> Void)? = nil) {
-        var popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
+        let popup = UIAlertController(title: popupTitle, message: popupError, preferredStyle: UIAlertControllerStyle.Alert)
         popup.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "OK Button"), style: .Default, handler: { action in }))
         anchor.presentViewController(popup, animated: true, completion: okCallback)
     }
@@ -112,7 +112,7 @@ public struct AtwUiUtils {
     
     static func isPasswordValid(password: String!) -> Bool! {
         //TODO: implement
-        return count(password) >= 5;
+        return password.utf16.count >= 5;
     }
     
     static func runOnMainThread(block: dispatch_block_t!) {
@@ -123,7 +123,7 @@ public struct AtwUiUtils {
     
     static func setDataChooser(boundTextField: UITextField!, items: [Configuration.Item], multichoice: Bool! = false) -> SelectorView! {
         
-        var chooserView: SelectorView! = DataChooserFactory.createDataChooser(boundTextField, items: items, multichoice: multichoice);
+        let chooserView: SelectorView! = DataChooserFactory.createDataChooser(boundTextField, items: items, multichoice: multichoice);
         boundTextField.inputView = chooserView;
         
         return chooserView;
@@ -134,11 +134,11 @@ public struct AtwUiUtils {
     }
     
     static func createToolbarForInputAccessoryView(anchor: AtwUIViewController) -> UIToolbar {
-        var toolbar = UIToolbar();
+        let toolbar = UIToolbar();
         toolbar.barStyle = .Default;
         toolbar.sizeToFit();
-        var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        var doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: anchor, action: "doneButtonClickedAction")
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: anchor, action: "doneButtonClickedAction")
         toolbar.setItems([flexibleSpace, doneButton], animated: true);
         return toolbar;
     }

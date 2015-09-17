@@ -106,11 +106,11 @@ class ProfilePage: AtwUIViewController, UITextFieldDelegate, BackendCallback {
         
         AtwUiUtils.showSpinner(self.view);
         
-        var languageItems = (languagesTextField.inputView as! SelectorView).getSelectedItems();
-        var genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
-        var ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
+        let languageItems = (languagesTextField.inputView as! SelectorView).getSelectedItems();
+        let genderItem = (genderTextField.inputView as! SelectorView).getSelectedItems()[0];
+        let ageItem = (ageTextField.inputView as! SelectorView).getSelectedItems()[0];
         
-        var newPassword = newPasswordTextField.text != "" ? newPasswordTextField.text : nil;
+        let newPassword = newPasswordTextField.text != "" ? newPasswordTextField.text : nil;
         
         Backend.getInstance().updateUserProfile(newPassword , gender: genderItem, age: ageItem, nickname: nicknameTextField.text, languages: languageItems, currentPassword: currentPasswordTextField.text, callback: self);
     }

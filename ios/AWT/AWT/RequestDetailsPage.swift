@@ -46,7 +46,7 @@ class RequestDetailsPage: AtwUIViewController {
             if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED && event.requestId == self.requestId) {
                 self.responseIds = Backend.getInstance().getIncomingResponseIds(self.requestId, responseStatus: self.responseStatus);
                 if (self.responseIds != nil && self.responseIds?.count > 0) {
-                    var currentIndex = self.getCurrentResponseIdIndex();
+                    let currentIndex = self.getCurrentResponseIdIndex();
                     if (currentIndex != -1) {
                         return;
                     }
@@ -61,8 +61,8 @@ class RequestDetailsPage: AtwUIViewController {
             } else if (event.type == Backend.CacheChangeEvent.TYPE_RESPONSE_CHANGED && event.requestId == self.requestId) {
                 self.updateResponseFields();
             } else if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED) {
-                var requestIds = Backend.getInstance().getOutgoingRequestIds(requestStatus: Backend.RequestObject.STATUS_ACTIVE);
-                for (index, id) in enumerate(requestIds!) {
+                let requestIds = Backend.getInstance().getOutgoingRequestIds(Backend.RequestObject.STATUS_ACTIVE);
+                for (_, id) in requestIds!.enumerate() {
                     if (id == self.requestId) {
                         return;
                     }
@@ -81,14 +81,14 @@ class RequestDetailsPage: AtwUIViewController {
     }
 
     @IBAction func nextResponseClickAction(sender: UIButton) {
-        var currentIndex = getCurrentResponseIdIndex();
+        let currentIndex = getCurrentResponseIdIndex();
         currentResponseId = responseIds![currentIndex + 1];
         
         updateResponseFields();
     }
     
     @IBAction func previousResponseClickAction(sender: UIButton) {
-        var currentIndex = getCurrentResponseIdIndex();
+        let currentIndex = getCurrentResponseIdIndex();
         currentResponseId = responseIds![currentIndex - 1];
         
         updateResponseFields();
@@ -129,7 +129,7 @@ class RequestDetailsPage: AtwUIViewController {
             return;
         }
         
-        var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId!);
+        let response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId!);
         if (response == nil) {
             return;
         }
@@ -200,7 +200,7 @@ class RequestDetailsPage: AtwUIViewController {
     
     private func updateResponseFields() {
         if (currentResponseId != nil && currentResponseId != -1) {
-            var response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId!);
+            let response = Backend.getInstance().getResponse(requestId, responseId: currentResponseId!);
             if (response != nil) {
                 if (response?.contactInfo != nil) {
                     responseTextField.text = "\(response!.contactInfo!.contactName)\n\(response!.contactInfo!.contactInfo)\n---\n\(response!.text)";
@@ -208,7 +208,7 @@ class RequestDetailsPage: AtwUIViewController {
                     responseTextField.text = response!.text;
                 }
                 
-                var currentIndex = getCurrentResponseIdIndex();
+                let currentIndex = getCurrentResponseIdIndex();
                 previousResponseButton.enabled = currentIndex > 0;
                 nextResponseButton.enabled = currentIndex != -1 && currentIndex + 1 < responseIds?.count;
                 requestContactInfoButton.enabled = response?.contactInfoStatus == Backend.ResponseObject.CONTACT_INFO_STATUS_CAN_PROVIDE;
@@ -235,7 +235,7 @@ class RequestDetailsPage: AtwUIViewController {
     
     private func getCurrentResponseIdIndex() -> Int {
         if (self.currentResponseId != nil) {
-            for (index, id) in enumerate(self.responseIds!) {
+            for (index, id) in self.responseIds!.enumerate() {
                 if (id == self.currentResponseId) {
                     return index;
                 }
