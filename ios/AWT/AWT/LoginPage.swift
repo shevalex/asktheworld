@@ -156,11 +156,11 @@ class LoginPage: AtwUIViewController, UITextFieldDelegate {
     }
     
     private func saveEmailAndPassword() {
-//        var email: NSData = emailTextField.tex!t.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-//        var emailQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassGenericPassword, email], forKeys: [kSecClass, kSecValueData]);
-//        SecItemDelete(emailQuery);
-//        SecItemAdd(emailQuery, nil);
-//        
+        NSUserDefaults.standardUserDefaults().setObject(emailTextField.text, forKey: "email");
+        NSUserDefaults.standardUserDefaults().setObject(passwordTextField.text, forKey: "password");
+        
+        // KEYCHAIN based - does not work after upgrade        
+//
 //        var password: NSData = passwordTextField.text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
 //        var passwordQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassInternetPassword, password], forKeys: [kSecClass, kSecValueData]);
 //        SecItemDelete(passwordQuery);
@@ -168,6 +168,11 @@ class LoginPage: AtwUIViewController, UITextFieldDelegate {
     }
     
     private func restoreEmailAndPassword() {
+        emailTextField.text = NSUserDefaults.standardUserDefaults().stringForKey("email");
+        passwordTextField.text = NSUserDefaults.standardUserDefaults().stringForKey("password");
+        
+        
+        // KEYCHAIN based - does not work after upgrade
 //        var emailQuery: NSMutableDictionary = NSMutableDictionary(objects: [kSecClassGenericPassword, kCFBooleanTrue, kSecMatchLimitOne], forKeys: [kSecClass, kSecReturnData, kSecMatchLimit]);
 //        
 //        var dataTypeRef: Unmanaged<AnyObject>?;
