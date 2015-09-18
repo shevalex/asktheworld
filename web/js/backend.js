@@ -666,7 +666,7 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
   this._communicate("response", "POST",
     { 
       user_id: Backend.getUserProfile().user_id,
-      request_id: requestId,
+      request_id: parseInt(requestId),
       text: response.text,
       age_category: Backend.getUserProfile().age_category,
       gender: Backend.getUserProfile().gender,
