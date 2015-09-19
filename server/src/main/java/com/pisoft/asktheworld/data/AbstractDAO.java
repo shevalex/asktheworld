@@ -35,7 +35,10 @@ public abstract class AbstractDAO<T extends Serializable> {
 	}
 
 	public T update(final T entity) {
-		return entityManager.merge(entity);
+		T r = entityManager.merge(entity);
+		entityManager.flush();
+		entityManager.refresh(r);
+		return r;
 	}
 	
 	public void delete(final T entity) {
