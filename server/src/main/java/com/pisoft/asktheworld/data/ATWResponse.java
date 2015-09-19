@@ -119,19 +119,19 @@ public class ATWResponse implements Serializable {
 		this.response_id = id;
 	}
 
-	public int getUserId() {
+	public int getUser_id() {
 		return user_id;
 	}
 
-	public void setUserId(int user_id) {
+	public void setUser_id(int user_id) {
 		this.user_id = user_id;
 	}
 
-	public int getRequestId() {
+	public int getRequest_id() {
 		return request_id;
 	}
 
-	public void setRequestId(int requestId) {
+	public void setRequest_id(int requestId) {
 		this.request_id = requestId;
 	}
 

@@ -412,7 +412,7 @@ public class DB {
 
 	public ATWResponse deleteIncomingResponse(int user_id, int responseID) {
 		ATWResponse response = responses.findById(responseID);
-		if (!requests.exist(response.getRequestId(), user_id)) {
+		if (!requests.exist(response.getRequest_id(), user_id)) {
 			return null;
 		}
 		return responses.markDeleted(response, true);
@@ -518,7 +518,7 @@ public class DB {
 		List<ATWResponse> outRespModified = responses.findModifiedOutgoingRequestsByUserIdAndDate(user_id, timeStamp, timeRequest);
 		for(Iterator<ATWResponse> it = outRespModified.iterator();it.hasNext();) {
 			ATWResponse resp = it.next();
-			list.add(ATWEvent.getRespChanged(resp.getRequestId(), resp.getId()));
+			list.add(ATWEvent.getRespChanged(resp.getRequest_id(), resp.getId()));
 		}
 
 		if (outRespModified.size() > 0) { System.out.println("We have modified outgoing responses"); } 
@@ -529,7 +529,7 @@ public class DB {
 			List<ATWResponse> incModifiedResponsesForOutReq = responses.findModifiedResponsesByRequestsIdAndDate(ids, timeStamp, timeRequest);
 			for(Iterator<ATWResponse> it = incModifiedResponsesForOutReq.iterator();it.hasNext();) {
 				ATWResponse resp = it.next();
-				list.add(ATWEvent.getRespChanged(resp.getRequestId(), resp.getId()));
+				list.add(ATWEvent.getRespChanged(resp.getRequest_id(), resp.getId()));
 			}
 			if (incModifiedResponsesForOutReq.size() > 0) { System.out.println("We have modified incomming responses");}
 			else {System.out.println("No modified incomming responses");}
