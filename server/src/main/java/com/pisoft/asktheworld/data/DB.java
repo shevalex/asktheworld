@@ -7,18 +7,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.pisoft.asktheworld.enums.Age;
-import com.pisoft.asktheworld.enums.AgeRequest;
-import com.pisoft.asktheworld.enums.Gender;
-import com.pisoft.asktheworld.enums.GenderRequest;
-import com.pisoft.asktheworld.enums.ResponseStatus;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pisoft.asktheworld.enums.AgeRequest;
+import com.pisoft.asktheworld.enums.Gender;
 import com.pisoft.asktheworld.enums.RequestStatus;
+import com.pisoft.asktheworld.enums.ResponseStatus;
 
 @Service
 @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
@@ -350,11 +347,21 @@ public class DB {
 		return response;
 	}
 	public ATWResponse updateResponse(ATWResponse response) {
-		if(isResponseExist(response.getId())) {
-			return responses.update(response);
+		//get stored object
+		ATWResponse resp = responses.findById(response.getId());
+		if(resp != null) {
+			//compare statuses
+			if (response.getStatus() != null && !resp.getStatus().equals(response.getStatus())) {
+				response.setStatusChangeDate();
+			} else {
+				response.setStatusChangeDate(resp.getStatusChangeDate());
+			}
+			resp = responses.update(response);
+			return resp;
 		}
 		return null;		
 	}
+	
 	public ATWResponse getResponse(int id) {
 		return responses.findById(id);
 	}
@@ -447,8 +454,8 @@ public class DB {
 /**/
 		for (Iterator<ATWRequest> it  = user.getIncomingRequests().iterator(); it.hasNext();) {
 			ATWRequest req = it.next();
-			Date t = req.getCreationTime();
-			if( t.after(timeStamp) && t.before(timeRequest)) {
+			Date creationT = req.getTime();
+			if( creationT.after(timeStamp) && creationT.before(timeRequest) ) {
 				list.add(ATWEvent.getIncReqChanged());
 				System.out.println("We have new incomming requests");
 				break;
@@ -471,7 +478,7 @@ public class DB {
 		
 		for (Iterator<ATWRequest> it  = user.getIncomingRequests().iterator(); it.hasNext();) {
 			ATWRequest req = it.next();
-			Date t = req.getModificationTime();
+			Date t = req.getModificationDate();
 			if( t.after(timeStamp) && t.before(timeRequest)) {
 				list.add(ATWEvent.getReqChanged(req.getId()));
 				System.out.println("We have changed incomming request");
@@ -502,10 +509,11 @@ public class DB {
 		List<Integer> outReq = requests.findOutgoingRequestsIDsByUserId(user_id);
 		if(outReq.size() > 0) {
 			Set<Integer> ids = new HashSet<>(outReq);
-			List<Integer> incReqForResponsesChanged = responses.findNewResponsesByRequestsIdAndDate(ids, timeStamp, timeRequest);
+			List<Integer> incReqForResponsesChanged = responses.findNewOrStatusChangedResponsesByRequestsIdAndDate(ids, timeStamp, timeRequest);
 			for (Iterator<Integer> it = incReqForResponsesChanged.iterator(); it.hasNext();) {
 				list.add(ATWEvent.getIncRespChanged(it.next()));
 			}
+			
 			if (incReqForResponsesChanged.size() > 0) { System.out.println("We have new incomming responses");}
 			else {System.out.println("No new incomming responses");}
 		} else {System.out.println("No new incomming responses (no requests)");}
