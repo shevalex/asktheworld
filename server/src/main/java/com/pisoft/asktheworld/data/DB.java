@@ -492,7 +492,7 @@ public class DB {
 		The app is expected to call getOutgoingResponseIds() after receiving an event to get an updated list.
 		The event may OPTIONALLY carry the updated list of outgoing response ids. This may be needed if the api implementation does not perform caching.
 /**/
-		List<Integer> outRespChanged = responses.findNewOutgoingResponsesByUserIdAndDate(user_id, timeStamp, timeRequest);
+		List<Integer> outRespChanged = responses.findNewOrStatusChangedOutgoingResponsesByUserIdAndDate(user_id, timeStamp, timeRequest);
 		for(Iterator<Integer> it = outRespChanged.iterator();it.hasNext();) {
 			list.add(ATWEvent.getOutRespChanged(it.next()));
 		}
