@@ -120,12 +120,12 @@ struct RequestResponseManagement {
                 tableCell.targetLabel.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
                 tableCell.requestTextLabel.text = request.text;
                 
-                let dateTime = NSDate(timeIntervalSince1970: request.time);
+                let dateTime = NSDate(timeIntervalSince1970: request.time / 1000);
                 let dateFormatter = NSDateFormatter();
                 dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle;
                 dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle;
                 tableCell.dateLabel.text = dateFormatter.stringFromDate(dateTime);
-
+                
                 dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle;
                 dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle;
                 tableCell.timeLabel.text = dateFormatter.stringFromDate(dateTime);
@@ -165,7 +165,7 @@ struct RequestResponseManagement {
                 tableCell.sourceLabel.text = String.localizedStringWithFormat(NSLocalizedString("The World asked you a %@ question", comment: "Incoming inquiry source"), Configuration.toExpertiseString(request.expertiseCategory));
                 tableCell.requestTextLabel.text = request.text;
                 
-                let dateTime = NSDate(timeIntervalSince1970: request.time);
+                let dateTime = NSDate(timeIntervalSince1970: request.time / 1000);
                 let dateFormatter = NSDateFormatter();
                 dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle;
                 dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle;
