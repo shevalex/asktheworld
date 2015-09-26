@@ -15,12 +15,16 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 	private String findByResponseAndUserID = "select r from "+ATWResponse.class.getName()+" r where r.id=?1 and r.user_id=?2";
 	private String findByUserID = "select r from "+ATWResponse.class.getName()+" r where r.user_id=?1";
 	private String findNewByUserIDAndTime = "select r.request_id from "+ATWResponse.class.getName()+" r where r.user_id=?1 and r.time between ?2 and ?3";
+	private String findNewOrStatusChangedByUserIDAndTime = "select r.request_id from "+ATWResponse.class.getName()+" r where r.user_id=?1 and ( r.time between ?2 and ?3 or r.statusUpdateTime between ?2 and ?3 )";
 	//TODO: change to Event creation for pair (id, requestId). Now will return response objects 
 	private String findModifiedByUserIDAndTime = "select r from "+ATWResponse.class.getName()+" r where r.user_id=?1 and r.modificationDate between ?2 and ?3";
 	private String findNewByRequestsIdAndTime = "select r.request_id from "+ATWResponse.class.getName()+" r where r.request_id in ?1 and r.time between ?2 and ?3";
+	
 	//TODO: change to Event creation for pair (id, requestId). Now will return response objects
 	private String findModifiedByRequestsIdAndTime = "select r from " + ATWResponse.class.getName()+" r where r.request_id in ?1 and r.modificationDate between ?2 and ?3";
-	
+	private String findSatusChangedByRequestsIdAndTime = "select r from " + ATWResponse.class.getName()+" r where r.request_id in ?1 and r.statusUpdateTime between ?2 and ?3";
+	private String findNewOrStatusChangedByRequestsIdAndTime = "select r.request_id from "+ATWResponse.class.getName()+" r where r.request_id in ?1 and ( r.time between ?2 and ?3 or r.statusUpdateTime between ?2 and ?3 )";
+
 	public ResponseDAOImpl() {
 		super();
 		setTClass(ATWResponse.class);
@@ -76,6 +80,18 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 				.getResultList();
 		return list;
 	}
+	
+	public List<Integer> findNewOrStatusChangedOutgoingResponsesByUserIdAndDate(int userId,
+			Date timeStamp, Date timeRequest) {
+		@SuppressWarnings("unchecked")
+		List<Integer> list = entityManager.createQuery(findNewOrStatusChangedByUserIDAndTime,Integer.class)
+				.setParameter(1, userId)
+				.setParameter(2, timeStamp)
+				.setParameter(3, timeRequest)
+				.getResultList();
+		return list;
+	}
+	
 
 	public List<ATWResponse> findModifiedOutgoingRequestsByUserIdAndDate(int userId,
 			Date timeStamp, Date timeRequest) {
@@ -109,5 +125,17 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 				.getResultList();
 		return list;	
 	}
+	
+	public List<Integer> findNewOrStatusChangedResponsesByRequestsIdAndDate(
+			Set<Integer> ids, Date timeStamp, Date timeRequest) {
+		@SuppressWarnings("unchecked")
+		List<Integer> list = entityManager.createQuery(findNewOrStatusChangedByRequestsIdAndTime, Integer.class)
+				.setParameter(1, ids)
+				.setParameter(2, timeStamp)
+				.setParameter(3, timeRequest)
+				.getResultList();
+		return list;	
+	}
+	
 
 }

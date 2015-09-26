@@ -65,6 +65,10 @@ public class ATWResponse implements Serializable {
 	@Column(nullable = false)
 	private String status = "unviewed";
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="UPDATE_STATUS_TS")
+	private Date statusUpdateTime;
+	
 	@Column
 	private int star_rating = 0;
 	
@@ -119,19 +123,19 @@ public class ATWResponse implements Serializable {
 		this.response_id = id;
 	}
 
-	public int getUserId() {
+	public int getUser_id() {
 		return user_id;
 	}
 
-	public void setUserId(int user_id) {
+	public void setUser_id(int user_id) {
 		this.user_id = user_id;
 	}
 
-	public int getRequestId() {
+	public int getRequest_id() {
 		return request_id;
 	}
 
-	public void setRequestId(int requestId) {
+	public void setRequest_id(int requestId) {
 		this.request_id = requestId;
 	}
 
@@ -176,4 +180,30 @@ public class ATWResponse implements Serializable {
 	void updatedAt() {
 		modificationDate = new Date();
 	}
+	
+	@JsonIgnore
+	public Date getTime() {
+		return time;
+	}
+	
+	@JsonIgnore
+	public Date getModificationDate() {
+		return modificationDate;
+	}
+	
+	@JsonIgnore
+	public Date getStatusChangeDate() {
+		return statusUpdateTime;
+	}
+
+	@JsonIgnore
+	public void setStatusChangeDate() {
+		statusUpdateTime = new Date();
+	}
+
+	@JsonIgnore
+	public void setStatusChangeDate(Date time) {
+		statusUpdateTime = time;
+	}
+
 }

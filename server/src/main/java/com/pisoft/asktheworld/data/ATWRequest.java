@@ -62,7 +62,6 @@ public class ATWRequest implements Serializable {
 	private String expertise_category;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-
 	@Column(name="UPDATE_TS", nullable = false)
 	private Date modificationDate;
 		     
@@ -143,12 +142,12 @@ public class ATWRequest implements Serializable {
 	}
 	
 	@JsonIgnore
-	public Date getCreationTime() {
+	public Date getTime() {
 		return time;
 	}
 	
 	@JsonIgnore
-	public Date getModificationTime() {
+	public Date getModificationDate() {
 		return modificationDate;
 	}
 }
