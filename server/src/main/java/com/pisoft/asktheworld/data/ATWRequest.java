@@ -38,7 +38,7 @@ public class ATWRequest implements Serializable {
 	@JsonIgnore
 	private int request_id;
 
-	@Column
+	@Column(updatable=false)
 	private int user_id;
 	@Column
 	private String text;
