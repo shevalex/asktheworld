@@ -197,7 +197,7 @@ struct RequestResponseManagement {
         
         func getObjectId(index: Int!) -> Int? {
             var requestIds = getObjectIds();
-            if (requestIds != nil) {
+            if (requestIds != nil && requestIds?.count > index) {
                 return requestIds![index];
             } else {
                 return nil;
@@ -405,7 +405,11 @@ struct RequestResponseManagement {
             responseProviderFactory = OutgoingResponseProviderFactory(responseStatus: nil);
         }
         
-
+        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
+            return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED
+                   || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
+        }
+        
         override func getObjectIds() -> [Int]? {
             let requestIds: [Int]? = Backend.getInstance().getIncomingRequestIds(Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
