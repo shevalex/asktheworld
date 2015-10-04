@@ -386,14 +386,6 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
 Backend.getRequest = function(requestId, transactionCallback) {
   var request = Backend.Cache.getRequest(requestId);
   if (request != null || Backend.Cache.isRequestInUpdate(requestId)) {
-    //TO BE REMOVED
-    if (request != null && request.status == Backend.Request.STATUS_ACTIVE) {
-      var timeToLive = (request.time + request.response_wait_time * 1000 * 60 * 60) - Date.now();
-      if (timeToLive < 0) {
-        request.status = Backend.Request.STATUS_INACTIVE;
-      }
-    }
-    
     if (transactionCallback != null) {
       transactionCallback.success();
     }
