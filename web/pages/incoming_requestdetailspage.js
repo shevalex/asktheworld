@@ -75,6 +75,7 @@ IncomingRequestDetailsPage.prototype.definePageContent = function(root) {
       Application.showMenuPage(this._returnPageId);
     } else if (event.requestId == this._currentRequestId) {
       if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
+        this._showRequest();
         this._showViewableResponse();
       }
     }
