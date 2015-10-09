@@ -83,6 +83,7 @@ public class JPAConfiguration {
     	hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
     	hibernateProperties.setProperty("hibernate.format_sql", "true");
     	hibernateProperties.setProperty("hibernate.show_sql", "true");
+    	hibernateProperties.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
     	
     	//hibernateProperties.setProperty("hibernate.globally_quoted_identifiers", "true");
     	return hibernateProperties;
