@@ -120,12 +120,12 @@ struct RequestResponseManagement {
                 tableCell.targetLabel.text = String.localizedStringWithFormat(NSLocalizedString("To %@", comment: "To Target Group"), Configuration.toTargetGroupString(request.responseAgeGroup, gender: request.responseGender));
                 tableCell.requestTextLabel.text = request.text;
                 
-                let dateTime = NSDate(timeIntervalSince1970: request.time);
+                let dateTime = NSDate(timeIntervalSince1970: request.time / 1000);
                 let dateFormatter = NSDateFormatter();
                 dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle;
                 dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle;
                 tableCell.dateLabel.text = dateFormatter.stringFromDate(dateTime);
-
+                
                 dateFormatter.dateStyle = NSDateFormatterStyle.NoStyle;
                 dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle;
                 tableCell.timeLabel.text = dateFormatter.stringFromDate(dateTime);
@@ -165,7 +165,7 @@ struct RequestResponseManagement {
                 tableCell.sourceLabel.text = String.localizedStringWithFormat(NSLocalizedString("The World asked you a %@ question", comment: "Incoming inquiry source"), Configuration.toExpertiseString(request.expertiseCategory));
                 tableCell.requestTextLabel.text = request.text;
                 
-                let dateTime = NSDate(timeIntervalSince1970: request.time);
+                let dateTime = NSDate(timeIntervalSince1970: request.time / 1000);
                 let dateFormatter = NSDateFormatter();
                 dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle;
                 dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle;
@@ -197,7 +197,7 @@ struct RequestResponseManagement {
         
         func getObjectId(index: Int!) -> Int? {
             var requestIds = getObjectIds();
-            if (requestIds != nil) {
+            if (requestIds != nil && requestIds?.count > index) {
                 return requestIds![index];
             } else {
                 return nil;
@@ -405,7 +405,11 @@ struct RequestResponseManagement {
             responseProviderFactory = OutgoingResponseProviderFactory(responseStatus: nil);
         }
         
-
+        override func isObjectIdsChangeEvent(event: Backend.CacheChangeEvent) -> Bool {
+            return event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED
+                   || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED;
+        }
+        
         override func getObjectIds() -> [Int]? {
             let requestIds: [Int]? = Backend.getInstance().getIncomingRequestIds(Backend.RequestObject.STATUS_ACTIVE);
             if (requestIds == nil) {
