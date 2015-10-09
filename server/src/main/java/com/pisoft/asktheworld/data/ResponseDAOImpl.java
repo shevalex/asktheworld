@@ -22,7 +22,6 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 	
 	//TODO: change to Event creation for pair (id, requestId). Now will return response objects
 	private String findModifiedByRequestsIdAndTime = "select r from " + ATWResponse.class.getName()+" r where r.request_id in ?1 and r.modificationDate between ?2 and ?3";
-	private String findSatusChangedByRequestsIdAndTime = "select r from " + ATWResponse.class.getName()+" r where r.request_id in ?1 and r.statusUpdateTime between ?2 and ?3";
 	private String findNewOrStatusChangedByRequestsIdAndTime = "select r.request_id from "+ATWResponse.class.getName()+" r where r.request_id in ?1 and ( r.time between ?2 and ?3 or r.statusUpdateTime between ?2 and ?3 )";
 
 	public ResponseDAOImpl() {
@@ -72,7 +71,6 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 	
 	public List<Integer> findNewOutgoingResponsesByUserIdAndDate(int userId,
 			Date timeStamp, Date timeRequest) {
-		@SuppressWarnings("unchecked")
 		List<Integer> list = entityManager.createQuery(findNewByUserIDAndTime,Integer.class)
 				.setParameter(1, userId)
 				.setParameter(2, timeStamp)
@@ -83,7 +81,6 @@ public class ResponseDAOImpl extends AbstractDAO<ATWResponse> {
 	
 	public List<Integer> findNewOrStatusChangedOutgoingResponsesByUserIdAndDate(int userId,
 			Date timeStamp, Date timeRequest) {
-		@SuppressWarnings("unchecked")
 		List<Integer> list = entityManager.createQuery(findNewOrStatusChangedByUserIDAndTime,Integer.class)
 				.setParameter(1, userId)
 				.setParameter(2, timeStamp)
