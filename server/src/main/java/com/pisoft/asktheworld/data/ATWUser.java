@@ -2,6 +2,7 @@ package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Constraint;
 
@@ -149,7 +152,11 @@ Hibernate:
 	}
 
 	public ATWRequest deleteRequest(ATWRequest request) {
-		return incomingRequets.remove(request)?request:null;
+		if (incomingRequets.remove(request)) {
+		  lastdelete_ts = new Date();
+		  return request;
+		}
+		return null;
 	}
 	
 	@JsonIgnore
@@ -162,4 +169,14 @@ Hibernate:
 	public List<ATWRequest> getIncomingRequests() {
 		return incomingRequets;
 	}
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column
+	private Date lastdelete_ts;
+	
+	@JsonIgnore
+	public Date getLastDelteRequestDate() {
+		return lastdelete_ts;
+	}
+
 }

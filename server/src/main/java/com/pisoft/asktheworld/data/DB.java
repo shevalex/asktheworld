@@ -175,6 +175,7 @@ public class DB {
 		
 	}
 	public ATWRequest getRequest(int id) {
+		requests.updateExpiredRequests(new Date());
 		return requests.findById(id);
 	}
 	
@@ -190,7 +191,19 @@ public class DB {
 		return request;
 	}
 	public ATWRequest updateRequest(ATWRequest request) {
-		if(isRequestExist(request.getId())) {
+		//get stored object
+		Date requestTime = new Date();
+		requests.updateExpiredRequests(requestTime);
+		ATWRequest storedReq = requests.findById(request.getId());
+		if (storedReq != null && storedReq.getStatus().equals("active")) {
+			//compare waiting time
+
+			if (storedReq.getResponse_wait_time() != request.getResponse_wait_time()) {
+				request.updateCreationTime(requestTime);
+			}
+			if (!storedReq.getStatus().equals(request.getStatus())) {
+				request.setExpireTime(requestTime);
+			}
 			return requests.update(request);
 		}
 		return null;
@@ -218,7 +231,7 @@ public class DB {
 		//test it here not necessary but leave it for protection now
 		ATWUser existUser = getUser(id);
 		List<ATWRequest> list = null;
-		
+		requests.updateExpiredRequests(new Date());
 		if(existUser != null) {
 			if(status == RequestStatus.ALL) {
 				list = requests.findOutgoingRequestsByUserId(id, sorting);
@@ -291,6 +304,7 @@ public class DB {
 		List<String> userGenders = new ArrayList<String>();
 		userGenders.add(user.getGender().toString());
 		userGenders.add("All");
+		requests.updateExpiredRequests(new Date());
 		List<ATWRequest> newIncomingRequests = requests.findNewIncomingRequets(id, userIncomingRequests, userAges, userGenders, number);
 		return newIncomingRequests;
 	}
@@ -435,6 +449,7 @@ public class DB {
 		List<ATWEvent> list = new ArrayList<ATWEvent>();
 		if (timeRequest.before(timeStamp)) return list;
 		ATWUser user = users.findById(user_id);
+		requests.updateExpiredRequests(timeRequest);
 /*
 		OUTGOING_REQUESTS_CHANGED
 		The event is produced when a client creates new request (or possibly deletes the existing one)
@@ -452,15 +467,23 @@ public class DB {
 		The app is expected to call getIncomingRequestIds() after receiving an event to get an updated list.
 		The event may OPTIONALLY carry the updated list of outgoing request ids. This may be needed if the api implementation does not perform caching.
 /**/
-		for (Iterator<ATWRequest> it  = user.getIncomingRequests().iterator(); it.hasNext();) {
-			ATWRequest req = it.next();
-			Date creationT = req.getTime();
-			if( creationT.after(timeStamp) && creationT.before(timeRequest) ) {
-				list.add(ATWEvent.getIncReqChanged());
-				System.out.println("We have new incomming requests");
-				break;
+		if (user.getLastDelteRequestDate() != null && 
+				timeStamp.before(user.getLastDelteRequestDate()) && timeRequest.after(user.getLastDelteRequestDate()) ) {
+			list.add(ATWEvent.getIncReqChanged());
+		} else {
+			for (Iterator<ATWRequest> it  = user.getIncomingRequests().iterator(); it.hasNext();) {
+				ATWRequest req = it.next();
+				Date creationT = req.getTime();
+				Date expireT = req.getExpireTime();
+				if( (creationT.after(timeStamp) && creationT.before(timeRequest)) ||
+						//?? shod we do that?
+						(expireT.after(timeStamp) && expireT.before(timeRequest))) {
+					list.add(ATWEvent.getIncReqChanged());
+					System.out.println("We have new incomming requests");
+					break;
+				}
+				if(!it.hasNext()) { System.out.println("No new Incomming requests");}
 			}
-			if(!it.hasNext()) { System.out.println("No new Incomming requests");}
 		}
 		
 /*
@@ -493,6 +516,7 @@ public class DB {
 		The event may OPTIONALLY carry the updated list of outgoing response ids. This may be needed if the api implementation does not perform caching.
 /**/
 		List<Integer> outRespChanged = responses.findNewOrStatusChangedOutgoingResponsesByUserIdAndDate(user_id, timeStamp, timeRequest);
+		System.out.println(" Outgoing requests: "+outRespChanged);
 		for(Iterator<Integer> it = outRespChanged.iterator();it.hasNext();) {
 			list.add(ATWEvent.getOutRespChanged(it.next()));
 		}
@@ -507,6 +531,7 @@ public class DB {
 		The event may OPTIONALLY carry the updated list of incoming response ids. This may be needed if the api implementation does not perform caching.
 /**/
 		List<Integer> outReq = requests.findOutgoingRequestsIDsByUserId(user_id);
+		System.out.println("Incomming requests: "+outReq);
 		if(outReq.size() > 0) {
 			Set<Integer> ids = new HashSet<>(outReq);
 			List<Integer> incReqForResponsesChanged = responses.findNewOrStatusChangedResponsesByRequestsIdAndDate(ids, timeStamp, timeRequest);
