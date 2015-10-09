@@ -54,7 +54,7 @@ public class RequestController {
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value="/request/{requestID}")
-	public ResponseEntity<Void> deleteUser(@PathVariable("requestID") int id) {
+	public ResponseEntity<Void> deleteRequest(@PathVariable("requestID") int id) {
 		ATWRequest request = db.deleteRequest(id);
 		//TODO: Need check for owner (403 error)
 		return new ResponseEntity<Void>( request != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
@@ -62,7 +62,7 @@ public class RequestController {
 	
 	
 	@RequestMapping(method=RequestMethod.GET, value="/request/{requestID}")
-	public ResponseEntity<ATWRequest> getUser(@PathVariable("requestID") int id) {
+	public ResponseEntity<ATWRequest> getRequest(@PathVariable("requestID") int id) {
 		//System.out.println("Request id " + id);
 		ATWRequest request  = db.getRequest(id);
 		//TODO:"Need to add security check. Should we add it in security filter or here?"
