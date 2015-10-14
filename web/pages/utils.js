@@ -1031,7 +1031,7 @@ UIUtils.emptyContainer = function(container) {
   } else {
     container.innerHTML = "";
   }
-} 
+}
 
 UIUtils.setClickListener = function(element, listener) {
   UIUtils.get$(element).click(listener);
