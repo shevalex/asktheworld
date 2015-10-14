@@ -96,6 +96,9 @@ HomePage.prototype.onHide = function() {
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
   clearInterval(this._refreshTimer);
+  
+  this._outgoingRequestsView.setObjectIds([]);
+  this._incomingRequestsView.setObjectIds([]);
 }
 
 

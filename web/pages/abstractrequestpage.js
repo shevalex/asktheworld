@@ -62,7 +62,7 @@ AbstractRequestPage._AbstractObjectItem.prototype.refresh = function() {
   this._fill();
 }
 AbstractRequestPage._AbstractObjectItem.prototype._clear = function() {
-  UIUtils.get$(this._container).empty();
+  UIUtils.emptyContainer(this._container);
   
   this._header = UIUtils.appendBlock(this._container, "Header");
   UIUtils.addClass(this._header, "container-header");
@@ -644,7 +644,7 @@ AbstractRequestPage._AbstractRequestsTable.prototype._updateTableControl = funct
   UIUtils.setEnabled(this._previousButton, this._currentPage > 0);
   UIUtils.setEnabled(this._nextButton, this._currentPage + 1 < this._numOfPages);
   
-  UIUtils.get$(this._pageButtonsPanel).empty();
+  UIUtils.emptyContainer(this._pageButtonsPanel);
   if (this._numOfPages == 0 || this._maxNumOfPageButtons <= 0) {
     return;
   }

@@ -746,7 +746,7 @@ UIUtils.appendAttachmentBar = function(root, attachments, editable, openFileCont
   attachmentBar.setAttachments = function(attachments) {
     attachmentBar._attachments = [];
     attachmentBar._attachmentCounter = 0;
-    UIUtils.get$(attachmentsPanel).empty();
+    UIUtils.emptyContainer(attachmentsPanel);
     
     for (var i in attachments) {
       attachmentBar.addAttachment(attachments[i]);
@@ -1026,7 +1026,11 @@ UIUtils.removeClass = function(component, cls) {
 }
 
 UIUtils.emptyContainer = function(container) {
-  UIUtils.get$(container).empty();
+  if (typeof container == "string") {
+    UIUtils.get$(container).empty();
+  } else {
+    container.innerHTML = "";
+  }
 }
 
 UIUtils.setClickListener = function(element, listener) {

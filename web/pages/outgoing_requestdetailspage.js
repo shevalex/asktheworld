@@ -114,7 +114,7 @@ OutgoingRequestDetailsPage.prototype.onHide = function() {
   
   this._requestItem.remove();
   this._requestItem = null;  
-  UIUtils.get$(this._requestPanel).empty();  
+  UIUtils.emptyContainer(this._requestPanel);  
 
   this._incomingResponsesView.clear();
   
@@ -124,7 +124,7 @@ OutgoingRequestDetailsPage.prototype.onHide = function() {
 OutgoingRequestDetailsPage.prototype._showViewableRequest = function() {
   if (this._requestItem != null) {
     this._requestItem.remove();
-    UIUtils.get$(this._requestPanel).empty();
+    UIUtils.emptyContainer(this._requestPanel);
   }
 
   this._requestItem = new AbstractRequestPage.ExtendedOutgoingRequestItem(this._currentRequestId);
@@ -144,7 +144,7 @@ OutgoingRequestDetailsPage.prototype._showViewableRequest = function() {
 OutgoingRequestDetailsPage.prototype._showEditingRequest = function() {
   if (this._requestItem != null) {
     this._requestItem.remove();
-    UIUtils.get$(this._requestPanel).empty();
+    UIUtils.emptyContainer(this._requestPanel);
   }
 
   this._requestItem = new AbstractRequestPage.EditableOutgoingRequestItem(this._currentRequestId);

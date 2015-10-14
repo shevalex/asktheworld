@@ -122,20 +122,20 @@ IncomingRequestDetailsPage.prototype.onHide = function() {
   AbstractRequestPage.prototype.onHide.call(this);
   
   this._requestItem.remove();
-  UIUtils.get$(this._requestPanel).empty();
+  UIUtils.emptyContainer(this._requestPanel);
 
   if (this._responseItem != null) {
     this._responseItem.remove();
     this._responseItem = null;
   }
-  UIUtils.get$(this._responsePanel).empty();
+  UIUtils.emptyContainer(this._responsePanel);
   
   Backend.removeCacheChangeListener(this._cacheChangeListener);
   clearInterval(this._refreshTimer);
 }
 
 IncomingRequestDetailsPage.prototype._showRequest = function() {
-  UIUtils.get$(this._requestPanel).empty();
+  UIUtils.emptyContainer(this._requestPanel);
   
   var request = Backend.getRequest(this._currentRequestId);
   this._requestItem = new AbstractRequestPage.ExtendedIncomingRequestItem(this._currentRequestId);
@@ -170,7 +170,7 @@ IncomingRequestDetailsPage.prototype._showViewableResponse = function() {
     this._responseItem.remove();
     this._responseItem = null;
   }
-  UIUtils.get$(this._responsePanel).empty();
+  UIUtils.emptyContainer(this._responsePanel);
 
   var request = Backend.getRequest(this._currentRequestId);
   
@@ -199,7 +199,7 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
   if (this._responseItem != null) {
     this._responseItem.remove();
   }
-  UIUtils.get$(this._responsePanel).empty();
+  UIUtils.emptyContainer(this._responsePanel);
 
   var responseIds = Backend.getOutgoingResponseIds(this._currentRequestId);
   var responseId = responseIds[0];
@@ -237,7 +237,7 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
   if (this._responseItem != null) {
     this._responseItem.remove();
   }
-  UIUtils.get$(this._responsePanel).empty();
+  UIUtils.emptyContainer(this._responsePanel);
 
   var responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
   var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, Account.canOpenFileController);
@@ -246,7 +246,7 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
   
   var cancelButton = UIUtils.appendButton(buttonsPanel, "CancelButton", I18n.getLocale().literals.CancelOperationButton);
   UIUtils.setClickListener(cancelButton, function() {
-    UIUtils.get$(this._responsePanel).empty();
+    UIUtils.emptyContainer(this._responsePanel);
     this._editing = false;
   }.bind(this));
 
