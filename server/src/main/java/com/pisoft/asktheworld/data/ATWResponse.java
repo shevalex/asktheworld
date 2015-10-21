@@ -38,7 +38,7 @@ public class ATWResponse implements Serializable {
 	@Column(name="id")
 	private int response_id;
 	
-	@Column
+	@Column(updatable=false)
 	private int user_id;
 
 	public boolean isDeleted() {
@@ -49,7 +49,7 @@ public class ATWResponse implements Serializable {
 		this.deleted = deleted;
 	}
 
-	@Column
+	@Column(updatable=false)
 	private int request_id;
 	
 	@Column

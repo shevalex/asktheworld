@@ -19,6 +19,7 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 	private String findNewByUserIDAndTime = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.time between ?2 and ?3";
 	private String findModifiedByUserIDAndTime = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1 and r.modificationDate between ?2 and ?3";
 	private String findIdsByUserId = "select r.id from " + ATWRequest.class.getName() + " r where r.user_id=?1";
+	private String updateForInactive = "update " + ATWRequest.class.getName() + " r set r.status='inactive', r.modificationDate=r.expire_ts where r.status='active' and r.expire_ts <= ?1";
 	
 	public RequestDAOImpl() {
 		super();
@@ -101,6 +102,13 @@ public class RequestDAOImpl extends AbstractDAO<ATWRequest> {
 				.getResultList();
 		return list;
 		
+	}
+	
+	public int updateExpiredRequests(Date time) {
+		//and set time
+		return entityManager.createQuery(updateForInactive)
+				.setParameter(1, time)
+				.executeUpdate();
 	}
 
 }

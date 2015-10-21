@@ -38,7 +38,7 @@ public class ATWRequest implements Serializable {
 	@JsonIgnore
 	private int request_id;
 
-	@Column
+	@Column(updatable=false)
 	private int user_id;
 	@Column
 	private String text;
@@ -61,14 +61,19 @@ public class ATWRequest implements Serializable {
 	@Column
 	private String expertise_category;
 	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="UPDATE_TS", nullable = false)
 	private Date modificationDate;
 		     
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="CREATION_TS", nullable = false, updatable=false)
+	@Column(name="CREATION_TS", nullable = false)
 	@JsonSerialize(using = DateSerializer.class)
 	private Date time;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column
+	private Date expire_ts;
 	
 	public int getId() {
 		return request_id;
@@ -134,6 +139,7 @@ public class ATWRequest implements Serializable {
 	@PrePersist
 	void createdAt() {
 		time = modificationDate = new Date();
+		expire_ts = new Date(time.getTime()+response_wait_time*3600*1000);
 	}
 
 	@PreUpdate
@@ -149,5 +155,18 @@ public class ATWRequest implements Serializable {
 	@JsonIgnore
 	public Date getModificationDate() {
 		return modificationDate;
+	}
+	
+	public void updateCreationTime(Date time) {
+		this.time = time;
+		expire_ts = new Date(time.getTime()+response_wait_time*3600*1000);
+	}
+	public void setExpireTime(Date time) {
+		expire_ts = time;
+	}
+	
+	@JsonIgnore
+	public Date getExpireTime() {
+		return expire_ts;
 	}
 }
