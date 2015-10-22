@@ -1318,7 +1318,15 @@ Backend._communicate = function(resource, method, data, isJsonResponse, headers,
   request.onreadystatechange = function() {
     if (request.readyState == 4) {
       if (request.status >= 200 && request.status < 300) {
-        callback.success(isJsonResponse ? JSON.parse(request.responseText) : request.responseText, request.status, request);
+        var text = request.responseText;
+        if (isJsonResponse) {
+          try {
+            text = JSON.parse(request.responseText);
+          } catch (e) {
+            callback.error(request, request.status, request.responseText);
+          }
+        }
+        callback.success(text, request.status, request);
       } else {
         callback.error(request, request.status, request.responseText);
       }
