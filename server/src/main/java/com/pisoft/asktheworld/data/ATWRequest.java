@@ -151,6 +151,11 @@ public class ATWRequest implements Serializable {
 	public Date getTime() {
 		return time;
 	}
+	@JsonIgnore
+	public void setCreationTime(Date time) {
+		this.time = time;
+	}
+	
 	
 	@JsonIgnore
 	public Date getModificationDate() {
@@ -161,6 +166,8 @@ public class ATWRequest implements Serializable {
 		this.time = time;
 		expire_ts = new Date(time.getTime()+response_wait_time*3600*1000);
 	}
+
+	@JsonIgnore
 	public void setExpireTime(Date time) {
 		expire_ts = time;
 	}

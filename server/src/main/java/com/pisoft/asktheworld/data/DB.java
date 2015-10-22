@@ -197,7 +197,8 @@ public class DB {
 		ATWRequest storedReq = requests.findById(request.getId());
 		if (storedReq != null && storedReq.getStatus().equals("active")) {
 			//compare waiting time
-
+			request.setCreationTime(storedReq.getTime());
+			request.setExpireTime(storedReq.getExpireTime());
 			if (storedReq.getResponse_wait_time() != request.getResponse_wait_time()) {
 				request.updateCreationTime(requestTime);
 			}
@@ -365,6 +366,7 @@ public class DB {
 		ATWResponse resp = responses.findById(response.getId());
 		if(resp != null) {
 			//compare statuses
+			response.setCreationTime(resp.getTime());
 			if (response.getStatus() != null && !resp.getStatus().equals(response.getStatus())) {
 				response.setStatusChangeDate();
 			} else {

@@ -185,6 +185,11 @@ public class ATWResponse implements Serializable {
 	public Date getTime() {
 		return time;
 	}
+
+	@JsonIgnore
+	public void setCreationTime(Date time) {
+		this.time = time;
+	}
 	
 	@JsonIgnore
 	public Date getModificationDate() {
@@ -205,5 +210,6 @@ public class ATWResponse implements Serializable {
 	public void setStatusChangeDate(Date time) {
 		statusUpdateTime = time;
 	}
+
 
 }
