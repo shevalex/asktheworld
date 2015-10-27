@@ -119,7 +119,9 @@
   _pages: [],
   
   _messageTimer: null,
-  _spinnerTimer: null
+   
+  _spinnerTimer: null,
+  _spinnerCancellationTimer: null
 };
 
 
@@ -260,6 +262,10 @@ Application.showSpinningWheel = function() {
   if (this._spinnerTimer != null) {
     return;
   }
+  if (this._spinnerCancellationTimer != null) {
+    clearTimeout(this._spinnerCancellationTimer);
+    this._spinnerCancellationTimer = null;
+  }
   
   if ($(".spinning-wheel").length == 0) {
     this._spinnerTimer = setTimeout(function() {
@@ -269,10 +275,19 @@ Application.showSpinningWheel = function() {
 }
 
 Application.hideSpinningWheel = function() {
-  $(".spinning-wheel").remove();
-  if (this._spinnerTimer != null) {
-    clearTimeout(this._spinnerTimer);
+  if (this._spinnerCancellationTimer != null) {
+    return;
   }
+  
+  this._spinnerCancellationTimer = setTimeout(function() {
+    $(".spinning-wheel").remove();
+    
+    if (this._spinnerTimer != null) {
+      clearTimeout(this._spinnerTimer);
+      this._spinnerTimer = null;
+    }
+    this._spinnerCancellationTimer = null;
+  }.bind(this), 1000);
 }
 
 Application.showMessage = function(msg, timeout, title) {
