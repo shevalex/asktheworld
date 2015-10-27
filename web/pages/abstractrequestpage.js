@@ -128,7 +128,7 @@ AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   var counterText = null;
   if (allResponses != null && unreadResponses != null) {
     if (unreadResponses.length > 0) {
-      counterText = "<b>" + unreadResponses.length + "</b>;
+      counterText = "<b>" + unreadResponses.length + "</b>";
     } else {
       counterText = "0";
     }

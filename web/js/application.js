@@ -118,7 +118,8 @@
 
   _pages: [],
   
-  _messageTimer: null
+  _messageTimer: null,
+  _spinnerTimer: null
 };
 
 
@@ -256,13 +257,22 @@ Application.showMenuPage = function(childPageId, paramBundle, observer) {
 
 
 Application.showSpinningWheel = function() {
+  if (this._spinnerTimer != null) {
+    return;
+  }
+  
   if ($(".spinning-wheel").length == 0) {
-    $("body").append("<img src='imgs/ajax-loader.gif' class='spinning-wheel'></img>");
+    this._spinnerTimer = setTimeout(function() {
+      $("body").append("<img src='imgs/ajax-loader.gif' class='spinning-wheel'></img>");
+    }, 2000);
   }
 }
 
 Application.hideSpinningWheel = function() {
   $(".spinning-wheel").remove();
+  if (this._spinnerTimer != null) {
+    clearTimeout(this._spinnerTimer);
+  }
 }
 
 Application.showMessage = function(msg, timeout, title) {
