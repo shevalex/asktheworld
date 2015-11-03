@@ -2,7 +2,6 @@
  Application = {
   Configuration: {
     LANGUAGES: [ {data: "eng", display: I18n.getLocale().literals.LanguageEnglish}, {data: "rus", display: I18n.getLocale().literals.LanguageRussian}, {data: "ger", display: I18n.getLocale().literals.LanguageGerman}, {data: "esp", display: I18n.getLocale().literals.LanguageSpanish}, {data: "fra", display: I18n.getLocale().literals.LanguageFrench}, {data: "por", display: I18n.getLocale().literals.LanguagePortugeese}, {data: "grc", display: I18n.getLocale().literals.LanguageGreece}, {data: "gon", display: I18n.getLocale().literals.LanguageGondurasee}],
-    EXPERTISES: [ {data: "general", display: I18n.getLocale().literals.ExpertiseGeneral}, {data: "law", display: I18n.getLocale().literals.ExpertiseLaw}, {data: "medicine", display: I18n.getLocale().literals.ExpertiseMedicine}, {data: "construction", display: I18n.getLocale().literals.ExpertiseConstruction}],
     
     AGE_CATEGORIES: [{data: "child", display: I18n.getLocale().literals.AgeChild}, {data: "teenager", display: I18n.getLocale().literals.AgeTeenager}, {data: "young", display: I18n.getLocale().literals.AgeYoung}, {data: "adult", display: I18n.getLocale().literals.AgeAdult}, {data: "senior", display: I18n.getLocale().literals.AgeSenior}],
     RESPONSE_WAIT_TIME: [{data: 168, display: I18n.getLocale().literals.WaitTimeWeek}, {data: 24, display: I18n.getLocale().literals.WaitTimeDay}, {data: 12, display: I18n.getLocale().literals.WaitTimeHalfDay}, {data: 1, display: I18n.getLocale().literals.WaitTimeHour}],

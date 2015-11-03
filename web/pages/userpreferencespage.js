@@ -46,7 +46,7 @@ UserPreferencesPage.prototype.definePageContent = function(root) {
   var contactPreferencesPanel = UIUtils.appendBlock(preferencesPanel, "ContactPreferencesPanel");
   UIUtils.appendLabel(contactPreferencesPanel, "ContactPreferencesLabel", this.getLocale().ContactPreferencesLabel);
   
-  this._expertiseElement = contactPreferencesPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contactPreferencesPanel, "Expertise"), this.getLocale().ExpertisePreferenceLabel, Application.Configuration.EXPERTISES)).getInputElement();
+  this._expertiseElement = contactPreferencesPanel.appendChild(UIUtils.createLabeledMultiChoiceList(UIUtils.createId(contactPreferencesPanel, "Expertise"), this.getLocale().ExpertisePreferenceLabel, Backend.getUserSettings().expertise_categories)).getInputElement();
   
   this._makeContactInfoRequestableCheckbox = UIUtils.appendCheckbox(contactPreferencesPanel, "AllowContactInfo", this.getLocale().AllowContactInfoPreferenceLabel);
   
@@ -111,7 +111,7 @@ UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
   
   if (this._makeContactInfoRequestableCheckbox.getValue()) {
     if (this._expertiseElement.getSelectedData().length == 0 
-        || this._expertiseElement.getSelectedData().length == 1 && this._expertiseElement.getSelectedData() == Application.Configuration.EXPERTISES[0].data) {
+        || this._expertiseElement.getSelectedData().length == 1 && this._expertiseElement.getSelectedData() == Backend.getUserSettings().expertise_categories[0].data) {
       
       this._expertiseElement.indicateInvalidInput();
       Application.showMessage(this.getLocale().NoProfessionalExpertiseMessage);
@@ -130,7 +130,7 @@ UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
   }
   
   if (this._expertiseElement.getSelectedData().length == 0) {
-    this._expertiseElement.selectChoices([Application.Configuration.EXPERTISES[0]]);
+    this._expertiseElement.selectChoices([Backend.getUserSettings().expertise_categories[0]]);
   }
 
   var page = this;

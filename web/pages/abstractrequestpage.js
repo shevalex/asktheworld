@@ -139,7 +139,7 @@ AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   var counterLabel = UIUtils.appendLabel(this._header, "CounterLabel", counterText);
   UIUtils.addClass(counterLabel, "request-responsecounter-label");
   
-  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
+  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", Application.Configuration.dataToString(Backend.getUserSettings().expertise_categories, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
 }
 
@@ -216,7 +216,7 @@ AbstractRequestPage._AbstractIncomingRequestItem.prototype._fill = function() {
     UIUtils.addClass(expiresLabel, "request-expires-label");
   }
   
-  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", Application.Configuration.dataToString(Application.Configuration.EXPERTISES, request.expertise_category));
+  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", Application.Configuration.dataToString(Backend.getUserSettings().expertise_categories, request.expertise_category));
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
 }
 

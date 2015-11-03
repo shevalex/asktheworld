@@ -26,11 +26,12 @@ Backend.UserPreferences = {
   inquiry_age_group_preference: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
   inquiry_gender_preference: Application.Configuration.GENDER_PREFERENCE[0].data,
 
-  expertises: [Application.Configuration.EXPERTISES[0]],
   contact_info_requestable: false,
   contact_name: "",
   contact_info: ""
 };
+Backend.UserSettings = {expertise_categories: []};
+
 
 Backend.getUserProfile = function() {
   return this.UserProfile;
@@ -40,6 +41,10 @@ Backend.getUserPreferences = function() {
   return this.UserPreferences;
 }
 
+Backend.getUserSettings = function() {
+  return this.UserSettings;
+}
+
 Backend.logIn = function(login, password, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -47,7 +52,7 @@ Backend.logIn = function(login, password, transactionCallback) {
       Backend.UserProfile.password = password;
       Backend.UserProfile.user_id = data.user_id;
 
-      Backend._pullUserSettings(transactionCallback);
+      Backend._pullUserData(transactionCallback);
     },
     error: function(xhr, status, error) {
       if (transactionCallback != null) {
@@ -118,7 +123,7 @@ Backend.registerUser = function(userProfile, transactionCallback) {
         Backend.UserProfile.password = userProfile.password;
         Backend.UserProfile.user_id = xhr.getResponseHeader("Location");
 
-        Backend._pullUserSettings(transactionCallback);
+        Backend._pullUserData(transactionCallback);
       } else if (transactionCallback != null) {
         transactionCallback.error();
       }
@@ -219,6 +224,50 @@ Backend.updateUserPreferences = function(userPreferences, transactionCallback) {
   return true;
 }
 
+Backend.pullUserSettings = function(transactionCallback) {
+  if (Backend.getUserProfile().user_id == null) {
+    throw "Must login or register first";
+  }
+  
+  
+  // TODO:
+  var supportedCategories = {expertise_categories: [ 
+    {data: "general", display: "General", bg: "gray", fg: "black"},
+    {data: "law", display: "Law", bg: "green", fg: "black"},
+    {data: "medicine", display: "Medical", bg: "red", fg: "black"},
+    {data: "construction", display: "Construction", bg: "blue", fg: "black"}
+  ]};
+  
+  Backend.UserSettings = GeneralUtils.merge(Backend.getUserSettings(), supportedCategories);
+  
+  Backend.UserSettings.expertises = [Backend.UserSettings.expertise_categories[0]];
+  
+  transactionCallback.success();
+  
+  
+//  var communicationCallback = {
+//    success: function(data, status, xhr) {
+//      Backend.UserSettings = GeneralUtils.merge(Backend.getUserSettings(), data);
+//
+//      if (transactionCallback != null) {
+//        transactionCallback.success();
+//      }
+//    },
+//    error: function(xhr, status, error) {
+//      if (transactionCallback != null) { 
+//        if (xhr.status == 401 || xhr.status == 404) {
+//          transactionCallback.failure();
+//        } else {
+//          transactionCallback.error();
+//        }
+//      }
+//    }
+//  }
+//  
+//  this._communicate("user/" + Backend.getUserProfile().user_id + "/settings", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+}
+
+
 Backend.resetUserPassword = function(login, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -241,10 +290,27 @@ Backend.resetUserPassword = function(login, transactionCallback) {
 }
 
 
-Backend._pullUserSettings = function(transactionCallback) {
-  var callbackAdapter = {
+Backend._pullUserData = function(transactionCallback) {
+  var settingsCallbackAdapter = {
     success: function() {
-      Backend.pullUserPreferences(transactionCallback);
+      var profileCallbackAdapter = {
+        success: function() {
+          Backend.pullUserPreferences(transactionCallback);
+        },
+        failure: function() {
+          if (transactionCallback != null) {
+            transactionCallback.failure();
+          }
+        },
+        error: function() {
+          if (transactionCallback != null) {
+            transactionCallback.error();
+          }
+        }
+      }
+      
+      
+      Backend.pullUserProfile(profileCallbackAdapter);
     },
     failure: function() {
       if (transactionCallback != null) {
@@ -258,7 +324,7 @@ Backend._pullUserSettings = function(transactionCallback) {
     }
   }
   
-  Backend.pullUserProfile(callbackAdapter);
+  Backend.pullUserSettings(settingsCallbackAdapter);
 }
 
 
