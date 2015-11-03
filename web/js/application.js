@@ -102,9 +102,14 @@
     },
     
     dataToString: function(configurationItem, data) {
+      var item = this.findConfigurationItem(configurationItem, data);
+      return item != null ? item.display : null;
+    },
+    
+    findConfigurationItem: function(configurationItem, data) {
       for (var i in configurationItem) {
         if (configurationItem[i].data == data) {
-          return configurationItem[i].display;
+          return configurationItem[i];
         }
       }
       

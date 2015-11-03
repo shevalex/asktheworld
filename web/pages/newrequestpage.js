@@ -86,7 +86,7 @@ NewRequestPage.prototype._resetPage = function() {
   this._requestQuantityElement.selectData(Backend.getUserPreferences().default_response_quantity);
   this._requestWaitTimeElement.selectData(Backend.getUserPreferences().default_response_wait_time);
   
-  this._requestExpertiseCategoryElement.selectChoices([Backend.getUserSettings().expertise_categories]);
+  this._requestExpertiseCategoryElement.selectChoices([Backend.getUserSettings().expertise_categories[0]]);
 }
 
 NewRequestPage.prototype._createRequest = function() {

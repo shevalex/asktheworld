@@ -139,8 +139,11 @@ AbstractRequestPage._AbstractOutgoingRequestItem.prototype._fill = function() {
   var counterLabel = UIUtils.appendLabel(this._header, "CounterLabel", counterText);
   UIUtils.addClass(counterLabel, "request-responsecounter-label");
   
-  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", Application.Configuration.dataToString(Backend.getUserSettings().expertise_categories, request.expertise_category));
+  var expertiseItem = Application.Configuration.findConfigurationItem(Backend.getUserSettings().expertise_categories, request.expertise_category);
+  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", expertiseItem.display);
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
+  expertiseLabel.style.backgroundColor = expertiseItem.bg;
+  expertiseLabel.style.color = expertiseItem.fg;
 }
 
 
@@ -216,8 +219,11 @@ AbstractRequestPage._AbstractIncomingRequestItem.prototype._fill = function() {
     UIUtils.addClass(expiresLabel, "request-expires-label");
   }
   
-  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", Application.Configuration.dataToString(Backend.getUserSettings().expertise_categories, request.expertise_category));
+  var expertiseItem = Application.Configuration.findConfigurationItem(Backend.getUserSettings().expertise_categories, request.expertise_category);
+  var expertiseLabel = UIUtils.appendLabel(this._header, "ExpertiseLabel", expertiseItem.display);
   UIUtils.addClass(expertiseLabel, "request-expertise-label");
+  expertiseLabel.style.backgroundColor = expertiseItem.bg;
+  expertiseLabel.style.color = expertiseItem.fg;
 }
 
 AbstractRequestPage.IncomingRequestItem = ClassUtils.defineClass(AbstractRequestPage._AbstractIncomingRequestItem, function IncomingRequestItem(requestId, settings) {
