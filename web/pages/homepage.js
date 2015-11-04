@@ -66,11 +66,21 @@ HomePage.prototype.definePageContent = function(root) {
   
   this._cacheChangeListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED) {
-      this._updateOutgoingRequests();
+      if (this.isShown()) {
+        this._updateOutgoingRequests();
+      } else {
+        Application.showMenuMarker(HomePage.name);
+      }
     } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
-      this._updateIncomingRequests();
+      if (this.isShown()) {
+        this._updateIncomingRequests();
+      } else {
+        Application.showMenuMarker(HomePage.name);
+      }
     }
   }.bind(this);
+  
+  Backend.addCacheChangeListener(this._cacheChangeListener);
 }
 
 HomePage.prototype.onShow = function(root) {
@@ -84,8 +94,6 @@ HomePage.prototype.onShow = function(root) {
   this._noOutgoingRequestsNote.style.display = "none";
   this._updateOutgoingRequests();
   
-  Backend.addCacheChangeListener(this._cacheChangeListener);
-  
   this._refreshTimer = setInterval(function() {
     this._incomingRequestsView.refresh();
   }.bind(this), 60000);
@@ -94,13 +102,15 @@ HomePage.prototype.onShow = function(root) {
 HomePage.prototype.onHide = function() {
   AbstractDataPage.prototype.onHide.call(this);
   
-  Backend.removeCacheChangeListener(this._cacheChangeListener);
   clearInterval(this._refreshTimer);
   
   this._outgoingRequestsView.setObjectIds([]);
   this._incomingRequestsView.setObjectIds([]);
 }
 
+HomePage.prototype.onDestroy = function() {
+  Backend.removeCacheChangeListener(this._cacheChangeListener);
+}
 
 HomePage.prototype._updateOutgoingRequests = function() {
   var outgoingRequestIds = this._getOutgoingRequestIds();

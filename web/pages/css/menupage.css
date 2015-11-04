@@ -21,6 +21,8 @@
 }
 
 .menupage-menuitem {
+  position: relative;
+  
   display: block;
   padding: 10px 20px 10px 20px;
   color: rgb(75, 75, 75);
@@ -64,4 +66,16 @@
 }
 .menupage-menu-thick-separator {
   border-bottom-width: 2px;
+}
+
+.menupage-menuitem-marker {
+  position: absolute;
+  right: 10px;
+  top: 15px;
+  
+  width: 10px;
+  height: 10px;
+  
+  border-radius: 5px;
+  background: red;
 }

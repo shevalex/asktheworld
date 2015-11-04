@@ -257,9 +257,16 @@ Application.showMenuPage = function(childPageId, paramBundle, observer) {
   Application.showChildPage(MenuPage.name, childPageId, paramBundle, observer);
 }
 
-
 // END OF PAGE MANAGEMEMT
 
+
+Application.showMenuMarker = function(pageId) {
+  this._getPage(MenuPage.name).addMenuItemMarker(pageId);
+}
+
+Application.clearMenuMarker = function(pageId) {
+  this._getPage(MenuPage.name).removeMenuItemMarker(pageId);
+}
 
 
 Application.showSpinningWheel = function() {

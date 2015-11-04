@@ -6,6 +6,8 @@ MenuPage = ClassUtils.defineClass(AbstractContainerPage, function MenuPage() {
   this._activePage;
   
   this._menuPanel;
+  
+  this._itemsData = {};
 });
 
 
@@ -42,12 +44,51 @@ MenuPage.prototype.getPageContainer = function() {
 }
 
 
+
+MenuPage.prototype.addMenuItemMarker = function(pageId, marker) {
+  var itemData = this._itemsData[pageId];
+  if (itemData == null) {
+    return;
+  }
+  
+  if (itemData.markerElement != null) {
+    return;
+  }
+  
+  var markerElement = UIUtils.appendBlock(itemData.element, "marker");
+  UIUtils.addClass(markerElement, "menupage-menuitem-marker");
+  
+  itemData.marker = marker;
+  itemData.markerElement = markerElement;
+}
+
+MenuPage.prototype.removeMenuItemMarker = function(pageId, marker) {
+  var itemData = this._itemsData[pageId];
+
+  if (itemData == null) {
+    return;
+  }
+  
+  if (itemData.markerElement == null) {
+    return;
+  }
+  
+  UIUtils.get$(itemData.markerElement).remove();
+
+  itemData.markerElement = null;
+  itemData.marker = null;
+}
+
+
+
 MenuPage.prototype._appendMenuPanel = function(root) {
   var menuPanel = UIUtils.appendBlock(root, "MenuPanel");
 
   var clickListener = function(itemId) {
+    this.removeMenuItemMarker(itemId);
+    
     Application.showMenuPage(itemId);
-  };
+  }.bind(this);
   
   
   this._appendMenuItem(menuPanel, HomePage.name, this.getLocale().HomeMenuItem, null, clickListener);
@@ -71,10 +112,12 @@ MenuPage.prototype._appendMenuPanel = function(root) {
 MenuPage.prototype._appendMenuItem = function(root, itemId, text, icon, clickCallback) {
   var itemElement = UIUtils.appendBlock(root, itemId);
   
-  itemElement.setAttribute("class", "menupage-menuitem");
+  UIUtils.addClass(itemElement, "menupage-menuitem");
   itemElement.innerHTML = text;
     
   itemElement.onclick = clickCallback.bind(this, itemId);
+  
+  this._itemsData[itemId] = {element: itemElement};
 }
 
 MenuPage.prototype._createThickMenuSeparator = function() {
