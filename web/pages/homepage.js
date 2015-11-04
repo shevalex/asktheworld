@@ -11,6 +11,9 @@ HomePage = ClassUtils.defineClass(AbstractDataPage, function HomePage() {
   
   this._cacheChangeListener;
   this._refreshTimer;
+  
+  this._outgoingRequestIds;
+  this._incomingRequestIds;
 });
 
 
@@ -69,13 +72,25 @@ HomePage.prototype.definePageContent = function(root) {
       if (this.isShown()) {
         this._updateOutgoingRequests();
       } else {
-        Application.showMenuMarker(HomePage.name);
+        var requests = this._getOutgoingRequestIds();
+        if (requests != null && requests.length > 0) {
+          if (this._outgoingRequestIds == null || this._outgoingRequestIds.length < requests.length) {
+            Application.showMenuMarker(HomePage.name);
+          }
+          this._outgoingRequestIds = requests;
+        }
       }
     } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
       if (this.isShown()) {
         this._updateIncomingRequests();
       } else {
-        Application.showMenuMarker(HomePage.name);
+        var requests = this._getIncomingRequestIds();
+        if (requests != null && requests.length > 0) {
+          if (this._incomingRequestIds == null || this._incomingRequestIds.length < requests.length) {
+            Application.showMenuMarker(HomePage.name);
+          }
+          this._incomingRequestIds = requests;
+        }
       }
     }
   }.bind(this);

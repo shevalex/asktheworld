@@ -71,11 +71,14 @@
 .menupage-menuitem-marker {
   position: absolute;
   right: 10px;
-  top: 15px;
+  top: 13px;
   
   width: 10px;
   height: 10px;
   
-  border-radius: 5px;
-  background: red;
+  border-radius: 6px;
+  border-style: solid;
+  border-width: 1;
+  border-color: white;
+  background: rgb(0, 133, 63);
 }
