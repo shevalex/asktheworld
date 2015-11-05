@@ -16,8 +16,8 @@ LoginPage.prototype.definePageContent = function(root) {
   var contentPanel = UIUtils.appendBlock(root, "ContentPanel");
 
   var labelPanel = UIUtils.appendBlock(contentPanel, "LabelPanel");
-  UIUtils.appendLabel(labelPanel, "EmailLabel", this.getLocale().EmailLoginLabel);
-  UIUtils.appendLabel(labelPanel, "PasswordLabel", this.getLocale().PasswordLabel);
+  UIUtils.appendLabel(labelPanel, "EmailLabel", I18n.getLocale().literals.EmailLoginLabel);
+  UIUtils.appendLabel(labelPanel, "PasswordLabel", I18n.getLocale().literals.PasswordLabel);
   
   var controlPanel = UIUtils.appendBlock(contentPanel, "ControlPanel");
   this._loginElement = UIUtils.appendTextInput(controlPanel, "Login");
@@ -92,10 +92,6 @@ LoginPage.prototype.onShow = function(root, paramBundle) {
 }
 
 LoginPage.prototype.onHide = function() {
-}
-
-LoginPage.prototype.hasHistory = function() {
-  return true;
 }
 
 

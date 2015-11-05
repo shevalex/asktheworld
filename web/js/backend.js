@@ -286,7 +286,11 @@ Backend.resetUserPassword = function(login, transactionCallback) {
     }
   }
   
-  this._communicate("user/" + Backend.getUserProfile().user_id + "?reset_password", "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user?request_password_recovery=" + login, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+}
+
+Backend.setUserPassword = function(login, password, recoveryToken, transactionCallback) {
+  transactionCallback.failure();
 }
 
 

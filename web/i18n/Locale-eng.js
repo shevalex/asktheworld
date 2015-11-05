@@ -34,7 +34,7 @@ var Locale_eng = {
     "AgeLabel": "Age",
     "LanguageLabel": "Language(s)",
     "PasswordLabel": "Password",
-    "RetypePasswordLabel": "Re-type Password",
+    "RetypePasswordLabel": "Confirm Password",
     
     
     
@@ -121,8 +121,6 @@ var Locale_eng = {
       "CannotDisplayLabel": "The page cannot be displayed"
     },
     "LoginPage": {
-      "EmailLoginLabel": "Email",
-      "PasswordLabel": "Password",
       "RememberLoginLabel": "Keep me logged in",
       "SignInButton": "Log In",
       "ForgotPassowrdLink": "Forgot your password?",
@@ -154,6 +152,15 @@ var Locale_eng = {
       "MustAcceptTermsMessageProvider": function(linkId) { return "You must accept<p><a id='" + linkId + "'><b>Terms And Conditions<b></a>"; },
       "AccountCreationFailedMessage": "Failed to create an account",
       "AccountAlreadyExistsMessage": "This login (email) was already used"
+    },
+    "RestorePasswordPage": {
+      "ChangePasswordButton": "Change password",
+      
+      "PasswordChangedMessage": "Your password was successfully changed",
+      "UnknownLoginOrTokenMessage": "We could not find your email in our system or your recovery passcode expired",
+      "ProvideLoginMessage": "The email is not provided or does not look like a valid email address",
+      "ProvideCorrectPasswordMessage": "Password should be at least 5 symbols long",
+      "PasswordsDoNotMatchMessage": "Passwords do not match. Please retype.",
     },
     "WelcomePage": {
       "WelcomeProvider": function(name) { return "Welcome, " + name + "<p> We are gald to see you in here. This super site gives you access to an absolutely unique abilities and experiences. Here is how you should use it"; },

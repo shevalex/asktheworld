@@ -137,14 +137,7 @@ Application.AutoLogin = "true";
 
 
 Application.start = function() {
-  window.location.hash = ""; // we need to reset hash to guarantee to start over from scratch
-  
   this._rootContainer = document.getElementById("RootContainer");
-
-  window.onhashchange = function() {
-    var hash = window.location.hash.substr(1); 
-    Application.restoreFromHistory(hash);
-  }
   
 //  window.onbeforeunload = function() {
 //    return I18n.getLocale().literals.LeaveApplicationMessage;
@@ -176,8 +169,28 @@ Application.start = function() {
   
   Application._setupLanguageChooser();
 
+
+  var restoreFromHash = function() {
+    var hash = window.location.hash.substring(1);
+    Application._restoreFromHistory(hash);
+  }
   
-  this.showPage(LoginPage.name);
+  window.onhashchange = function() {
+    restoreFromHash();
+  }
+
+  // check if it is a password recovery request
+  if (window.location.hash.length > 1) {
+    var hashBundle = Application._deserialize(window.location.hash.substring(1));
+    if (hashBundle.page == RestorePasswordPage.name) {
+      restoreFromHash();
+    } else {
+      window.location.hash = "";
+      Application.showPage(LoginPage.name);
+    }
+  } else {
+    Application.showPage(LoginPage.name);
+  }
 }
 
 Application.logOut = function() {
@@ -229,7 +242,7 @@ Application.showPage = function(pageId, paramBundle) {
     paramBundle.page = pageId;
   }
 
-  this._placeHistory(page, paramBundle);
+  this._showPage(page, paramBundle);
 }
 
 Application.showChildPage = function(parentPageId, childPageId, paramBundle) {
@@ -250,7 +263,7 @@ Application.showChildPage = function(parentPageId, childPageId, paramBundle) {
   paramBundle.parent = parentPageId;
   paramBundle.page = childPageId;
 
-  this._placeHistory(page, paramBundle);
+  this._showPage(page, paramBundle);
 }
 
 Application.showMenuPage = function(childPageId, paramBundle, observer) {
@@ -377,6 +390,15 @@ Application._getPage = function(pageId) {
   return page;
 }
 
+Application._showPage = function(page, paramBundle) {
+  if (page.hasHistory()) {
+    this._placeHistory(page, paramBundle);
+  } else {
+    page.showAnimated(this._rootContainer, paramBundle);
+  }
+}
+
+
 
 Application.setupUserMenuChooser = function() {
   $("#Title-Options-User-Button").click(function() {
@@ -474,7 +496,7 @@ Application.isEqualBundle = function(bundle1, bundle2) {
 
 // HISTORY MANAGEMENT
 
-Application.restoreFromHistory = function(hash) {
+Application._restoreFromHistory = function(hash) {
   var historyBundle = Application._deserialize(hash);
   Application._restorePage(historyBundle);
 }
@@ -495,7 +517,6 @@ Application._restorePage = function(paramBundle) {
 Application.goBack = function() {
   window.history.back();
 }
-
 
 Application._placeHistory = function(page, paramBundle) {
   if (page.hasHistory()) {
