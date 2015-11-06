@@ -74,7 +74,7 @@ HomePage.prototype.definePageContent = function(root) {
       } else {
         var requests = this._getOutgoingRequestIds();
         if (requests != null && requests.length > 0) {
-          if (this._outgoingRequestIds == null || this._outgoingRequestIds.length < requests.length) {
+          if (this._outgoingRequestIds == null || !GeneralUtils.isIncluded(this._outgoingRequestIds, requests)) {
             Application.showMenuMarker(HomePage.name);
           }
           this._outgoingRequestIds = requests;
@@ -86,7 +86,7 @@ HomePage.prototype.definePageContent = function(root) {
       } else {
         var requests = this._getIncomingRequestIds();
         if (requests != null && requests.length > 0) {
-          if (this._incomingRequestIds == null || this._incomingRequestIds.length < requests.length) {
+          if (this._incomingRequestIds == null || !GeneralUtils.isIncluded(this._incomingRequestIds, requests)) {
             Application.showMenuMarker(HomePage.name);
           }
           this._incomingRequestIds = requests;

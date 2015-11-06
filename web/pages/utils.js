@@ -49,6 +49,23 @@ GeneralUtils.isEmpty = function(obj) {
   return Object.keys(obj).length == 0;
 }
 
+GeneralUtils.isIncluded = function(set, subset) {
+  for (var subsetIndex in subset) {
+    var found = false;
+    for (var setIndex in set) {
+      if (set[setIndex] == subset[subsetIndex]) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
 GeneralUtils.removeFromArray = function(arr, element) {
   for (var index in arr) {
     if (arr[index] == element) {

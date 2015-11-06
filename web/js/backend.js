@@ -277,7 +277,7 @@ Backend.resetUserPassword = function(login, transactionCallback) {
     },
     error: function(xhr, status, error) {
       if (transactionCallback != null) { 
-        if (xhr.status == 401 || xhr.status == 404) {
+        if (xhr.status == 404) {
           transactionCallback.failure();
         } else {
           transactionCallback.error();
@@ -286,11 +286,30 @@ Backend.resetUserPassword = function(login, transactionCallback) {
     }
   }
   
-  this._communicate("user?request_password_recovery=" + login, "GET", null, false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user?request_password_recovery=" + login, "GET", null, false, {}, communicationCallback);
 }
 
 Backend.setUserPassword = function(login, password, recoveryToken, transactionCallback) {
-  transactionCallback.failure();
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      if (transactionCallback != null) {
+        transactionCallback.success();
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) { 
+        if (xhr.status == 403) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+    }
+  }
+  
+  this._communicate("user?recovery_token=" + recoveryToken + "&password_recovery=" + login, "PUT", {
+    password: password  
+  }, false, {}, communicationCallback);
 }
 
 

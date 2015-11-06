@@ -155,6 +155,7 @@ var Locale_eng = {
     },
     "RestorePasswordPage": {
       "ChangePasswordButton": "Change password",
+      "LoginLink": "Login",
       
       "PasswordChangedMessage": "Your password was successfully changed",
       "UnknownLoginOrTokenMessage": "We could not find your email in our system or your recovery passcode expired",

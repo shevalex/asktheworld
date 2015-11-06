@@ -31,6 +31,11 @@ RestorePasswordPage.prototype.definePageContent = function(root) {
   UIUtils.setClickListener(signInButton, function() {
     this._changePassword();
   }.bind(this));
+
+  var loginLink = UIUtils.appendLink(buttonsPanel, "LoginLink", this.getLocale().LoginLink);
+  UIUtils.setClickListener(loginLink, function() {
+    Application.showPage(LoginPage.name);
+  });
 }
 
 
