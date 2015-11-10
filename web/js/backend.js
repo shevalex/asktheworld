@@ -195,7 +195,7 @@ Backend.pullUserPreferences = function(transactionCallback) {
     }
   }
   
-  this._communicate("user/" + Backend.getUserProfile().user_id + "/settings", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/preferences", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.updateUserPreferences = function(userPreferences, transactionCallback) {
@@ -219,7 +219,7 @@ Backend.updateUserPreferences = function(userPreferences, transactionCallback) {
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().user_id + "/settings", "PUT", GeneralUtils.merge(Backend.getUserPreferences(), userPreferences), false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/preferences", "PUT", GeneralUtils.merge(Backend.getUserPreferences(), userPreferences), false, this._getAuthenticationHeader(), communicationCallback);
 
   return true;
 }
@@ -229,42 +229,26 @@ Backend.pullUserSettings = function(transactionCallback) {
     throw "Must login or register first";
   }
   
+  var communicationCallback = {
+    success: function(data, status, xhr) {
+      Backend.UserSettings = GeneralUtils.merge(Backend.getUserSettings(), data);
+
+      if (transactionCallback != null) {
+        transactionCallback.success();
+      }
+    },
+    error: function(xhr, status, error) {
+      if (transactionCallback != null) { 
+        if (xhr.status == 401 || xhr.status == 404) {
+          transactionCallback.failure();
+        } else {
+          transactionCallback.error();
+        }
+      }
+    }
+  }
   
-  // TODO:
-  var supportedCategories = {expertise_categories: [ 
-    {data: "general", display: "General", bg: "gray", fg: "black"},
-    {data: "law", display: "Law", bg: "green", fg: "black"},
-    {data: "medicine", display: "Medical", bg: "red", fg: "black"},
-    {data: "construction", display: "Construction", bg: "blue", fg: "black"}
-  ]};
-  
-  Backend.UserSettings = GeneralUtils.merge(Backend.getUserSettings(), supportedCategories);
-  
-  Backend.UserSettings.expertises = [Backend.UserSettings.expertise_categories[0]];
-  
-  transactionCallback.success();
-  
-  
-//  var communicationCallback = {
-//    success: function(data, status, xhr) {
-//      Backend.UserSettings = GeneralUtils.merge(Backend.getUserSettings(), data);
-//
-//      if (transactionCallback != null) {
-//        transactionCallback.success();
-//      }
-//    },
-//    error: function(xhr, status, error) {
-//      if (transactionCallback != null) { 
-//        if (xhr.status == 401 || xhr.status == 404) {
-//          transactionCallback.failure();
-//        } else {
-//          transactionCallback.error();
-//        }
-//      }
-//    }
-//  }
-//  
-//  this._communicate("user/" + Backend.getUserProfile().user_id + "/settings", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/settings", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 
@@ -385,26 +369,9 @@ Backend.createRequest = function(request, transactionCallback) {
         var newRequestId = xhr.getResponseHeader("Location");
         Backend.Cache.setRequest(newRequestId, data);
         
-//        Backend._pullOutgoingRequestIds(); //TODO: remove, this is temporary. It should be replaced with events
-        
-//        Backend._pullRequest(newRequestId, {
-//          success: function() {
-//            transactionCallback.success(newRequestId);
-//          },
-//          failure: function() {
-//            transactionCallback.failure();
-//          },
-//          error: function() {
-//            transactionCallback.error();
-//          }
-//        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
-        
-        
         if (transactionCallback != null) {
           transactionCallback.success(newRequestId);
         }
-//        
-//        Backend.Cache.markOutgoingRequestIdsInUpdate(false);
       }
     },
     error: function(xhr, status, error) {
@@ -415,22 +382,12 @@ Backend.createRequest = function(request, transactionCallback) {
           transactionCallback.error();
         }
       }
-      Backend.Cache.markOutgoingRequestIdsInUpdate(false);
+//      Backend.Cache.markOutgoingRequestIdsInUpdate(false);
     }
   }
 
-  this._communicate("request", "POST",
-    { 
-      user_id: Backend.getUserProfile().user_id,
-      text: request.text,
-      attachments: request.attachments, // each attachment: {name, url, data, type}
-      response_quantity: request.response_quantity,
-      response_wait_time: request.response_wait_time,
-      response_age_group: request.response_age_group,
-      response_gender: request.response_gender,
-      expertise_category: request.expertise_category
-    },
-  true, this._getAuthenticationHeader(), communicationCallback);
+  request.user_id = Backend.getUserProfile().user_id;
+  this._communicate("request", "POST", request, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.updateRequest = function(requestId, request, transactionCallback) {
@@ -439,18 +396,6 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-//        Backend._pullRequest(requestId, {
-//          success: function() {
-//            transactionCallback.success();
-//          },
-//          failure: function() {
-//            transactionCallback.failure();
-//          },
-//          error: function() {
-//            transactionCallback.error();
-//          }
-//        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
-
         Backend.Cache.setRequest(requestId, data);
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -517,9 +462,11 @@ Backend._pullRequest = function(requestId, transactionCallback) {
 Backend.getOutgoingRequestIds = function(requestStatus, sortRule, transactionCallback) {
   var requestIds = Backend.Cache.getOutgoingRequestIds();
 
+  requestStatus = requestStatus || Backend.Request.STATUS_ALL;
+  
   var result = null;
   if (requestIds != null) {
-    if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
+    if (requestStatus == Backend.Request.STATUS_ALL) {
       result = requestIds.all;
     } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
       result = requestIds.active;
@@ -530,7 +477,10 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule, transactionCal
     }
   }
 
-  if (result != null || Backend.Cache.isOutgoingRequestIdsInUpdate()) {
+  
+console.debug("request status = " + requestStatus + ", in update = " + result + ", 1: " + Backend.Cache.isOutgoingRequestIdsInUpdate(requestStatus) + ", 2: " + Backend.Cache.isOutgoingRequestIdsInUpdate(Backend.Request.STATUS_ALL));
+  
+  if (result != null || Backend.Cache.isOutgoingRequestIdsInUpdate(requestStatus) || Backend.Cache.isOutgoingRequestIdsInUpdate(Backend.Request.STATUS_ALL)) {
     return result;
   } else {
     Backend._pullOutgoingRequestIds(requestStatus, sortRule, transactionCallback);
@@ -540,11 +490,7 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule, transactionCal
 }
 
 Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionCallback) {
-  Backend.Cache.markOutgoingRequestIdsInUpdate();
-
-  if (requestStatus == null) {
-    requestStatus = Backend.Request.STATUS_ALL;
-  }
+  Backend.Cache.markOutgoingRequestIdsInUpdate(requestStatus, requestStatus);
 
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -567,7 +513,7 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
           requestIds.all = null;
         }
 
-        Backend.Cache.setOutgoingRequestIds(requestIds);
+        Backend.Cache.setOutgoingRequestIds(requestIds, requestStatus);
 
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -582,7 +528,7 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
           transactionCallback.error();
         }
       }
-      Backend.Cache.markOutgoingRequestIdsInUpdate(false);
+      Backend.Cache.markOutgoingRequestIdsInUpdate(false, requestStatus);
     }
   }
 
@@ -592,9 +538,10 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
 Backend.getIncomingRequestIds = function(requestStatus, sortRule, transactionCallback) {
   var requestIds = Backend.Cache.getIncomingRequestIds();
   
+  requestStatus = requestStatus || Backend.Request.STATUS_ALL;
   var result = null;
   if (requestIds != null) {
-    if (requestStatus == null || requestStatus == Backend.Request.STATUS_ALL) {
+    if (requestStatus == Backend.Request.STATUS_ALL) {
       result = requestIds.all;
     } else if (requestStatus == Backend.Request.STATUS_ACTIVE) {
       result = requestIds.active;
@@ -605,7 +552,7 @@ Backend.getIncomingRequestIds = function(requestStatus, sortRule, transactionCal
     }
   }
 
-  if (result != null || Backend.Cache.isIncomingRequestIdsInUpdate()) {
+  if (result != null || Backend.Cache.isIncomingRequestIdsInUpdate(requestStatus) || Backend.Cache.isIncomingRequestIdsInUpdate(Backend.Request.STATUS_ALL)) {
     return result;
   } else {
     Backend._pullIncomingRequestIds(requestStatus, sortRule, transactionCallback);
@@ -617,10 +564,6 @@ Backend.getIncomingRequestIds = function(requestStatus, sortRule, transactionCal
 Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionCallback) {
   Backend.Cache.markIncomingRequestIdsInUpdate();
 
-  if (requestStatus == null) {
-    requestStatus = Backend.Request.STATUS_ALL;
-  }
-  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -642,7 +585,7 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
           requestIds.all = null;
         }
 
-        Backend.Cache.setIncomingRequestIds(requestIds);
+        Backend.Cache.setIncomingRequestIds(requestIds, requestStatus);
 
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -657,7 +600,7 @@ Backend._pullIncomingRequestIds = function(requestStatus, sortRule, transactionC
           transactionCallback.error();
         }
       }
-      Backend.Cache.markIncomingRequestIdsInUpdate(false);
+      Backend.Cache.markIncomingRequestIdsInUpdate(false, requestStatus);
     }
   }
 
@@ -673,15 +616,6 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
       Backend.Cache.markIncomingRequestIdsInUpdate(false);
       
       if (xhr.status == 200) {
-//        var requestIds = Backend.Cache.getIncomingRequestIds();
-//
-//        //TODO: This needs to be cleaned to repull from the server
-//        requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
-//        requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
-//        requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
-//
-//        Backend.Cache.setIncomingRequestIds(requestIds);
-
         if (transactionCallback != null) {
           transactionCallback.success();
         }
@@ -714,19 +648,8 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
         var newResponseId = xhr.getResponseHeader("Location");
         Backend.Cache.setResponse(requestId, newResponseId, data);
         
-        Backend._pullOutgoingResponseIds(requestId); //TODO: remove, this is temporary. It should be replaced with events
-//        Backend._pullResponse(requestId, newResponseId, {
-//          success: function() {
-//            transactionCallback.success(newResponseId);
-//          },
-//          failure: function() {
-//            transactionCallback.failure();
-//          },
-//          error: function() {
-//            transactionCallback.error();
-//          }
-//        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
-        
+//        Backend._pullOutgoingResponseIds(requestId); //TODO: remove, this is temporary. It should be replaced with events
+
         if (transactionCallback != null) {
           transactionCallback.success(newResponseId);
         }
@@ -744,17 +667,13 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     }
   }
 
-  this._communicate("response", "POST",
-    { 
-      user_id: Backend.getUserProfile().user_id,
-      request_id: parseInt(requestId),
-      text: response.text,
-      age_category: Backend.getUserProfile().age_category,
-      gender: Backend.getUserProfile().gender,
-      attachments: response.attachments, // each attachment: {name, url, data, type}
-      contact_info_status: Backend.getUserPreferences().contact_info_requestable ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE
-    },
-  true, this._getAuthenticationHeader(), communicationCallback);
+  response.user_id = Backend.getUserProfile().user_id;
+  response.request_id = parseInt(requestId);
+  response.age_category = Backend.getUserProfile().age_category;
+  response.gender = Backend.getUserProfile().gender;
+  response.contact_info_status = Backend.getUserPreferences().contact_info_requestable ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE;
+  
+  this._communicate("response", "POST", response, true, this._getAuthenticationHeader(), communicationCallback);
 }
 
 Backend.getResponse = function(requestId, responseId, transactionCallback) {
@@ -869,18 +788,6 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-//        Backend._pullResponse(requestId, responseId, {
-//          success: function() {
-//            transactionCallback.success();
-//          },
-//          failure: function() {
-//            transactionCallback.failure();
-//          },
-//          error: function() {
-//            transactionCallback.error();
-//          }
-//        }); //TODO: remove, this is temporary. It should be replaced with data reported back from the call
-
         Backend.Cache.setResponse(requestId, responseId, data);
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -904,11 +811,12 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
 
 
 Backend.getIncomingResponseIds = function(requestId, responseStatus) {
-  var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+  var responseIds = Backend.Cache.getIncomingResponseIds(requestId, responseStatus);
   
+  responseStatus = responseStatus || Backend.Response.STATUS_ALL;
   var result = null;
   if (responseIds != null) {
-    if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
+    if (responseStatus == Backend.Response.STATUS_ALL) {
       result = responseIds.all;
     } else if (responseStatus == Backend.Response.STATUS_VIEWED) {
       result = responseIds.viewed;
@@ -919,7 +827,7 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
     }
   }
 
-  if (result != null || Backend.Cache.isIncomingResponseIdsInUpdate(requestId)) {
+  if (result != null || Backend.Cache.isIncomingResponseIdsInUpdate(requestId, responseStatus) || Backend.Cache.isIncomingResponseIdsInUpdate(requestId, Backend.Response.STATUS_ALL)) {
     return result;
   } else {
     Backend._pullIncomingResponseIds(requestId, responseStatus);
@@ -928,11 +836,7 @@ Backend.getIncomingResponseIds = function(requestId, responseStatus) {
 }
 
 Backend._pullIncomingResponseIds = function(requestId, responseStatus, transactionCallback) {
-  Backend.Cache.markIncomingResponseIdsInUpdate(requestId);
-
-  if (responseStatus == null) {
-    responseStatus = Backend.Response.STATUS_ALL;
-  }
+  Backend.Cache.markIncomingResponseIdsInUpdate(requestId, responseStatus);
 
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -955,7 +859,7 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
           responseIds.all = null;
         }
 
-        Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+        Backend.Cache.setIncomingResponseIds(requestId, responseIds, responseStatus);
 
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -970,7 +874,7 @@ Backend._pullIncomingResponseIds = function(requestId, responseStatus, transacti
           transactionCallback.error();
         }
       }
-      Backend.Cache.markIncomingResponseIdsInUpdate(requestId, false);
+      Backend.Cache.markIncomingResponseIdsInUpdate(requestId, false, responseStatus);
     }
   }
 
@@ -1016,9 +920,10 @@ Backend.removeIncomingResponse = function(requestId, responseId, transactionCall
 Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
   var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
 
+  responseStatus = responseStatus || Backend.Response.STATUS_ALL;
   var result = null;
   if (responseIds != null) {
-    if (responseStatus == null || responseStatus == Backend.Response.STATUS_ALL) {
+    if (responseStatus == Backend.Response.STATUS_ALL) {
       result = responseIds.all;
     } else if (responseStatus == Backend.Response.STATUS_VIEWED) {
       result = responseIds.viewed;
@@ -1029,7 +934,7 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
     }
   }
   
-  if (result != null || Backend.Cache.isOutgoingResponseIdsInUpdate(requestId)) {
+  if (result != null || Backend.Cache.isOutgoingResponseIdsInUpdate(requestId, responseStatus) || Backend.Cache.isOutgoingResponseIdsInUpdate(requestId, Backend.Response.STATUS_ALL)) {
     return result;
   } else {
     Backend._pullOutgoingResponseIds(requestId, responseStatus);
@@ -1039,10 +944,6 @@ Backend.getOutgoingResponseIds = function(requestId, responseStatus) {
 
 Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transactionCallback) {
   Backend.Cache.markOutgoingResponseIdsInUpdate(requestId);
-
-  if (responseStatus == null) {
-    responseStatus = Backend.Response.STATUS_ALL;
-  }
 
   var communicationCallback = {
     success: function(data, status, xhr) {
@@ -1065,7 +966,7 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
           responseIds.all = null;
         }
 
-        Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
+        Backend.Cache.setOutgoingResponseIds(requestId, responseIds, responseStatus);
 
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -1080,7 +981,7 @@ Backend._pullOutgoingResponseIds = function(requestId, responseStatus, transacti
           transactionCallback.error();
         }
       }
-      Backend.Cache.markOutgoingResponseIdsInUpdate(requestId, false);
+      Backend.Cache.markOutgoingResponseIdsInUpdate(requestId, false, responseStatus);
     }
   }
 
@@ -1139,13 +1040,13 @@ Backend._pullEvents = function(transactionCallback) {
           var event = data.events[index];
           
           if (event.type == Backend.Events.INCOMING_REQUESTS_CHANGED) {
-            Backend._pullIncomingRequestIds();
+            Backend._pullIncomingRequestIds(Backend.Request.STATUS_ALL);
           } else if (event.type == Backend.Events.OUTGOING_REQUESTS_CHANGED) {
-            Backend._pullOutgoingRequestIds();
+            Backend._pullOutgoingRequestIds(Backend.Request.STATUS_ALL);
           } else if (event.type == Backend.Events.OUTGOING_RESPONSES_CHANGED) {
-            Backend._pullOutgoingResponseIds(event.request_id);
+            Backend._pullOutgoingResponseIds(event.request_id, Backend.Response.STATUS_ALL);
           } else if (event.type == Backend.Events.INCOMING_RESPONSES_CHANGED) {
-            Backend._pullIncomingResponseIds(event.request_id);
+            Backend._pullIncomingResponseIds(event.request_id, Backend.Response.STATUS_ALL);
           } else if (event.type == Backend.Events.REQUEST_CHANGED) {
             Backend._pullRequest(event.request_id);
           } else if (event.type == Backend.Events.RESPONSE_CHANGED) {
@@ -1205,9 +1106,9 @@ Backend.removeCacheChangeListener = function(listener) {
 Backend.Cache = {
   cacheChangeListeners: [],
   
-  outgoingRequestIdsInProgress: false,
+  outgoingRequestIdsInProgress: {},
   outgoingRequestIds: null,
-  incomingRequestIdsInProgress: false,
+  incomingRequestIdsInProgress: {},
   incomingRequestIds: null,
   requestsInProgress: {},
   requests: {},
@@ -1223,9 +1124,9 @@ Backend.Cache = {
 Backend.Cache.reset = function() {
   this.cacheChangeListeners = [];
   
-  this.outgoingRequestIdsInProgress = false;
+  this.outgoingRequestIdsInProgress = {};
   this.outgoingRequestIds = null;
-  this.incomingRequestIdsInProgress = false;
+  this.incomingRequestIdsInProgress = {};
   this.incomingRequestIds = null;
   this.requestsInProgress = {};
   this.requests = {};
@@ -1256,35 +1157,46 @@ Backend.Cache.removeCacheChangeListener = function(listener) {
   }
 }
 
-Backend.Cache.markOutgoingRequestIdsInUpdate = function(isInUpdate) {
-  this.outgoingRequestIdsInProgress = isInUpdate != null ? isInUpdate : true;
+Backend.Cache.markOutgoingRequestIdsInUpdate = function(isInUpdate, conditions) {
+  this.outgoingRequestIdsInProgress.inUpdate = isInUpdate != null ? isInUpdate : true;
+  this.outgoingRequestIdsInProgress.conditions = conditions;
+  
   this._fireUpdateEvent();
 }
-Backend.Cache.isOutgoingRequestIdsInUpdate = function() {
-  return this.outgoingRequestIdsInProgress;
+Backend.Cache.isOutgoingRequestIdsInUpdate = function(conditions) {
+  if (!this.outgoingRequestIdsInProgress.inUpdate) {
+    return false;
+  }
+  return this.outgoingRequestIdsInProgress.conditions == conditions;
 }
-Backend.Cache.setOutgoingRequestIds = function(requestIds) {
+Backend.Cache.setOutgoingRequestIds = function(requestIds, conditions) {
   this.outgoingRequestIds = requestIds;
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_REQUESTS_CHANGED, null, null);
   
-  this.markOutgoingRequestIdsInUpdate(false);
+  this.markOutgoingRequestIdsInUpdate(false, conditions);
 }
 Backend.Cache.getOutgoingRequestIds = function() {
   return this.outgoingRequestIds;
 }
 
-Backend.Cache.markIncomingRequestIdsInUpdate = function(isInUpdate) {
-  this.incomingRequestIdsInProgress = isInUpdate != null ? isInUpdate : true;
+Backend.Cache.markIncomingRequestIdsInUpdate = function(isInUpdate, conditions) {
+  this.incomingRequestIdsInProgress.inUpdate = isInUpdate != null ? isInUpdate : true;
+  this.incomingRequestIdsInProgress.conditions = conditions;
+  
   this._fireUpdateEvent();
 }
-Backend.Cache.isIncomingRequestIdsInUpdate = function() {
-  return this.incomingRequestIdsInProgress;
+Backend.Cache.isIncomingRequestIdsInUpdate = function(conditions) {
+  if (!this.incomingRequestIdsInProgress.inUpdate) {
+    return false;
+  }
+  
+  return this.incomingRequestIdsInProgress.conditions == conditions;
 }
-Backend.Cache.setIncomingRequestIds = function(requestIds) {
+Backend.Cache.setIncomingRequestIds = function(requestIds, conditions) {
   this.incomingRequestIds = requestIds;
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED, null, null);
   
-  this.markIncomingRequestIdsInUpdate(false);
+  this.markIncomingRequestIdsInUpdate(false, conditions);
 }
 Backend.Cache.getIncomingRequestIds = function() {
   return this.incomingRequestIds;
@@ -1310,41 +1222,60 @@ Backend.Cache.getRequest = function(requestId) {
   return this.requests[requestId];
 }
 
-Backend.Cache.markIncomingResponseIdsInUpdate = function(requestId, isInUpdate) {
-  this.incomingResponseIdsInProgress[requestId] = isInUpdate != null ? isInUpdate : true;
-  if (!this.incomingResponseIdsInProgress[requestId]) {
+Backend.Cache.markIncomingResponseIdsInUpdate = function(requestId, isInUpdate, conditions) {
+  var inUpdate = isInUpdate != null ? isInUpdate : true;
+  if (inUpdate) {
+    this.incomingResponseIdsInProgress[requestId] = {};
+    this.incomingResponseIdsInProgress[requestId].inUpdate = inUpdate;
+    this.incomingResponseIdsInProgress[requestId].conditions = conditions;
+  } else {
     delete this.incomingResponseIdsInProgress[requestId];
   }
+  
   this._fireUpdateEvent();
 }
-Backend.Cache.isIncomingResponseIdsInUpdate= function(requestId) {
-  return this.incomingResponseIdsInProgress[requestId] != null;
+Backend.Cache.isIncomingResponseIdsInUpdate = function(requestId, conditions) {
+  if (this.incomingResponseIdsInProgress[requestId] == null || !this.incomingResponseIdsInProgress[requestId].inUpdate) {
+    return false;
+  }
+  
+  return this.incomingResponseIdsInProgress[requestId].conditions == conditions;
 }
-Backend.Cache.setIncomingResponseIds = function(requestId, responseIds) {
+Backend.Cache.setIncomingResponseIds = function(requestId, responseIds, conditions) {
   this.incomingResponseIds[requestId] = responseIds;
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_INCOMING_RESPONSES_CHANGED, requestId, null);
   
-  this.markIncomingResponseIdsInUpdate(requestId, false);
+  this.markIncomingResponseIdsInUpdate(requestId, false, conditions);
 }
 Backend.Cache.getIncomingResponseIds = function(requestId) {
   return this.incomingResponseIds[requestId];
 }
 
-Backend.Cache.markOutgoingResponseIdsInUpdate = function(requestId, isInUpdate) {
-  this.outgoingResponseIdsInProgress[requestId] = isInUpdate != null ? isInUpdate : true;
-  if (!this.outgoingResponseIdsInProgress[requestId]) {
+Backend.Cache.markOutgoingResponseIdsInUpdate = function(requestId, isInUpdate, conditions) {
+  var inUpdate = isInUpdate != null ? isInUpdate : true;
+  if (inUpdate) {
+    this.outgoingResponseIdsInProgress[requestId] = {};
+    this.outgoingResponseIdsInProgress[requestId].inUpdate = inUpdate;
+    this.outgoingResponseIdsInProgress[requestId].conditions = conditions;
+  } else {
     delete this.outgoingResponseIdsInProgress[requestId];
   }
+
   this._fireUpdateEvent();
 }
 Backend.Cache.isOutgoingResponseIdsInUpdate = function(requestId) {
-  return this.outgoingResponseIdsInProgress[requestId] != null;
+  if (this.outgoingResponseIdsInProgress[requestId] == null || !this.outgoingResponseIdsInProgress[requestId].inUpdate) {
+    return false;
+  }
+  
+  return this.outgoingResponseIdsInProgress[requestId].conditions == conditions;
+  
 }
-Backend.Cache.setOutgoingResponseIds = function(requestId, responseIds) {
+Backend.Cache.setOutgoingResponseIds = function(requestId, responseIds, conditions) {
   this.outgoingResponseIds[requestId] = responseIds;
   this._notifyCacheListeners(Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED, requestId, null);
   
-  this.markOutgoingResponseIdsInUpdate(requestId, false);
+  this.markOutgoingResponseIdsInUpdate(requestId, false, conditions);
 }
 Backend.Cache.getOutgoingResponseIds = function(requestId) {
   return this.outgoingResponseIds[requestId];
@@ -1371,9 +1302,9 @@ Backend.Cache.getResponse = function(requestId, responseId) {
 }
 
 Backend.Cache.isInUpdate = function() {
-  return this.outgoingRequestIdsInProgress == true
+  return this.outgoingRequestIdsInProgress.inUpdate
          || !GeneralUtils.isEmpty(this.incomingResponseIdsInProgress)
-         || this.incomingRequestIdsInProgress == true
+         || this.incomingRequestIdsInProgress.inUpdate
          || !GeneralUtils.isEmpty(this.outgoingResponseIdsInProgress)
          || !GeneralUtils.isEmpty(this.requestsInProgress)
          || !GeneralUtils.isEmpty(this.responsesInProgress);
