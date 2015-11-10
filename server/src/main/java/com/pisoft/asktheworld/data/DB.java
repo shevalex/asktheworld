@@ -122,15 +122,15 @@ public class DB {
 
 	//User settings
 	
-	public ATWUserSettings updateUserSettings(ATWUserSettings userSettings) {
-		ATWUserSettings existUserSettings = getUserSettings(userSettings.getId());
+	public ATWUserSettings updateUserPreferences(ATWUserSettings userSettings) {
+		ATWUserSettings existUserSettings = getUserPreferences(userSettings.getId());
 		if(existUserSettings != null) {
 			existUserSettings = settings.update(userSettings);
 		}
 		return existUserSettings;
 	}
 	
-	public ATWUserSettings getUserSettings(int id) {
+	public ATWUserSettings getUserPreferences(int id) {
 		return settings.findById(id);
 	}
 	public ATWRequest addRequest(ATWRequest request) {
@@ -572,6 +572,9 @@ public class DB {
 		
 		
 		return list;
+	}
+	public ATWSettings getUserSettings(int id) {
+		return ATWSettings.obj;
 	}
 	
 }
