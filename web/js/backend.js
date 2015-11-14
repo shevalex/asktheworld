@@ -1,5 +1,6 @@
 var Backend = {
 };
+Backend._FORCE_IMMEDIATE_UPDATE = true;
 
 Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
 //Backend._SERVER_BASE_URL = "http://127.0.0.1:8080/";
@@ -361,13 +362,28 @@ Backend.Response.CONTACT_INFO_STATUS_PROVIDED = "provided";
 
 
 Backend.createRequest = function(request, transactionCallback) {
-//  Backend.Cache.markOutgoingRequestIdsInUpdate();
+  Backend.Cache.markOutgoingRequestIdsInUpdate();
 
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
-        var newRequestId = xhr.getResponseHeader("Location");
-        Backend.Cache.setRequest(newRequestId, data);
+        if (Backend._FORCE_IMMEDIATE_UPDATE) {
+          var newRequestId = xhr.getResponseHeader("Location");
+          Backend.Cache.setRequest(newRequestId, data);
+
+          var requestIds = Backend.Cache.getOutgoingRequestIds();
+          if (requestIds.all == null) {
+            requestIds.all = [];
+          }
+          requestIds.all.push(newRequestId);
+
+          if (requestIds.active == null) {
+            requestIds.active = [];
+          }
+          requestIds.active.push(newRequestId);
+
+          Backend.Cache.setOutgoingRequestIds(requestIds);
+        }
         
         if (transactionCallback != null) {
           transactionCallback.success(newRequestId);
@@ -382,7 +398,7 @@ Backend.createRequest = function(request, transactionCallback) {
           transactionCallback.error();
         }
       }
-//      Backend.Cache.markOutgoingRequestIdsInUpdate(false);
+      Backend.Cache.markOutgoingRequestIdsInUpdate(false);
     }
   }
 
@@ -396,7 +412,21 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        Backend.Cache.setRequest(requestId, data);
+        if (Backend._FORCE_IMMEDIATE_UPDATE) {
+          var originalStatus = Backend.Cache.getRequest(requestId);
+          Backend.Cache.setRequest(requestId, data);
+          if (data.status != originalStatus) {
+            var requestIds = Backend.Cache.getOutgoingRequestIds();
+            requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
+            if (requestIds.inactive == null) {
+              requestIds.inactive = [requestIds];
+            } else {
+              requestIds.inactive.push(requestIds);
+            }
+            Backend.Cache.setOutgoingRequestIds(requestIds);
+          }
+        }
+        
         if (transactionCallback != null) {
           transactionCallback.success();
         }
@@ -477,9 +507,6 @@ Backend.getOutgoingRequestIds = function(requestStatus, sortRule, transactionCal
     }
   }
 
-  
-console.debug("request status = " + requestStatus + ", in update = " + result + ", 1: " + Backend.Cache.isOutgoingRequestIdsInUpdate(requestStatus) + ", 2: " + Backend.Cache.isOutgoingRequestIdsInUpdate(Backend.Request.STATUS_ALL));
-  
   if (result != null || Backend.Cache.isOutgoingRequestIdsInUpdate(requestStatus) || Backend.Cache.isOutgoingRequestIdsInUpdate(Backend.Request.STATUS_ALL)) {
     return result;
   } else {
@@ -496,9 +523,6 @@ Backend._pullOutgoingRequestIds = function(requestStatus, sortRule, transactionC
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
         var requestIds = Backend.Cache.getOutgoingRequestIds();
-        if (requestIds == null) {
-          requestIds = {};
-        }
         
         if (requestStatus == Backend.Request.STATUS_ALL || requestStatus == Backend.Request.STATUS_ACTIVE) {
           requestIds.active = data.active;
@@ -614,6 +638,19 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       Backend.Cache.markIncomingRequestIdsInUpdate(false);
+      
+      if (Backend._FORCE_IMMEDIATE_UPDATE) {
+        var requestIds = Backend.Cache.getIncomingRequestIds();
+        if (requestIds.all != null) {
+          requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
+        }
+        if (requestIds.active != null) {
+          requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
+        }
+        if (requestIds.inactive != null) {
+          requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
+        }
+      }
       
       if (xhr.status == 200) {
         if (transactionCallback != null) {
@@ -1107,9 +1144,9 @@ Backend.Cache = {
   cacheChangeListeners: [],
   
   outgoingRequestIdsInProgress: {},
-  outgoingRequestIds: null,
+  outgoingRequestIds: {},
   incomingRequestIdsInProgress: {},
-  incomingRequestIds: null,
+  incomingRequestIds: {},
   requestsInProgress: {},
   requests: {},
   incomingResponseIdsInProgress: {},
@@ -1125,9 +1162,9 @@ Backend.Cache.reset = function() {
   this.cacheChangeListeners = [];
   
   this.outgoingRequestIdsInProgress = {};
-  this.outgoingRequestIds = null;
+  this.outgoingRequestIds = {};
   this.incomingRequestIdsInProgress = {};
-  this.incomingRequestIds = null;
+  this.incomingRequestIds = {};
   this.requestsInProgress = {};
   this.requests = {};
   this.incomingResponseIdsInProgress = {},
