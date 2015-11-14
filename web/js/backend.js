@@ -367,8 +367,9 @@ Backend.createRequest = function(request, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
+        var newRequestId = xhr.getResponseHeader("Location");
+        
         if (Backend._FORCE_IMMEDIATE_UPDATE) {
-          var newRequestId = xhr.getResponseHeader("Location");
           Backend.Cache.setRequest(newRequestId, data);
 
           var requestIds = Backend.Cache.getOutgoingRequestIds();
@@ -419,9 +420,9 @@ Backend.updateRequest = function(requestId, request, transactionCallback) {
             var requestIds = Backend.Cache.getOutgoingRequestIds();
             requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
             if (requestIds.inactive == null) {
-              requestIds.inactive = [requestIds];
+              requestIds.inactive = [requestId];
             } else {
-              requestIds.inactive.push(requestIds);
+              requestIds.inactive.push(requestId);
             }
             Backend.Cache.setOutgoingRequestIds(requestIds);
           }
@@ -641,15 +642,10 @@ Backend.removeIncomingRequest = function(requestId, transactionCallback) {
       
       if (Backend._FORCE_IMMEDIATE_UPDATE) {
         var requestIds = Backend.Cache.getIncomingRequestIds();
-        if (requestIds.all != null) {
-          requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
-        }
-        if (requestIds.active != null) {
-          requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
-        }
-        if (requestIds.inactive != null) {
-          requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
-        }
+        requestIds.all = GeneralUtils.removeFromArray(requestIds.all, requestId);
+        requestIds.active = GeneralUtils.removeFromArray(requestIds.active, requestId);
+        requestIds.inactive = GeneralUtils.removeFromArray(requestIds.inactive, requestId);
+        Backend.Cache.setIncomingRequestIds(requestIds);
       }
       
       if (xhr.status == 200) {
@@ -683,9 +679,23 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
     success: function(data, status, xhr) {
       if (xhr.status == 201) {
         var newResponseId = xhr.getResponseHeader("Location");
-        Backend.Cache.setResponse(requestId, newResponseId, data);
         
-//        Backend._pullOutgoingResponseIds(requestId); //TODO: remove, this is temporary. It should be replaced with events
+        if (Backend._FORCE_IMMEDIATE_UPDATE) {
+          Backend.Cache.setResponse(newResponseId, data);
+
+          var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
+          if (responseIds.all == null) {
+            responseIds.all = [];
+          }
+          responseIds.all.push(newResponseId);
+
+          if (responseIds.active == null) {
+            responseIds.active = [];
+          }
+          responseIds.active.push(newResponseId);
+
+          Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
+        }
 
         if (transactionCallback != null) {
           transactionCallback.success(newResponseId);
@@ -825,6 +835,23 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
+        if (Backend._FORCE_IMMEDIATE_UPDATE) {
+          var originalStatus = Backend.Cache.getResponse(requestId, responseId);
+          Backend.Cache.setResponse(requestId, responseId, data);
+          if (data.status != originalStatus) {
+            var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+            responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.unviewed, responseId);
+            if (responseIds.viewed == null) {
+              responseIds.viewed = [responseId];
+            } else {
+              responseIds.viewed.push(responseId);
+            }
+            Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+          }
+        }
+        
+        
+        
         Backend.Cache.setResponse(requestId, responseId, data);
         if (transactionCallback != null) {
           transactionCallback.success();
@@ -924,14 +951,13 @@ Backend.removeIncomingResponse = function(requestId, responseId, transactionCall
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
-        var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
-
-        //TODO: This needs to be cleaned to repull from the server
-        responseIds.all = GeneralUtils.removeFromArray(responseIds.all, responseId);
-        responseIds.viewed = GeneralUtils.removeFromArray(responseIds.active, responseId);
-        responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.inactive, responseId);
-
-        Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+        if (Backend._FORCE_IMMEDIATE_UPDATE) {
+          var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+          responseIds.all = GeneralUtils.removeFromArray(responseIds.all, responseId);
+          responseIds.viewed = GeneralUtils.removeFromArray(responseIds.active, responseId);
+          responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.inactive, responseId);
+          Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+        }
 
         if (transactionCallback != null) {
           transactionCallback.success();

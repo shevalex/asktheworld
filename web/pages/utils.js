@@ -67,6 +67,10 @@ GeneralUtils.isIncluded = function(set, subset) {
 }
 
 GeneralUtils.removeFromArray = function(arr, element) {
+  if (arr = null) {
+    return null;
+  }
+  
   for (var index in arr) {
     if (arr[index] == element) {
       arr.splice(index, 1);
