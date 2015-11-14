@@ -102,7 +102,11 @@ LoginPage.prototype._restorePassword = function() {
     callback = {
       success: function() {
         Application.hideSpinningWheel();
-        Application.showMessage(this.getLocale().PasswordResetRequestMessage, Application.MESSAGE_TIMEOUT_SLOW);
+        Application.showMessage(this.getLocale().PasswordResetMessage, Application.MESSAGE_TIMEOUT_SLOW);
+      }.bind(this),
+      failure: function() {
+        Application.hideSpinningWheel();
+        Application.showMessage(this.getLocale().UnexistingEmailMessage);
       }.bind(this),
       error: function() {
         Application.hideSpinningWheel();
@@ -127,50 +131,49 @@ LoginPage.prototype._signIn = function() {
   var isEmailValid = ValidationUtils.isValidEmail(login);
   if (!isEmailValid) {
     UIUtils.indicateInvalidInput(this._loginElement);
-  } else if (this._rememberCheckbox.getValue()) {
-    window.localStorage.login = login;
-  } else {
-    window.localStorage.login = null;
+    Application.showMessage(this.getLocale().InvalidLoginMessage);
+    return;
   }
+  
   var password = this._passwordElement.getValue();
   if (password == "") {
     UIUtils.indicateInvalidInput(this._passwordElement);
-  } else if (this._rememberCheckbox.getValue()) {
+    Application.showMessage(this.getLocale().ProvideLoginPasswordMessage);
+    return;
+  }
+
+  if (this._rememberCheckbox.getValue()) {
+    window.localStorage.login = login;
     window.localStorage.password = password;
   } else {
+    window.localStorage.login = null;
     window.localStorage.password = null;
   }
 
   var page = this;
-  if (isEmailValid && password != "") {
-    var backendCallback = {
-      success: function() {
-        this._onCompletion();
-        Application.setupUserMenuChooser();
-        Application.showMenuPage(HomePage.name);
-      },
-      failure: function() {
-        this._onCompletion();
-        Application.showMessage(page.getLocale().InvalidCredentialsMessage);
-      },
-      error: function() {
-        this._onCompletion();
-        Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
-      },
+  var backendCallback = {
+    success: function() {
+      this._onCompletion();
+      Application.setupUserMenuChooser();
+      Application.showMenuPage(HomePage.name);
+    },
+    failure: function() {
+      this._onCompletion();
+      Application.showMessage(page.getLocale().InvalidCredentialsMessage);
+    },
+    error: function() {
+      this._onCompletion();
+      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+    },
 
-      _onCompletion: function() {
-        this._signing = false;
-        Application.hideSpinningWheel();
-      }.bind(this)
-    }
-
-    this._signing = true;
-    Application.showSpinningWheel();
-
-    Backend.logIn(login, password, backendCallback);
-  } else if (!isEmailValid) {
-    Application.showMessage(this.getLocale().InvalidLoginMessage);
-  } else {
-    Application.showMessage(this.getLocale().ProvideLoginPasswordMessage);
+    _onCompletion: function() {
+      this._signing = false;
+      Application.hideSpinningWheel();
+    }.bind(this)
   }
+
+  this._signing = true;
+  Application.showSpinningWheel();
+
+  Backend.logIn(login, password, backendCallback);
 }

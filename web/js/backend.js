@@ -3,7 +3,7 @@ var Backend = {
 Backend._FORCE_IMMEDIATE_UPDATE = true;
 
 Backend._SERVER_BASE_URL = "https://hidden-taiga-8809.herokuapp.com/";
-//Backend._SERVER_BASE_URL = "http://127.0.0.1:8080/";
+//Backend._SERVER_BASE_URL = "http://192.168.1.13:8080/";
 
 
 // USER MANAGEMENT
@@ -271,7 +271,7 @@ Backend.resetUserPassword = function(login, transactionCallback) {
     }
   }
   
-  this._communicate("user?request_password_recovery=" + login, "GET", null, false, {}, communicationCallback);
+  this._communicate("reset?login=" + login, "GET", null, false, {}, communicationCallback);
 }
 
 Backend.setUserPassword = function(login, password, recoveryToken, transactionCallback) {
@@ -283,7 +283,7 @@ Backend.setUserPassword = function(login, password, recoveryToken, transactionCa
     },
     error: function(xhr, status, error) {
       if (transactionCallback != null) { 
-        if (xhr.status == 403) {
+        if (xhr.status == 403 || xhr.status == 404) {
           transactionCallback.failure();
         } else {
           transactionCallback.error();
@@ -292,7 +292,7 @@ Backend.setUserPassword = function(login, password, recoveryToken, transactionCa
     }
   }
   
-  this._communicate("user?recovery_token=" + recoveryToken + "&password_recovery=" + login, "PUT", {
+  this._communicate("reset?token=" + recoveryToken + "&login=" + login, "PUT", {
     password: password  
   }, false, {}, communicationCallback);
 }

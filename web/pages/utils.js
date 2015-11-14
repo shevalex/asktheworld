@@ -113,9 +113,14 @@ ResourceUtils.loadResource = function(resourceUrl, isJsonResource, callback) {
 
 
 ValidationUtils = {};
+ValidationUtils._EMAIL_REGEXP = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
 ValidationUtils.isValidEmail = function(email) {
-  //TODO!!!
-  return email != null && email.length > 1
+  if (email == null || email.length <= 3) {
+    return false;
+  }
+  
+  return ValidationUtils._EMAIL_REGEXP.test(email);
 }
 
 ValidationUtils.isValidPassword = function(password) {
