@@ -11,6 +11,8 @@
     GENDER_PREFERENCE: [{data: "all", display: I18n.getLocale().literals.GenderPreferenceAny}, {data: "male", display: I18n.getLocale().literals.GenderPreferenceMale}, {data: "female", display: I18n.getLocale().literals.GenderPreferenceFemale}],
     INQUIRY_LIMIT_PREFERENCE: [{data: -1, display: I18n.getLocale().literals.IncomingLimitPreferenceAll}, {data: 10, display: I18n.getLocale().literals.IncomingLimitPreferenceTen}, {data: 5, display: I18n.getLocale().literals.IncomingLimitPreferenceFive}, {data: 0, display: I18n.getLocale().literals.IncomingLimitPreferenceNone}],
     
+    GENERAL_EXPERTISE_CATEGORY: "general",
+    
     toTargetGroupString: function (ageCategory, gender) {
       if (ageCategory == this.AGE_CATEGORY_PREFERENCE[0].data) {
         if (gender == this.GENDER_PREFERENCE[0].data) {

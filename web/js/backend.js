@@ -1350,13 +1350,12 @@ Backend.Cache.markOutgoingResponseIdsInUpdate = function(requestId, isInUpdate, 
 
   this._fireUpdateEvent();
 }
-Backend.Cache.isOutgoingResponseIdsInUpdate = function(requestId) {
+Backend.Cache.isOutgoingResponseIdsInUpdate = function(requestId, conditions) {
   if (this.outgoingResponseIdsInProgress[requestId] == null || !this.outgoingResponseIdsInProgress[requestId].inUpdate) {
     return false;
   }
   
   return this.outgoingResponseIdsInProgress[requestId].conditions == conditions;
-  
 }
 Backend.Cache.setOutgoingResponseIds = function(requestId, responseIds, conditions) {
   this.outgoingResponseIds[requestId] = responseIds;

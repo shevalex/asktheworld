@@ -240,6 +240,12 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
   UIUtils.emptyContainer(this._responsePanel);
 
   var responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
+  
+  var request = Backend.getRequest(this._currentRequestId);
+  if (request.expertise_category != Application.Configuration.GENERAL_EXPERTISE_CATEGORY) {
+    var responseHiddenTextEditor = UIUtils.appendTextEditor(this._responsePanel, "HiddenTextEditor");
+  }
+  
   var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, Account.canOpenFileController);
   
   var buttonsPanel = UIUtils.appendBlock(this._responsePanel, "ControlButtonsPanel");
@@ -254,11 +260,15 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
   UIUtils.setClickListener(createButton, function() {
     var responseText = responseTextEditor.getValue();
     if (responseText != null && responseText != "") {
-      this._createResponse(responseText, attachmentsBar.getAttachments());
+      this._createResponse(responseText, responseHiddenTextEditor.getValue(), attachmentsBar.getAttachments());
     } else {
       UIUtils.indicateInvalidInput(responseTextEditor);
     }
   }.bind(this));
+  
+  var rightClarificationPanel = UIUtils.appendBlock(this._responsePanel, "RightClarificationPanel");
+  UIUtils.appendExplanationPad(rightClarificationPanel, "PublicTextClarification", this.getLocale().PublicTextClarification, this.getLocale().PublicTextClarificationText);
+  UIUtils.appendExplanationPad(rightClarificationPanel, "HiddenTextClarification", this.getLocale().HiddenTextClarification, this.getLocale().HiddenTextClarificationText);
 }
 
 
@@ -334,7 +344,7 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, resp
   Backend.updateResponse(this._currentRequestId, responseId, response, callback);
 }
 
-IncomingRequestDetailsPage.prototype._createResponse = function(responseText, attachments) {
+IncomingRequestDetailsPage.prototype._createResponse = function(responseText, hiddenText, attachments) {
   if (this._updating) {
     return;
   }
@@ -363,6 +373,7 @@ IncomingRequestDetailsPage.prototype._createResponse = function(responseText, at
 
   var response = {
     text: responseText, 
+    hidden_text: hiddenText,
     contact_info_status: Backend.UserPreferences.contact_info_requestable ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE, 
     attachments: attachments
   }

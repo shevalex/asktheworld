@@ -37,6 +37,8 @@
 }
 
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel {
+  position: relative;
+  
   margin-top: 40px;
   margin-left: 30px;
 }
@@ -50,6 +52,16 @@
 
 #IncomingRequestDetailsPage-ContentPanel-ResponsePanel-TextEditor {
   outline: none;
+  
+  font-family: Verdana;
+  font-size: 12px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-HiddenTextEditor {
+  outline: none;
+  height: 85px;
+  
+  margin-top: 10px;
   
   font-family: Verdana;
   font-size: 12px;
@@ -80,4 +92,24 @@
   float: right;
   margin-right: 20px;  
 }
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-RightClarificationPanel {
+  width: 200px;
+  position: absolute;
+  top: 0;
+  left: 690;
+  display: inline-block;
+  
+  font-family: Verdana;
+  font-size: 13px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-RightClarificationPanel-PublicTextClarification {
+  margin-top: 20px;
+}
+
+#IncomingRequestDetailsPage-ContentPanel-ResponsePanel-RightClarificationPanel-HiddenTextClarification {
+  margin-top: 45px;
+}
+
 
