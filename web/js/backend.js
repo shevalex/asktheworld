@@ -27,9 +27,11 @@ Backend.UserPreferences = {
   inquiry_age_group_preference: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
   inquiry_gender_preference: Application.Configuration.GENDER_PREFERENCE[0].data,
 
-  contact_info_requestable: false,
-  contact_name: "",
-  contact_info: ""
+  contact_info_pay_policy: "free",
+  contact_name: null,
+  contact_info: null,
+  
+  hidden_text_pay_policy: "free"
 };
 Backend.UserSettings = {expertise_categories: []};
 
@@ -355,9 +357,11 @@ Backend.Response = {};
 Backend.Response.STATUS_ALL = "all";
 Backend.Response.STATUS_UNVIEWED = "unviewed";
 Backend.Response.STATUS_VIEWED = "viewed";
-Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE = "no";
-Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE = "can_provide";
-Backend.Response.CONTACT_INFO_STATUS_PROVIDED = "provided";
+Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE = "not_available";
+Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE = "can_provide";
+Backend.Response.PAID_INFO_STATUS_PROVIDED = "provided";
+Backend.Response.PAID_INFO_PAY_POLICY_FREE = "free";
+Backend.Response.PAID_INFO_PAY_POLICY_PAID = "paid";
 
 
 
@@ -718,7 +722,13 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
   response.request_id = parseInt(requestId);
   response.age_category = Backend.getUserProfile().age_category;
   response.gender = Backend.getUserProfile().gender;
-  response.contact_info_status = Backend.getUserPreferences().contact_info_requestable ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE;
+
+  //  response.contact_info_status = Backend.getUserPreferences().contact_info_requestable ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE;
+  response.contact_info_status = Backend.getUserPreferences().contact_info != null ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE;
+  response.contact_info_pay_policy = Backend.getUserPreferences().contact_info_pay_policy;
+  
+  response.hidden_text_status = Backend.getUserPreferences().hidden_text != null ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE;
+  response.hidden_text_pay_policy = Backend.getUserPreferences().hidden_text_pay_policy;
   
   this._communicate("response", "POST", response, true, this._getAuthenticationHeader(), communicationCallback);
 }
@@ -765,38 +775,52 @@ Backend._pullResponse = function(requestId, responseId, transactionCallback) {
 }
 
 Backend.getResponseWithContactInfo = function(requestId, responseId, transactionCallback) {
+  return this._getResponseWithPaidInfo(requestId, responseId, "contact_info_status", "contact_info", transactionCallback);
+}
+
+Backend.getResponseWithHiddenText = function(requestId, responseId, transactionCallback) {
+  return this._getResponseWithPaidInfo(requestId, responseId, "hidden_text_status", "hidden_text", transactionCallback);
+}
+
+Backend._getResponseWithPaidInfo = function(requestId, responseId, infoStatusField, dataField, transactionCallback) {
   var response = Backend.Cache.getResponse(requestId, responseId);
   
-  if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_PROVIDED) {
+  if (response[infoStatusField] == Backend.Response.PAID_INFO_STATUS_PROVIDED) {
     if (transactionCallback != null) {
       transactionCallback.success();
     }
     return response;
-  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE) {
+  } else if (response[infoStatusField] == Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE) {
     if (transactionCallback != null) {
       transactionCallback.failure();
     }
     return null;
-  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE) {
-    Backend._pullResponseWithContactInfo(requestId, responseId, transactionCallback)
+  } else if (response[infoStatusField] == Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE) {
+    Backend._pullResponsePaidInfo(requestId, responseId, infoStatusField, dataField, transactionCallback)
     return null;
   } else {
-    debug.error("Unsupported contact_info_status");
+    debug.error("Unsupported status " + infoStatusField);
   }
 }
 
-Backend._pullResponseWithContactInfo = function(requestId, responseId, transactionCallback) {
+Backend._pullResponsePaidInfo = function(requestId, responseId, infoStatusField, dataField, transactionCallback) {
   Backend.Cache.markResponseInUpdate(requestId, responseId);
   
     setTimeout(function() {
-      var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
-
-      var contactIndex = Math.round(Math.random() * (contacts.length - 1));
-      var contactInfo = contacts[contactIndex];
-      
       var response = Backend.Cache.getResponse(requestId, responseId);
-      response.contact_info_status = Backend.Response.CONTACT_INFO_STATUS_PROVIDED;
-      response.contact_info = contactInfo;
+      
+      if (dataField == "contact_info") {
+        var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
+
+        var contactIndex = Math.round(Math.random() * (contacts.length - 1));
+        var contactInfo = contacts[contactIndex];
+
+        response[infoStatusField] = Backend.Response.PAID_INFO_STATUS_PROVIDED;
+        response[dataField] = contactInfo;
+      } else if (dataField == "hidden_text") {
+        response[infoStatusField] = Backend.Response.PAID_INFO_STATUS_PROVIDED;
+        response[dataField] = requestId + ":" + responseId + " -- hidden text";
+      }
 
       Backend.Cache.setResponse(requestId, responseId, response);
     }.bind(this), 2000);
@@ -824,7 +848,7 @@ Backend._pullResponseWithContactInfo = function(requestId, responseId, transacti
     }
   }
 
-  this._communicate("response/" + responseId + "?contactinfo", "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("response/" + responseId + "?paid=" + dataField, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
   */
 }
 

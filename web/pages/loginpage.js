@@ -23,9 +23,6 @@ LoginPage.prototype.definePageContent = function(root) {
   this._loginElement = UIUtils.appendTextInput(controlPanel, "Login");
   
   this._rememberCheckbox = UIUtils.appendCheckbox(controlPanel, "RememberLoginCheck", this.getLocale().RememberLoginLabel);
-  UIUtils.get$(this._rememberCheckbox).change(function() {
-    window.localStorage.remember = this._rememberCheckbox.getValue() ? "yes" : "no";
-  }.bind(this));
   
   this._passwordElement = UIUtils.appendPasswordInput(controlPanel, "Password");
   
@@ -145,9 +142,11 @@ LoginPage.prototype._signIn = function() {
   if (this._rememberCheckbox.getValue()) {
     window.localStorage.login = login;
     window.localStorage.password = password;
+    window.localStorage.remember = "yes";
   } else {
     window.localStorage.login = null;
     window.localStorage.password = null;
+    window.localStorage.remember = "no";
   }
 
   var page = this;

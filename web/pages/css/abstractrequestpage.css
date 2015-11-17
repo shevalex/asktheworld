@@ -338,6 +338,17 @@
   color: rgb(39, 39, 39);
   font-family: Verdana;
 }
+.incoming-response-container .response-hidden-text {
+  padding: 5px;
+  
+  color: rgb(39, 39, 39);
+  font-family: Verdana;
+}
+.incoming-response-container .response-hidden-text-reveal {
+  padding: 5px;
+  
+  cursor: pointer;
+}
 .incoming-response-container .response-attachmentbar {
   margin: 5px;
 }

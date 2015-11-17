@@ -321,6 +321,21 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   var responseText = UIUtils.appendBlock(this._container, "ResponseText");
   UIUtils.addClass(responseText, "response-text");
   responseText.innerHTML = response.text;
+  
+  if (response.hidden_text_status == Backend.Response.PAID_INFO_STATUS_PROVIDED || response.hidden_text_status == Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE) {
+    var responseHiddenText = UIUtils.appendBlock(this._container, "ResponseHiddenText");
+    
+    if (response.hidden_text_status == Backend.Response.PAID_INFO_STATUS_PROVIDED) {
+      UIUtils.addClass(responseHiddenText, "response-hidden-text");
+      responseHiddenText.innerHTML = response.hidden_text;
+    } else {
+      UIUtils.addClass(responseHiddenText, "response-hidden-text-reveal");
+      responseHiddenText.innerHTML = I18n.getPageLocale("AbstractRequestPage").HiddenTextCanBeRequested;
+      UIUtils.setClickListener(responseHiddenText, function() {
+        Backend.getResponseWithHiddenText(this._requestId, this._objectId);
+      }.bind(this));
+    }
+  }
 
   if (response.attachments != null && response.attachments.length > 0) {
     var attachmentBar = UIUtils.appendAttachmentBar(this._container, response.attachments);
@@ -330,10 +345,10 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   var contactInfoPanel = UIUtils.appendBlock(this._container, "ContactInfoPanel");
   UIUtils.addClass(contactInfoPanel, "response-contactinfopanel");
   
-  if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_PROVIDED) {  
+  if (response.contact_info_status == Backend.Response.PAID_INFO_STATUS_PROVIDED) {  
     var contactInfo = UIUtils.appendLabel(contactInfoPanel, "ContactInfoLabel", response.contact_info.contact_name + ", " + response.contact_info.contact_info);
     UIUtils.addClass(contactInfo, "response-contactinfo");
-  } else if (response.contact_info_status == Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE) {
+  } else if (response.contact_info_status == Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE) {
     var requestContactInfoButton = UIUtils.appendButton(contactInfoPanel, "RequestContactButton", I18n.getPageLocale("AbstractRequestPage").RequestContactButton);
     UIUtils.setClickListener(requestContactInfoButton, function() {
       Backend.getResponseWithContactInfo(this._requestId, this._objectId);

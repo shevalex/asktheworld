@@ -363,7 +363,7 @@ IncomingRequestDetailsPage.prototype._createResponse = function(responseText, at
 
   var response = {
     text: responseText, 
-    contact_info_status: Backend.UserPreferences.contact_info_requestable ? Backend.Response.CONTACT_INFO_STATUS_CAN_PROVIDE : Backend.Response.CONTACT_INFO_STATUS_NOT_AVAILABLE, 
+    contact_info_status: Backend.UserPreferences.contact_info_requestable ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE, 
     attachments: attachments
   }
 
