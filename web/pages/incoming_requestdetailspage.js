@@ -210,6 +210,14 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
 
   var responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
   responseTextEditor.setValue(response.text);
+  
+  var request = Backend.getRequest(this._currentRequestId);
+  var responseHiddenTextEditor = null;
+  if (request.expertise_category != Application.Configuration.GENERAL_EXPERTISE_CATEGORY
+      && (response.paid_features.hidden_text.status != Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE || Backend.isPaidFeaturesEnabled() && Backend.getUserPreferences().paid_features.hidden_text.enabled)) {
+    responseHiddenTextEditor = UIUtils.appendTextEditor(this._responsePanel, "HiddenTextEditor");
+  }
+  
   var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, Account.canOpenFileController);
   attachmentsBar.setAttachments(response.attachments);
   
@@ -224,7 +232,7 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
   UIUtils.setClickListener(updateButton, function() {
     var responseText = responseTextEditor.getValue();
     if (responseText != null && responseText != "") {
-      this._updateResponse(responseId, responseText, attachmentsBar.getAttachments());
+      this._updateResponse(responseId, response, responseText, responseHiddenTextEditor != null ? responseHiddenTextEditor.getValue() : null, attachmentsBar.getAttachments());
     } else {
       UIUtils.indicateInvalidInput(responseTextEditor);
     }
@@ -241,10 +249,11 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
 
   var responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
   
+  var responseHiddenTextEditor = null;
   var request = Backend.getRequest(this._currentRequestId);
   if (request.expertise_category != Application.Configuration.GENERAL_EXPERTISE_CATEGORY
-      && Backend.getUserPreferences().paid_features.hidden_text.enabled) {
-    var responseHiddenTextEditor = UIUtils.appendTextEditor(this._responsePanel, "HiddenTextEditor");
+      && Backend.isPaidFeaturesEnabled() && Backend.getUserPreferences().paid_features.hidden_text.enabled) {
+    responseHiddenTextEditor = UIUtils.appendTextEditor(this._responsePanel, "HiddenTextEditor");
   }
   
   var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, Account.canOpenFileController);
@@ -261,7 +270,7 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
   UIUtils.setClickListener(createButton, function() {
     var responseText = responseTextEditor.getValue();
     if (responseText != null && responseText != "") {
-      this._createResponse(responseText, responseHiddenTextEditor.getValue(), attachmentsBar.getAttachments());
+      this._createResponse(responseText, responseHiddenTextEditor != null ? responseHiddenTextEditor.getValue() : null, attachmentsBar.getAttachments());
     } else {
       UIUtils.indicateInvalidInput(responseTextEditor);
     }
@@ -310,7 +319,7 @@ IncomingRequestDetailsPage.prototype._getNextRequestId = function() {
 }
 
 
-IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, responseText, attachments) {
+IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, response, responseText, hiddenText, attachments) {
   if (this._updating) {
     return;
   }
@@ -336,11 +345,39 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, resp
     }
   }
 
-  var response = {
-    text: responseText,
-    time: Date.now(),
-    attachments: attachments
+  
+  response.text = responseText;
+  response.attachments = attachments;
+      
+  if (hiddenText != null) {
+    response.paid_features.hidden_text.data = {text: hiddenText};
+    if (response.paid_features.hidden_text.status == Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE) {
+      response.paid_features.hidden_text.status = Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE;
+    }
+  } else {
+    response.paid_features.hidden_text.status == Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE;
+    response.paid_features.hidden_text.data = {};
   }
+      
+  
+//  var response = {
+//    text: responseText,
+//    time: Date.now(),
+//    attachments: attachments,
+//    
+//    paid_features: {
+//      hidden_text: {
+//        status: Backend.getUserPreferences().paid_features.hidden_text.enabled && hiddenText != null ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE,
+//        policy: Backend.getUserPreferences().paid_features.hidden_text.policy,
+//        data: {text: hiddenText}
+//      },
+//      contact_info: {
+//        status: Backend.getUserPreferences().paid_features.contact_info.enabled ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE,
+//        policy: Backend.getUserPreferences().paid_features.contact_info.policy,
+//        data: Backend.getUserPreferences().paid_features.contact_info.data
+//      }
+//    }
+//  }
   
   Backend.updateResponse(this._currentRequestId, responseId, response, callback);
 }

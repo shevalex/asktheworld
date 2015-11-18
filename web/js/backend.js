@@ -19,13 +19,14 @@ Backend.Events.RESPONSE_CHANGED = "RESPONSE_CHANGED";
 
 Backend.UserProfile = {login: null, password: null, gender: null, languages: [], age_category: null, name: null, user_id: null};
 Backend.UserPreferences = {
-  default_response_quantity: Application.Configuration.RESPONSE_QUANTITY[0].data,
-  default_response_wait_time: Application.Configuration.RESPONSE_WAIT_TIME[0].data,
-  default_response_age_group_preference: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
-  default_gender_preference: Application.Configuration.GENDER_PREFERENCE[0].data,
-  inquiry_quantity_per_day: Application.Configuration.INQUIRY_LIMIT_PREFERENCE[0].data,
-  inquiry_age_group_preference: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
-  inquiry_gender_preference: Application.Configuration.GENDER_PREFERENCE[0].data,
+  default_response_quantity: null,
+  default_response_wait_time: null,
+  default_response_age_group_preference: null,
+  default_gender_preference: null,
+  inquiry_quantity_per_day: null,
+  inquiry_age_group_preference: null,
+  inquiry_gender_preference: null,
+  expertises: [],
   
   paid_features: {
     hidden_text: {
@@ -56,6 +57,10 @@ Backend.getUserPreferences = function() {
 
 Backend.getUserSettings = function() {
   return this.UserSettings;
+}
+
+Backend.isPaidFeaturesEnabled = function() {
+  return this.getUserPreferences().expertises.length == 1 && this.getUserPreferences().expertises[0] != Application.Configuration.GENERAL_EXPERTISE_CATEGORY || this.getUserPreferences().expertises.length > 1;
 }
 
 Backend.logIn = function(login, password, transactionCallback) {
