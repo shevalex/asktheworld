@@ -809,26 +809,25 @@ Backend._getResponseWithPaidInfo = function(requestId, responseId, infoStatusFie
 Backend._pullResponsePaidInfo = function(requestId, responseId, infoStatusField, dataField, transactionCallback) {
   Backend.Cache.markResponseInUpdate(requestId, responseId);
   
-    setTimeout(function() {
-      var response = Backend.Cache.getResponse(requestId, responseId);
-      
-      if (dataField == "contact_info") {
-        var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
-
-        var contactIndex = Math.round(Math.random() * (contacts.length - 1));
-        var contactInfo = contacts[contactIndex];
-
-        response[infoStatusField] = Backend.Response.PAID_INFO_STATUS_PROVIDED;
-        response[dataField] = contactInfo;
-      } else if (dataField == "hidden_text") {
-        response[infoStatusField] = Backend.Response.PAID_INFO_STATUS_PROVIDED;
-        response[dataField] = requestId + ":" + responseId + " -- hidden text";
-      }
-
-      Backend.Cache.setResponse(requestId, responseId, response);
-    }.bind(this), 2000);
+//    setTimeout(function() {
+//      var response = Backend.Cache.getResponse(requestId, responseId);
+//      
+//      if (dataField == "contact_info") {
+//        var contacts = [{contact_name: "Anton", contact_info: "(123) 456-78-90"}, {contact_name: "Oleg", contact_info: "(098) 765-43-21"}, {contact_name: "Leha", contact_info: "(456) 123-78-90"}, {contact_name: "Kosmonavtom", contact_info: "Call me to Baikanur!"}];
+//
+//        var contactIndex = Math.round(Math.random() * (contacts.length - 1));
+//        var contactInfo = contacts[contactIndex];
+//
+//        response[infoStatusField] = Backend.Response.PAID_INFO_STATUS_PROVIDED;
+//        response[dataField] = contactInfo;
+//      } else if (dataField == "hidden_text") {
+//        response[infoStatusField] = Backend.Response.PAID_INFO_STATUS_PROVIDED;
+//        response[dataField] = requestId + ":" + responseId + " -- hidden text";
+//      }
+//
+//      Backend.Cache.setResponse(requestId, responseId, response);
+//    }.bind(this), 2000);
   
-/*  
   var communicationCallback = {
     success: function(data, status, xhr) {
       if (xhr.status == 200) {
@@ -852,7 +851,6 @@ Backend._pullResponsePaidInfo = function(requestId, responseId, infoStatusField,
   }
 
   this._communicate("response/" + responseId + "?paid=" + dataField, "GET", null, true, this._getAuthenticationHeader(), communicationCallback);
-  */
 }
 
 
