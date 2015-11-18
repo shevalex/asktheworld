@@ -100,11 +100,11 @@
 }
 
 
-#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel {
+#UserPreferencesPage-PreferencesPanel-ProfessionalCategoriesPanel {
   margin-top: 20px;
 }
 
-#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-ContactPreferencesLabel {
+#UserPreferencesPage-PreferencesPanel-ProfessionalCategoriesPanel-ProfessionalCategoriesLabel {
   display: block;
   font-size: 16px;
   text-align: left;
@@ -112,29 +112,45 @@
   color: rgb(0, 133, 63);
 }
 
-#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-Expertise {
+#UserPreferencesPage-PreferencesPanel-ProfessionalCategoriesPanel-Expertise {
   margin-top: 10px;
   margin-left: 50px;
   font: inherit;
 }
 
-#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-AllowContactInfo {
+#UserPreferencesPage-PreferencesPanel-ProfessionalCategoriesPanel-ProfessionalFeaturesPanel {
+  margin-top: 10px;
+  margin-left: 10px;
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-ProfessionalCategoriesPanel-ProfessionalFeaturesPanel-AllowContactInfo {
   margin-top: 10px;
   margin-left: 50px;
   font: inherit;
 }
 
-#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-Name {
+#UserPreferencesPage-PreferencesPanel-ProfessionalCategoriesPanel-ProfessionalFeaturesPanel-ContactInfoPanel {
   margin-top: 10px;
   margin-left: 50px;
   font: inherit;
 }
 
-#UserPreferencesPage-PreferencesPanel-ContactPreferencesPanel-Contact {
+#UserPreferencesPage-PreferencesPanel-ProfessionalCategoriesPanel-ProfessionalFeaturesPanel-ContactInfoPanel-Name {
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-ProfessionalCategoriesPanel-ProfessionalFeaturesPanel-ContactInfoPanel-Contact {
   margin-top: 10px;
+  font: inherit;
+}
+
+#UserPreferencesPage-PreferencesPanel-ProfessionalCategoriesPanel-ProfessionalFeaturesPanel-AllowHiddenText {
+  margin-top: 20px;
   margin-left: 50px;
   font: inherit;
 }
+
 
 
 #UserPreferencesPage-PreferencesPanel-ButtonsPanel {
@@ -185,6 +201,6 @@
   margin-right: 150px;
 }
 
-#UserPreferencesPage-PreferencesPanel-RightClarificationPanel-ContactClarificationPanel {
-  margin-top: 160px;
+#UserPreferencesPage-PreferencesPanel-RightClarificationPanel-ProfessionalClarificationPanel {
+  margin-top: 140px;
 }

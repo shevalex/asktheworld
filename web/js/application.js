@@ -13,6 +13,10 @@
     
     GENERAL_EXPERTISE_CATEGORY: "general",
     
+    PAID_FEATURE_POLICY_FREE: "free",
+    PAID_FEATURE_POLICY_PAY: "pay",
+    
+    
     toTargetGroupString: function (ageCategory, gender) {
       if (ageCategory == this.AGE_CATEGORY_PREFERENCE[0].data) {
         if (gender == this.GENDER_PREFERENCE[0].data) {

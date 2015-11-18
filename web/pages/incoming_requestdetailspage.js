@@ -242,7 +242,8 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
   var responseTextEditor = UIUtils.appendTextEditor(this._responsePanel, "TextEditor");
   
   var request = Backend.getRequest(this._currentRequestId);
-  if (request.expertise_category != Application.Configuration.GENERAL_EXPERTISE_CATEGORY) {
+  if (request.expertise_category != Application.Configuration.GENERAL_EXPERTISE_CATEGORY
+      && Backend.getUserPreferences().paid_features.hidden_text.enabled) {
     var responseHiddenTextEditor = UIUtils.appendTextEditor(this._responsePanel, "HiddenTextEditor");
   }
   
@@ -373,9 +374,20 @@ IncomingRequestDetailsPage.prototype._createResponse = function(responseText, hi
 
   var response = {
     text: responseText, 
-    hidden_text: hiddenText,
-    contact_info_status: Backend.UserPreferences.contact_info_requestable ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE, 
-    attachments: attachments
+    attachments: attachments,
+    
+    paid_features: {
+      hidden_text: {
+        status: Backend.getUserPreferences().paid_features.hidden_text.enabled && hiddenText != null ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE,
+        policy: Backend.getUserPreferences().paid_features.hidden_text.policy,
+        data: {text: hiddenText}
+      },
+      contact_info: {
+        status: Backend.getUserPreferences().paid_features.contact_info.enabled ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE,
+        policy: Backend.getUserPreferences().paid_features.contact_info.policy,
+        data: Backend.getUserPreferences().paid_features.contact_info.data
+      }
+    }
   }
 
   Backend.createResponse(this._currentRequestId, response, callback);

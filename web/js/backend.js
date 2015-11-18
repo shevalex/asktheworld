@@ -26,13 +26,23 @@ Backend.UserPreferences = {
   inquiry_quantity_per_day: Application.Configuration.INQUIRY_LIMIT_PREFERENCE[0].data,
   inquiry_age_group_preference: Application.Configuration.AGE_CATEGORY_PREFERENCE[0].data,
   inquiry_gender_preference: Application.Configuration.GENDER_PREFERENCE[0].data,
-
-  contact_info_pay_policy: "free",
-  contact_name: null,
-  contact_info: null,
   
-  hidden_text_pay_policy: "free"
+  paid_features: {
+    hidden_text: {
+      enabled: true,
+      policy: Application.Configuration.PAID_FEATURE_POLICY_FREE,
+      data: {}
+    },
+    
+    contact_info: {
+      enabled: false,
+      policy: Application.Configuration.PAID_FEATURE_POLICY_FREE,
+      data: {contact_name: null, contact_information: null}
+    }
+  }
 };
+
+
 Backend.UserSettings = {expertise_categories: []};
 
 
@@ -722,13 +732,6 @@ Backend.createResponse = function(requestId, response, transactionCallback) {
   response.request_id = parseInt(requestId);
   response.age_category = Backend.getUserProfile().age_category;
   response.gender = Backend.getUserProfile().gender;
-
-  //  response.contact_info_status = Backend.getUserPreferences().contact_info_requestable ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE;
-  response.contact_info_status = Backend.getUserPreferences().contact_info != null ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE;
-  response.contact_info_pay_policy = Backend.getUserPreferences().contact_info_pay_policy;
-  
-  response.hidden_text_status = Backend.getUserPreferences().hidden_text != null ? Backend.Response.PAID_INFO_STATUS_CAN_PROVIDE : Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE;
-  response.hidden_text_pay_policy = Backend.getUserPreferences().hidden_text_pay_policy;
   
   this._communicate("response", "POST", response, true, this._getAuthenticationHeader(), communicationCallback);
 }

@@ -411,13 +411,23 @@ UIUtils.createCheckbox = function(cbId, exclusive) {
   checkbox.style.display = "inline-block";
   checkbox.style.width = "initial";
   
+  checkbox._changeListener = null;
+  
   checkbox.getValue = function() {
     return checkbox.checked;
   };
   
   checkbox.setValue = function(checked) {
     checkbox.checked = checked;
+    
+    if (checkbox._changeListener != null) {
+      checkbox._changeListener(checked);
+    }
   };
+  
+  checkbox.setChangeListener = function(listener) {
+    checkbox._changeListener = listener;
+  }
   
   return checkbox;
 }
