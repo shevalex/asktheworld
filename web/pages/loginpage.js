@@ -95,28 +95,30 @@ LoginPage.prototype.onHide = function() {
 LoginPage.prototype._restorePassword = function() {
   var login = this._loginElement.getValue();
 
-  if (ValidationUtils.isValidEmail(login)) {
-    callback = {
-      success: function() {
-        Application.hideSpinningWheel();
-        Application.showMessage(this.getLocale().PasswordResetMessage, Application.MESSAGE_TIMEOUT_SLOW);
-      }.bind(this),
-      failure: function() {
-        Application.hideSpinningWheel();
-        Application.showMessage(this.getLocale().UnexistingEmailMessage);
-      }.bind(this),
-      error: function() {
-        Application.hideSpinningWheel();
-        Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
-      }
-    }
-
-    Application.showMessage(this.getLocale().PasswordResetRequestMessage);
-    Application.showSpinningWheel();
-    Backend.resetUserPassword(login, callback);
-  } else {
+  if (!ValidationUtils.isValidEmail(login)) {
+    UIUtils.indicateInvalidInput(this._loginElement);
     Application.showMessage(this.getLocale().IncorrectEmailMessage);
+    return;
   }
+    
+  callback = {
+    success: function() {
+      Application.hideSpinningWheel();
+      Application.showMessage(this.getLocale().PasswordResetMessage, Application.MESSAGE_TIMEOUT_SLOW);
+    }.bind(this),
+    failure: function() {
+      Application.hideSpinningWheel();
+      Application.showMessage(this.getLocale().UnexistingEmailMessage);
+    }.bind(this),
+    error: function() {
+      Application.hideSpinningWheel();
+      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+    }
+  }
+
+  Application.showMessage(this.getLocale().PasswordResetRequestMessage);
+  Application.showSpinningWheel();
+  Backend.resetUserPassword(login, callback);
 }
 
 LoginPage.prototype._signIn = function() {
