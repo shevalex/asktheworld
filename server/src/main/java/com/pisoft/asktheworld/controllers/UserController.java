@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,7 +67,9 @@ public class UserController {
 		return new ResponseEntity<Void>( user != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 	
-	@Secured({"ROLE_ADMIN","ROLE_REAL_USER"})
+	@PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.credentials.getUser_id()")
+	
+	//@Secured({"ROLE_ADMIN","ROLE_REAL_USER"} )
 	@RequestMapping(method=RequestMethod.GET, value="/user/{userID}")
 	public ResponseEntity<ATWUser> getUser(@PathVariable("userID") int id) {
 		ATWUser user  = db.getUser(id);
