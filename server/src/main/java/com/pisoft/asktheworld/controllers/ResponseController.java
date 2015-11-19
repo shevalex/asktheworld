@@ -2,15 +2,18 @@ package com.pisoft.asktheworld.controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pisoft.asktheworld.data.ATWRequest;
 import com.pisoft.asktheworld.data.ATWResponse;
+import com.pisoft.asktheworld.data.ATWSettings;
 import com.pisoft.asktheworld.data.ATWUser;
+import com.pisoft.asktheworld.data.ATWUserSettings;
 import com.pisoft.asktheworld.data.DB;
+import com.pisoft.asktheworld.enums.ContactInfoStatus;
 import com.pisoft.asktheworld.enums.ResponseStatus;
 
 @RestController
@@ -43,6 +49,7 @@ public class ResponseController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			response.provideAllFileds();
 			return new ResponseEntity<ATWResponse>(response, headers, HttpStatus.CREATED);
 		} else { //if user or request is not exist
 			return new ResponseEntity<ATWResponse>(HttpStatus.BAD_REQUEST);
@@ -67,12 +74,31 @@ public class ResponseController {
 	}
 
 	@RequestMapping(method=RequestMethod.GET, value="/response/{responseID}")
-	public ResponseEntity<ATWResponse> getUser(@PathVariable("responseID") int id) {
+	public ResponseEntity<ATWResponse> getResponse(@PathVariable("responseID") int id, 
+			@RequestParam(value="paid", required = false) String  paid, Principal principal) {
 		//System.out.println("Request id " + id);
 		ATWResponse response  = db.getResponse(id);
-		//TODO:"Need to add security check. Should we add it in security filter or here?"
-		//We can compare request owner id with current user ID
-		//Plus we need to check if this user has this request in incoming list??
+		if (response != null) {
+			if (principal != null && principal instanceof UsernamePasswordAuthenticationToken ) {
+				ATWUser requestor = (ATWUser) ((UsernamePasswordAuthenticationToken)principal).getCredentials();
+				if(response.getUser_id() == requestor.getUser_id()) {
+					System.out.println("Owner request");
+					response.provideAllFileds();
+				}
+				
+			} else {
+				System.out.println("Principal is null");
+			}
+			//TODO:"Need to add security check. Should we add it in security filter or here?"
+			//We can compare request owner id with current user ID
+			//Plus we need to check if this user has request in incoming list??
+		
+			//Some additional information is requested
+			if ( paid != null ) {
+				response.setPaidStatus(paid);
+				db.saveResponse(response);
+			}
+		}
 		return new ResponseEntity<ATWResponse>(response, response != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
 	}
 	

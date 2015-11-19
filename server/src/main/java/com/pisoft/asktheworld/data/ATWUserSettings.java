@@ -2,13 +2,18 @@ package com.pisoft.asktheworld.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+
+import org.hibernate.annotations.Parameter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -43,37 +48,27 @@ public class ATWUserSettings implements Serializable {
 	//[“teens”, “adult”, “senior”]
 	@Column
 	private String expertises[] = {"general"};
-	@Column(nullable = false)
-	private boolean contact_info_requestable = false;
-	@Column
-	private String contact_name = "";
-	@Column
-	private String contact_info = "";
 
+	
+	@org.hibernate.annotations.Type(
+	        type = "org.hibernate.type.SerializableToBlobType", 
+	        parameters = { @Parameter( name = "classname", value = "java.util.HashMap" ) })
+	@Column(nullable = false)
+	private Map<String, Map<String, Object>>paid_features = new LinkedHashMap<String, Map<String,Object>>();
+
+	public Map<String, Map<String, Object>> getPaid_features() {
+		return paid_features;
+	}
+	public void setPaid_features(Map<String, Map<String, Object>> paid_features) {
+		this.paid_features = paid_features;
+	}
 	public String[] getExpertises() {
 		return expertises;
 	}
 	public void setExpertises(String[] expertises) {
 		this.expertises = expertises;
 	}
-	public boolean isContact_info_requestable() {
-		return contact_info_requestable;
-	}
-	public void setContact_info_requestable(boolean contact_info_requestable) {
-		this.contact_info_requestable = contact_info_requestable;
-	}
-	public String getContact_name() {
-		return contact_name;
-	}
-	public void setContact_name(String contact_name) {
-		this.contact_name = contact_name;
-	}
-	public String getContact_info() {
-		return contact_info;
-	}
-	public void setContact_info(String contact_info) {
-		this.contact_info = contact_info;
-	}
+
 	public String getDefault_gender_preference() {
 		return default_gender_preference;
 	}

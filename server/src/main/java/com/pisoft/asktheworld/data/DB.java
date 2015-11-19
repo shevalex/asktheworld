@@ -2,9 +2,11 @@ package com.pisoft.asktheworld.data;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pisoft.asktheworld.enums.AgeRequest;
+import com.pisoft.asktheworld.enums.ContactInfoStatus;
 import com.pisoft.asktheworld.enums.Gender;
 import com.pisoft.asktheworld.enums.RequestStatus;
 import com.pisoft.asktheworld.enums.ResponseStatus;
@@ -53,6 +56,9 @@ public class DB {
 	private RequestDAOImpl requests;
 	@Autowired
 	private ResponseDAOImpl responses;
+	@Autowired
+	private TokenDAOImpl tokens;
+	
 
 	
 	
@@ -372,10 +378,16 @@ public class DB {
 			} else {
 				response.setStatusChangeDate(resp.getStatusChangeDate());
 			}
-			resp = responses.update(response);
-			return resp;
+			return saveResponse(response);
 		}
 		return null;		
+	}
+	
+	//this method just for internal saves
+	public ATWResponse saveResponse(ATWResponse response) {
+		ATWResponse resp = responses.update(response);
+		return resp;
+		
 	}
 	
 	public ATWResponse getResponse(int id) {
@@ -576,5 +588,47 @@ public class DB {
 	public ATWSettings getUserSettings(int id) {
 		return ATWSettings.obj;
 	}
-	
+	//User password reset request
+	public ATWToken requestRecoveryPasswod(String login) {
+		ATWUser user  = users.findByLogin(login);
+		if (user == null) return null;
+		ATWToken token = tokens.findById(user.getUser_id());
+		if ( token == null ) {
+			token = new ATWToken(user);
+			tokens.create(token);
+		} else {
+			token.update();
+			tokens.update(token);
+		}
+		return token;
+	}
+
+	public boolean resetPassword(ATWUser user, String token, String password) {
+		ATWToken _token = tokens.deleteById(user.getUser_id());
+		if ( _token == null ) return false;
+		
+		Date now = new Date();
+		if (!_token.getToken().equals(token)) return false;
+		if (now.after(_token.getExpirationDate())) return false;
+		
+		user.setPassword(password);
+		users.update(user);
+		return true;
+	}
+/*	
+	public void addInfoResponse(ATWResponse response) {
+
+		if( response.getContact_info_status() == ContactInfoStatus.PROVIDE) {
+			response.setContact_info_status(ContactInfoStatus.PROVIDED);
+			updateResponse(response);
+		}
+
+    	ATWUserSettings ownerSettings = getUserPreferences(response.getUser_id());
+		Map<String, String> info = new HashMap<String, String>();
+		info.put("contact_name", ownerSettings.getContact_name());
+		info.put("contact_info", ownerSettings.getContact_info());
+		//response.setContact_info(info);
+		
+	}
+	*/
 }

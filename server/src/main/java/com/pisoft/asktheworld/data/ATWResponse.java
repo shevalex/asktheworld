@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -12,13 +14,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.DateSerializer;
@@ -58,10 +67,7 @@ public class ATWResponse implements Serializable {
 	@Embedded
 	@ElementCollection  //JFI: ElementCollection operation are always cascaded with EntityManager 
 	private List<ATWAttachment> attachments = new ArrayList<ATWAttachment>();
-	
-	@Column(columnDefinition="int4 default 0 not null") //TODO: need to add default value 
-	private ContactInfoStatus contact_info_status = ContactInfoStatus.NO; //TODO: default value is not working
-	
+
 	@Column(nullable = false)
 	private String status = "unviewed";
 	
@@ -91,6 +97,41 @@ public class ATWResponse implements Serializable {
 	@JsonSerialize(using = DateSerializer.class)
 	private Date time;
 	
+	@org.hibernate.annotations.Type(
+	        type = "org.hibernate.type.SerializableToBlobType", 
+	        parameters = { @Parameter( name = "classname", value = "java.util.HashMap" ) })
+	@Column(nullable = false)
+	private Map<String, Map<String, Object>>paid_features = null;
+
+	@Transient
+	private boolean provideAll = false;
+	
+	//We will remove data in json if status is not provided
+	public Map<String, Map<String, Object>> getPaid_features() {
+		if (paid_features == null) return null;
+		if (provideAll) return paid_features;
+		for(Entry<String, Map<String, Object>> feature : paid_features.entrySet()) {
+			Map<String, Object> map = feature.getValue();
+			if(!map.get("status").equals("provided")) {
+				map.remove("data");
+			}
+		}
+		return paid_features;
+	}
+
+	@JsonIgnore
+	public void setPaidStatus(String feature) {
+		Map<String, Object> map = paid_features.get(feature);
+		if(map != null) {
+			map.put("status", "provided");
+		}
+	}
+
+	
+	public void setPaid_features(Map<String, Map<String, Object>> paid_features) {
+		this.paid_features = paid_features;
+	}
+
 	public String getStatus() {
 		return status;
 	}
@@ -147,13 +188,6 @@ public class ATWResponse implements Serializable {
 		this.text = text;
 	}
 
-	public ContactInfoStatus getContact_info_status() {
-		return contact_info_status;
-	}
-
-	public void setContact_info_status(ContactInfoStatus contact_info_status) {
-		this.contact_info_status = contact_info_status;
-	}
 
 	public List<ATWAttachment> getAttachments() {
 		return attachments;
@@ -211,5 +245,11 @@ public class ATWResponse implements Serializable {
 		statusUpdateTime = time;
 	}
 
+
+	@JsonIgnore
+	public void provideAllFileds() {
+		this.provideAll  = true;
+		
+	}
 
 }
