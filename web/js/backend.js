@@ -74,7 +74,7 @@ Backend.logIn = function(login, password, transactionCallback) {
     },
     error: function(xhr, status, error) {
       if (transactionCallback != null) {
-        if (xhr.status == 401 || xhr.status == 404) {
+        if (xhr.status == 401 || xhr.status == 403 || xhr.status == 404) {
           transactionCallback.failure();
         } else {
           transactionCallback.error();
@@ -197,7 +197,6 @@ Backend.pullUserPreferences = function(transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
       Backend.UserPreferences = GeneralUtils.merge(Backend.getUserPreferences(), data);
-
       if (transactionCallback != null) {
         transactionCallback.success();
       }

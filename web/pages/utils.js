@@ -91,7 +91,11 @@ GeneralUtils.merge = function(source, properties) {
   }
   if (properties != null) {
     for (var propNames in properties) {
-      result[propNames] = properties[propNames];
+      if (typeof(source[propNames]) == "object" && typeof(properties[propNames]) == "object") {
+        result[propNames] = GeneralUtils.merge(source[propNames], properties[propNames]);
+      } else {
+        result[propNames] = properties[propNames];
+      }
     }
   }
   

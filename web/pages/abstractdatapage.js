@@ -33,6 +33,7 @@ AbstractDataPage.prototype.definePageNoContent = function(root, reason) {
     UIUtils.appendLabel(contentPanel, "ReasonLabel", I18n.getPageLocale("AbstractDataPage").ExpiredLabel);
   } else {
     UIUtils.appendLabel(contentPanel, "ReasonLabel", I18n.getPageLocale("AbstractDataPage").CannotDisplayLabel);
+    console.error(reason);
   }
 }
 
