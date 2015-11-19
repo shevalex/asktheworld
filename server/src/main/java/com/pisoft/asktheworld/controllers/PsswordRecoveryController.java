@@ -3,6 +3,7 @@ package com.pisoft.asktheworld.controllers;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,12 +36,13 @@ public class PsswordRecoveryController {
 		ATWToken token = db.requestRecoveryPasswod(login);
 		if (token != null) {
 			ms.sendRecoveryPassword(token.getEmail(), 
-					"https://" + request.getServerName() + ":" + request.getServerPort(), token.getToken());
+					"https://" + request.getServerName(), token.getToken());
 			return new ResponseEntity<Void>( HttpStatus.OK );
 		}
 		return new ResponseEntity<Void>( HttpStatus.NOT_FOUND);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.PUT, value="reset")
 	public ResponseEntity<Void> requestRecovery(@RequestBody String body,
 			@RequestParam(value="login", required = true) String login, 
@@ -58,6 +60,4 @@ public class PsswordRecoveryController {
 		return new ResponseEntity<Void>( HttpStatus.FORBIDDEN);
 		
 	}
-	
-			
 }
