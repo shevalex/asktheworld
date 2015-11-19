@@ -81,27 +81,67 @@ GeneralUtils.removeFromArray = function(arr, element) {
   return arr;
 }
 
-GeneralUtils.merge = function(source, properties) {
+GeneralUtils.merge = function(obj, overrideObj) {
+  if (obj == null) {
+    return overrideObj;
+  }
+  if (overrideObj == null) {
+    return obj;
+  }
+  
+  if (Array.isArray(obj) && Array.isArray(overrideObj)) {
+    return GeneralUtils.mergeArrays(obj, overrideObj);
+  } else if (typeof(obj) == "object" && typeof(obj) == typeof(overrideObj)) {
+    return GeneralUtils.mergeObjects(obj, overrideObj);
+  } else {
+    console.error("Cannot merge entities of different nature");
+    return null;
+  }
+}
+
+GeneralUtils.mergeObjects = function(obj, overrideObj) {
   var result = {};
   
-  if (source != null) {
-    for (var propNames in source) {
-      result[propNames] = source[propNames];
+  for (var propName in obj) {
+    if (overrideObj[propName] != null) {
+      if (typeof(obj[propName]) == "object" && typeof(overrideObj[propName]) == "object") {
+        result[propName] = GeneralUtils.merge(obj[propName], overrideObj[propName]);
+      } else {
+        result[propName] = overrideObj[propName]; //poverride rule in action
+      }
+    } else {
+      result[propName] = obj[propName];
     }
   }
-  if (properties != null) {
-    for (var propNames in properties) {
-      if (typeof(source[propNames]) == "object" && typeof(properties[propNames]) == "object") {
-        result[propNames] = GeneralUtils.merge(source[propNames], properties[propNames]);
-      } else {
-        result[propNames] = properties[propNames];
-      }
+  
+  for (var propName in overrideObj) {
+    if (result[propName] == null) {
+      result[propName] = overrideObj[propName];
     }
   }
   
   return result;
 }
 
+GeneralUtils.mergeArrays = function(arr1, arr2) {
+  var result = arr1.slice(0);
+  
+  for (var i in arr2) {
+    var found = false;
+    for (var j in result) {
+      if (result[j] == arr2[i]) {
+        found = true;
+        break;
+      }
+    }
+    
+    if (!found) {
+      result.push(arr2[i]);
+    }
+  }
+  
+  return result;
+}
 
 
 ResourceUtils = {};
