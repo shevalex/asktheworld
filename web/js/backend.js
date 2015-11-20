@@ -868,14 +868,14 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
           var originalStatus = Backend.Cache.getResponse(requestId, responseId);
           Backend.Cache.setResponse(requestId, responseId, data);
           if (data.status != originalStatus) {
-            var responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+            var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
             responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.unviewed, responseId);
             if (responseIds.viewed == null) {
               responseIds.viewed = [responseId];
             } else {
               responseIds.viewed.push(responseId);
             }
-            Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+            Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
           }
         }
         

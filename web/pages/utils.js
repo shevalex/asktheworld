@@ -124,23 +124,25 @@ GeneralUtils.mergeObjects = function(obj, overrideObj) {
 }
 
 GeneralUtils.mergeArrays = function(arr1, arr2) {
-  var result = arr1.slice(0);
+  return arr2; //override rule
   
-  for (var i in arr2) {
-    var found = false;
-    for (var j in result) {
-      if (result[j] == arr2[i]) {
-        found = true;
-        break;
-      }
-    }
-    
-    if (!found) {
-      result.push(arr2[i]);
-    }
-  }
-  
-  return result;
+//  var result = arr1.slice(0);
+//  
+//  for (var i in arr2) {
+//    var found = false;
+//    for (var j in result) {
+//      if (result[j] == arr2[i]) {
+//        found = true;
+//        break;
+//      }
+//    }
+//    
+//    if (!found) {
+//      result.push(arr2[i]);
+//    }
+//  }
+//  
+//  return result;
 }
 
 
