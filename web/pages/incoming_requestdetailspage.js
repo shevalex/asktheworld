@@ -216,6 +216,7 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
   if (request.expertise_category != Application.Configuration.GENERAL_EXPERTISE_CATEGORY
       && (response.paid_features.hidden_text.status != Backend.Response.PAID_INFO_STATUS_NOT_AVAILABLE || Backend.isPaidFeaturesEnabled() && Backend.getUserPreferences().paid_features.hidden_text.enabled)) {
     responseHiddenTextEditor = UIUtils.appendTextEditor(this._responsePanel, "HiddenTextEditor");
+    responseHiddenTextEditor.setValue(response.paid_features.hidden_text.data.text);
   }
   
   var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, Account.canOpenFileController);

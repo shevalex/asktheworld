@@ -202,7 +202,7 @@ UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
     
     paid_features: {
       hidden_text: {
-        enabled: false,
+        enabled: this._enableHiddenTextCheckbox.getValue(),
         policy: Application.Configuration.PAID_FEATURE_POLICY_FREE,
         data: {}
       },
