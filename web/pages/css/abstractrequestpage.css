@@ -412,6 +412,12 @@
   color: rgb(39, 39, 39);
   font-family: Verdana;
 }
+.outgoing-response-container .response-hidden-text {
+  padding: 5px;
+  
+  color: rgb(39, 39, 39);
+  font-family: Verdana;
+}
 .outgoing-response-container .response-attachmentbar {
   margin: 5px;
 }

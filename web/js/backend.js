@@ -218,8 +218,7 @@ Backend.pullUserPreferences = function(transactionCallback) {
 Backend.updateUserPreferences = function(userPreferences, transactionCallback) {
   var communicationCallback = {
     success: function(data, status, xhr) {
-      Backend.UserPreferences = userPreferences; // Temporary. To be replaced
-//      Backend.UserPreferences = data;
+      Backend.UserPreferences = data;
 
       if (transactionCallback != null) {
         transactionCallback.success();
@@ -236,7 +235,7 @@ Backend.updateUserPreferences = function(userPreferences, transactionCallback) {
     }
   }
 
-  this._communicate("user/" + Backend.getUserProfile().user_id + "/preferences", "PUT", GeneralUtils.merge(Backend.getUserPreferences(), userPreferences), false, this._getAuthenticationHeader(), communicationCallback);
+  this._communicate("user/" + Backend.getUserProfile().user_id + "/preferences", "PUT", GeneralUtils.merge(Backend.getUserPreferences(), userPreferences), true, this._getAuthenticationHeader(), communicationCallback);
 
   return true;
 }
