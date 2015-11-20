@@ -73,11 +73,10 @@ HomePage.prototype.definePageContent = function(root) {
         this._updateOutgoingRequests();
       } else {
         var requests = this._getOutgoingRequestIds();
-        if (requests != null && requests.length > 0) {
-          if (this._outgoingRequestIds == null || !GeneralUtils.isIncluded(this._outgoingRequestIds, requests)) {
-            Application.showMenuMarker(HomePage.name);
-          }
-          this._outgoingRequestIds = requests;
+        if (GeneralUtils.isIncluded(this._outgoingRequestIds, requests)) {
+          Application.clearMenuMarker(HomePage.name);
+        } else {
+          Application.showMenuMarker(HomePage.name);
         }
       }
     } else if (event.type == Backend.CacheChangeEvent.TYPE_INCOMING_REQUESTS_CHANGED || event.type == Backend.CacheChangeEvent.TYPE_OUTGOING_RESPONSES_CHANGED) {
@@ -85,11 +84,10 @@ HomePage.prototype.definePageContent = function(root) {
         this._updateIncomingRequests();
       } else {
         var requests = this._getIncomingRequestIds();
-        if (requests != null && requests.length > 0) {
-          if (this._incomingRequestIds == null || !GeneralUtils.isIncluded(this._incomingRequestIds, requests)) {
-            Application.showMenuMarker(HomePage.name);
-          }
-          this._incomingRequestIds = requests;
+        if (GeneralUtils.isIncluded(this._incomingRequestIds, requests)) {
+          Application.clearMenuMarker(HomePage.name);
+        } else {
+          Application.showMenuMarker(HomePage.name);
         }
       }
     }
@@ -121,6 +119,9 @@ HomePage.prototype.onHide = function() {
   
   this._outgoingRequestsView.setObjectIds([]);
   this._incomingRequestsView.setObjectIds([]);
+  
+  this._outgoingRequestIds = this._getOutgoingRequestIds();  
+  this._incomingRequestIds = this._getIncomingRequestIds();  
 }
 
 HomePage.prototype.onDestroy = function() {

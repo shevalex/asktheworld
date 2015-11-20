@@ -50,6 +50,13 @@ GeneralUtils.isEmpty = function(obj) {
 }
 
 GeneralUtils.isIncluded = function(set, subset) {
+  if (subset == null || subset.length == 0) {
+    return true;
+  }
+  if (set == null || set.length == 0) {
+    return false;
+  }
+  
   for (var subsetIndex in subset) {
     var found = false;
     for (var setIndex in set) {
