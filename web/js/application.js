@@ -3,11 +3,11 @@
   Configuration: {
     LANGUAGES: [ {data: "eng", display: I18n.getLocale().literals.LanguageEnglish}, {data: "rus", display: I18n.getLocale().literals.LanguageRussian}, {data: "ger", display: I18n.getLocale().literals.LanguageGerman}, {data: "esp", display: I18n.getLocale().literals.LanguageSpanish}, {data: "fra", display: I18n.getLocale().literals.LanguageFrench}, {data: "por", display: I18n.getLocale().literals.LanguagePortugeese}, {data: "grc", display: I18n.getLocale().literals.LanguageGreece}, {data: "gon", display: I18n.getLocale().literals.LanguageGondurasee}],
     
-    AGE_CATEGORIES: [{data: "child", display: I18n.getLocale().literals.AgeChild}, {data: "teenager", display: I18n.getLocale().literals.AgeTeenager}, {data: "young", display: I18n.getLocale().literals.AgeYoung}, {data: "adult", display: I18n.getLocale().literals.AgeAdult}, {data: "senior", display: I18n.getLocale().literals.AgeSenior}],
+    AGE_CATEGORIES: [{data: "young", display: I18n.getLocale().literals.AgeYoung}, {data: "adult", display: I18n.getLocale().literals.AgeAdult}, {data: "senior", display: I18n.getLocale().literals.AgeSenior}],
     RESPONSE_WAIT_TIME: [{data: 168, display: I18n.getLocale().literals.WaitTimeWeek}, {data: 24, display: I18n.getLocale().literals.WaitTimeDay}, {data: 12, display: I18n.getLocale().literals.WaitTimeHalfDay}, {data: 1, display: I18n.getLocale().literals.WaitTimeHour}],
     RESPONSE_QUANTITY: [{data: -1, display: I18n.getLocale().literals.QuantityAll}, {data: 10, display: I18n.getLocale().literals.QuantityTen}, {data: 5, display: I18n.getLocale().literals.QuantityFive}, {data: 3, display: I18n.getLocale().literals.QuantityThree}, {data: 1, display: I18n.getLocale().literals.QuantityOne}],
     GENDERS: [{data: "male", display: I18n.getLocale().literals.GenderMale}, {data: "female", display: I18n.getLocale().literals.GenderFemale}],
-    AGE_CATEGORY_PREFERENCE: [{data: "all", display: I18n.getLocale().literals.AgePreferenceAll}, {data: "children", display: I18n.getLocale().literals.AgePreferenceChildren}, {data: "teenagers", display: I18n.getLocale().literals.AgePreferenceTeenagers}, {data: "youngs", display: I18n.getLocale().literals.AgePreferenceYoungs}, {data: "adults", display: I18n.getLocale().literals.AgePreferenceAdults}, {data: "seniors", display: I18n.getLocale().literals.AgePreferenceSeniors}],
+    AGE_CATEGORY_PREFERENCE: [{data: "all", display: I18n.getLocale().literals.AgePreferenceAll}, {data: "youngs", display: I18n.getLocale().literals.AgePreferenceYoungs}, {data: "adults", display: I18n.getLocale().literals.AgePreferenceAdults}, {data: "seniors", display: I18n.getLocale().literals.AgePreferenceSeniors}],
     GENDER_PREFERENCE: [{data: "all", display: I18n.getLocale().literals.GenderPreferenceAny}, {data: "male", display: I18n.getLocale().literals.GenderPreferenceMale}, {data: "female", display: I18n.getLocale().literals.GenderPreferenceFemale}],
     INQUIRY_LIMIT_PREFERENCE: [{data: -1, display: I18n.getLocale().literals.IncomingLimitPreferenceAll}, {data: 10, display: I18n.getLocale().literals.IncomingLimitPreferenceTen}, {data: 5, display: I18n.getLocale().literals.IncomingLimitPreferenceFive}, {data: 0, display: I18n.getLocale().literals.IncomingLimitPreferenceNone}],
     
@@ -28,29 +28,13 @@
         }
       } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[1].data) {
         if (gender == this.GENDER_PREFERENCE[0].data) {
-          return I18n.getLocale().literals.TargetGroupAllChildren;
-        } else if (gender == this.GENDER_PREFERENCE[1].data) {
-          return I18n.getLocale().literals.TargetGroupAllBoys;
-        } else if (gender == this.GENDER_PREFERENCE[2].data) {
-          return I18n.getLocale().literals.TargetGroupAllGirls;
-        }
-      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[2].data) {
-        if (gender == this.GENDER_PREFERENCE[0].data) {
-          return I18n.getLocale().literals.TargetGroupAllTeenagers;
-        } else if (gender == this.GENDER_PREFERENCE[1].data) {
-          return I18n.getLocale().literals.TargetGroupAllTeenBoys;
-        } else if (gender == this.GENDER_PREFERENCE[2].data) {
-          return I18n.getLocale().literals.TargetGroupAllTeenGirls;
-        }
-      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[3].data) {
-        if (gender == this.GENDER_PREFERENCE[0].data) {
           return I18n.getLocale().literals.TargetGroupAllYoungs;
         } else if (gender == this.GENDER_PREFERENCE[1].data) {
           return I18n.getLocale().literals.TargetGroupAllYoungMen;
         } else if (gender == this.GENDER_PREFERENCE[2].data) {
           return I18n.getLocale().literals.TargetGroupAllYoungWomen;
         }
-      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[4].data) {
+      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[2].data) {
         if (gender == this.GENDER_PREFERENCE[0].data) {
           return I18n.getLocale().literals.TargetGroupAllAdults;
         } else if (gender == this.GENDER_PREFERENCE[1].data) {
@@ -58,7 +42,7 @@
         } else if (gender == this.GENDER_PREFERENCE[2].data) {
           return I18n.getLocale().literals.TargetGroupAllAdultWomen;
         }
-      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[5].data) {
+      } else if (ageCategory == this.AGE_CATEGORY_PREFERENCE[3].data) {
         if (gender == this.GENDER_PREFERENCE[0].data) {
           return I18n.getLocale().literals.TargetGroupAllSeniors;
         } else if (gender == this.GENDER_PREFERENCE[1].data) {
@@ -74,29 +58,17 @@
     toUserIdentityString: function (ageCategory, gender) {
       if (ageCategory == this.AGE_CATEGORIES[0].data) {
         if (gender == this.GENDERS[0].data) {
-          return I18n.getLocale().literals.UserIdentityBoy;
-        } else if (gender == this.GENDERS[1].data) {
-          return I18n.getLocale().literals.UserIdentityGirl;
-        }
-      } else if (ageCategory == this.AGE_CATEGORIES[1].data) {
-        if (gender == this.GENDERS[0].data) {
-          return I18n.getLocale().literals.UserIdentityTeenBoy;
-        } else if (gender == this.GENDERS[1].data) {
-          return I18n.getLocale().literals.UserIdentityTeenGirl;
-        }
-      } else if (ageCategory == this.AGE_CATEGORIES[2].data) {
-        if (gender == this.GENDERS[0].data) {
           return I18n.getLocale().literals.UserIdentityYoungMan;
         } else if (gender == this.GENDERS[1].data) {
           return I18n.getLocale().literals.UserIdentityYoungWoman;
         }
-      } else if (ageCategory == this.AGE_CATEGORIES[3].data) {
+      } else if (ageCategory == this.AGE_CATEGORIES[1].data) {
         if (gender == this.GENDERS[0].data) {
           return I18n.getLocale().literals.UserIdentityAdultMan;
         } else if (gender == this.GENDERS[1].data) {
           return I18n.getLocale().literals.UserIdentityAdultWoman;
         }
-      } else if (ageCategory == this.AGE_CATEGORIES[4].data) {
+      } else if (ageCategory == this.AGE_CATEGORIES[2].data) {
         if (gender == this.GENDERS[0].data) {
           return I18n.getLocale().literals.UserIdentitySeniorMan;
         } else if (gender == this.GENDERS[1].data) {

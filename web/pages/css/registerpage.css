@@ -1,6 +1,6 @@
 #RegisterPage {
   text-align: center;
-  min-width: 900px;
+  min-width: 950px;
 }
 
 #RegisterPage-SignUpPanel {
@@ -78,7 +78,7 @@
 
 
 #RegisterPage-SignUpPanel-LeftClarificationPanel {
-  width: 300px;
+  width: 200px;
   position: absolute;
   top: 0;
   right: 520;
@@ -89,7 +89,7 @@
 }
 
 #RegisterPage-SignUpPanel-RightClarificationPanel {
-  width: 300px;
+  width: 200px;
   position: absolute;
   top: 0;
   left: 520;
