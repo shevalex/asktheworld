@@ -1103,6 +1103,10 @@ UIUtils.setEnabled = function(element, isEnabled) {
 }
 
 UIUtils.get$ = function(component) {
+  if (typeof(component) == "string" && component.charAt(0) == ".") {
+    return $(component);
+  }
+  
   return $("#" + UIUtils._getId(component));
 }
 
@@ -1137,14 +1141,19 @@ UIUtils.removeIfClickedOutside = function(component) {
 }
 
 UIUtils.listenOutsideClicks = function(component, observer) {
-  $(document).mouseup(function(event) {
-    var selector = UIUtils.get$(component);
+  var clickListener = function(bindingType) {
+    $(document).bind(bindingType, function(event) {
+      var selector = UIUtils.get$(component);
 
-    if (!selector.is(event.target) && selector.has(event.target).length == 0) {
-      $(document).unbind("mouseup");
-      observer();
-    };
-  });
+      if (!selector.is(event.target) && selector.has(event.target).length == 0) {
+        $(document).unbind(bindingType);
+        observer();
+      };
+    });
+  }
+  
+  clickListener("mouseup");
+  clickListener("touchend");
 }
 
 
@@ -1215,7 +1224,7 @@ UIUtils._createInputField = function(inputFieldId, inputType) {
 
 UIUtils._getId = function(component) {
   var id = null;
-  if (typeof component == "string") {
+  if (typeof(component) == "string") {
     id = component;
   } else {
     id = component.getAttribute("id");

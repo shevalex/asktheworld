@@ -599,14 +599,11 @@ Application._setupLanguageChooser = function() {
 
 
 Application._setPopupCloser = function(popupClass) {
-  $(document).mouseup(function(event) {
-    var container = $("." + popupClass);
-
-    if (!container.is(event.target) && container.has(event.target).length == 0) {
+  var popupSelector = "." + popupClass;
+  UIUtils.listenOutsideClicks(popupSelector, function() {
+      var container = UIUtils.get$(popupSelector);
       container.fadeOut("slow", function() {
         container.remove();
       });
-      $(document).unbind("mouseup");
-    }
   });
 }
