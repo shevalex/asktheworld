@@ -12,8 +12,18 @@
   font-size: 13px;
 }
 
-#NewRequestPage-ContentPanel-RequestEditorLabel {
-  margin-top: 10px;
+#NewRequestPage-ContentPanel-ExpertiseCategoryLabel {
+  margin-left: 5px;
+  vertical-align: top;
+  
+  font: inherit;
+}
+
+#NewRequestPage-ContentPanel-ExpertiseCategory {
+  width: 300px;
+  margin-left: 20px;
+  display: inline-block;
+  
   font: inherit;
 }
 
@@ -26,20 +36,6 @@
   margin-left: 5px;
   margin-right: 5px;
 }
-
-#NewRequestPage-ContentPanel-ExpertiseCategoryLabel {
-  margin-top: 10px;
-  font: inherit;
-}
-
-#NewRequestPage-ContentPanel-ExpertiseCategory {
-  width: 300px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  margin-left: 20px;
-  font: inherit;
-}
-
 
 #NewRequestPage-ContentPanel-WhomToSendLabel {
 }
