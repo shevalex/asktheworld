@@ -868,13 +868,26 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
           Backend.Cache.setResponse(requestId, responseId, data);
           if (data.status != originalStatus) {
             var responseIds = Backend.Cache.getOutgoingResponseIds(requestId);
-            responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.unviewed, responseId);
-            if (responseIds.viewed == null) {
-              responseIds.viewed = [responseId];
+            if (Backend._isResponsePresent(responseIds)) {
+              responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.unviewed, responseId);
+              if (responseIds.viewed == null) {
+                responseIds.viewed = [responseId];
+              } else {
+                responseIds.viewed.push(responseId);
+              }
+              Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
             } else {
-              responseIds.viewed.push(responseId);
+              responseIds = Backend.Cache.getIncomingResponseIds(requestId);
+              if (Backend._isResponsePresent(responseIds)) {
+                responseIds.unviewed = GeneralUtils.removeFromArray(responseIds.unviewed, responseId);
+                if (responseIds.viewed == null) {
+                  responseIds.viewed = [responseId];
+                } else {
+                  responseIds.viewed.push(responseId);
+                }
+                Backend.Cache.setIncomingResponseIds(requestId, responseIds);
+              }
             }
-            Backend.Cache.setOutgoingResponseIds(requestId, responseIds);
           }
         }
         
@@ -899,6 +912,25 @@ Backend.updateResponse = function(requestId, responseId, response, transactionCa
   }
 
   this._communicate("response/" + responseId, "PUT", GeneralUtils.merge(Backend.Cache.getResponse(requestId, responseId), response), true, this._getAuthenticationHeader(), communicationCallback);
+}
+
+Backend._isResponsePresent = function(responseList, responseId) {
+  if (responseList == null) {
+    return false;
+  }
+  
+  for (var index in responseList.viewed) {
+    if (responseList.viewed[index] == responseId) {
+      return true;
+    }
+  }
+  for (var index in responseList.unviewed) {
+    if (responseList.unviewed[index] == responseId) {
+      return true;
+    }
+  }
+  
+  return false;
 }
 
 
