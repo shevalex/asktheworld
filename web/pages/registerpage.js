@@ -81,13 +81,6 @@ RegisterPage.prototype._signUp = function() {
     return;
   }
 
-  var name = this._nameElement.getValue();
-  if (name == "") {
-    UIUtils.indicateInvalidInput(this._nameElement);
-    Application.showMessage(this.getLocale().ProvideNicknameMessage);
-    return;
-  }
-
   var languages = this._languagesElement.getSelectedChoices();
   if (languages.length == 0) {
     this._languagesElement.indicateInvalidInput();
@@ -163,7 +156,7 @@ RegisterPage.prototype._signUp = function() {
   var userProfile = {
     login: email,
     password: password,
-    name: name,
+    name: this._nameElement.getValue() == "" ? null : this._nameElement.getValue(),
     gender: this._genderElement.getSelectedData(),
     languages: this._languagesElement.getSelectedData(),
     age_category: this._ageElement.getSelectedData(),
