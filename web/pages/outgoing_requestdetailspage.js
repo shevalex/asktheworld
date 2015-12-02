@@ -237,11 +237,11 @@ OutgoingRequestDetailsPage.prototype._updateRequest = function(requestAttributes
       page._showViewableRequest();
     },
     failure: function() {
-      Application.showMessage(page.getLocale().RequestFailedMessage);
+      UIUtils.showMessage(page.getLocale().RequestFailedMessage);
       this._onCompletion();
     },
     error: function() {
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       this._onCompletion();
     },
     

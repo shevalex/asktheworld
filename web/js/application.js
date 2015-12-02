@@ -1,5 +1,5 @@
 
- Application = {
+Application = {
   Configuration: {
     LANGUAGES: [ {data: "eng", display: I18n.getLocale().literals.LanguageEnglish}, {data: "rus", display: I18n.getLocale().literals.LanguageRussian}, {data: "ger", display: I18n.getLocale().literals.LanguageGerman}, {data: "esp", display: I18n.getLocale().literals.LanguageSpanish}, {data: "fra", display: I18n.getLocale().literals.LanguageFrench}, {data: "por", display: I18n.getLocale().literals.LanguagePortugeese}, {data: "grc", display: I18n.getLocale().literals.LanguageGreece}, {data: "gon", display: I18n.getLocale().literals.LanguageGondurasee}],
     
@@ -95,27 +95,16 @@
     }
   },
   
-  _rootContainer: null,
-  _currentPage: null,
-
-  _pages: [],
   
-  _messageTimer: null,
-   
-  _spinnerTimer: null,
-  _spinnerCancellationTimer: null
+  _pageManager: null,
 };
 
-
-Application.MESSAGE_TIMEOUT_FAST = 1;
-Application.MESSAGE_TIMEOUT_NORMAL = 5;
-Application.MESSAGE_TIMEOUT_SLOW = 10;
 
 Application.AutoLogin = "true";
 
 
 Application.start = function() {
-  this._rootContainer = document.getElementById("RootContainer");
+  this._pageManager = new PageManagement(document.getElementById("RootContainer"), [LoginPage, RestorePasswordPage]);
   
 //  window.onbeforeunload = function() {
 //    return I18n.getLocale().literals.LeaveApplicationMessage;
@@ -124,9 +113,11 @@ Application.start = function() {
     Backend.logOut();
   }
   
+  $("#Title-Caption").text(I18n.getLocale().literals.AppTitle);
+  
   $("#Footer-ContactUs").text(I18n.getLocale().literals.ContactUs);
   $("#Footer-ContactUs").click(function() {
-    Application.showDialog("", "We will need to find a way to open this page");
+    UIUtils.showDialog("", "We will need to find a way to open this page");
   });
 
   
@@ -147,39 +138,14 @@ Application.start = function() {
   
   Application._setupLanguageChooser();
 
-
-  var restoreFromHash = function() {
-    var hash = window.location.hash.substring(1);
-    Application._restoreFromHistory(hash);
-  }
-  
-  window.onhashchange = function() {
-    restoreFromHash();
-  }
-
-  // check if it is a password recovery request
-  if (window.location.hash.length > 1) {
-    var hashBundle = Application._deserialize(window.location.hash.substring(1));
-    if (hashBundle.page == RestorePasswordPage.name) {
-      restoreFromHash();
-    } else {
-      window.location.hash = "";
-      Application.showPage(LoginPage.name);
-    }
-  } else {
-    Application.showPage(LoginPage.name);
-  }
 }
 
 Application.logOut = function() {
-  for (var index in this._pages) {
-    this._pages[index].destroy();
-  }
-  this._pages = [];
+  this._pageManager.destroy();
   
-  this.hideMessage();
-  this.hideSpinningWheel();
-  this.hideDialog();
+  UIUtils.hideMessage();
+  UIUtils.hideSpinningWheel();
+  UIUtils.hideDialog();
 
   Backend.logOut({
     success: function() {
@@ -192,188 +158,36 @@ Application.logOut = function() {
 }
 
 Application.reload = function() {
-  for (var index in this._pages) {
-    this._pages[index].reload();
-  }
+  this._pageManager.reload();
 
-  this.hideMessage();
-  this.hideSpinningWheel();
-  this.hideDialog();
+  UIUtils.hideMessage();
+  UIUtils.hideSpinningWheel();
+  UIUtils.hideDialog();
   
   $("#Footer-ContactUs").text(I18n.getLocale().literals.ContactUs);
 }
 
 
-// PAGE MANAGEMENT
-
 Application.showPage = function(pageId, paramBundle) {
-  var page = this._getPage(pageId);
-  if (page == null)  {
-    throw "Page does not exist " + pageId;
-    return;
-  }
-  
-  if (paramBundle == null) {
-    paramBundle = {};
-  }
-  if (paramBundle.page == null) {
-    paramBundle.page = pageId;
-  }
-
-  this._showPage(page, paramBundle);
-}
-
-Application.showChildPage = function(parentPageId, childPageId, paramBundle) {
-  var page = this._getPage(parentPageId);
-  if (page == null)  {
-    throw "Page does not exist " + parentPageId;
-    return;
-  }
-  var page = this._getPage(childPageId);
-  if (page == null)  {
-    throw "Page does not exist " + childPageId;
-    return;
-  }
-
-  if (paramBundle == null) {
-    paramBundle = {};
-  }
-  paramBundle.parent = parentPageId;
-  paramBundle.page = childPageId;
-
-  this._showPage(page, paramBundle);
+  this._pageManager.showPage(pageId, paramBundle);
 }
 
 Application.showMenuPage = function(childPageId, paramBundle, observer) {
-  Application.showChildPage(MenuPage.name, childPageId, paramBundle, observer);
+  this._pageManager.showChildPage(MenuPage.name, childPageId, paramBundle, observer);
 }
 
-// END OF PAGE MANAGEMEMT
+Application.goBack = function(pageId, paramBundle) {
+  this._pageManager.goBack();
+}
+
 
 
 Application.showMenuMarker = function(pageId) {
-  this._getPage(MenuPage.name).addMenuItemMarker(pageId);
+  this._pageManager.getPage(MenuPage.name).addMenuItemMarker(pageId);
 }
 
 Application.clearMenuMarker = function(pageId) {
-  this._getPage(MenuPage.name).removeMenuItemMarker(pageId);
-}
-
-
-Application.showSpinningWheel = function() {
-  if (this._spinnerTimer != null) {
-    return;
-  }
-  if (this._spinnerCancellationTimer != null) {
-    clearTimeout(this._spinnerCancellationTimer);
-    this._spinnerCancellationTimer = null;
-  }
-  
-  if ($(".spinning-wheel").length == 0) {
-    this._spinnerTimer = setTimeout(function() {
-      $("body").append("<img src='imgs/ajax-loader.gif' class='spinning-wheel'></img>");
-    }, 2000);
-  }
-}
-
-Application.hideSpinningWheel = function() {
-  if (this._spinnerCancellationTimer != null) {
-    return;
-  }
-  
-  this._spinnerCancellationTimer = setTimeout(function() {
-    $(".spinning-wheel").remove();
-    
-    if (this._spinnerTimer != null) {
-      clearTimeout(this._spinnerTimer);
-      this._spinnerTimer = null;
-    }
-    this._spinnerCancellationTimer = null;
-  }.bind(this), 1000);
-}
-
-Application.showMessage = function(msg, timeout, title) {
-  $(".popup-message").remove();
-
-  var bodyElement = $("body").get(0);
-  var popup = UIUtils.appendBlock(bodyElement, "PopupMessage");
-  UIUtils.addClass(popup, "popup-message");
-  
-  if (title != null && title != "") {
-    var titleLabel = UIUtils.appendBlock(popup, "Title");
-    UIUtils.addClass(titleLabel, "popup-message-title");
-    titleLabel.innerHTML = title;
-  }
-  
-  var messageText = UIUtils.appendLabel(popup, "Text");
-  UIUtils.addClass(messageText, "popup-message-text");
-  messageText.innerHTML = msg;
-  
-  $(".popup-message").fadeIn("slow");
-  
-  if (this._messageTimer != null) {
-    clearTimeout(this._messageTimer);
-  }
-  
-  var timeToShow = Application.MESSAGE_TIMEOUT_NORMAL;
-  if (timeout == "slow") {
-    timeToShow = Application.MESSAGE_TIMEOUT_SLOW;
-  } else if (timeout == "fast") {
-    timeToShow = Application.MESSAGE_TIMEOUT_FAST;
-  } else if (typeof timeout == "number") {
-    timeToShow = timeout;
-  }
-  this._messageTimer = setTimeout(function() {
-    Application.hideMessage();
-  }, timeToShow * 1000);
-}
-
-Application.hideMessage = function() {
-  $(".popup-message").fadeOut("slow", function() {
-    $(this).remove();
-  });
-}
-
-
-Application.showDialog = function(title, contentHtml) {
-  Application.hideDialog();
-  
-  $("body").append("<div class='modal-dialog' id='ModalDialog'><div class='modal-dialog-content'>" + contentHtml + "</div><hr><div class='modal-dialog-controlpanel'><button class='modal-dialog-okbutton'>" + I18n.getLocale().literals.OkButton + "</button><div></div>");
-  $(".modal-dialog-okbutton").click(function() {
-    $(".modal-dialog").fadeOut("slow", function() {
-      $(this).remove();
-    });
-  });
-  
-  Application._setPopupCloser("modal-dialog");
-}
-
-Application.hideDialog = function() {
-  $(".modal-dialog").remove();
-}
-
-
-Application._getPage = function(pageId) {
-  var page = this._pages[pageId];
-  if (page == null) {
-    if (window[pageId] == null) {
-      console.warn("requested unsupported page: " + pageId);
-      pageId = PageNotFoundPage.name;
-    }
-    
-    page = new window[pageId]();
-    this._pages[pageId] = page;
-  }
-  
-  return page;
-}
-
-Application._showPage = function(page, paramBundle) {
-  if (page.hasHistory()) {
-    this._placeHistory(page, paramBundle);
-  } else {
-    page.showAnimated(this._rootContainer, paramBundle);
-  }
+  this._pageManager.getPage(MenuPage.name).removeMenuItemMarker(pageId);
 }
 
 
@@ -431,128 +245,6 @@ Application.setupUserMenuChooser = function() {
 }
 
 
-Application.isEqualBundle = function(bundle1, bundle2) {
-  if (bundle1 == null && bundle2 == null) {
-    return true;
-  }
-  
-  
-  var processedBundle1 = {};
-  if (bundle1 != null) {
-    for (var key in bundle1) {
-      if (key[0] != '^') {
-        processedBundle1[key] = bundle1[key];
-      }
-    }
-  }
-
-  var processedBundle2 = {};
-  if (bundle2 != null) {
-    for (var key in bundle2) {
-      if (key[0] != '^') {
-        processedBundle2[key] = bundle2[key];
-      }
-    }
-  }
-  
-  if (processedBundle1.page == null && processedBundle2.page != null) {
-    processedBundle1.page = processedBundle2.page;
-  }
-  if (processedBundle1.page != null && processedBundle2.page == null) {
-    processedBundle2.page = processedBundle1.page;
-  }
-
-  if (processedBundle1.parent == null && processedBundle2.parent != null) {
-    processedBundle1.parent = processedBundle2.parent;
-  }
-  if (processedBundle1.parent != null && processedBundle2.parent == null) {
-    processedBundle2.parent = processedBundle1.parent;
-  }
-  
-  return GeneralUtils.isEqual(processedBundle1, processedBundle2);
-}
-
-// HISTORY MANAGEMENT
-
-Application._restoreFromHistory = function(hash) {
-  var historyBundle = Application._deserialize(hash);
-  Application._restorePage(historyBundle);
-}
-
-Application._restorePage = function(paramBundle) {
-  var pageId = paramBundle.parent != null ? paramBundle.parent : paramBundle.page;
-  var page = this._getPage(pageId);
-  
-  if (this._currentPage != null && this._currentPage != page) {
-    this._currentPage.hide();
-  }
-
-  this._currentPage = page;
-  this._currentPage.showAnimated(this._rootContainer, paramBundle);
-}
-
-
-Application.goBack = function() {
-  window.history.back();
-}
-
-Application._placeHistory = function(page, paramBundle) {
-  if (page.hasHistory()) {
-    var newHash = Application._serialize(paramBundle);
-    if (newHash != window.location.hash) {
-      window.location.hash = newHash;
-    }
-  }
-}
-
-
-Application._serialize = function(parcel) {
-  var ser = "";
-  
-  for (var key in parcel) {
-    //Skipping 'hidden' keys
-    if (key[0] == '^') {
-      continue;
-    }
-    
-    if (ser.length > 0) {
-      ser += ":";
-    }
-    ser += "[" + key + "-" + parcel[key] + "]";
-  }
-  
-  return ser;
-}
-
-Application._deserialize = function(ser) {
-  var parcel = {};
-  
-  if (ser == null || ser == "") {
-    return parcel;
-  }
-  
-  var tags = ser.split(":");
-  for (var index in tags) {
-    var tag = tags[index];
-    if (tag.charAt(0) != "[" || tag.charAt(tag.length - 1) != "]") {
-      console.error("Deserialization integrity issue for tag " + tag);
-      continue;
-    }
-    
-    var pair = tag.substring(1, tag.length - 1).split("-");
-    if (pair.length != 2) {
-      console.error("Deserialization integrity issue for tag " + tag);
-      continue;
-    }
-    
-    parcel[pair[0]] = pair[1];
-  }
-  
-  return parcel;
-}
-
-// END OF HISTORY MANAGEMENT
-
 
 Application._setupLanguageChooser = function() {
   $("#Title-Options-Language-Button").click(function() {
@@ -597,7 +289,6 @@ Application._setupLanguageChooser = function() {
 }
 
 
-
 Application._setPopupCloser = function(popupClass) {
   var popupSelector = "." + popupClass;
   UIUtils.listenOutsideClicks(popupSelector, function() {
@@ -607,3 +298,5 @@ Application._setPopupCloser = function(popupClass) {
       });
   });
 }
+
+

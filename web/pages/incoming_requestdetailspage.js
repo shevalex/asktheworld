@@ -332,11 +332,11 @@ IncomingRequestDetailsPage.prototype._updateResponse = function(responseId, resp
       this._onCompletion();
     },
     failure: function() {
-      Application.showMessage(page.getLocale().ResponseUpdateFailedMessage);
+      UIUtils.showMessage(page.getLocale().ResponseUpdateFailedMessage);
       this._onCompletion();
     },
     error: function() {
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       this._onCompletion();
     },
     
@@ -395,11 +395,11 @@ IncomingRequestDetailsPage.prototype._createResponse = function(responseText, hi
       this._onCompletion();
     },
     failure: function() {
-      Application.showMessage(page.getLocale().ResponseCreateFailedMessage);
+      UIUtils.showMessage(page.getLocale().ResponseCreateFailedMessage);
       this._onCompletion();
     },
     error: function() {
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       this._onCompletion();
     },
     
@@ -443,7 +443,7 @@ IncomingRequestDetailsPage.prototype._ignoreRequest = function() {
     failure: function() {
     },
     error: function() {
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
     }
   }
   Backend.removeIncomingRequest(this._currentRequestId, transactionCallback);

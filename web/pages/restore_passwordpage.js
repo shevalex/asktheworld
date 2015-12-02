@@ -60,21 +60,21 @@ RestorePasswordPage.prototype._changePassword = function() {
   var isEmailValid = ValidationUtils.isValidEmail(login);
   if (!isEmailValid) {
     UIUtils.indicateInvalidInput(this._loginElement);
-    Application.showMessage(this.getLocale().ProvideLoginMessage);
+    UIUtils.showMessage(this.getLocale().ProvideLoginMessage);
     return;
   }
 
   var password = this._passwordElement.getValue();
   if (!ValidationUtils.isValidPassword(password)) {
     UIUtils.indicateInvalidInput(this._passwordElement);
-    Application.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
+    UIUtils.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
     return;
   }
 
   var retypePassword = this._retypePasswordElement.getValue();
   if (retypePassword != password) {
     UIUtils.indicateInvalidInput(this._retypePasswordElement);
-    Application.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
+    UIUtils.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
     return;
   }
 
@@ -82,26 +82,26 @@ RestorePasswordPage.prototype._changePassword = function() {
   var backendCallback = {
     success: function() {
       this._onCompletion();
-      Application.showMessage(page.getLocale().PasswordChangedMessage);
+      UIUtils.showMessage(page.getLocale().PasswordChangedMessage);
       Application.showPage(LoginPage.name);
     },
     failure: function() {
       this._onCompletion();
-      Application.showMessage(page.getLocale().UnknownLoginOrTokenMessage);
+      UIUtils.showMessage(page.getLocale().UnknownLoginOrTokenMessage);
     },
     error: function() {
       this._onCompletion();
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
     },
 
     _onCompletion: function() {
       this._changing = false;
-      Application.hideSpinningWheel();
+      UIUtils.hideSpinningWheel();
     }.bind(this)
   }
 
   this._changing = true;
-  Application.showSpinningWheel();
+  UIUtils.showSpinningWheel();
 
   Backend.setUserPassword(login, password, this._recoveryToken, backendCallback);
 }

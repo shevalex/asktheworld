@@ -42,7 +42,7 @@ AbstractContainerPage.prototype.show = function(container, paramBundle) {
   if (paramBundle != null && paramBundle.page != null && paramBundle.page != this.getPageId()) {
     var newPage = this.getPage(paramBundle.page);
 
-    if (this._activePage == newPage && Application.isEqualBundle(this._activePage.getParamBundle(), paramBundle)) {
+    if (this._activePage == newPage && PageManagement.isEqualBundle(this._activePage.getParamBundle(), paramBundle)) {
       return;
     }
 

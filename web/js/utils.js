@@ -239,9 +239,118 @@ TimeUtils.getDateTimeSrting = function(millis) {
 }
 
 
-UIUtils = {};
+UIUtils = {
+  _messageTimer: null,
+   
+  _spinnerTimer: null,
+  _spinnerCancellationTimer: null
+};
 
 UIUtils.INVALID_INPUT_BACKGROUND = "rgb(255, 100, 100)";
+UIUtils.MESSAGE_TIMEOUT_FAST = 1;
+UIUtils.MESSAGE_TIMEOUT_NORMAL = 5;
+UIUtils.MESSAGE_TIMEOUT_SLOW = 10;
+
+
+
+UIUtils.showSpinningWheel = function() {
+  if (this._spinnerTimer != null) {
+    return;
+  }
+  if (this._spinnerCancellationTimer != null) {
+    clearTimeout(this._spinnerCancellationTimer);
+    this._spinnerCancellationTimer = null;
+  }
+  
+  if ($(".spinning-wheel").length == 0) {
+    this._spinnerTimer = setTimeout(function() {
+      $("body").append("<img src='imgs/ajax-loader.gif' class='spinning-wheel'></img>");
+    }, 2000);
+  }
+}
+
+UIUtils.hideSpinningWheel = function() {
+  if (this._spinnerCancellationTimer != null) {
+    return;
+  }
+  
+  this._spinnerCancellationTimer = setTimeout(function() {
+    $(".spinning-wheel").remove();
+    
+    if (this._spinnerTimer != null) {
+      clearTimeout(this._spinnerTimer);
+      this._spinnerTimer = null;
+    }
+    this._spinnerCancellationTimer = null;
+  }.bind(this), 1000);
+}
+
+UIUtils.showMessage = function(msg, timeout, title) {
+  $(".popup-message").remove();
+
+  var bodyElement = $("body").get(0);
+  var popup = UIUtils.appendBlock(bodyElement, "PopupMessage");
+  UIUtils.addClass(popup, "popup-message");
+  
+  if (title != null && title != "") {
+    var titleLabel = UIUtils.appendBlock(popup, "Title");
+    UIUtils.addClass(titleLabel, "popup-message-title");
+    titleLabel.innerHTML = title;
+  }
+  
+  var messageText = UIUtils.appendLabel(popup, "Text");
+  UIUtils.addClass(messageText, "popup-message-text");
+  messageText.innerHTML = msg;
+  
+  $(".popup-message").fadeIn("slow");
+  
+  if (this._messageTimer != null) {
+    clearTimeout(this._messageTimer);
+  }
+  
+  var timeToShow = UIUtils.MESSAGE_TIMEOUT_NORMAL;
+  if (timeout == "slow") {
+    timeToShow = UIUtils.MESSAGE_TIMEOUT_SLOW;
+  } else if (timeout == "fast") {
+    timeToShow = UIUtils.MESSAGE_TIMEOUT_FAST;
+  } else if (typeof timeout == "number") {
+    timeToShow = timeout;
+  }
+  this._messageTimer = setTimeout(function() {
+    UIUtils.hideMessage();
+  }, timeToShow * 1000);
+}
+
+UIUtils.hideMessage = function() {
+  $(".popup-message").fadeOut("slow", function() {
+    $(this).remove();
+  });
+}
+
+
+UIUtils.showDialog = function(title, contentHtml) {
+  UIUtils.hideDialog();
+  
+  $("body").append("<div class='modal-dialog' id='ModalDialog'><div class='modal-dialog-content'>" + contentHtml + "</div><hr><div class='modal-dialog-controlpanel'><button class='modal-dialog-okbutton'>" + I18n.getLocale().literals.OkButton + "</button><div></div>");
+  $(".modal-dialog-okbutton").click(function() {
+    $(".modal-dialog").fadeOut("slow", function() {
+      $(this).remove();
+    });
+  });
+  
+  
+  var popupSelector = ".modal-dialog";
+  UIUtils.listenOutsideClicks(popupSelector, function() {
+      var container = UIUtils.get$(popupSelector);
+      container.fadeOut("slow", function() {
+        container.remove();
+      });
+  });
+}
+
+UIUtils.hideDialog = function() {
+  $(".modal-dialog").remove();
+}
 
 
 UIUtils.createLabeledTextInput = function(inputFieldId, labelText, margin) {
@@ -1155,7 +1264,6 @@ UIUtils.listenOutsideClicks = function(component, observer) {
   clickListener("mouseup");
   clickListener("touchend");
 }
-
 
 UIUtils.createId = function(container, elementId) {
   var containerId = UIUtils._getId(container);

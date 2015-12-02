@@ -11,9 +11,9 @@ AbstractDataPage.prototype.definePageContent = function(root) {
   
   this._updateListener = function(event) {
     if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_STARTED) {
-      Application.showSpinningWheel();
+      UIUtils.showSpinningWheel();
     } else if (event.type == Backend.CacheChangeEvent.TYPE_UPDATE_FINISHED) {
-      Application.hideSpinningWheel();
+      UIUtils.hideSpinningWheel();
     }
   };
 }
@@ -43,6 +43,6 @@ AbstractDataPage.prototype.onShow = function(root, paramBundle) {
 
 AbstractDataPage.prototype.onHide = function() {
   Backend.removeCacheChangeListener(this._updateListener);
-  Application.hideSpinningWheel();
+  UIUtils.hideSpinningWheel();
 }
 

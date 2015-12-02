@@ -80,14 +80,14 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
   var name = this._nameElement.getValue();
   if (name == "") {
     UIUtils.indicateInvalidInput(this._nameElement);
-    Application.showMessage(this.getLocale().NameNotSetMessage);
+    UIUtils.showMessage(this.getLocale().NameNotSetMessage);
     return;
   }
 
   var languages = this._languagesElement.getSelectedChoices();
   if (languages == "") {
     this._languagesElement.indicateInvalidInput();
-    Application.showMessage(this.getLocale().LanguageNotSetMessage);
+    UIUtils.showMessage(this.getLocale().LanguageNotSetMessage);
     return;
   }
 
@@ -97,10 +97,10 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
   if (newPassword.length > 0) {
     var passwordIncorrect = false;
     if (newPassword != confirmNewPassword) {
-      Application.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
+      UIUtils.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
       passwordIncorrect = true;
     } else if (!ValidationUtils.isValidPassword(newPassword)) {
-      Application.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
+      UIUtils.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
       passwordIncorrect = true;
     }
 
@@ -114,7 +114,7 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
   var currentPassword = this._currentPasswordElement.getValue();
   if (currentPassword == "") {
     UIUtils.indicateInvalidInput(this._currentPasswordElement);
-    Application.showMessage(this.getLocale().EnterPasswordMessage);
+    UIUtils.showMessage(this.getLocale().EnterPasswordMessage);
     return;
   }
     
@@ -122,27 +122,27 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
   var callback = {
     success: function(requestId) {
       callback._onCompletion();
-      Application.showMessage(this.getLocale().ProfileUpdatedMessage);
+      UIUtils.showMessage(this.getLocale().ProfileUpdatedMessage);
       Application.goBack();
     }.bind(this),
     failure: function() {
       callback._onCompletion();
-      Application.showMessage(this.getLocale().UpdateFailedMessage);
+      UIUtils.showMessage(this.getLocale().UpdateFailedMessage);
     }.bind(this),
     error: function() {
       callback._onCompletion();
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
     },
 
     _onCompletion: function() {
       this._updating = false;
       this._currentPasswordElement.setValue("");
-      Application.hideSpinningWheel();
+      UIUtils.hideSpinningWheel();
     }.bind(this)
   }
 
   this._updating = true;
-  Application.showSpinningWheel();
+  UIUtils.showSpinningWheel();
   
   var userProfile = {
     name: name,

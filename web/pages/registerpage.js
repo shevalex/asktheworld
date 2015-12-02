@@ -77,41 +77,41 @@ RegisterPage.prototype._signUp = function() {
   var isValidEmail = ValidationUtils.isValidEmail(email);
   if (!isValidEmail) {
     UIUtils.indicateInvalidInput(this._emailElement);
-    Application.showMessage(this.getLocale().ProvideLoginMessage);
+    UIUtils.showMessage(this.getLocale().ProvideLoginMessage);
     return;
   }
 
   var languages = this._languagesElement.getSelectedChoices();
   if (languages.length == 0) {
     this._languagesElement.indicateInvalidInput();
-    Application.showMessage(this.getLocale().ProvideLanguageMessage);
+    UIUtils.showMessage(this.getLocale().ProvideLanguageMessage);
     return;
   }
 
   var password = this._passwordElement.getValue();
   if (!ValidationUtils.isValidPassword(password)) {
     UIUtils.indicateInvalidInput(this._passwordElement);
-    Application.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
+    UIUtils.showMessage(this.getLocale().ProvideCorrectPasswordMessage);
     return;
   }
 
   var retypePassword = this._retypePasswordElement.getValue();
   if (retypePassword != password) {
     UIUtils.indicateInvalidInput(this._retypePasswordElement);
-    Application.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
+    UIUtils.showMessage(this.getLocale().PasswordsDoNotMatchMessage);
     return;
   }
 
   if (!this._appropriateAgeCheckbox.getValue()) {
-    Application.showMessage(this.getLocale().MustBeOver18Message);
+    UIUtils.showMessage(this.getLocale().MustBeOver18Message);
     return;
   }
 
   if (!this._termsAndCondsCheckbox.getValue()) {
     var licenseLinkId = UIUtils.createId(this._termsAndCondsCheckbox.parentElement, "TermsLink");
-    Application.showMessage(this.getLocale().MustAcceptTermsMessageProvider(licenseLinkId));
+    UIUtils.showMessage(this.getLocale().MustAcceptTermsMessageProvider(licenseLinkId));
     UIUtils.setClickListener(licenseLinkId, function() {
-      Application.hideMessage();
+      UIUtils.hideMessage();
       this._showLicenseAgreement();
     }.bind(this));
 
@@ -136,20 +136,20 @@ RegisterPage.prototype._signUp = function() {
     }.bind(this),
     failure: function() {
       backendCallback._onCompletion();
-      Application.showMessage(this.getLocale().AccountCreationFailedMessage);
+      UIUtils.showMessage(this.getLocale().AccountCreationFailedMessage);
     }.bind(this),
     conflict: function() {
       backendCallback._onCompletion();
-      Application.showMessage(this.getLocale().AccountAlreadyExistsMessage);
+      UIUtils.showMessage(this.getLocale().AccountAlreadyExistsMessage);
     }.bind(this),
     error: function() {
       backendCallback._onCompletion();
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
     },
 
     _onCompletion: function() {
       this._signing = false;
-      Application.hideSpinningWheel();
+      UIUtils.hideSpinningWheel();
     }.bind(this)
   }
 
@@ -163,7 +163,7 @@ RegisterPage.prototype._signUp = function() {
   };
 
   this._signing = true;
-  Application.showSpinningWheel();
+  UIUtils.showSpinningWheel();
 
   Backend.registerUser(userProfile, backendCallback);
 }
@@ -171,10 +171,10 @@ RegisterPage.prototype._signUp = function() {
 RegisterPage.prototype._showLicenseAgreement = function() {
 //  var callback = {
 //    success: function(data) {
-//      Application.showDialog("Terms And Conditions", data);
+//      UIUtils.showDialog("Terms And Conditions", data);
 //    },
 //    error: function() {
-//      Application.showMessage("Failed to retrieve the Terms And Conditions");
+//      UIUtils.showMessage("Failed to retrieve the Terms And Conditions");
 //    }
 //  };
 //  
@@ -185,5 +185,5 @@ RegisterPage.prototype._showLicenseAgreement = function() {
     terms += "<br>Some bullshit follows";
   }
   
-  Application.showDialog("Terms And Conditions", terms);
+  UIUtils.showDialog("Terms And Conditions", terms);
 }

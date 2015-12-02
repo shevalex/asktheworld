@@ -40,7 +40,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
       this._createRequest();
     } else {
       UIUtils.indicateInvalidInput(this._requestTextEditor);
-      Application.showMessage(this.getLocale().RequestEmptyMessage, Application.MESSAGE_TIMEOUT_FAST);
+      UIUtils.showMessage(this.getLocale().RequestEmptyMessage, UIUtils.MESSAGE_TIMEOUT_FAST);
     }
   }.bind(this));
   
@@ -97,15 +97,15 @@ NewRequestPage.prototype._createRequest = function() {
   
   var callback = {
     success: function(requestId) {
-      Application.showMessage(page.getLocale().RequestSentMessage);
+      UIUtils.showMessage(page.getLocale().RequestSentMessage);
       this._onCompletion();
     },
     failure: function() {
-      Application.showMessage(page.getLocale().RequestFailedMessage);
+      UIUtils.showMessage(page.getLocale().RequestFailedMessage);
       this._onCompletion();
     },
     error: function() {
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
       this._onCompletion();
     },
     

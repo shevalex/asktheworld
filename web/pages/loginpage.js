@@ -97,27 +97,27 @@ LoginPage.prototype._restorePassword = function() {
 
   if (!ValidationUtils.isValidEmail(login)) {
     UIUtils.indicateInvalidInput(this._loginElement);
-    Application.showMessage(this.getLocale().IncorrectEmailMessage);
+    UIUtils.showMessage(this.getLocale().IncorrectEmailMessage);
     return;
   }
     
   callback = {
     success: function() {
-      Application.hideSpinningWheel();
-      Application.showMessage(this.getLocale().PasswordResetMessage, Application.MESSAGE_TIMEOUT_SLOW);
+      UIUtils.hideSpinningWheel();
+      UIUtils.showMessage(this.getLocale().PasswordResetMessage, UIUtils.MESSAGE_TIMEOUT_SLOW);
     }.bind(this),
     failure: function() {
-      Application.hideSpinningWheel();
-      Application.showMessage(this.getLocale().UnexistingEmailMessage);
+      UIUtils.hideSpinningWheel();
+      UIUtils.showMessage(this.getLocale().UnexistingEmailMessage);
     }.bind(this),
     error: function() {
-      Application.hideSpinningWheel();
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.hideSpinningWheel();
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
     }
   }
 
-  Application.showMessage(this.getLocale().PasswordResetRequestMessage);
-  Application.showSpinningWheel();
+  UIUtils.showMessage(this.getLocale().PasswordResetRequestMessage);
+  UIUtils.showSpinningWheel();
   Backend.resetUserPassword(login, callback);
 }
 
@@ -130,14 +130,14 @@ LoginPage.prototype._signIn = function() {
   var isEmailValid = ValidationUtils.isValidEmail(login);
   if (!isEmailValid) {
     UIUtils.indicateInvalidInput(this._loginElement);
-    Application.showMessage(this.getLocale().InvalidLoginMessage);
+    UIUtils.showMessage(this.getLocale().InvalidLoginMessage);
     return;
   }
   
   var password = this._passwordElement.getValue();
   if (password == "") {
     UIUtils.indicateInvalidInput(this._passwordElement);
-    Application.showMessage(this.getLocale().ProvideLoginPasswordMessage);
+    UIUtils.showMessage(this.getLocale().ProvideLoginPasswordMessage);
     return;
   }
 
@@ -160,21 +160,21 @@ LoginPage.prototype._signIn = function() {
     },
     failure: function() {
       this._onCompletion();
-      Application.showMessage(page.getLocale().InvalidCredentialsMessage);
+      UIUtils.showMessage(page.getLocale().InvalidCredentialsMessage);
     },
     error: function() {
       this._onCompletion();
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
     },
 
     _onCompletion: function() {
       this._signing = false;
-      Application.hideSpinningWheel();
+      UIUtils.hideSpinningWheel();
     }.bind(this)
   }
 
   this._signing = true;
-  Application.showSpinningWheel();
+  UIUtils.showSpinningWheel();
 
   Backend.logIn(login, password, backendCallback);
 }

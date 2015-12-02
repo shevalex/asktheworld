@@ -149,17 +149,17 @@ UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
         || this._expertiseElement.getSelectedData().length == 1 && this._expertiseElement.getSelectedData()[0] == Application.Configuration.GENERAL_EXPERTISE_CATEGORY) {
       
       this._expertiseElement.indicateInvalidInput();
-      Application.showMessage(this.getLocale().NoProfessionalExpertiseMessage);
+      UIUtils.showMessage(this.getLocale().NoProfessionalExpertiseMessage);
       return;
     }
     if (this._nameElement.getValue() == "") {
       UIUtils.indicateInvalidInput(this._nameElement);
-      Application.showMessage(this.getLocale().NoNameMessage);
+      UIUtils.showMessage(this.getLocale().NoNameMessage);
       return;
     }
     if (this._contactElement.getValue() == "") {
       UIUtils.indicateInvalidInput(this._contactElement);
-      Application.showMessage(this.getLocale().NoContactInfoMessage);
+      UIUtils.showMessage(this.getLocale().NoContactInfoMessage);
       return;
     }
   }
@@ -168,26 +168,26 @@ UserPreferencesPage.prototype._updateUserPreferences = function(callback) {
   var callback = {
     success: function(requestId) {
       this._onCompletion();
-      Application.showMessage(page.getLocale().PreferencesUpdatedMessage);
+      UIUtils.showMessage(page.getLocale().PreferencesUpdatedMessage);
       Application.goBack();
     },
     failure: function() {
       this._onCompletion();
-      Application.showMessage(page.getLocale().UpdateFailedMessage);
+      UIUtils.showMessage(page.getLocale().UpdateFailedMessage);
     },
     error: function() {
       this._onCompletion();
-      Application.showMessage(I18n.getLocale().literals.ServerErrorMessage);
+      UIUtils.showMessage(I18n.getLocale().literals.ServerErrorMessage);
     },
 
     _onCompletion: function() {
       this._updating = false;
-      Application.hideSpinningWheel();
+      UIUtils.hideSpinningWheel();
     }.bind(this)
   }
 
   this._updating = true;
-  Application.showSpinningWheel();
+  UIUtils.showSpinningWheel();
 
   var userPreferences = {
     default_response_quantity: this._quantityElement.getSelectedData(),
