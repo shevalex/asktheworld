@@ -178,5 +178,11 @@ Hibernate:
 	public Date getLastDelteRequestDate() {
 		return lastdelete_ts;
 	}
+	
+	@JsonIgnore
+	public void updateNameFromLogin() {
+		setName("Anonymous");
+		//setName(getLogin().substring(0, getLogin().indexOf("@")));
+	}
 
 }
