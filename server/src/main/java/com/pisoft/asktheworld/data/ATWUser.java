@@ -42,7 +42,7 @@ public class ATWUser implements Serializable {
 	@JsonIgnore	
 	private int user_id;
 	
-	@Column
+	@Column(updatable=false)
 	private String login;
 	@Column
 	private String password;
@@ -73,7 +73,7 @@ public class ATWUser implements Serializable {
 		return login;
 	}
 	public void setLogin(String login) {
-		this.login = login;
+		this.login = login.toLowerCase();
 	}
 	public String getPassword() {
 		return password;
@@ -177,6 +177,12 @@ Hibernate:
 	@JsonIgnore
 	public Date getLastDelteRequestDate() {
 		return lastdelete_ts;
+	}
+	
+	@JsonIgnore
+	public void updateNameFromLogin() {
+		setName("Anonymous");
+		//setName(getLogin().substring(0, getLogin().indexOf("@")));
 	}
 
 }

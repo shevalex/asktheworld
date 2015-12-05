@@ -75,6 +75,10 @@ public class DB {
 	
 	public ATWUser addUser(ATWUser user) {
 		if (findUser(user.getLogin()) == null) {
+			//set default name if it is empty or null
+			if(user.getName() == null || user.getName().length()==0) {
+				user.updateNameFromLogin();
+			}
 			users.create(user);
 			ATWUserSettings userSettings = new ATWUserSettings();
 			userSettings.setId(user.getUser_id());
@@ -97,6 +101,9 @@ public class DB {
 	
 	public ATWUser updateUser(ATWUser user){
 		if(isUserExist(user.getUser_id())) {
+			if(user.getName() == null || user.getName().length()==0) {
+				user.updateNameFromLogin();
+			}
 			return users.update(user);
 		}
 		return null;
