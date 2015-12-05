@@ -77,13 +77,6 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
     return;
   }
   
-  var name = this._nameElement.getValue();
-  if (name == "") {
-    UIUtils.indicateInvalidInput(this._nameElement);
-    UIUtils.showMessage(this.getLocale().NameNotSetMessage);
-    return;
-  }
-
   var languages = this._languagesElement.getSelectedChoices();
   if (languages == "") {
     this._languagesElement.indicateInvalidInput();
@@ -123,6 +116,7 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
     success: function(requestId) {
       callback._onCompletion();
       UIUtils.showMessage(this.getLocale().ProfileUpdatedMessage);
+      Application.setupUserMenuChooser();
       Application.goBack();
     }.bind(this),
     failure: function() {
@@ -145,7 +139,7 @@ UserProfilePage.prototype._updateUserProfile = function(callback) {
   UIUtils.showSpinningWheel();
   
   var userProfile = {
-    name: name,
+    name: this._nameElement.getValue(),
     gender: this._genderElement.getSelectedData(),
     languages: this._languagesElement.getSelectedData(),
     age_category: this._ageElement.getSelectedData()

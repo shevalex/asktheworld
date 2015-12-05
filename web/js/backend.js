@@ -86,10 +86,7 @@ Backend.logIn = function(login, password, transactionCallback) {
 }
 
 Backend.logOut = function(transactionCallback) {
-  Backend.UserProfile.login = null;
-  Backend.UserProfile.password = null;
-  Backend.UserProfile.name = null;
-  Backend.UserProfile.user_id = null;
+  Backend.UserProfile = null;
   
   Backend.Cache.reset();
   Backend.stopPullingEvents();
@@ -101,11 +98,11 @@ Backend.logOut = function(transactionCallback) {
 }
 
 Backend.isLogged = function() {
-  return Backend.getUserProfile().login != null;
+  return Backend.getUserProfile() != null && Backend.getUserProfile().login != null;
 }
 
 Backend.pullUserProfile = function(transactionCallback) {
-  if (Backend.getUserProfile().user_id == null) {
+  if (!Backend.isLogged()) {
     throw "Must login or register first";
   }
 
@@ -166,8 +163,6 @@ Backend.updateUserProfile = function(userProfile, currentPassword, transactionCa
       if (userProfile.password != null) {
         Backend.UserProfile.password = userProfile.password;
       }
-      
-//      Backend.pullUserProfile(transactionCallback);
       
       if (transactionCallback != null) {
         transactionCallback.success();
