@@ -471,6 +471,14 @@ UIUtils.appendPasswordInput = function(root, inputFieldId) {
   return root.appendChild(UIUtils.createPasswordInput(UIUtils.createId(root, inputFieldId)));
 }
 
+UIUtils.createDateInput = function(inputFieldId) {
+  return UIUtils._createInputField(inputFieldId, "date");
+}
+UIUtils.appendDateInput = function(root, inputFieldId) {
+  return root.appendChild(UIUtils.createDateInput(UIUtils.createId(root, inputFieldId)));
+}
+
+
 
 UIUtils.createTextArea = function(textAreaId, rows, defaultText) {
   var textAreaElement = document.createElement("textarea");
