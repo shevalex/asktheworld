@@ -592,6 +592,16 @@ UIUtils.createDropList = function(listId, items) {
     return this.selectData(value);
   }
   
+  listElement.setChangeListener = function(listener) {
+    if (listener != null) {
+      this.onchange = function() {
+        listener(this.getSelectedItem());
+      }.bind(this);
+    } else {
+      this.onchange = null;
+    }
+  }
+  
   return listElement;
 }
 
