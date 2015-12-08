@@ -471,8 +471,32 @@ UIUtils.appendPasswordInput = function(root, inputFieldId) {
   return root.appendChild(UIUtils.createPasswordInput(UIUtils.createId(root, inputFieldId)));
 }
 
-UIUtils.createDateInput = function(inputFieldId) {
-  return UIUtils._createInputField(inputFieldId, "date");
+UIUtils.createDateInput = function(inputFieldId, currentDate) {
+  var dateElement = UIUtils._createInputField(inputFieldId, "date");
+  
+  dateElement.setDate = function(date) {
+    var value = date.getFullYear() + "-"
+                + (date.getMonth() < 9 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1))
+                + "-"
+                + (date.getDate() < 10 ? "0" + date.getDate() : date.getDate());
+    
+    dateElement.value = value;
+  }
+  
+  dateElement.getDate = function() {
+    if (dateElement.value == null && dateElement.value == "") {
+      return null;
+    }
+    
+    var splitDate = dateElement.value.split("-");
+    if (splitDate.length != 3) {
+      return null;  
+    }
+    
+    return new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
+  }
+  
+  return dateElement;
 }
 UIUtils.appendDateInput = function(root, inputFieldId) {
   return root.appendChild(UIUtils.createDateInput(UIUtils.createId(root, inputFieldId)));
@@ -508,7 +532,7 @@ UIUtils.createTextArea = function(textAreaId, rows, defaultText) {
 UIUtils.createDropList = function(listId, items) {
   var listElement = document.createElement("select");
   listElement.setAttribute("id", listId);
-  listElement.style.width = "100%";
+//  listElement.style.width = "100%";
   
   for (var index in items) {
     var optionElement = document.createElement("option");
@@ -687,8 +711,18 @@ UIUtils.appendLink = function(root, linkId, text) {
 
 
 
-UIUtils.createSeparator = function() {
-  return document.createElement("hr");
+UIUtils.createSeparator = function(sepId) {
+  var separatorElement = document.createElement("hr");
+  
+  if (sepId != null) {
+    separatorElement.setAttribute("id", sepId);
+  }
+  
+  return separatorElement;
+}
+
+UIUtils.appendSeparator = function(root, sepId) {
+  return root.appendChild(UIUtils.createSeparator(sepId));
 }
 
 UIUtils.createImage = function(imageId, src) {
@@ -1324,8 +1358,8 @@ UIUtils._createInputField = function(inputFieldId, inputType) {
   var inputFieldElement = document.createElement("input");
   inputFieldElement.setAttribute("type", inputType != null ? inputType : "text");
   inputFieldElement.setAttribute("id", inputFieldId);
-  inputFieldElement.style.display = "block";
-  inputFieldElement.style.width = "100%";
+//  inputFieldElement.style.display = "block";
+//  inputFieldElement.style.width = "100%";
   
   inputFieldElement.getValue = function() {
     return inputFieldElement.value;
