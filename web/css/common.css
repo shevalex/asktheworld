@@ -316,7 +316,8 @@ select {
   background-size: contain;
   background-repeat: no-repeat;
   background-color: transparent;
-  
+}
+.ratingbar-star-editable {
   cursor: pointer;
 }
 /*

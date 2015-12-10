@@ -1114,19 +1114,21 @@ UIUtils.appendRatingBar = function(root, barId, ratingListener) {
     bar._stars.push(star);
     star._rating = i;
     UIUtils.addClass(star, "ratingbar-star");
-    UIUtils.setClickListener(star, function() {
-      var rating;
-      if (bar.getRating() == this._rating) {
-        rating = this._rating - 1;
-      } else {
-        rating = this._rating;
-      }
     
-      bar.setRating(rating);
-      if (ratingListener != null) {
+    if (ratingListener != null) {
+      UIUtils.addClass(star, "ratingbar-star-editable");
+      UIUtils.setClickListener(star, function() {
+        var rating;
+        if (bar.getRating() == this._rating) {
+          rating = this._rating - 1;
+        } else {
+          rating = this._rating;
+        }
+
+        bar.setRating(rating);
         ratingListener(rating);
-      }
-    }.bind(star));
+      }.bind(star));
+    }
   }
   
   bar.setRating = function(rating) {
