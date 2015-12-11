@@ -332,6 +332,34 @@ select {
   background-image: url(../imgs/star-full.png);
 }
 
+.x-closer {
+  display: none;
+  
+  width: 20px;
+  height: 20px;
+
+  background-image: url(../imgs/close.png);
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  
+  background-color: rgb(235, 160, 155);
+  
+  border-radius: 10px;
+  border-color: rgb(225, 90, 80);
+  border-width: 2px;
+  border-style: solid;
+}
+.x-closer:hover {
+  display: inline-block;
+  background-color: rgb(225, 90, 80);
+}
+.x-closer:active {
+  display: inline-block;
+  background-color: rgb(225, 60, 50);
+}
+
 
 
 .text-editor {
@@ -479,9 +507,8 @@ select {
 .modal-dialog {
   position: fixed;
   left: 20%;
-  top: 80px;
+  top: 100px;
   width: 60%;
-  height: calc(100% - 150px);
   
   z-index: 100;
   
@@ -495,7 +522,12 @@ select {
   color: white;
   background: rgba(100, 100, 100, 0.9);
 }
+.modal-dialog-title {
+  text-align: center;
+  font-size: 25px;
+}
 .modal-dialog-content {
+  padding: 20px;
   height: calc(100% - 60px);
   overflow: auto;
 }
@@ -503,7 +535,12 @@ select {
   padding: 5px 10px 5px 10px;
   text-align: right;
 }
-.modal-dialog-okbutton {
+.modal-dialog-leftbutton {
+  float: left;
+  font-size: 15px;
+  padding: 5px 20px 5px 20px;
+}
+.modal-dialog-rightbutton {
   font-size: 15px;
   padding: 5px 20px 5px 20px;
 }

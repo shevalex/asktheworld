@@ -327,21 +327,63 @@ UIUtils.hideMessage = function() {
   });
 }
 
-
-UIUtils.showDialog = function(title, contentHtml) {
+// buttons: {
+//  <buttonId>: {
+//    display: <displayText>,
+//    listener: clickListener
+//    alignment: "left" | "right"
+//  }
+// }
+UIUtils.showDialog = function(title, contentHtml, buttons) {
   UIUtils.hideDialog();
   
-  $("body").append("<div class='modal-dialog' id='ModalDialog'><div class='modal-dialog-content'>" + contentHtml + "</div><hr><div class='modal-dialog-controlpanel'><button class='modal-dialog-okbutton'>" + I18n.getLocale().literals.OkButton + "</button><div></div>");
-  $(".modal-dialog-okbutton").click(function() {
-    $(".modal-dialog").fadeOut("slow", function() {
-      $(this).remove();
-    });
-  });
+  var root = document.getElementsByTagName("body")[0];
   
+  var dialogElement = UIUtils.appendBlock(root, "ModalDialog");
+  UIUtils.addClass(dialogElement, "modal-dialog");
   
-  var popupSelector = ".modal-dialog";
-  UIUtils.listenOutsideClicks(popupSelector, function() {
-      var container = UIUtils.get$(popupSelector);
+  var dialogTitle = UIUtils.appendBlock(dialogElement, "DialogTitle");
+  UIUtils.addClass(dialogTitle, "modal-dialog-title");
+  dialogTitle.innerHTML = title;
+  
+  UIUtils.appendSeparator(dialogElement);
+  
+  var dialogContent = UIUtils.appendBlock(dialogElement, "DialogContent");
+  UIUtils.addClass(dialogContent, "modal-dialog-content");
+  dialogContent.innerHTML = contentHtml;
+  
+  UIUtils.appendSeparator(dialogElement);
+  
+  var controlPanel = UIUtils.appendBlock(dialogElement, "ControlPanel");
+  UIUtils.addClass(controlPanel, "modal-dialog-controlpanel");
+  
+  if (buttons != null) {
+    for (var buttonId in buttons) {
+      buttonProperties = buttons[buttonId];
+      
+      var button = UIUtils.appendButton(controlPanel, buttonId, buttonProperties.display);
+      if (buttonProperties.alignment == "left") {
+        UIUtils.addClass(button, "modal-dialog-leftbutton");
+      } else {
+        UIUtils.addClass(button, "modal-dialog-rightbutton");
+      }
+      
+      UIUtils.setClickListener(button, function() {
+        if (buttonProperties.listener) {
+          buttonProperties.listener();
+        }
+        UIUtils.hideDialog();
+      });
+    }
+  } else {
+    var okButton = UIUtils.appendButton(controlPanel, "OkButton", I18n.getLocale().literals.OkButton);
+    UIUtils.addClass(okButton, "modal-dialog-rightbutton");
+    UIUtils.setClickListener(okButton, UIUtils.hideDialog);
+  }
+  
+
+  UIUtils.listenOutsideClicks(dialogElement, function() {
+      var container = UIUtils.get$(dialogElement);
       container.fadeOut("slow", function() {
         container.remove();
       });
@@ -1157,6 +1199,12 @@ UIUtils.appendRatingBar = function(root, barId, ratingListener) {
   return bar;
 }
 
+UIUtils.appendXCloser = function(root, closerId) {
+  var closer = UIUtils.appendBlock(root, closerId);
+  UIUtils.addClass(closer, "x-closer");
+  
+  return closer;
+}
 
 
 UIUtils.appendFileChooser = function(root) {
