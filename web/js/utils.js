@@ -74,7 +74,7 @@ GeneralUtils.isIncluded = function(set, subset) {
 }
 
 GeneralUtils.removeFromArray = function(arr, element) {
-  if (arr = null) {
+  if (arr == null) {
     return null;
   }
   
@@ -322,9 +322,7 @@ UIUtils.showMessage = function(msg, timeout, title) {
 }
 
 UIUtils.hideMessage = function() {
-  $(".popup-message").fadeOut("slow", function() {
-    $(this).remove();
-  });
+  UIUtils.fadeOut(".popup-message");
 }
 
 // buttons: {
@@ -360,7 +358,7 @@ UIUtils.showDialog = function(title, contentHtml, buttons) {
   if (buttons != null) {
     for (var buttonId in buttons) {
       buttonProperties = buttons[buttonId];
-      
+
       var button = UIUtils.appendButton(controlPanel, buttonId, buttonProperties.display);
       if (buttonProperties.alignment == "left") {
         UIUtils.addClass(button, "modal-dialog-leftbutton");
@@ -368,12 +366,12 @@ UIUtils.showDialog = function(title, contentHtml, buttons) {
         UIUtils.addClass(button, "modal-dialog-rightbutton");
       }
       
-      UIUtils.setClickListener(button, function() {
-        if (buttonProperties.listener) {
-          buttonProperties.listener();
+      UIUtils.setClickListener(button, function(listener) {
+        if (listener) {
+          listener();
         }
         UIUtils.hideDialog();
-      });
+      }.bind(this, buttonProperties.listener));
     }
   } else {
     var okButton = UIUtils.appendButton(controlPanel, "OkButton", I18n.getLocale().literals.OkButton);
@@ -382,17 +380,25 @@ UIUtils.showDialog = function(title, contentHtml, buttons) {
   }
   
 
-  UIUtils.listenOutsideClicks(dialogElement, function() {
-      var container = UIUtils.get$(dialogElement);
-      container.fadeOut("slow", function() {
-        container.remove();
-      });
-  });
+  UIUtils.listenOutsideClicks(dialogElement, UIUtils.fadeOut.bind(this, dialogElement));
 }
 
 UIUtils.hideDialog = function() {
   $(".modal-dialog").remove();
 }
+
+
+UIUtils.fadeOut = function(element, speed, listener) {
+  var el = UIUtils.get$(element);
+  el.fadeOut(speed || "slow", function() {
+    el.remove();
+    if (listener) {
+      listener();
+    }
+  });
+}
+
+
 
 
 UIUtils.createLabeledTextInput = function(inputFieldId, labelText, margin) {
