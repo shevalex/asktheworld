@@ -332,7 +332,7 @@ UIUtils.hideMessage = function() {
 //    alignment: "left" | "right"
 //  }
 // }
-UIUtils.showDialog = function(title, contentHtml, buttons) {
+UIUtils.showDialog = function(title, contentDefinition, buttons) {
   UIUtils.hideDialog();
   
   var root = document.getElementsByTagName("body")[0];
@@ -348,7 +348,12 @@ UIUtils.showDialog = function(title, contentHtml, buttons) {
   
   var dialogContent = UIUtils.appendBlock(dialogElement, "DialogContent");
   UIUtils.addClass(dialogContent, "modal-dialog-content");
-  dialogContent.innerHTML = contentHtml;
+  
+  if (typeof contentDefinition == "string") {
+    dialogContent.innerHTML = contentDefinition;
+  } else if (typeof contentDefinition == "function") {
+    contentDefinition(dialogContent);
+  }
   
   UIUtils.appendSeparator(dialogElement);
   
@@ -385,6 +390,16 @@ UIUtils.showDialog = function(title, contentHtml, buttons) {
 
 UIUtils.hideDialog = function() {
   $(".modal-dialog").remove();
+}
+
+UIUtils.appendDialog = function(root, dialogId) {
+  var fullId = UIUtils.createId(root, dialogId);
+  UIUtils.get$(fullId).remove();
+  
+  var dialog = UIUtils.appendBlock(root, dialogId);
+  UIUtils.listenOutsideClicks(dialog, UIUtils.fadeOut.bind(this, dialog));
+  
+  return dialog;
 }
 
 

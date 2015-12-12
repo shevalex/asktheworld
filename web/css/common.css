@@ -509,9 +509,9 @@ select {
   left: 20%;
   top: 100px;
   width: 60%;
-  max-height: calc(100% - 200px);
+/*  max-height: calc(100% - 200px);*/
   
-  z-index: 100;
+/*  z-index: 100;*/
   
   padding: 5px;
   
@@ -520,17 +520,17 @@ select {
   border-width: 1px;
   border-radius: 5px;
 
-  color: white;
-  background: rgba(100, 100, 100, 0.9);
+  color: black;
+  background: rgb(225, 225, 225);
 }
 .modal-dialog-title {
   text-align: center;
   font-size: 25px;
 }
 .modal-dialog-content {
-  padding: 20px;
-  height: calc(100% - 60px);
+  padding: 10px 20px 10px 20px;
   overflow: auto;
+  
 }
 .modal-dialog-controlpanel {
   padding: 5px 10px 5px 10px;
