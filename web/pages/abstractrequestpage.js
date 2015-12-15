@@ -192,7 +192,7 @@ AbstractRequestPage.ExtendedOutgoingRequestItem.prototype._fill = function() {
   requestText.innerHTML = request.text;
 
   if (request.attachments != null && request.attachments.length > 0) {
-    var attachmentBar = UIUtils.appendAttachmentBar(this._container, request.attachments);
+    var attachmentBar = UIUtils.appendAttachmentBar(this._container, "AttachmentBar", request.attachments);
     UIUtils.addClass(attachmentBar, "request-attachmentbar");
   }
 }
@@ -252,7 +252,7 @@ AbstractRequestPage.ExtendedIncomingRequestItem.prototype._fill = function() {
   requestText.innerHTML = request.text;
 
   if (request.attachments != null && request.attachments.length > 0) {
-    var attachmentBar = UIUtils.appendAttachmentBar(this._container, request.attachments);
+    var attachmentBar = UIUtils.appendAttachmentBar(this._container, "AttachmentBar", request.attachments);
     UIUtils.addClass(attachmentBar, "request-attachmentbar");
   }
 }
@@ -338,7 +338,7 @@ AbstractRequestPage.IncomingResponseItem.prototype._fill = function() {
   }
 
   if (response.attachments != null && response.attachments.length > 0) {
-    var attachmentBar = UIUtils.appendAttachmentBar(this._container, response.attachments);
+    var attachmentBar = UIUtils.appendAttachmentBar(this._container, "AttachmentBar", response.attachments);
     UIUtils.addClass(attachmentBar, "response-attachmentbar");
   }
 
@@ -395,7 +395,7 @@ AbstractRequestPage.OutgoingResponseItem.prototype._fill = function() {
   }
 
   if (response.attachments != null && response.attachments.length > 0) {
-    var attachmentBar = UIUtils.appendAttachmentBar(this._container, response.attachments);
+    var attachmentBar = UIUtils.appendAttachmentBar(this._container, "AttachmentBar", response.attachments);
     UIUtils.addClass(attachmentBar, "response-attachmentbar");
   }
 }

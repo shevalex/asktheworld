@@ -392,11 +392,16 @@ UIUtils.hideDialog = function() {
   $(".modal-dialog").remove();
 }
 
-UIUtils.appendDialog = function(root, dialogId) {
+UIUtils.appendDialog = function(root, dialogId, isModal) {
   var fullId = UIUtils.createId(root, dialogId);
   UIUtils.get$(fullId).remove();
+  UIUtils.hideDialog();
   
   var dialog = UIUtils.appendBlock(root, dialogId);
+  if (isModal) {
+    UIUtils.addClass(dialog, "modal-dialog");
+  }
+  
   UIUtils.listenOutsideClicks(dialog, UIUtils.fadeOut.bind(this, dialog));
   
   return dialog;
@@ -1012,8 +1017,8 @@ UIUtils.createMultiOptionList = function(listId, choices, exclusive) {
 
 
 
-UIUtils.appendAttachmentBar = function(root, attachments, editable, openFileController) {
-  var attachmentBar = UIUtils.appendBlock(root, "AttachmentBar");
+UIUtils.appendAttachmentBar = function(root, barId, attachments, editable, openFileController) {
+  var attachmentBar = UIUtils.appendBlock(root, barId);
   UIUtils.addClass(attachmentBar, "attachmentbar");
   
   attachmentBar._attachments = [];

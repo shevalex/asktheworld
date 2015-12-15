@@ -22,7 +22,7 @@ NewRequestPage.prototype.definePageContent = function(root) {
   
   this._requestTextEditor = UIUtils.appendTextEditor(contentPanel, "TextEditor");
 
-  this._attachmentsBar = UIUtils.appendAttachmentBar(contentPanel, null, true, Account.canOpenFileController);
+  this._attachmentsBar = UIUtils.appendAttachmentBar(contentPanel, "AttachmentBar", null, true, Account.canOpenFileController);
   
   UIUtils.appendLabel(contentPanel, "WhomToSendLabel", this.getLocale().WhomToSendLabel);
   var whomToSendPanel = UIUtils.appendBlock(contentPanel, "WhomToSendPanel");

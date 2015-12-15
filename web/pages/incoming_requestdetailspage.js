@@ -219,7 +219,7 @@ IncomingRequestDetailsPage.prototype._showEditingResponse = function() {
     responseHiddenTextEditor.setValue(response.paid_features.hidden_text.data.text);
   }
   
-  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, Account.canOpenFileController);
+  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, "AttachmentBar", null, true, Account.canOpenFileController);
   attachmentsBar.setAttachments(response.attachments);
   
   var buttonsPanel = UIUtils.appendBlock(this._responsePanel, "ControlButtonsPanel");
@@ -257,7 +257,7 @@ IncomingRequestDetailsPage.prototype._showCreatingResponse = function() {
     responseHiddenTextEditor = UIUtils.appendTextEditor(this._responsePanel, "HiddenTextEditor");
   }
   
-  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, null, true, Account.canOpenFileController);
+  var attachmentsBar = UIUtils.appendAttachmentBar(this._responsePanel, "AttachmentBar", null, true, Account.canOpenFileController);
   
   var buttonsPanel = UIUtils.appendBlock(this._responsePanel, "ControlButtonsPanel");
   

@@ -44,7 +44,7 @@ Backend.UserPreferences = {
 };
 
 
-Backend.UserSettings = {expertise_categories: []};
+Backend.UserSettings = {expertise_categories: [], attachment_limit: 1};
 
 
 Backend.getUserProfile = function() {
